@@ -1,11 +1,12 @@
 import Video from "twilio-video";
 
+import { RoomVisibility } from "types/RoomVisibility";
 import { DisplayUser } from "types/User";
 
 import { WithId } from "utils/id";
 
 import { SoundConfigReference } from "./sounds";
-import { PortalTemplate, RoomVisibility } from "./venues";
+import { PortalTemplate } from "./venues";
 
 export enum RoomType {
   unclickable = "UNCLICKABLE",

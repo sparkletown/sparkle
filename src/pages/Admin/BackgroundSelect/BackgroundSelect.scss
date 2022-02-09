@@ -1,3 +1,5 @@
+@use "sass:math";
+
 @import "scss/constants";
 
 $map-default-size: 64px;
@@ -51,7 +53,7 @@ $map-default-size: 64px;
 
     .ButtonNG__icon--loading {
       color: var(--content--over);
-      @include square-size($map-default-size / 2);
+      @include square-size(math.div($map-default-size, 2));
     }
   }
 }

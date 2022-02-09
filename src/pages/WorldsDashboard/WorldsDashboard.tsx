@@ -2,13 +2,15 @@ import React, { useMemo } from "react";
 
 import { ADMIN_IA_WORLD_CREATE_URL } from "settings";
 
-import { useUser } from "hooks/useUser";
-import { useOwnWorlds } from "hooks/worlds/useOwnWorlds";
+import { UserId } from "types/id";
+
+import { useOwnedVenues } from "hooks/useOwnedVenues";
+import { useWorlds } from "hooks/worlds/useWorlds";
 
 import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
 import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
 import { AdminShowcaseTitle } from "components/organisms/AdminVenueView/components/AdminShowcaseTitle";
-import WithNavigationBar from "components/organisms/WithNavigationBar";
+import { WithAdminNavBar } from "components/organisms/WithAdminNavBar";
 
 import { WorldCard } from "components/molecules/WorldCard";
 
@@ -19,10 +21,23 @@ import ARROW from "assets/images/admin/dashboard-arrow.svg";
 
 import "./WorldsDashboard.scss";
 
-export const WorldsDashboard: React.FC = () => {
-  const user = useUser();
+type WorldsDashboardProps = { userId: UserId };
 
-  const worlds = useOwnWorlds(user.userId);
+export const WorldsDashboard: React.FC<WorldsDashboardProps> = ({ userId }) => {
+  const { ownedVenues } = useOwnedVenues({ userId });
+  const worlds = useWorlds();
+
+  const ownedUniqueWorldIds = useMemo(
+    // @debt should use uniq function of Lodash, or create our own in ./src/utils
+    () => [...new Set(ownedVenues.map(({ worldId }) => worldId))],
+    [ownedVenues]
+  );
+
+  // Firebase query where([world.id, 'in', ownedUniqueWorldIds]) has a limit of 10 items in ownedUniqueWorldIds. Because of that, it is filtered here
+  const uniqueWorlds = useMemo(
+    () => worlds.filter(({ id }) => ownedUniqueWorldIds.includes(id)),
+    [worlds, ownedUniqueWorldIds]
+  );
 
   const hasWorlds = !!worlds.length;
 
@@ -41,17 +56,17 @@ export const WorldsDashboard: React.FC = () => {
   const renderedWorldsList = useMemo(
     () => (
       <div className="WorldsDashboard__worlds-list">
-        {worlds.map((world) => (
+        {uniqueWorlds.map((world) => (
           <WorldCard key={world.id} world={world} />
         ))}
       </div>
     ),
-    [worlds]
+    [uniqueWorlds]
   );
 
   return (
     <div className="WorldsDashboard">
-      <WithNavigationBar>
+      <WithAdminNavBar>
         <AdminRestricted>
           <AdminPanel variant="unbound">
             {hasWorlds ? (
@@ -92,7 +107,7 @@ export const WorldsDashboard: React.FC = () => {
             )}
           </AdminPanel>
         </AdminRestricted>
-      </WithNavigationBar>
+      </WithAdminNavBar>
     </div>
   );
 };

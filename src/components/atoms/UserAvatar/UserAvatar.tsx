@@ -4,7 +4,7 @@ import { isEqual } from "lodash";
 
 import { DEFAULT_PARTY_NAME } from "settings";
 
-import { BaseUser } from "types/User";
+import { Profile } from "types/User";
 import { ContainerClassName } from "types/utility";
 
 import { WithId } from "utils/id";
@@ -21,7 +21,7 @@ import "./UserAvatar.scss";
 export type UserAvatarSize = "small" | "medium" | "large" | "xlarge" | "full";
 
 export type UserAvatarUserFields = WithId<
-  Pick<BaseUser, "partyName" | "pictureUrl" | "anonMode" | "status">
+  Pick<Profile, "partyName" | "pictureUrl" | "anonMode" | "status">
 >;
 
 export interface UserAvatarProps extends ContainerClassName {
@@ -53,27 +53,25 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
   // @debt until temporarily disable is online functionality
   const isOnline = false;
 
-  const {
-    userStatus,
-    venueUserStatuses,
-    isStatusEnabledForVenue,
-  } = useVenueUserStatuses(user);
+  const { userStatus, venueUserStatuses, isStatusEnabledForVenue } =
+    useVenueUserStatuses(user);
+
+  const { src: imageSrc, onError: onImageLoadError } = useMemo(
+    () => determineAvatar({ user }),
+    [user]
+  );
 
   const avatarSrc = useMemo((): string => {
-    const url = determineAvatar({ user });
-
     const facadeSize = size ? AVATAR_SIZE_MAP[size] : undefined;
     const resizeOptions: ImageResizeOptions = { fit: "crop" };
     if (facadeSize) {
       resizeOptions.width = resizeOptions.height = facadeSize;
     }
 
-    return getFirebaseStorageResizedImage(url, resizeOptions);
-  }, [user, size]);
+    return getFirebaseStorageResizedImage(imageSrc, resizeOptions);
+  }, [size, imageSrc]);
 
-  const userDisplayName: string = user?.anonMode
-    ? DEFAULT_PARTY_NAME
-    : user?.partyName ?? DEFAULT_PARTY_NAME;
+  const userDisplayName: string = user?.partyName ?? DEFAULT_PARTY_NAME;
 
   const containerClasses = classNames("UserAvatar", containerClassName, {
     "UserAvatar--clickable": onClick !== undefined,
@@ -111,6 +109,7 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
         src={avatarSrc}
         alt={`${userDisplayName}'s avatar`}
         onClick={onClick}
+        onError={onImageLoadError}
       />
 
       {hasUserStatus && (

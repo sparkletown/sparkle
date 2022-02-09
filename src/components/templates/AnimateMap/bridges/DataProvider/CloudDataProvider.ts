@@ -1,4 +1,4 @@
-import { ExtendedFirebaseInstance } from "react-redux-firebase";
+import firebase from "firebase/compat/app";
 import { utils } from "pixi.js";
 
 import { DEFAULT_BADGE_IMAGE } from "settings";
@@ -37,7 +37,7 @@ interface TEMPORARY_USERS_TYPE_REPLACEMENT {
 interface CloudDataProviderSetting {
   playerId: string;
   userAvatarUrl?: string;
-  firebase: ExtendedFirebaseInstance;
+  firebase: typeof firebase;
   playerioGameId: string;
   playerioMaxPlayerPerRoom: number;
   playerioFrequencyUpdate: number;
@@ -50,27 +50,17 @@ interface CloudDataProviderSetting {
  */
 export class CloudDataProvider
   extends utils.EventEmitter
-  implements DataProvider {
-  private _updateCounter = 0;
-  private _maxUpdateCounter = 1000 / this.settings.playerioFrequencyUpdate;
-
+  implements DataProvider
+{
   readonly player: PlayerDataProvider;
   readonly users: UsersDataProvider;
   readonly commonInterface: CommonInterface;
-
-  /**
-   * Update frequency (per second)
-   */
-  get frequencyUpdate() {
-    return this.settings.playerioFrequencyUpdate;
-  }
-
-  set frequencyUpdate(value) {
-    this.settings.playerioFrequencyUpdate = value;
-    this._maxUpdateCounter = 1 / value;
-  }
-
+  public venuesData: ReplicatedVenue[] = [];
+  public firebarrelsData: ReplicatedFirebarrel[] = [];
+  private _updateCounter = 0;
+  private _maxUpdateCounter = 1000 / this.settings.playerioFrequencyUpdate;
   private _testBots;
+  private isUpdateUsersLocked = false;
 
   constructor(readonly settings: CloudDataProviderSetting) {
     super();
@@ -108,6 +98,18 @@ export class CloudDataProvider
     );
   }
 
+  /**
+   * Update frequency (per second)
+   */
+  get frequencyUpdate() {
+    return this.settings.playerioFrequencyUpdate;
+  }
+
+  set frequencyUpdate(value) {
+    this.settings.playerioFrequencyUpdate = value;
+    this._maxUpdateCounter = 1 / value;
+  }
+
   public update(dt: number) {
     this._updateCounter += dt;
     if (this._updateCounter > this._maxUpdateCounter) {
@@ -125,9 +127,6 @@ export class CloudDataProvider
   public setPlayerPosition(x: number, y: number) {
     this.player.setPosition(x, y);
   }
-
-  public venuesData: ReplicatedVenue[] = [];
-  public firebarrelsData: ReplicatedFirebarrel[] = [];
 
   public updateRooms(data?: RoomWithFullData[]) {
     if (!data) return;
@@ -201,8 +200,6 @@ export class CloudDataProvider
       this.emit(DataProviderEvent.VENUE_ADDED, vn);
     });
   }
-
-  private isUpdateUsersLocked = false;
 
   public async updateUsersAsync(data: TEMPORARY_USERS_TYPE_REPLACEMENT) {
     if (this.isUpdateUsersLocked) return;

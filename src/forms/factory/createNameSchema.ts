@@ -3,7 +3,7 @@ import * as Yup from "yup";
 import {
   COMMON_NAME_MAX_CHAR_COUNT,
   COMMON_NAME_MIN_CHAR_COUNT,
-} from "settings/validationSettings";
+} from "settings";
 
 import {
   messageMustBeMaximum,

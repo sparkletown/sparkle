@@ -10,7 +10,16 @@ import {
   PLATFORM_BRAND_NAME,
 } from "settings";
 
-import { VenueTemplate } from "types/venues";
+import { RefiAuthUser } from "types/fire";
+import {
+  SpaceId,
+  SpaceSlugLocation,
+  SpaceWithId,
+  WorldId,
+  WorldWithId,
+} from "types/id";
+import { Profile, UserLocation } from "types/User";
+import { VenueTemplate } from "types/VenueTemplate";
 
 import { hasEventFinished, isEventStartingSoon } from "utils/event";
 import { tracePromise } from "utils/performance";
@@ -19,10 +28,6 @@ import {
   updateProfileEnteredVenueIds,
   updateProfileEnteredWorldIds,
 } from "utils/profile";
-import {
-  currentEventSelector,
-  isCurrentEventRequestedSelector,
-} from "utils/selectors";
 import { wrapIntoSlashes } from "utils/string";
 import { isDefined } from "utils/types";
 import { generateUrl } from "utils/url";
@@ -33,36 +38,20 @@ import {
   useUpdateTimespentPeriodically,
 } from "utils/userLocation";
 
-import { useSpaceParams } from "hooks/spaces/useSpaceParams";
-import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { useAnalytics } from "hooks/useAnalytics";
 import { useConnectCurrentEvent } from "hooks/useConnectCurrentEvent";
 import { useInterval } from "hooks/useInterval";
 import { usePreloadAssets } from "hooks/usePreloadAssets";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
-import { useSelector } from "hooks/useSelector";
-import { useUser } from "hooks/useUser";
 
 import { updateUserProfile } from "pages/Account/helpers";
-
-import WithNavigationBar from "components/organisms/WithNavigationBar";
 
 import { CountDown } from "components/molecules/CountDown";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 
-import { NotFound } from "components/atoms/NotFound";
-
 import { updateTheme } from "./helpers";
 
 import "./VenuePage.scss";
-
-const Login = lazy(() =>
-  tracePromise("VenuePage::lazy-import::Login", () =>
-    import("pages/Account/Login").then(({ Login }) => ({
-      default: Login,
-    }))
-  )
-);
 
 const TemplateWrapper = lazy(() =>
   tracePromise("VenuePage::lazy-import::TemplateWrapper", () =>
@@ -76,17 +65,29 @@ const TemplateWrapper = lazy(() =>
 const checkSupportsPaidEvents = (template: VenueTemplate) =>
   template === VenueTemplate.jazzbar;
 
-export const VenuePage: React.FC = () => {
-  const { worldSlug, spaceSlug } = useSpaceParams();
-  const { world, space, spaceId, isLoaded } = useWorldAndSpaceBySlug(
-    worldSlug,
-    spaceSlug
-  );
+type VenuePageProps = SpaceSlugLocation & {
+  space: SpaceWithId;
+  spaceId: SpaceId;
+  world: WorldWithId;
+  worldId: WorldId;
+  user?: RefiAuthUser;
+  profile?: Profile;
+  userLocation?: UserLocation;
+};
+
+export const VenuePage: React.FC<VenuePageProps> = ({
+  worldSlug,
+  spaceSlug,
+  world,
+  worldId,
+  space,
+  spaceId,
+  user,
+  profile,
+  userLocation,
+}) => {
   const analytics = useAnalytics({ venue: space });
 
-  // const [isAccessDenied, setIsAccessDenied] = useState(false);
-
-  const { user, profile, userLocation } = useUser();
   const {
     lastVenueIdSeenIn: userLastSeenIn,
     enteredVenueIds,
@@ -106,15 +107,12 @@ export const VenuePage: React.FC = () => {
 
   usePreloadAssets(assetsToPreload);
 
-  // @debt Refactor and use reactfire hook instead of this legacy syntax.
-  useConnectCurrentEvent(world?.id, spaceId);
-  const currentEvent = useSelector(currentEventSelector);
-  const eventRequestStatus = useSelector(isCurrentEventRequestedSelector);
+  const { currentEvent, isLoaded: eventRequestStatus } = useConnectCurrentEvent(
+    { worldId, spaceId }
+  );
 
   const userId = user?.uid;
-
   const venueName = space?.name ?? "";
-
   const event = currentEvent?.[0];
 
   useEffect(() => {
@@ -197,17 +195,12 @@ export const VenuePage: React.FC = () => {
 
   // @debt refactor how user location updates works here to encapsulate in a hook or similar?
   useEffect(() => {
-    if (
-      !world?.id ||
-      !userId ||
-      !profile ||
-      enteredWorldIds?.includes(world?.id)
-    ) {
+    if (!worldId || !userId || !profile || enteredWorldIds?.includes(worldId)) {
       return;
     }
 
-    updateProfileEnteredWorldIds(enteredWorldIds, userId, world.id);
-  }, [enteredWorldIds, userLocation, userId, world?.id, profile]);
+    updateProfileEnteredWorldIds(enteredWorldIds, userId, worldId);
+  }, [enteredWorldIds, userLocation, userId, worldId, profile]);
 
   // NOTE: User's timespent updates
 
@@ -216,43 +209,15 @@ export const VenuePage: React.FC = () => {
 
   // @debt refactor how user location updates works here to encapsulate in a hook or similar?
   useEffect(() => {
-    if (!isLoaded || !world || !user) return;
+    if (!world || !user) return;
 
     analytics.trackVenuePageLoadedEvent();
-  }, [analytics, isLoaded, user, world]);
-
-  // const handleAccessDenied = useCallback(() => setIsAccessDenied(true), []);
-
-  // useVenueAccess(venue, handleAccessDenied);
-
-  if (!isLoaded) {
-    return <LoadingPage />;
-  }
-
-  if (!spaceId || !spaceSlug || !space) {
-    return (
-      <WithNavigationBar hasBackButton withHiddenLoginButton withRadio>
-        <NotFound />
-      </WithNavigationBar>
-    );
-  }
-
-  if (!user) {
-    return (
-      <Suspense fallback={<LoadingPage />}>
-        <Login venueId={spaceId} />
-      </Suspense>
-    );
-  }
-
-  if (!profile) {
-    return <LoadingPage />;
-  }
+  }, [analytics, user, world]);
 
   const { template, hasPaidEvents } = space;
 
   const hasEntrance = !!world?.entrance?.length;
-  const hasEntered = world?.id && enteredWorldIds?.includes(world.id);
+  const hasEntered = worldId && enteredWorldIds?.includes(worldId);
 
   if (hasEntrance && !hasEntered) {
     return (
@@ -287,10 +252,6 @@ export const VenuePage: React.FC = () => {
         />
       );
     }
-  }
-
-  if (!user) {
-    return <LoadingPage />;
   }
 
   if (profile && !isCompleteProfile(profile)) {

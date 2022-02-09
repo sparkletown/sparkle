@@ -1,32 +1,46 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { limit, orderBy, where } from "firebase/firestore";
 
-import { COLLECTION_WORLD_EVENTS } from "settings";
+import { ALWAYS_EMPTY_ARRAY, COLLECTION_WORLD_EVENTS } from "settings";
 
+import { WorldAndSpaceIdLocation } from "types/id";
+import { WorldEvent } from "types/venues";
+
+import { convertToFirestoreKey, WithId } from "utils/id";
 import { oneHourAfterTimestamp } from "utils/time";
 
-import { useFirestoreConnect } from "./useFirestoreConnect";
+import { useRefiCollection } from "hooks/fire/useRefiCollection";
 
-export const useConnectCurrentEvent = (worldId?: string, spaceId?: string) => {
-  const [currentTimestamp] = useState(Date.now() / 1000);
-
-  useFirestoreConnect(
-    worldId && spaceId
-      ? {
-          collection: COLLECTION_WORLD_EVENTS,
-          where: [
-            ["startUtcSeconds", "<=", oneHourAfterTimestamp(currentTimestamp)],
-            ["worldId", "==", worldId],
-            ["spaceId", "==", spaceId],
-          ],
-          orderBy: ["startUtcSeconds", "desc"],
-          limit: 1,
-          storeAs: "currentEvent",
-        }
-      : undefined
-  );
+type UseConnectCurrentEvent = ({
+  worldId,
+  spaceId,
+}: Partial<WorldAndSpaceIdLocation>) => {
+  currentEvent: WithId<WorldEvent>[];
+  isLoaded: boolean;
 };
 
-/**
- * @deprecated use named export instead
- */
-export default useConnectCurrentEvent;
+export const useConnectCurrentEvent: UseConnectCurrentEvent = ({
+  worldId,
+  spaceId,
+}) => {
+  const [currentTimestamp] = useState(Date.now() / 1000);
+
+  const { data, isLoaded } = useRefiCollection<WorldEvent>({
+    path: [COLLECTION_WORLD_EVENTS],
+    constraints: [
+      where("startUtcSeconds", "<=", oneHourAfterTimestamp(currentTimestamp)),
+      where("worldId", "==", convertToFirestoreKey(worldId)),
+      where("spaceId", "==", convertToFirestoreKey(spaceId)),
+      orderBy("startUtcSeconds", "desc"),
+      limit(1),
+    ],
+  });
+
+  return useMemo(
+    () => ({
+      currentEvent: data ?? ALWAYS_EMPTY_ARRAY,
+      isLoaded,
+    }),
+    [data, isLoaded]
+  );
+};

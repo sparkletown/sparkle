@@ -18,7 +18,7 @@ import { InformationLeftColumn } from "components/organisms/InformationLeftColum
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 import { Room } from "components/organisms/Room";
 
-import InformationCard from "components/molecules/InformationCard";
+import { InformationCard } from "components/molecules/InformationCard";
 import { Loading } from "components/molecules/Loading";
 
 import { VenueWithOverlay } from "components/atoms/VenueWithOverlay/VenueWithOverlay";

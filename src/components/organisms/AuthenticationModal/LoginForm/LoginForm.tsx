@@ -1,11 +1,12 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useFirebase } from "react-redux-firebase";
+import firebase from "firebase/compat/app";
 
+import { SpaceWithId, WorldWithId } from "types/id";
 import { VenueAccessMode } from "types/VenueAcccess";
 
-import { useSpaceParams } from "hooks/spaces/useSpaceParams";
-import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
+import { errorMessage, errorStatus } from "utils/error";
+
 import { useSocialSignIn } from "hooks/useSocialSignIn";
 
 import { TicketCodeField } from "components/organisms/TicketCodeField";
@@ -14,11 +15,14 @@ import { ButtonNG } from "components/atoms/ButtonNG";
 
 import fIcon from "assets/icons/facebook-social-icon.svg";
 import gIcon from "assets/icons/google-social-icon.svg";
+
 export interface LoginFormProps {
   displayRegisterForm: () => void;
   displayPasswordResetForm: () => void;
   closeAuthenticationModal?: () => void;
   afterUserIsLoggedIn?: (data?: LoginFormData) => void;
+  world: WorldWithId;
+  space: SpaceWithId;
 }
 
 export interface LoginFormData {
@@ -28,30 +32,21 @@ export interface LoginFormData {
   backend?: string;
 }
 
-const LoginForm: React.FunctionComponent<LoginFormProps> = ({
+export const LoginForm: React.FC<LoginFormProps> = ({
   displayRegisterForm,
   displayPasswordResetForm,
   closeAuthenticationModal,
   afterUserIsLoggedIn,
+  world,
+  space,
 }) => {
-  const firebase = useFirebase();
-
   const { signInWithGoogle, signInWithFacebook } = useSocialSignIn();
 
-  const { worldSlug, spaceSlug } = useSpaceParams();
-  const { world, space } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
-
-  const {
-    register,
-    handleSubmit,
-    errors,
-    formState,
-    setError,
-    clearError,
-  } = useForm<LoginFormData>({
-    mode: "onChange",
-    reValidateMode: "onChange",
-  });
+  const { register, handleSubmit, errors, formState, setError, clearError } =
+    useForm<LoginFormData>({
+      mode: "onChange",
+      reValidateMode: "onChange",
+    });
 
   // @debt is `null` the best choice here? we might better show here a loading or error screen instead
   if (!space || !world) return null;
@@ -77,18 +72,17 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
 
       postSignInCheck(data);
     } catch (error) {
-      if (error.response?.status === 404) {
+      const status = errorStatus(error);
+      const message = errorMessage(error);
+
+      if (status === 404) {
         setError(
           "email",
           "validation",
           `Email ${data.email} does not have a ticket; get your ticket at ${space.ticketUrl}`
         );
-      } else if (error.response?.status >= 500) {
-        setError(
-          "email",
-          "validation",
-          `Error checking ticket: ${error.message}`
-        );
+      } else if (status >= 500) {
+        setError("email", "validation", `Error checking ticket: ${message}`);
       } else {
         setError(
           "backend",
@@ -229,5 +223,3 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
     </div>
   );
 };
-
-export default LoginForm;

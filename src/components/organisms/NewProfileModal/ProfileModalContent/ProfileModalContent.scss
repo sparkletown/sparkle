@@ -1,6 +1,10 @@
 @import "../NewProfileModal";
 
 .ProfileModalContent {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
   .Badges,
   .ProfileModalButtons,
   .ProfileModalLinks,

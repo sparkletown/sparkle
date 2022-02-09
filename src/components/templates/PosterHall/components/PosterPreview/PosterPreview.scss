@@ -3,6 +3,7 @@
 $poster-preview-height: 300px;
 $poster-preview-width: 300px;
 $active-poster-shadows: 0 10px 20px 0 var(--primary--under-50a);
+$online-container-min-width: 50px;
 
 .PosterPreview {
   display: flex;
@@ -41,19 +42,7 @@ $active-poster-shadows: 0 10px 20px 0 var(--primary--under-50a);
 
   &__header {
     display: flex;
-    justify-content: space-between;
-  }
-
-  &__posterId {
-    display: inline;
-    text-align: left;
-    font-size: $font-size--sm;
-  }
-
-  &__visiting {
-    display: inline;
-    text-align: right;
-    font-size: $font-size--sm;
+    justify-content: left;
   }
 
   &__title {
@@ -66,30 +55,25 @@ $active-poster-shadows: 0 10px 20px 0 var(--primary--under-50a);
   &__categories {
     display: flex;
     flex-wrap: wrap;
+    margin-top: $spacing--md;
   }
 
-  &__authorBox {
+  &__author-box {
     display: flex;
     align-items: center;
-    margin-top: auto;
-  }
-
-  &__avatar {
-    margin-right: auto;
-  }
-
-  &__author {
-    margin-left: $spacing--sm;
-    font-size: $font-size--sm;
-    font-weight: $font-weight--500;
-    @include line-clamp-with-overflow(5);
-  }
-
-  &__contactEmail {
     font-size: $font-size--sm;
   }
 
-  &__moreInfoUrl {
-    font-size: $font-size--sm;
+  &__thumbnail-container {
+    flex-grow: 1;
+    // Tiny initial height forces the container to grow to fill remaining space
+    height: 1px;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    img {
+      max-width: 100%;
+      max-height: 100%;
+    }
   }
 }

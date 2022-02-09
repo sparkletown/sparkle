@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Modal } from "react-bootstrap";
 import { groupBy } from "lodash";
 
 import { ALLOWED_EMPTY_TABLES_NUMBER } from "settings";
@@ -8,20 +7,23 @@ import { setTableSeat } from "api/venue";
 
 import { Table, TableComponentPropsType } from "types/Table";
 import { TableSeatedUser } from "types/User";
-import { AnyVenue, VenueTemplate } from "types/venues";
+import { AnyVenue } from "types/venues";
+import { VenueTemplate } from "types/VenueTemplate";
 
 import { WithId } from "utils/id";
-import { experienceSelector } from "utils/selectors";
 import { generateTable } from "utils/table";
 import { arrayIncludes, isTruthy } from "utils/types";
 
+import { useExperience } from "hooks/useExperience";
 import { useSeatedTableUsers } from "hooks/useSeatedTableUsers";
-import { useSelector } from "hooks/useSelector";
 import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 
 import { Loading } from "components/molecules/Loading";
+import { Modal } from "components/molecules/Modal";
 import { StartTable } from "components/molecules/StartTable";
+
+import { ButtonNG } from "components/atoms/ButtonNG";
 
 import "./TablesUserList.scss";
 
@@ -69,13 +71,12 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
   const [joiningTable, setJoiningTable] = useState("");
 
   const { userWithId } = useUser();
-  const experience = useSelector(experienceSelector);
+  const { data: experience } = useExperience();
 
   const isCurrentUserAdmin = arrayIncludes(venue.owners, userWithId?.id);
 
-  const [seatedTableUsers, isSeatedTableUsersLoaded] = useSeatedTableUsers(
-    venueId
-  );
+  const [seatedTableUsers, isSeatedTableUsersLoaded] =
+    useSeatedTableUsers(venueId);
 
   const userTableReference = seatedTableUsers.find(
     (u) => u.id === userWithId?.id
@@ -101,17 +102,15 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
     [userWithId, venueId]
   );
 
-  const usersSeatedAtTables: Record<
-    string,
-    WithId<TableSeatedUser>[]
-  > = useMemo(() => {
-    const tableReferences = tables.map((t) => t.reference);
+  const usersSeatedAtTables: Record<string, WithId<TableSeatedUser>[]> =
+    useMemo(() => {
+      const tableReferences = tables.map((t) => t.reference);
 
-    const filteredUsers = seatedTableUsers.filter((user) =>
-      tableReferences.includes(user.path.tableReference)
-    );
-    return groupBy(filteredUsers, (user) => user.path.tableReference);
-  }, [seatedTableUsers, tables]);
+      const filteredUsers = seatedTableUsers.filter((user) =>
+        tableReferences.includes(user.path.tableReference)
+      );
+      return groupBy(filteredUsers, (user) => user.path.tableReference);
+    }, [seatedTableUsers, tables]);
 
   const isFullTable = useCallback(
     (table: Table) => {
@@ -213,49 +212,47 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
       {allowCreateEditTable && (
         <StartTable
           defaultTables={defaultTables}
-          newTable={generateTable({ tableNumber: tables.length + 1 })}
+          newTable={generateTable({
+            tableNumber: tables.length + 1,
+          })}
           venue={venue}
         />
       )}
       <Modal show={isLockedMessageVisible} onHide={hideLockedMessage}>
-        <Modal.Body>
-          <div className="modal-container modal-container_message">
-            <p>{`Can't join this table because it's been locked.`}</p>
+        <div className="TableUserList__modal modal-container modal-container_message">
+          <p>{`Can't join this table because it's been locked.`}</p>
 
-            <p>Perhaps ask in the chat?</p>
+          <p>Perhaps ask in the chat?</p>
 
-            <button
-              type="button"
-              className="btn btn-block btn-centered"
-              onClick={hideLockedMessage}
-            >
-              Back
-            </button>
-          </div>
-        </Modal.Body>
+          <button
+            type="button"
+            className="btn btn-block btn-centered"
+            onClick={hideLockedMessage}
+          >
+            Back
+          </button>
+        </div>
       </Modal>
 
-      <Modal show={isJoinMessageVisible} onHide={hideJoinMessage}>
-        <Modal.Body>
-          <div className="modal-container modal-container_message">
-            <p>
-              You are now entering a video chat space. Please ALLOW camera &
-              microphone access. You will be able to turn them back off again
-              once inside, should you choose to do so. To avoid feedback from
-              the music, we recommend wearing headphones.
-            </p>
+      <Modal
+        show={isJoinMessageVisible}
+        onHide={hideJoinMessage}
+        autoHide={false}
+      >
+        <div className="TableUserList__modal modal-container modal-container_message">
+          <p>
+            You are now entering a video chat space. Please ALLOW camera &
+            microphone access. You will be able to turn them back off again once
+            inside, should you choose to do so. To avoid feedback from the
+            music, we recommend wearing headphones.
+          </p>
 
-            <p>You can also adjust the volume on the live stream.</p>
+          <p>You can also adjust the volume on the live stream.</p>
 
-            <button
-              type="button"
-              className="btn btn-block btn-centered"
-              onClick={acceptJoiningTable}
-            >
-              OK
-            </button>
-          </div>
-        </Modal.Body>
+          <ButtonNG onClick={acceptJoiningTable} variant="primary">
+            OK
+          </ButtonNG>
+        </div>
       </Modal>
     </>
   );

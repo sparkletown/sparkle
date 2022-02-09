@@ -5,12 +5,12 @@ import { ContainerClassName } from "types/utility";
 
 import "./InformationCard.scss";
 
-export interface InformationCardProps extends ContainerClassName {
+interface InformationCardProps extends ContainerClassName {
   title: string;
   children: React.ReactNode;
 }
 
-const InformationCard: React.FC<InformationCardProps> = ({
+export const InformationCard: React.FC<InformationCardProps> = ({
   title,
   children,
   containerClassName,
@@ -20,5 +20,3 @@ const InformationCard: React.FC<InformationCardProps> = ({
     <div className="information-card-text">{children}</div>
   </div>
 );
-
-export default InformationCard;

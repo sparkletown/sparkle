@@ -5,6 +5,8 @@ import { DEFAULT_BACKGROUNDS } from "settings";
 
 import { updateMapBackground } from "api/admin";
 
+import { WorldId } from "types/id";
+
 import { useUser } from "hooks/useUser";
 
 import { Loading } from "components/molecules/Loading";
@@ -44,7 +46,7 @@ export const BackgroundSelect: React.FC<BackgroundSelectProps> = ({
       return await updateMapBackground(
         {
           id: venueId,
-          worldId: worldId,
+          worldId: worldId as WorldId,
           name: venueName,
           slug: spaceSlug,
           mapBackgroundImageFile: file,

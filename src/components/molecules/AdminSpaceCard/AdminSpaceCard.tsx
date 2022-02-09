@@ -13,11 +13,11 @@ import {
   SPACE_TAXON,
 } from "settings";
 
+import { WorldSlug } from "types/id";
 import { AnyVenue } from "types/venues";
-import { WorldSlug } from "types/world";
 
 import { WithId } from "utils/id";
-import { adminNGVenueUrl, generateUrl } from "utils/url";
+import { adminNGVenueUrl, generateUrl, isValidUrl } from "utils/url";
 
 import { useValidImage } from "hooks/useCheckImage";
 
@@ -30,13 +30,15 @@ import "./AdminSpaceCard.scss";
 export interface AdminSpaceCardProps {
   venue: WithId<AnyVenue>;
   worldSlug?: WorldSlug;
+  isEditable?: boolean;
 }
 
 export const AdminSpaceCard: React.FC<AdminSpaceCardProps> = ({
   venue,
   worldSlug,
+  isEditable,
 }) => {
-  const [validBannerImageUrl] = useValidImage(
+  const [imageUrl] = useValidImage(
     venue?.config?.landingPageConfig.coverImageUrl ||
       venue?.config?.landingPageConfig.bannerImageUrl,
     DEFAULT_VENUE_BANNER_COLOR
@@ -44,15 +46,18 @@ export const AdminSpaceCard: React.FC<AdminSpaceCardProps> = ({
 
   const backgroundStyle = useCss({
     // @debt There should be a way to move the rgba() functions to SCSS and use $color-constant instead of literals
-    background: `linear-gradient(
+    background: isValidUrl(imageUrl)
+      ? `linear-gradient(
         rgba(25, 24, 26, 0.8),
         rgba(25, 24, 26, 0.8)
-      ), url(${validBannerImageUrl})`,
+      ), url(${imageUrl})`
+      : imageUrl,
   });
   const backgroundClasses = classNames("AdminSpaceCard__bg", backgroundStyle);
   const logoStyle = useCss({
     "background-image": `url(${venue.host?.icon || DEFAULT_VENUE_LOGO})`,
   });
+
   const logoClasses = classNames("AdminSpaceCard__logo", logoStyle);
 
   const spaceIcon = PORTAL_INFO_ICON_MAPPING[venue.template];
@@ -122,7 +127,7 @@ export const AdminSpaceCard: React.FC<AdminSpaceCardProps> = ({
                 ? adminNGVenueUrl(worldSlug, venue.slug)
                 : "#"
             }
-            disabled={!venue.slug}
+            disabled={!venue.slug || !isEditable}
           >
             Edit
           </ButtonNG>

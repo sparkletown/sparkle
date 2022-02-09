@@ -6,8 +6,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { EmojiData } from "emoji-mart";
 
-import { DEFAULT_GLOBAL_CHAT_NAME } from "settings";
-
 import { ChatTypes, SendChatMessage, SendThreadMessageProps } from "types/chat";
 
 import { useChatSidebarControls } from "hooks/chats/util/useChatSidebarControls";
@@ -25,6 +23,21 @@ import SendIcon from "assets/icons/send.svg";
 
 import "./ChatMessageBox.scss";
 
+const determineChatPlaceholder = (
+  isPrivate: boolean,
+  isQuestion: boolean,
+  recipient?: string
+) => {
+  if (isQuestion) {
+    return "Type your question";
+  }
+  if (isPrivate) {
+    return `Message ${recipient}`;
+  }
+
+  return "Type your message";
+};
+
 export interface ChatMessageBoxProps {
   sendThreadMessageWrapper: SendChatMessage<SendThreadMessageProps>;
   unselectOption: () => void;
@@ -39,18 +52,12 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
   const selectedThreadId = useSelectedReplyThread()?.id;
   const hasChosenThread = Boolean(selectedThreadId);
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    reset,
-    setValue,
-    getValues,
-  } = useForm<{
-    message: string;
-  }>({
-    mode: "onSubmit",
-  });
+  const { register, handleSubmit, watch, reset, setValue, getValues } =
+    useForm<{
+      message: string;
+    }>({
+      mode: "onSubmit",
+    });
 
   const sendMessage = useChatboxSendChatMessage();
 
@@ -99,11 +106,13 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
 
   const chatValue = watch("message");
 
-  const placeholderValue = isQuestion ? "Question" : "Message";
-  const recipient =
+  const placeholder = determineChatPlaceholder(
+    chatSettings.openedChatType === ChatTypes.PRIVATE_CHAT,
+    isQuestion,
     chatSettings.openedChatType === ChatTypes.PRIVATE_CHAT
       ? chatSettings.recipient?.partyName
-      : DEFAULT_GLOBAL_CHAT_NAME;
+      : undefined
+  );
 
   const buttonClasses = classNames("Chatbox__submit-button", {
     "Chatbox__submit-button--question": isQuestion,
@@ -121,7 +130,7 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
           inputClassName="Chatbox__input"
           ref={register({ required: true })}
           name="message"
-          placeholder={`${placeholderValue} ${recipient}`}
+          placeholder={placeholder}
           autoComplete="off"
           iconEnd={
             <FontAwesomeIcon

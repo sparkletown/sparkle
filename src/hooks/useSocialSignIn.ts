@@ -1,5 +1,5 @@
 import Bugsnag from "@bugsnag/js";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 
 const providerGoogle = new firebase.auth.GoogleAuthProvider();
 const providerFb = new firebase.auth.FacebookAuthProvider();

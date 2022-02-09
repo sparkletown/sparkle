@@ -1,7 +1,7 @@
 import calendarGenerator, { ICalCalendar } from "ical-generator";
 
+import { WorldSlug } from "types/id";
 import { AnyVenue, WorldEvent } from "types/venues";
-import { WorldSlug } from "types/world";
 
 import { eventEndTime, eventStartTime } from "utils/event";
 import { WithId } from "utils/id";

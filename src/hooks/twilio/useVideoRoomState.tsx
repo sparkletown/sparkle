@@ -30,6 +30,7 @@ export const useVideoRoomState = (
     participants,
     { upsert: upsertParticipant, filter: filterParticipants },
   ] = useList<ParticipantWithUser<RemoteParticipant>>([]);
+
   const disconnect = useCallback(() => {
     setRoom((currentRoom) => {
       if (currentRoom?.localParticipant?.state !== "connected")
@@ -75,35 +76,33 @@ export const useVideoRoomState = (
     [filterParticipants]
   );
 
-  const {
-    loading: roomLoading,
-    retry: retryConnect,
-  } = useAsyncRetry(async () => {
-    if (!userId || !roomName) return;
+  const { loading: roomLoading, retry: retryConnect } =
+    useAsyncRetry(async () => {
+      if (!userId || !roomName) return;
 
-    const token = await getTwilioVideoToken({ userId, roomName });
-    if (!token) return;
+      const token = await getTwilioVideoToken({ userId, roomName });
+      if (!token) return;
 
-    dismissVideoError();
+      dismissVideoError();
 
-    // https://media.twiliocdn.com/sdk/js/video/releases/2.7.1/docs/global.html#ConnectOptions
-    await connect(token, {
-      name: roomName,
-      video: isActiveParticipant,
-      audio: isActiveParticipant,
-      enableDscp: true,
-    })
-      .then(setRoom)
-      .catch((error) => {
-        const message = error.message;
+      // https://media.twiliocdn.com/sdk/js/video/releases/2.7.1/docs/global.html#ConnectOptions
+      await connect(token, {
+        name: roomName,
+        video: isActiveParticipant,
+        audio: isActiveParticipant,
+        enableDscp: true,
+      })
+        .then(setRoom)
+        .catch((error) => {
+          const message = error.message;
 
-        if (message.toLowerCase().includes("unknown")) {
-          setVideoError(
-            `${message}; common remedies include closing any other programs using your camera, and giving your browser permission to access the camera.`
-          );
-        } else setVideoError(message);
-      });
-  }, [userId, roomName, dismissVideoError, isActiveParticipant]);
+          if (message.toLowerCase().includes("unknown")) {
+            setVideoError(
+              `${message}; common remedies include closing any other programs using your camera, and giving your browser permission to access the camera.`
+            );
+          } else setVideoError(message);
+        });
+    }, [userId, roomName, dismissVideoError, isActiveParticipant]);
 
   useEffect(() => () => disconnect(), [disconnect]);
 

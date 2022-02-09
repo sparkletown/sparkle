@@ -1,12 +1,9 @@
 import React, { useCallback, useMemo } from "react";
-import {
-  Dropdown as ReactBootstrapDropdown,
-  DropdownButton,
-} from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { ChatMessageOptions, ChatOptionType } from "types/chat";
 
+import { Dropdown } from "components/atoms/Dropdown";
 import { TextButton } from "components/atoms/TextButton";
 
 import "./ChatboxOptionsControls.scss";
@@ -27,36 +24,37 @@ export const ChatboxOptionsControls: React.FC<ChatboxOptionsControlsProps> = ({
   const dropdownOptions = useMemo(
     () =>
       ChatMessageOptions.map((option) => (
-        <ReactBootstrapDropdown.Item
+        <div
           key={option.name}
           onClick={() => setActiveOption(option.type)}
+          className="ChatboxOptionsControls__option"
+          data-dropdown-value={option.name}
         >
-          {option.name}
+          <span>{option.name}</span>
           <FontAwesomeIcon icon={option.icon} />
-        </ReactBootstrapDropdown.Item>
+        </div>
       )),
     [setActiveOption]
   );
 
-  const unselectOption = useCallback(() => setActiveOption(undefined), [
-    setActiveOption,
-  ]);
+  const unselectOption = useCallback(
+    () => setActiveOption(undefined),
+    [setActiveOption]
+  );
 
   return (
     <div className="ChatboxOptionsControls">
       {shouldShowPoll ? (
         <TextButton label="Cancel Poll" onClick={unselectOption} />
       ) : (
-        // @debt align the style of the SpacesDropdown with the Dropdown component
-        <DropdownButton
-          id="options-dropdown"
+        <Dropdown
           title="Options"
           className="ChatboxOptionsControls__dropdown"
-          variant="link"
-          drop="up"
+          placement="top"
+          noArrow
         >
           {dropdownOptions}
-        </DropdownButton>
+        </Dropdown>
       )}
     </div>
   );

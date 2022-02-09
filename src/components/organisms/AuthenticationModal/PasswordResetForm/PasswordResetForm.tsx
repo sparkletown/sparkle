@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
+
+import { errorMessage } from "utils/error";
 
 interface PropsType {
   displayLoginForm: () => void;
@@ -11,19 +13,14 @@ interface PasswordResetFormData {
   email: string;
 }
 
-const PasswordResetForm: React.FunctionComponent<PropsType> = ({
+export const PasswordResetForm: React.FunctionComponent<PropsType> = ({
   displayLoginForm,
   closeAuthenticationModal,
 }) => {
-  const {
-    register,
-    handleSubmit,
-    errors,
-    formState,
-    setError,
-  } = useForm<PasswordResetFormData>({
-    mode: "onChange",
-  });
+  const { register, handleSubmit, errors, formState, setError } =
+    useForm<PasswordResetFormData>({
+      mode: "onChange",
+    });
 
   const [emailSentTo, setEmailSentTo] = useState("");
 
@@ -37,8 +34,8 @@ const PasswordResetForm: React.FunctionComponent<PropsType> = ({
     try {
       await sendPasswordReset(data);
       setEmailSentTo(data.email);
-    } catch (error) {
-      setError("email", "firebase", error.message);
+    } catch (e) {
+      setError("email", "firebase", errorMessage(e));
     }
   };
 
@@ -97,5 +94,3 @@ const PasswordResetForm: React.FunctionComponent<PropsType> = ({
     </div>
   );
 };
-
-export default PasswordResetForm;

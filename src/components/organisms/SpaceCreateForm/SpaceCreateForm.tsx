@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn } from "react-use";
@@ -15,7 +14,7 @@ import { createSlug, createVenue_v2 } from "api/admin";
 
 import { spaceCreatePortalItem } from "store/actions/SpaceEdit";
 
-import { SpaceSlug } from "types/venues";
+import { SpaceSlug } from "types/id";
 
 import { adminNGVenueUrl, generateUrl } from "utils/url";
 import { buildEmptySpace } from "utils/venue";
@@ -69,22 +68,20 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({
 
   const { venueName } = getValues();
 
-  const [
-    { loading: isLoading, error: submitError },
-    createSpace,
-  ] = useAsyncFn(async () => {
-    if (!worldId || !user || !template || template === "external") return;
+  const [{ loading: isLoading, error: submitError }, createSpace] =
+    useAsyncFn(async () => {
+      if (!worldId || !user || !template || template === "external") return;
 
-    const data = {
-      ...buildEmptySpace(venueName, template),
-      worldId,
-      logoImageUrl,
-    };
+      const data = {
+        ...buildEmptySpace(venueName, template),
+        worldId,
+        logoImageUrl,
+      };
 
-    await createVenue_v2(data, user);
+      await createVenue_v2(data, user);
 
-    history.push(adminNGVenueUrl(worldSlug, data.slug as SpaceSlug));
-  }, [worldId, logoImageUrl, user, template, venueName, worldSlug, history]);
+      history.push(adminNGVenueUrl(worldSlug, data.slug as SpaceSlug));
+    }, [worldId, logoImageUrl, user, template, venueName, worldSlug, history]);
 
   const { venueName: watchedName } = watch();
   const slug = useMemo(() => createSlug(watchedName), [watchedName]);
@@ -108,7 +105,7 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({
   const isSaveDisabled = isLoading || !slug || !template;
 
   return (
-    <Form className="SpaceCreateForm" onSubmit={handleSubmit(createSpace)}>
+    <form className="SpaceCreateForm" onSubmit={handleSubmit(createSpace)}>
       <FormCover displayed={isLoading}>
         <AdminSection withLabel title={`${SPACE_TAXON.capital} name`}>
           <AdminInput
@@ -155,6 +152,6 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({
           </ButtonNG>
         </div>
       </FormCover>
-    </Form>
+    </form>
   );
 };

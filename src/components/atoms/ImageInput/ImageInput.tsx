@@ -41,7 +41,7 @@ export interface ImageInputProps {
   isInputHidden?: boolean;
 }
 
-const ImageInput: React.FC<ImageInputProps> = ({
+export const ImageInput: React.FC<ImageInputProps> = ({
   onChange,
   name,
   imgUrl,
@@ -67,11 +67,8 @@ const ImageInput: React.FC<ImageInputProps> = ({
   const fileName = nameWithUnderscore ? `${name}_file` : `${name}File`;
   const fileUrl = nameWithUnderscore ? `${name}_url` : `${name}Url`;
 
-  const {
-    loading,
-    errorMessage,
-    handleFileInputChange,
-  } = useImageInputCompression(register, error?.message, fileName);
+  const { loading, errorMessage, handleFileInputChange } =
+    useImageInputCompression(register, error?.message, fileName);
 
   const handleFileInputChangeWrapper = useCallback(
     async (event: ChangeEvent<HTMLInputElement>) => {
@@ -135,5 +132,3 @@ const ImageInput: React.FC<ImageInputProps> = ({
     </>
   );
 };
-
-export default ImageInput;

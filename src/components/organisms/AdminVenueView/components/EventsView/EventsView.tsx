@@ -1,8 +1,7 @@
 import React, { useCallback, useMemo, useState } from "react";
 
-import { AnyVenue, WorldEvent } from "types/venues";
-
-import { WithId } from "utils/id";
+import { SpaceId, SpaceWithId } from "types/id";
+import { WorldEvent } from "types/venues";
 
 import { useSpaceEvents } from "hooks/events";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
@@ -20,21 +19,21 @@ import { Checkbox } from "components/atoms/Checkbox";
 
 import "./EventsView.scss";
 
-export type EventsViewProps = {
-  venueId: string;
-  venue: WithId<AnyVenue>;
+type EventsViewProps = {
+  spaceId: SpaceId | string;
+  space: SpaceWithId;
 };
 
-export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
+export const EventsView: React.FC<EventsViewProps> = ({ spaceId, space }) => {
   const {
     findVenueInRelatedVenues,
     relatedVenueIds,
     isLoading: isVenuesLoading,
   } = useRelatedVenues({
-    currentVenueId: venueId,
+    currentVenueId: spaceId,
   });
   const { events, isLoaded: isEventsLoaded } = useSpaceEvents({
-    worldId: venue.worldId,
+    worldId: space.worldId,
     spaceIds: relatedVenueIds,
   });
 
@@ -50,10 +49,8 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
     hide: setHideDeleteEventModal,
   } = useShowHide();
 
-  const {
-    isShown: showSplittedEvents,
-    toggle: toggleSplittedEvents,
-  } = useShowHide();
+  const { isShown: showSplittedEvents, toggle: toggleSplittedEvents } =
+    useShowHide();
 
   const [editedEvent, setEditedEvent] = useState<WorldEvent>();
 
@@ -155,9 +152,9 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
             setHideCreateEventModal();
             adminEventModalOnHide();
           }}
-          template={venue.template}
-          venueId={venueId}
-          venue={venue}
+          template={space.template}
+          venueId={spaceId}
+          venue={space}
           event={editedEvent}
           setEditedEvent={setEditedEvent}
           setShowDeleteEventModal={setShowDeleteEventModal}

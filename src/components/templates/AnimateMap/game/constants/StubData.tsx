@@ -1,4 +1,4 @@
-import { uuid } from "uuidv4";
+import { v4 as uuid } from "uuid";
 
 import { DEFAULT_AVATAR_LIST } from "settings";
 
@@ -25,8 +25,7 @@ export const stubArtcarsData = () => {
     {
       name: "Darth Paul Art Car",
       link: "https://burn.sparklever.se/in/darthpaul",
-      info:
-        "Enter... Darth Paul Art Car. Come to the dark side and get your double saber out for a Jedi dance party like no other.",
+      info: "Enter... Darth Paul Art Car. Come to the dark side and get your double saber out for a Jedi dance party like no other.",
       color: 0xff6600,
     },
     {
@@ -50,29 +49,25 @@ export const stubArtcarsData = () => {
     {
       name: "Arachnia Art Car",
       link: "https://burn.sparklever.se/in/arachnia",
-      info:
-        "ARGHHH IT'S THE to the Arachnia Art Car. Scuttle about the Playa and kick up some dust with us.",
+      info: "ARGHHH IT'S THE to the Arachnia Art Car. Scuttle about the Playa and kick up some dust with us.",
       color: 0x66ff66,
     },
     {
       name: "Silly Lily Art Car",
       link: "https://burn.sparklever.se/in/sillylily",
-      info:
-        "Bloom with the Silly Lily Art Car and let's go on a journey of self discovery.",
+      info: "Bloom with the Silly Lily Art Car and let's go on a journey of self discovery.",
       color: 0xffff33,
     },
     {
       name: "Glam Clam Art Car",
       link: "https://burn.sparklever.se/in/glamclam",
-      info:
-        "Let the Glam Clam Art Car open it's mollusc mouth up to you so you can enjoy fresh fruit and pearls on playa",
+      info: "Let the Glam Clam Art Car open it's mollusc mouth up to you so you can enjoy fresh fruit and pearls on playa",
       color: 0xcc33ff,
     },
     {
       name: "Dragon: The Car Art Car",
       link: "https://burn.sparklever.se/in/dragonthecar",
-      info:
-        "Burninating all the peasants, in their thatched roof cottages!!! THATCHED ROOF COTTAGES! Come in to Dragon: The Car, the Art Car.",
+      info: "Burninating all the peasants, in their thatched roof cottages!!! THATCHED ROOF COTTAGES! Come in to Dragon: The Car, the Art Car.",
       color: 0xffcc33,
     },
     {
@@ -90,8 +85,7 @@ export const stubArtcarsData = () => {
     {
       name: "Boaty McBoatface Art Car",
       link: "https://burn.sparklever.se/in/interiorcrocodilealligator",
-      info:
-        "Ahoy Mateys, Boaty McBoatface is here to ship you off on the Art Car of your dreams.",
+      info: "Ahoy Mateys, Boaty McBoatface is here to ship you off on the Art Car of your dreams.",
       color: 0x3399ff,
     },
     {
@@ -103,8 +97,7 @@ export const stubArtcarsData = () => {
     {
       name: "Wheely Fish Sticks Art Car",
       link: "https://burn.sparklever.se/in/wheelyfishsticks",
-      info:
-        "He's wheeling, he's dealing, it's Wheely Fish Sticks Art Car! Excuse the smell and come see what's happening here!",
+      info: "He's wheeling, he's dealing, it's Wheely Fish Sticks Art Car! Excuse the smell and come see what's happening here!",
       color: 0x99ffff,
     },
   ];
@@ -187,7 +180,7 @@ export const stubUsersData = () => {
         pictureUrl: determineAvatar({
           avatars: DEFAULT_AVATAR_LIST,
           index: getRandomInt(DEFAULT_AVATAR_LIST.length - 1),
-        }),
+        }).src,
         dotColor: Math.floor(Math.random() * 16777215),
         hat: avatarHats[x % avatarHats.length],
         accessories: avatarAccessories[y % avatarAccessories.length],

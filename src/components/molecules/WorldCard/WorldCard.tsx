@@ -1,4 +1,4 @@
-import React from "react";
+import React, { CSSProperties } from "react";
 import { useCss } from "react-use";
 import { faSignInAlt } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
@@ -19,16 +19,20 @@ export interface WorldCardProps {
 }
 
 export const WorldCard: React.FC<WorldCardProps> = ({ world }) => {
-  const cardVars = useCss({
-    backgroundImage: `url(${world.config?.landingPageConfig?.coverImageUrl})`,
-  });
+  const cardBackgroundUrl = world.config?.landingPageConfig?.coverImageUrl;
+  const cardBackgroundStyles: CSSProperties = {};
+  if (cardBackgroundUrl) {
+    cardBackgroundStyles.backgroundImage = `url(${cardBackgroundUrl})`;
+  }
+
+  const cardVars = useCss(cardBackgroundStyles);
 
   const cardClasses = classNames("WorldCard", cardVars, {
     "WorldCard--disabled": !world.slug,
   });
 
   const logoVars = useCss({
-    backgroundImage: `url(${world.host?.icon ?? DEFAULT_VENUE_LOGO})`,
+    backgroundImage: `url(${world.host?.icon || DEFAULT_VENUE_LOGO})`,
   });
 
   const logoClasses = classNames("WorldCard__logo", logoVars);

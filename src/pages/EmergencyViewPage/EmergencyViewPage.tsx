@@ -20,17 +20,17 @@ import { useValidImage } from "hooks/useCheckImage";
 import { useUser } from "hooks/useUser";
 import useVenueScheduleEvents from "hooks/useVenueScheduleEvents";
 
-import Login from "pages/Account/Login";
+import { Login } from "pages/Account/Login";
 import { updateTheme } from "pages/VenuePage/helpers";
 
-import WithNavigationBar from "components/organisms/WithNavigationBar";
+import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 import { ScheduleEventSubList } from "components/molecules/ScheduleEventList/ScheduleEventSubList";
 
 import { NotFound } from "components/atoms/NotFound";
 
-import EmergencyViewPageRooms from "./EmergencyViewPageRooms";
+import { EmergencyViewPagePortals } from "./EmergencyViewPagePortals";
 import EmergencyViewTabs from "./EmergencyViewTabs";
 
 import "./EmergencyViewPage.scss";
@@ -133,7 +133,7 @@ export const EmergencyViewPage: React.FC = () => {
   if (!user) {
     return (
       <Suspense fallback={<LoadingPage />}>
-        <Login venueId={spaceId} />
+        <Login />
       </Suspense>
     );
   }
@@ -144,7 +144,7 @@ export const EmergencyViewPage: React.FC = () => {
         <EmergencyViewTabs updateTab={updateTab} selectedTab={selectedTab} />
         <div className="EmergencyView__main">
           {!selectedTab ? (
-            <EmergencyViewPageRooms descendantVenues={descendantVenues} />
+            <EmergencyViewPagePortals descendantVenues={descendantVenues} />
           ) : (
             <ul className="EmergencyView__weekdays">{weekdays}</ul>
           )}

@@ -6,7 +6,7 @@ import {
   faPen,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 
 import { MAX_TABLE_CAPACITY } from "settings";
 
@@ -14,11 +14,10 @@ import { unsetTableSeat } from "api/venue";
 
 import { Table } from "types/Table";
 
-import { experienceSelector } from "utils/selectors";
 import { isTruthy } from "utils/types";
 
+import { useExperience } from "hooks/useExperience";
 import { useSeatedTableUsers } from "hooks/useSeatedTableUsers";
-import { useSelector } from "hooks/useSelector";
 import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 
@@ -47,7 +46,8 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
 }) => {
   const { userId, profile } = useUser();
 
-  const { tables: allTables } = useSelector(experienceSelector) ?? {};
+  const { tables: allTables } = useExperience(venueName);
+
   const { isShown, show, hide } = useShowHide();
 
   const tableOfUser = useMemo(

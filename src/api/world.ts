@@ -1,5 +1,8 @@
 import Bugsnag from "@bugsnag/js";
-import firebase from "firebase/app";
+import { FIREBASE } from "core/firebase";
+import firebase from "firebase/compat/app";
+import { httpsCallable } from "firebase/functions";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { isEmpty, omit, pick } from "lodash";
 
 import { ACCEPTED_IMAGE_TYPES, COLLECTION_WORLDS, FIELD_SLUG } from "settings";
@@ -7,13 +10,13 @@ import { ACCEPTED_IMAGE_TYPES, COLLECTION_WORLDS, FIELD_SLUG } from "settings";
 import { createSlug } from "api/admin";
 
 import { EntranceStepConfig } from "types/EntranceStep";
+import { WorldSlug } from "types/id";
 import { Question } from "types/Question";
 import { UserStatus } from "types/User";
 import {
   WorldAdvancedFormInput,
   WorldEntranceFormInput,
   WorldGeneralFormInput,
-  WorldSlug,
 } from "types/world";
 
 import { generateFirestoreId, WithId, withId } from "utils/id";
@@ -70,7 +73,6 @@ export const createFirestoreWorldStartInput: (
   const id = input?.id ?? generateFirestoreId({ emulated: true });
 
   const slug = createSlug(input.name) as WorldSlug;
-  const storageRef = firebase.storage().ref();
 
   const imageInputData: Record<string, string> = {};
 
@@ -89,12 +91,13 @@ export const createFirestoreWorldStartInput: (
     if (!ACCEPTED_IMAGE_TYPES.includes(type)) continue;
 
     const extension = type.split("/").pop();
-    const uploadFileRef = storageRef.child(
+    const uploadFileRef = ref(
+      FIREBASE.storage,
       `users/${user.uid}/worlds/${id}/${key}.${extension}`
     );
 
-    await uploadFileRef.put(file);
-    imageInputData[key] = await uploadFileRef.getDownloadURL();
+    await uploadBytes(uploadFileRef, file);
+    imageInputData[key] = await getDownloadURL(uploadFileRef);
   }
 
   const worldUpdateData: Partial<WithId<World>> = {
@@ -165,7 +168,10 @@ export const createWorld: (
     const stubInput = await createFirestoreWorldCreateInput(world);
 
     const newWorld = (
-      await firebase.functions().httpsCallable("world-createWorld")(stubInput)
+      await httpsCallable<Partial<World>, WithId<World>>(
+        FIREBASE.functions,
+        "world-createWorld"
+      )(stubInput)
     )?.data;
 
     worldId = newWorld.id;
@@ -176,14 +182,14 @@ export const createWorld: (
       user
     );
 
-    await firebase.functions().httpsCallable("world-updateWorld")(fullInput);
+    await httpsCallable(FIREBASE.functions, "world-updateWorld")(fullInput);
 
     // 3. initial venue is created
     // Temporary disabled due to possible complications and edge cases.
     // What if the inital venue has to be a template of choice
     // What if the venue already exists and it collides with the world name
     // etc..
-    // await firebase.functions().httpsCallable("venue-createVenue_v2")({
+    // await httpsCallable(FIREBASE.functions, "venue-createVenue_v2")({
     //   ...fullInput,
     //   worldId,
     // });
@@ -202,27 +208,30 @@ export const updateWorldStartSettings = async (
   world: WithId<WorldGeneralFormInput>,
   user: firebase.UserInfo
 ) => {
-  return await firebase.functions().httpsCallable("world-updateWorld")(
-    await createFirestoreWorldStartInput(world, user)
-  );
+  return await httpsCallable(
+    FIREBASE.functions,
+    "world-updateWorld"
+  )(await createFirestoreWorldStartInput(world, user));
 };
 
 export const updateWorldEntranceSettings = async (
   world: WithId<WorldEntranceFormInput>,
   user: firebase.UserInfo
 ) => {
-  return await firebase.functions().httpsCallable("world-updateWorld")(
-    await createFirestoreWorldEntranceInput(world, user)
-  );
+  return await httpsCallable(
+    FIREBASE.functions,
+    "world-updateWorld"
+  )(await createFirestoreWorldEntranceInput(world, user));
 };
 
 export const updateWorldAdvancedSettings = async (
   world: WithId<WorldAdvancedFormInput>,
   user: firebase.UserInfo
 ) => {
-  return await firebase.functions().httpsCallable("world-updateWorld")(
-    await createFirestoreWorldAdvancedInput(world, user)
-  );
+  return await httpsCallable(
+    FIREBASE.functions,
+    "world-updateWorld"
+  )(await createFirestoreWorldAdvancedInput(world, user));
 };
 
 export type FindWorldBySlugOptions = {

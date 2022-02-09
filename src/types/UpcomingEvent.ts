@@ -1,4 +1,4 @@
-import type firebase from "firebase/app";
+import type firebase from "firebase/compat/app";
 
 export interface UpcomingEvent {
   ts_utc: firebase.firestore.Timestamp;

@@ -1,11 +1,13 @@
 import React, { useCallback, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import firebase from "firebase/app";
 
 import { ACCEPTED_IMAGE_TYPES } from "settings";
 
+import { UserId } from "types/id";
+
 import { determineAvatar } from "utils/image";
 
+import { useLoginCheck } from "hooks/user/useLoginCheck";
 import { useUploadProfilePictureHandler } from "hooks/useUploadProfilePictureHandler";
 
 import { DefaultAvatars } from "components/molecules/DefaultAvatars/DefaultAvatars";
@@ -14,26 +16,23 @@ import "./ProfilePictureInput.scss";
 
 export interface ProfilePictureInputProps {
   setValue: (inputName: string, value: string, rerender: boolean) => void;
-  user: firebase.UserInfo;
+  userId: UserId;
   errors: ReturnType<typeof useForm>["errors"];
   pictureUrl: string;
   register: ReturnType<typeof useForm>["register"];
 }
 
-export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputProps> = ({
-  setValue,
-  user,
-  errors,
-  pictureUrl,
-  register,
-}) => {
+export const ProfilePictureInput: React.FunctionComponent<
+  ProfilePictureInputProps
+> = ({ setValue, userId, errors, pictureUrl, register }) => {
   const [isPictureUploading, setIsPictureUploading] = useState(false);
   const [error, setError] = useState("");
   const uploadRef = useRef<HTMLInputElement>(null);
+  const { user } = useLoginCheck();
 
   const uploadProfilePictureHandler = useUploadProfilePictureHandler(
     setError,
-    user
+    userId
   );
 
   const handleFileChange = useCallback(
@@ -65,6 +64,11 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
 
   const hasError = !!error;
 
+  const { src: pictureSrc, onError: onPictureSrcError } = determineAvatar({
+    pictureUrl,
+    userInfo: user,
+  });
+
   return (
     <div className="ProfilePictureUploadForm">
       <div
@@ -72,7 +76,8 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
         onClick={() => uploadRef.current?.click()}
       >
         <img
-          src={determineAvatar({ pictureUrl, userInfo: user })}
+          src={pictureSrc}
+          onError={onPictureSrcError}
           className="profile-icon ProfilePicturePreviewContainer__image"
           alt="your profile"
         />

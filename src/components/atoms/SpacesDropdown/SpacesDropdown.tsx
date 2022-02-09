@@ -1,11 +1,11 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Dropdown as ReactBootstrapDropdown } from "react-bootstrap";
 import { FieldError, useForm } from "react-hook-form";
-import { omit } from "lodash";
+import { omit, omitBy } from "lodash";
 
-import { PORTAL_INFO_ICON_MAPPING } from "settings";
+import { ALWAYS_EMPTY_ARRAY, PORTAL_INFO_ICON_MAPPING } from "settings";
 
-import { AnyVenue, PortalTemplate, VenueTemplate } from "types/venues";
+import { AnyVenue, PortalTemplate } from "types/venues";
+import { VenueTemplate } from "types/VenueTemplate";
 
 import { WithId } from "utils/id";
 
@@ -20,13 +20,13 @@ const spaceNoneOption = Object.freeze({
   template: undefined,
 });
 
-export type SpacesDropdownPortal = {
+type SpacesDropdownPortal = {
   template?: PortalTemplate;
   name: string;
   id?: string;
 };
 
-export interface SpacesDropdownProps {
+interface SpacesDropdownProps {
   parentSpace?: SpacesDropdownPortal;
   setValue: <T>(prop: string, value: T, validate: boolean) => void;
   register: ReturnType<typeof useForm>["register"];
@@ -49,7 +49,14 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
 
   // @debt: Probably need to omit returning playa from the useOwnedVenues as it's deprecated and
   // doesn't exist on SPACE_PORTALS_ICONS_MAPPING
-  const filteredSpaces = omit(spaces, VenueTemplate.playa);
+  const spacesWithoutPlaya = omit(spaces, VenueTemplate.playa);
+  // @debt Filter out all the poster pages as poster hall currently uses (abuses?)
+  // spaces by creating a space for every single poster page. They aren't
+  // proper spaces though. We should make a better way of handling this.
+  const filteredSpaces = omitBy(
+    spacesWithoutPlaya,
+    (s) => s.template === VenueTemplate.posterpage
+  );
   const sortedSpaces = useMemo(
     () =>
       Object.values(filteredSpaces).sort((a, b) =>
@@ -58,9 +65,10 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
     [filteredSpaces]
   );
 
-  const spaceOptions = useMemo(() => [spaceNoneOption, ...sortedSpaces], [
-    sortedSpaces,
-  ]);
+  const spaceOptions = useMemo(
+    () => [spaceNoneOption, ...sortedSpaces],
+    [sortedSpaces]
+  );
 
   useEffect(() => {
     if (parentSpace) {
@@ -74,13 +82,14 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
         const spaceIcon = PORTAL_INFO_ICON_MAPPING[template ?? ""];
 
         return (
-          <ReactBootstrapDropdown.Item
+          <div
             key={id}
             onClick={() => {
               setSelected({ name, template, id });
               setValue(fieldName, id, true);
             }}
             className="SpacesDropdown__item"
+            data-dropdown-value={name}
           >
             {name !== spaceNoneOption.name ? (
               <img
@@ -90,15 +99,15 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
               />
             ) : null}
             {name || noneOptionName}
-          </ReactBootstrapDropdown.Item>
+          </div>
         );
-      }) ?? [],
+      }) ?? ALWAYS_EMPTY_ARRAY,
     [spaceOptions, setValue, fieldName]
   );
 
   const renderedTitle = useMemo(() => {
     if (!selected) {
-      return "Select a space";
+      return { value: "", label: "Select a space" };
     }
 
     const space = spaces?.[selected.id ?? ""] ?? parentSpace;
@@ -106,7 +115,10 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
     const spaceIcon = PORTAL_INFO_ICON_MAPPING[space?.template ?? ""];
 
     return (
-      <span className="SpacesDropdown__value">
+      <span
+        className="SpacesDropdown__value"
+        data-dropdown-value={selected.name}
+      >
         {selected.name !== spaceNoneOption.name ? (
           <img
             alt={`space-icon-${spaceIcon}`}
@@ -120,10 +132,9 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
   }, [spaces, selected, parentSpace]);
 
   return (
-    // @debt align the style of the SpacesDropdown with the Dropdown component
     <>
       <div className="SpacesDropdown">
-        <Dropdown title={renderedTitle} options={renderedOptions} />
+        <Dropdown title={renderedTitle}>{renderedOptions}</Dropdown>
         <input type="hidden" ref={register} name={fieldName} />
       </div>
       {error && <span className="input-error">{error.message}</span>}

@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import dayjs from "dayjs";
@@ -11,6 +10,8 @@ import { deleteEvent, EventInput } from "api/admin";
 import { WorldEvent } from "types/venues";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
+
+import { Modal } from "components/molecules/Modal";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 
@@ -52,15 +53,13 @@ export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
     }
   }, [event, reset]);
 
-  const [
-    { loading: isDeletingEvent },
-    deleteVenueEvent,
-  ] = useAsyncFn(async () => {
-    if (event && eventSpaceId) {
-      await deleteEvent(event);
-    }
-    onHide();
-  }, [event, onHide, eventSpaceId]);
+  const [{ loading: isDeletingEvent }, deleteVenueEvent] =
+    useAsyncFn(async () => {
+      if (event && eventSpaceId) {
+        await deleteEvent(event);
+      }
+      onHide();
+    }, [event, onHide, eventSpaceId]);
 
   const eventStartTime = event
     ? dayjs(event.startUtcSeconds * 1000).format("ha")
@@ -77,7 +76,7 @@ export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
     : "Unknown";
 
   return (
-    <Modal show={show} onHide={onHide}>
+    <Modal show={show} onHide={onHide} centered autoHide>
       <div className="TimingDeleteModal">
         <h2>Delete event</h2>
         <form

@@ -9,8 +9,10 @@ import { DEFAULT_CAMERA_ENABLED } from "settings";
 
 import { ContainerClassName } from "types/utility";
 
-import { VideoOverlayButton } from "components/atoms/VideoOverlayButton";
-import { VideoOverlayButtonVariant } from "components/atoms/VideoOverlayButton/VideoOverlayButton";
+import {
+  VideoOverlayButton,
+  VideoOverlayButtonVariant,
+} from "components/atoms/VideoOverlayButton";
 
 import "./CameraMicrophoneControls.scss";
 
@@ -19,11 +21,9 @@ export interface CameraMicrophoneControlsProps extends ContainerClassName {
   defaultMute: boolean;
 }
 
-export const CameraMicrophoneControls: React.FC<CameraMicrophoneControlsProps> = ({
-  participant,
-  defaultMute,
-  containerClassName,
-}) => {
+export const CameraMicrophoneControls: React.FC<
+  CameraMicrophoneControlsProps
+> = ({ participant, defaultMute, containerClassName }) => {
   const changeStateHandler = useCallback(
     (
       variant: Extract<VideoOverlayButtonVariant, "microphone" | "camera">,

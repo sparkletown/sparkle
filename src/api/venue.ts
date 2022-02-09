@@ -1,16 +1,27 @@
 import Bugsnag from "@bugsnag/js";
-import firebase from "firebase/app";
+import { FIREBASE } from "core/firebase";
+import firebase from "firebase/compat/app";
+import { httpsCallable, HttpsCallableResult } from "firebase/functions";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
 import { AuditoriumSeatedUser, AuditoriumSectionPath } from "types/auditorium";
+import {
+  CompatCollectionReference,
+  CompatDocumentData,
+  CompatFirestoreDataConverter,
+  CompatQueryDocumentSnapshot,
+} from "types/Firestore";
 import { GridPosition } from "types/grid";
+import { UserId } from "types/id";
 import { DisplayUser, TableSeatedUser } from "types/User";
-import { AnyVenue, VenueTablePath, VenueTemplate } from "types/venues";
+import { AnyVenue, VenueTablePath } from "types/venues";
+import { VenueTemplate } from "types/VenueTemplate";
 
 import { pickDisplayUserFromUser } from "utils/chat";
 import { WithId, withId } from "utils/id";
 
-export const getVenueCollectionRef = () =>
-  firebase.firestore().collection("venues");
+export const getVenueCollectionRef: () => CompatCollectionReference<CompatDocumentData> =
+  () => firebase.firestore().collection("venues");
 
 export const getVenueRef = (venueId: string) =>
   getVenueCollectionRef().doc(venueId);
@@ -32,15 +43,16 @@ export const setVenueLiveStatus = async ({
   isLive,
   onError,
   onFinish,
-}: SetVenueLiveStatusProps): Promise<void | firebase.functions.HttpsCallableResult> => {
+}: SetVenueLiveStatusProps): Promise<void | HttpsCallableResult> => {
   const params = {
     isLive,
     venueId,
   };
 
-  return firebase
-    .functions()
-    .httpsCallable("venue-setVenueLiveStatus")(params)
+  return httpsCallable(
+    FIREBASE.functions,
+    "venue-setVenueLiveStatus"
+  )(params)
     .catch((err) => {
       Bugsnag.notify(err, (event) => {
         event.addMetadata("context", {
@@ -57,12 +69,10 @@ export const setVenueLiveStatus = async ({
 /**
  * Convert Venue objects between the app/firestore formats (@debt:, including validation).
  */
-export const anyVenueWithIdConverter: firebase.firestore.FirestoreDataConverter<
+export const anyVenueWithIdConverter: CompatFirestoreDataConverter<
   WithId<AnyVenue>
 > = {
-  toFirestore: (
-    anyVenue: WithId<AnyVenue>
-  ): firebase.firestore.DocumentData => {
+  toFirestore: (anyVenue: WithId<AnyVenue>): CompatDocumentData => {
     // @debt Properly check/validate this data
     //   return AnyVenueSchema.validateSync(anyVenue);
 
@@ -70,7 +80,7 @@ export const anyVenueWithIdConverter: firebase.firestore.FirestoreDataConverter<
   },
 
   fromFirestore: (
-    snapshot: firebase.firestore.QueryDocumentSnapshot
+    snapshot: CompatQueryDocumentSnapshot<AnyVenue>
   ): WithId<AnyVenue> => {
     // @debt Properly check/validate this data rather than using 'as'
     //   return withId(AnyVenueSchema.validateSync(snapshot.data(), snapshot.id);
@@ -82,9 +92,10 @@ export const anyVenueWithIdConverter: firebase.firestore.FirestoreDataConverter<
 export const updateIframeUrl = async (iframeUrl: string, venueId?: string) => {
   if (!venueId) return;
 
-  return await firebase
-    .functions()
-    .httpsCallable("venue-adminUpdateIframeUrl")({ venueId, iframeUrl });
+  return httpsCallable(
+    FIREBASE.functions,
+    "venue-adminUpdateIframeUrl"
+  )({ venueId, iframeUrl });
 };
 
 type VenueInputForm = Partial<WithId<AnyVenue>> & {
@@ -95,41 +106,42 @@ type VenueInputForm = Partial<WithId<AnyVenue>> & {
   numberOfSections?: number;
 };
 
-export const updateVenueNG = async (
-  venue: VenueInputForm,
-  user: firebase.UserInfo
-) => {
+export const updateVenueNG = async (venue: VenueInputForm, userId: UserId) => {
   const bannerFile = venue.bannerImageFile?.[0];
   const logoFile = venue.logoImageFile?.[0];
 
   if (bannerFile) {
-    const storageRef = firebase.storage().ref();
     const fileExtension = bannerFile.name.split(".").pop();
-    const uploadFileRef = storageRef.child(
-      `users/${user.uid}/venues/${venue.id}/bannerImage.${fileExtension}`
+    const uploadFileRef = ref(
+      FIREBASE.storage,
+      `users/${userId}/venues/${venue.id}/bannerImage.${fileExtension}`
     );
-    await uploadFileRef.put(bannerFile);
-    const downloadUrl = await uploadFileRef.getDownloadURL();
+    await uploadBytes(uploadFileRef, bannerFile);
+    const downloadUrl = await getDownloadURL(uploadFileRef);
     venue.bannerImageUrl = downloadUrl;
   }
 
   if (logoFile) {
-    const storageRef = firebase.storage().ref();
     const fileExtension = logoFile.name.split(".").pop();
-    const uploadFileRef = storageRef.child(
-      `users/${user.uid}/venues/${venue.id}/logoImage.${fileExtension}`
+    const uploadFileRef = ref(
+      FIREBASE.storage,
+      `users/${userId}/venues/${venue.id}/logoImage.${fileExtension}`
     );
-    await uploadFileRef.put(logoFile);
-    const downloadUrl = await uploadFileRef.getDownloadURL();
+    await uploadBytes(uploadFileRef, logoFile);
+    const downloadUrl = await getDownloadURL(uploadFileRef);
     venue.logoImageUrl = downloadUrl;
   }
 
-  const updateResponse = await firebase
-    .functions()
-    .httpsCallable("venue-updateVenueNG")(venue);
+  const updateResponse = await httpsCallable(
+    FIREBASE.functions,
+    "venue-updateVenueNG"
+  )(venue);
 
   if (venue.template === VenueTemplate.auditorium) {
-    await firebase.functions().httpsCallable("venue-setAuditoriumSections")({
+    await httpsCallable(
+      FIREBASE.functions,
+      "venue-setAuditoriumSections"
+    )({
       venueId: venue.id,
       numberOfSections: venue.numberOfSections,
     });

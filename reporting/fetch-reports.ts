@@ -103,40 +103,37 @@ const keypress = async () => {
   );
 };
 
-const makeHandleLogin = (page: Page) => async (
-  username: string,
-  password: string
-) => {
-  // Enter email address
-  await page.waitForSelector(loginEmailFieldSelector);
-  await page.type(loginEmailFieldSelector, username);
+const makeHandleLogin =
+  (page: Page) => async (username: string, password: string) => {
+    // Enter email address
+    await page.waitForSelector(loginEmailFieldSelector);
+    await page.type(loginEmailFieldSelector, username);
 
-  // Enter password
-  await page.type(loginPasswordFieldSelector, password);
+    // Enter password
+    await page.type(loginPasswordFieldSelector, password);
 
-  // Click login
-  await page.waitForSelector(loginButtonSelector);
-  await page.click(loginButtonSelector);
+    // Click login
+    await page.waitForSelector(loginButtonSelector);
+    await page.click(loginButtonSelector);
 
-  // Note: the user may have to solve a captcha at this point, so don't timeout while they are doing so
-  await page.waitForNavigation({ timeout: 0 });
-};
+    // Note: the user may have to solve a captcha at this point, so don't timeout while they are doing so
+    await page.waitForNavigation({ timeout: 0 });
+  };
 
-const makeGetNumberOfReportsTotal = (
-  page: Page
-) => async (): Promise<string> => {
-  await page.waitForSelector(numberOfReportsTotalSelector, {
-    visible: true,
-  });
+const makeGetNumberOfReportsTotal =
+  (page: Page) => async (): Promise<string> => {
+    await page.waitForSelector(numberOfReportsTotalSelector, {
+      visible: true,
+    });
 
-  const numberOfReportsTotal = await page.$eval(
-    numberOfReportsTotalSelector,
-    (el) => el.innerHTML
-  );
-  console.log(`Number of reports total: ${numberOfReportsTotal}`);
+    const numberOfReportsTotal = await page.$eval(
+      numberOfReportsTotalSelector,
+      (el) => el.innerHTML
+    );
+    console.log(`Number of reports total: ${numberOfReportsTotal}`);
 
-  return numberOfReportsTotal;
-};
+    return numberOfReportsTotal;
+  };
 
 // Log in to zoom, and download all participants reports from the above selected dates.
 (async () => {
@@ -233,7 +230,10 @@ const makeGetNumberOfReportsTotal = (
 
           // Only download the CSV if the event matches what we want
           shouldDownloadCsv =
-            event.trim() === desiredEventTrackingFieldValue.trim();
+            event.trim() ===
+            (
+              desiredEventTrackingFieldValue as unknown as string | undefined
+            )?.trim();
 
           console.log(
             "  Event:",

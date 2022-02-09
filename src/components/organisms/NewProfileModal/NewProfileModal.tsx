@@ -1,33 +1,25 @@
 import React, { useCallback } from "react";
-import { Modal } from "react-bootstrap";
 
 import { REACT_BOOTSTRAP_MODAL_HIDE_DURATION } from "settings";
 
-import { AnyVenue } from "types/venues";
-
-import { WithId } from "utils/id";
+import { SpaceWithId } from "types/id";
 
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useShowHide } from "hooks/useShowHide";
 
-import { useCurrentModalUser } from "components/organisms/NewProfileModal/useCurrentModalUser";
-
-import { Loading } from "components/molecules/Loading";
+import { Modal } from "components/molecules/Modal";
 
 import { NewProfileModalBody } from "./NewProfileModalBody";
 
 import "./NewProfileModal.scss";
 
 interface NewProfileModalProps {
-  venue?: WithId<AnyVenue>;
+  space?: SpaceWithId;
 }
 
-export const NewProfileModal: React.FC<NewProfileModalProps> = ({ venue }) => {
-  const {
-    selectedUserId,
-    hasSelectedProfile,
-    closeUserProfileModal,
-  } = useProfileModalControls();
+export const NewProfileModal: React.FC<NewProfileModalProps> = ({ space }) => {
+  const { selectedUserId, hasSelectedProfile, closeUserProfileModal } =
+    useProfileModalControls();
 
   const {
     isShown: isModalShown,
@@ -42,41 +34,27 @@ export const NewProfileModal: React.FC<NewProfileModalProps> = ({ venue }) => {
     // an error message from ProfileModalFetchUser is shown
 
     // This is to fix that.
-    setTimeout(() => {
+    window.setTimeout(() => {
       closeUserProfileModal();
       showModal();
     }, REACT_BOOTSTRAP_MODAL_HIDE_DURATION);
   }, [closeUserProfileModal, hideModal, showModal]);
 
-  const [user, isLoaded] = useCurrentModalUser(selectedUserId);
-
   return (
     <Modal
-      className="ProfileModal"
       show={hasSelectedProfile && isModalShown}
       onHide={hideHandler}
+      centered
+      autoHide
+      bgVariant="live"
     >
-      <Modal.Body className="ProfileModal__body">
-        {isLoaded && user && (
-          <NewProfileModalBody
-            user={user}
-            venue={venue}
-            closeUserProfileModal={closeUserProfileModal}
-          />
-        )}
-        {!user && (
-          <div className="ProfileModalFetchUser">
-            {!isLoaded ? (
-              <Loading />
-            ) : (
-              <div>
-                Oops, an error occurred while trying to load user data.{"\n"}
-                Please contact our support team.
-              </div>
-            )}
-          </div>
-        )}
-      </Modal.Body>
+      <div className="NewProfileModal">
+        <NewProfileModalBody
+          userId={selectedUserId}
+          space={space}
+          closeUserProfileModal={closeUserProfileModal}
+        />
+      </div>
     </Modal>
   );
 };

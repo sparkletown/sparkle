@@ -1,32 +1,34 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
-import { OverlayTrigger, Popover } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import { faTicketAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 
 import { DISABLED_DUE_TO_1142, SPARKLE_PHOTOBOOTH_URL } from "settings";
 
+import {
+  SpaceSlugLocation,
+  UserId,
+  UserWithId,
+  WorldAndSpaceIdLocation,
+  WorldWithId,
+} from "types/id";
 import { UpcomingEvent } from "types/UpcomingEvent";
+import { Profile } from "types/User";
 
 import { shouldScheduleBeShown } from "utils/schedule";
-import { enterSpace } from "utils/url";
+import { enterSpace, isValidUrl } from "utils/url";
 
-import { useSpaceParams } from "hooks/spaces/useSpaceParams";
-import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
-import { useAdminContextCheck } from "hooks/useAdminContextCheck";
-import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useRadio } from "hooks/useRadio";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
-import { useUser } from "hooks/useUser";
-import { useWorldById } from "hooks/worlds/useWorldById";
 
 import { NavBarSchedule } from "components/organisms/NavBarSchedule/NavBarSchedule";
 
 import { NormalRadio } from "components/molecules/NavBar/components/NormalRadio";
 import { NavSearchBar } from "components/molecules/NavSearchBar";
-import UpcomingTickets from "components/molecules/UpcomingTickets";
+import { Popover } from "components/molecules/Popover";
+import { UpcomingTickets } from "components/molecules/UpcomingTickets";
 import { VenuePartygoers } from "components/molecules/VenuePartygoers";
 
 import { BackButton } from "components/atoms/BackButton";
@@ -38,29 +40,42 @@ import { SoundCloudRadio } from "./components/SoundCloudRadio";
 import "./NavBar.scss";
 import "./playa.scss";
 
-const TicketsPopover: React.FC<{ futureUpcoming: UpcomingEvent[] }> = (
-  props: unknown,
-  { futureUpcoming }
-) => (
-  <Popover id="popover-basic" {...props}>
-    <Popover.Content>
-      <UpcomingTickets events={futureUpcoming} />
-    </Popover.Content>
-  </Popover>
+const TicketsPopover: React.FC<{ futureUpcoming: UpcomingEvent[] }> = ({
+  futureUpcoming,
+}) => (
+  <div className="TicketsPopover">
+    <UpcomingTickets events={futureUpcoming} />
+  </div>
 );
 
 const navBarScheduleClassName = "NavBar__schedule-dropdown";
 
-export interface NavBarPropsType {
+type Attributes = {
   hasBackButton?: boolean;
   withSchedule?: boolean;
   withPhotobooth?: boolean;
   withHiddenLoginButton?: boolean;
   withRadio?: boolean;
   title?: string;
-}
+};
+
+type HocProps = SpaceSlugLocation &
+  WorldAndSpaceIdLocation & {
+    profile: Profile;
+    userId: UserId;
+    userWithId?: UserWithId;
+    world: WorldWithId;
+  };
+
+type NavBarPropsType = Attributes & HocProps;
 
 export const NavBar: React.FC<NavBarPropsType> = ({
+  profile,
+  userId,
+  userWithId,
+  spaceId,
+  worldSlug,
+  world,
   hasBackButton,
   withSchedule,
   withPhotobooth,
@@ -68,11 +83,6 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   title,
   withHiddenLoginButton,
 }) => {
-  const { user, userWithId } = useUser();
-  const isAdminContext = useAdminContextCheck();
-  const { worldSlug, spaceSlug } = useSpaceParams();
-  const { spaceId } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
-
   const {
     currentVenue: relatedVenue,
     parentVenue,
@@ -81,26 +91,20 @@ export const NavBar: React.FC<NavBarPropsType> = ({
     currentVenueId: spaceId,
   });
 
-  const { world } = useWorldById(relatedVenue?.worldId);
-  const firstStation = world?.radioStations?.[0];
+  const firstStation = world?.radioStations?.[0] ?? "";
 
-  const { currentVenue: ownedVenue } = useOwnedVenues({
-    currentVenueId: spaceId,
-  });
-
-  // when Admin is displayed, owned venues are used
-  const currentVenue = relatedVenue ?? ownedVenue;
+  const currentVenue = relatedVenue;
 
   const { push: openUrlUsingRouter } = useHistory();
 
   const { openUserProfileModal } = useProfileModalControls();
 
-  const handleAvatarClick = useCallback(() => {
-    openUserProfileModal(userWithId?.id);
-  }, [openUserProfileModal, userWithId]);
+  const handleAvatarClick = useCallback(
+    () => void openUserProfileModal(userId),
+    [openUserProfileModal, userId]
+  );
 
-  const shouldShowSchedule =
-    !isAdminContext && withSchedule && shouldScheduleBeShown(world);
+  const shouldShowSchedule = withSchedule && shouldScheduleBeShown(world);
 
   const now = firebase.firestore.Timestamp.fromDate(new Date());
   const futureUpcoming =
@@ -108,11 +112,13 @@ export const NavBar: React.FC<NavBarPropsType> = ({
     []; //@debt typing does this exist?
 
   const hasUpcomingEvents = futureUpcoming && futureUpcoming.length > 0;
-
   const isSoundCloud = firstStation?.includes("soundcloud");
 
   const sound = useMemo(
-    () => (firstStation && !isSoundCloud ? new Audio(firstStation) : undefined),
+    () =>
+      isValidUrl(firstStation) && !isSoundCloud
+        ? new Audio(firstStation)
+        : undefined,
     [isSoundCloud, firstStation]
   );
 
@@ -175,7 +181,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   return (
     <>
       <header>
-        <div className="navbar navbar_playa nonplaya">
+        <div className="NavBar navbar navbar_playa nonplaya">
           <div className="navbar-container">
             <div className="nav-logos">
               <div className="nav-sparkle-logo">
@@ -196,19 +202,16 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                   }`}
                   onClick={toggleEventSchedule}
                 >
-                  {spaceId && !isAdminContext && navbarTitle} &nbsp;
+                  {spaceId && navbarTitle} &nbsp;
                   <span className="schedule-text">Schedule</span>
                 </button>
               ) : (
                 <>
-                  <div className="nav-location-title">Sparkle Admin</div>
                   <div>{navbarTitle}</div>
                 </>
               )}
 
-              {spaceId && !isAdminContext && (
-                <VenuePartygoers worldId={currentVenue?.worldId} />
-              )}
+              {spaceId && <VenuePartygoers worldId={currentVenue?.worldId} />}
             </div>
 
             {!DISABLED_DUE_TO_1142 && withPhotobooth && (
@@ -220,25 +223,23 @@ export const NavBar: React.FC<NavBarPropsType> = ({
               </div>
             )}
 
-            {!withHiddenLoginButton && !user && <NavBarLogin />}
+            {!withHiddenLoginButton && !profile && <NavBarLogin />}
 
-            {user && (
+            {profile && (
               <div className="navbar-links">
-                {sovereignVenueId && !isAdminContext && (
+                {sovereignVenueId && (
                   <NavSearchBar sovereignVenueId={sovereignVenueId} />
                 )}
 
                 {hasUpcomingEvents && (
-                  <OverlayTrigger
-                    trigger="click"
-                    placement="bottom-end"
+                  <Popover
                     overlay={<TicketsPopover futureUpcoming={futureUpcoming} />}
-                    rootClose={true}
+                    closeRoot
                   >
                     <span className="tickets-icon">
                       <FontAwesomeIcon icon={faTicketAlt} />
                     </span>
-                  </OverlayTrigger>
+                  </Popover>
                 )}
 
                 {showNormalRadio && (
@@ -259,7 +260,9 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                   className="navbar-links-user-avatar"
                   onClick={handleAvatarClick}
                 >
-                  <UserAvatar user={userWithId} showStatus size="medium" />
+                  {userWithId && (
+                    <UserAvatar user={userWithId} showStatus size="medium" />
+                  )}
                 </div>
               </div>
             )}

@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 import { noop } from "lodash";
 
 import { CHAT_MESSAGE_TIMEOUT } from "settings";

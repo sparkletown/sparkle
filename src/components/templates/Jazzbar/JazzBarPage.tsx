@@ -5,7 +5,7 @@ import { JazzbarVenue } from "types/venues";
 import { WithId } from "utils/id";
 
 import { JazzBar } from "./JazzBar";
-import JazzBarSkeletonPage from "./JazzBarSkeletonPage";
+import { JazzBarSkeletonPage } from "./JazzBarSkeletonPage";
 
 export interface JazzbarProps {
   venue: WithId<JazzbarVenue>;

@@ -54,14 +54,23 @@ notify-on-fail: &notify-on-fail
 
 version: 2.1
 orbs:
-  node: circleci/node@4.1.0
+  node: circleci/node@5.0.0
   slack: circleci/slack@4.1.1
 jobs:
+  install-node:
+    executor: node/default
+    steps:
+      - checkout
+      - node/install:
+          node-version: '16.13'
+      - run: node --version
+      - run: npm install -g npm
+      - run: npm -v
   lint-and-test:
     executor: node/default
     steps:
       - checkout
-      - node/install-packages
+      - run: npm ci
       - run: npm run prettier:check
       - run: npm run eslint:check
       - run: npm run test
@@ -116,7 +125,7 @@ jobs:
             if [ $CIRCLE_BRANCH = "sparkle6" ]; then
               ENV=sparkle-6
             fi
-            if [ $CIRCLE_BRANCH = "sparkle7" ]; then
+            if [ $CIRCLE_BRANCH = "new/upgrade-node" ]; then
               ENV=sparkle-7
             fi
             if [ $CIRCLE_BRANCH = "sparkle8" ]; then
@@ -176,7 +185,7 @@ jobs:
 
             ./node_modules/.bin/firebase use $ENV --token "$FIREBASE_TOKEN"
 
-            COMPUTED_HASH=$(find . -path ./node_modules -prune -false -o -name '*.js' -o -name '*.json' | sort | xargs md5sum | md5sum | awk '{ print $1 }')
+            COMPUTED_HASH=$(find . -path ./node_modules -prune -false -o -name '*.js' -o -name '*.json' -o -name '*.ts' | sort | xargs md5sum | md5sum | awk '{ print $1 }')
             STORED_HASH=$(./node_modules/.bin/firebase functions:config:get checksum.fileshash --token "$FIREBASE_TOKEN" | tr -d '"')
 
             echo -e "Computed hash over *.js, *.json files:\t$COMPUTED_HASH"
@@ -261,7 +270,7 @@ jobs:
               TARGET=sparkle-6
               RELEASE_STAGE=sparkle6
             fi
-            if [ $CIRCLE_BRANCH = "sparkle7" ]; then
+            if [ $CIRCLE_BRANCH = "new/upgrade-node" ]; then
               PREFIX=SPARKLE7_
               ENV=sparkle-7
               TARGET=sparkle-7
@@ -422,7 +431,7 @@ workflows:
                 - sparkle4
                 - sparkle5
                 - sparkle6
-                - sparkle7
+                - new/upgrade-node
                 - sparkle8
                 - sparkle9
                 - sparkle10
@@ -456,7 +465,7 @@ workflows:
                 - sparkle4
                 - sparkle5
                 - sparkle6
-                - sparkle7
+                - new/upgrade-node
                 - sparkle8
                 - sparkle9
                 - sparkle10

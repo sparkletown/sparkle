@@ -1,41 +1,33 @@
 import { useMemo } from "react";
 
 import {
+  COLLECTION_SETTINGS,
   DEFAULT_SETTING_SHOW_CHAT,
   DEFAULT_SETTING_SHOW_REACTIONS,
 } from "settings";
 
 import { Settings } from "types/settings";
 
-import { settingsSelector } from "utils/selectors";
+import { useRefiDocument } from "hooks/fire/useRefiDocument";
 
-import { isLoaded, useFirestoreConnect } from "hooks/useFirestoreConnect";
-import { useSelector } from "hooks/useSelector";
-
-export interface UseSetingsResult {
+type UseSettings = () => {
   isLoaded: boolean;
   settings: Required<Settings>;
-}
+};
 
-export const useSettings: () => UseSetingsResult = () => {
-  useFirestoreConnect([
-    { collection: "settings", doc: "customizations", storeAs: "settings" },
+export const useSettings: UseSettings = () => {
+  const { data, isLoaded } = useRefiDocument<Settings>([
+    COLLECTION_SETTINGS,
+    "customizations",
   ]);
 
-  const settings = useSelector(settingsSelector);
+  const {
+    showChat = DEFAULT_SETTING_SHOW_CHAT,
+    showReactions = DEFAULT_SETTING_SHOW_REACTIONS,
+  } = data ?? {};
 
-  return useMemo(() => {
-    const {
-      showChat = DEFAULT_SETTING_SHOW_CHAT,
-      showReactions = DEFAULT_SETTING_SHOW_REACTIONS,
-    } = settings ?? {};
-
-    return {
-      isLoaded: isLoaded(settings),
-      settings: {
-        showChat,
-        showReactions,
-      },
-    };
-  }, [settings]);
+  return useMemo(
+    () => ({ isLoaded, settings: { showChat, showReactions } }),
+    [isLoaded, showChat, showReactions]
+  );
 };

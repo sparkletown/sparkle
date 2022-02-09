@@ -28,17 +28,11 @@ export const BannerAdmin: React.FC<BannerAdminProps> = ({
   venue,
   onClose,
 }) => {
-  const {
-    register,
-    handleSubmit,
-    errors,
-    reset,
-    watch,
-    setValue,
-  } = useForm<Banner>({
-    mode: "onChange",
-    reValidateMode: "onChange",
-  });
+  const { register, handleSubmit, errors, reset, watch, setValue } =
+    useForm<Banner>({
+      mode: "onChange",
+      reValidateMode: "onChange",
+    });
   const isUrlButtonActive = watch(
     "isActionButton",
     venue?.banner?.isActionButton
@@ -173,11 +167,10 @@ export const BannerAdmin: React.FC<BannerAdminProps> = ({
         show={isShowBannerChangeModal}
         onConfirm={confirmChangeBannerData}
         onCancel={hideBannerChangeModal}
-        header={"Erase your beautiful work?"}
-        message={"Are you sure you want to clear this banner?"}
+        header="Erase your beautiful work?"
+        message="Are you sure you want to clear this banner?"
         saveBtnLabel="Yes, clear"
         cancelBtnLabel="Cancel"
-        isCentered
         confirmVariant="danger"
       />
     </div>

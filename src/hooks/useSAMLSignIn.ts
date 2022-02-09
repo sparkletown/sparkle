@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import Bugsnag from "@bugsnag/js";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 
 export const useSAMLSignIn = (samlAuthProviderId?: string) => {
   const hasSamlAuthProviderId = samlAuthProviderId !== undefined;
