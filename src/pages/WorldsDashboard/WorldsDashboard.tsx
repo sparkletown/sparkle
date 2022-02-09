@@ -1,10 +1,12 @@
 import React, { useMemo } from "react";
+import { uniq } from "lodash/fp";
 
 import { ADMIN_IA_WORLD_CREATE_URL } from "settings";
 
 import { UserId } from "types/id";
 
 import { useOwnedVenues } from "hooks/useOwnedVenues";
+import { useOwnWorlds } from "hooks/worlds/useOwnWorlds";
 import { useWorlds } from "hooks/worlds/useWorlds";
 
 import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
@@ -26,11 +28,15 @@ type WorldsDashboardProps = { userId: UserId };
 export const WorldsDashboard: React.FC<WorldsDashboardProps> = ({ userId }) => {
   const { ownedVenues } = useOwnedVenues({ userId });
   const worlds = useWorlds();
+  const ownWorlds = useOwnWorlds();
 
   const ownedUniqueWorldIds = useMemo(
-    // @debt should use uniq function of Lodash, or create our own in ./src/utils
-    () => [...new Set(ownedVenues.map(({ worldId }) => worldId))],
-    [ownedVenues]
+    () =>
+      uniq([
+        ...ownedVenues.map(({ worldId }) => worldId),
+        ...ownWorlds.map((world) => world.id),
+      ]),
+    [ownedVenues, ownWorlds]
   );
 
   // Firebase query where([world.id, 'in', ownedUniqueWorldIds]) has a limit of 10 items in ownedUniqueWorldIds. Because of that, it is filtered here

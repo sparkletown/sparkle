@@ -1,16 +1,19 @@
+import { World } from "api/world";
+
 import { AnyVenue } from "types/venues";
 
-import { useRoles } from "hooks/useRoles";
 import { useUser } from "hooks/useUser";
 
-export const useCanDeleteVenueChatMessages = (venue: AnyVenue) => {
+export const useCanDeleteVenueChatMessages = (
+  venue: AnyVenue,
+  world?: World
+) => {
   const { userId } = useUser();
-  const { userRoles } = useRoles();
 
   if (!userId) return false;
 
-  const isAdmin = Boolean(userRoles?.includes("admin"));
+  const isWorldOwner = world?.owners.includes(userId);
   const isOwner = venue.owners?.includes(userId);
 
-  return isAdmin && isOwner;
+  return isWorldOwner || isOwner;
 };

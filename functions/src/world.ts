@@ -71,7 +71,6 @@ export const updateWorld = functions.https.onCall(async (data, context) => {
   }
 
   await checkIsWorldOwner(worldId, context.auth?.token.user_id);
-  await checkIsAdmin(context.auth?.token.user_id);
 
   let landingPageConfig: LandingPageConfig | undefined = undefined;
   if (bannerImageUrl || subtitle || description) {
@@ -131,7 +130,6 @@ export const deleteWorld = functions.https.onCall(async (data, context) => {
   const worldId = data.id;
 
   await checkIsWorldOwner(worldId, context.auth?.token.user_id);
-  await checkIsAdmin(context.auth?.token.user_id);
 
   admin.firestore().collection("worlds").doc(worldId).delete();
 });

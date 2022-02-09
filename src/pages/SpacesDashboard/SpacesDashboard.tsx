@@ -10,11 +10,13 @@ import {
   SPACES_TAXON,
 } from "settings";
 
-import { Spaces, UserId, WorldId, WorldSlug, WorldWithId } from "types/id";
+import { UserId, WorldId, WorldSlug, WorldWithId } from "types/id";
 import { isNotPartyMapVenue, isPartyMapVenue } from "types/venues";
 
 import { generateUrl } from "utils/url";
 import { SortingOptions, sortVenues } from "utils/venue";
+
+import { useWorldSpaces } from "hooks/spaces/useWorldSpaces";
 
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
@@ -30,7 +32,6 @@ import { TesterRestricted } from "components/atoms/TesterRestricted";
 import "./SpacesDashboard.scss";
 
 interface SpacesDashboardProps {
-  ownSpaces: Spaces;
   userId: UserId;
   world: WorldWithId;
   worldId: WorldId;
@@ -38,7 +39,6 @@ interface SpacesDashboardProps {
 }
 
 export const SpacesDashboard: React.FC<SpacesDashboardProps> = ({
-  ownSpaces,
   userId,
   world,
   worldId,
@@ -46,10 +46,7 @@ export const SpacesDashboard: React.FC<SpacesDashboardProps> = ({
 }) => {
   const isWorldAdmin = userId ? world?.owners.includes(userId) : undefined;
 
-  const spaces = useMemo(
-    () => (world ? ownSpaces.filter((venue) => venue.worldId === worldId) : []),
-    [ownSpaces, world, worldId]
-  );
+  const spaces = useWorldSpaces(world?.id);
 
   const [
     currentSortingOption,
