@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from "react";
+import React, { lazy } from "react";
 import { Route, Switch, useRouteMatch } from "react-router-dom";
 
 import { VENUES_WITH_CHAT_REQUIRED } from "settings";
@@ -31,7 +31,6 @@ import { ChatSidebar } from "components/organisms/ChatSidebar";
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
 import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
-import { LoadingPage } from "components/molecules/LoadingPage";
 
 const AnimateMap = lazy(() =>
   tracePromise("TemplateWrapper::lazy-import::AnimateMap", () =>
@@ -75,10 +74,10 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
     case VenueTemplate.animatemap:
       // NOTE: this is a must check for not spilling over global errors from animatemap onto other templates when it is unused
       template = isWebGl2Enabled() ? (
-        <Suspense fallback={LoadingPage}>
-          <AnimateMap space={venue} />
-        </Suspense>
+        // <Suspense fallback={LoadingPage}> //todo: fix this
+        <AnimateMap space={venue} />
       ) : (
+        // </Suspense>
         <AnimateMapErrorPrompt variant="unsupported" />
       );
       break;
