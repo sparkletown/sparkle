@@ -1,9 +1,6 @@
 import React, { useCallback, useMemo } from "react";
-import classNames from "classnames";
 
 import { COVERT_ROOM_TYPES } from "settings";
-
-import { retainAttendance } from "store/actions/Attendance";
 
 import { Room, RoomType } from "types/rooms";
 import { RoomVisibility } from "types/RoomVisibility";
@@ -13,9 +10,7 @@ import { isExternalPortal, openUrl } from "utils/url";
 
 import { useCustomSound } from "hooks/sounds";
 import { useAnalytics } from "hooks/useAnalytics";
-import { useDispatch } from "hooks/useDispatch";
 import { usePortal } from "hooks/usePortal";
-import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { RoomAttendance } from "components/templates/PartyMap/components/RoomAttendance";
 
@@ -27,67 +22,15 @@ export interface MapRoomProps {
   selectRoom: () => void;
 }
 
-export const MapRoom: React.FC<MapRoomProps> = ({
-  venue,
-  room,
-  selectRoom,
-}) => {
-  const { portalSpaceId, enterPortal } = usePortal({ portal: room });
+export const MapRoom: React.FC<MapRoomProps> = ({ venue, room }) => {
+  const { enterPortal } = usePortal({ portal: room });
   const analytics = useAnalytics({ venue });
-
-  const { findVenueInRelatedVenues } = useRelatedVenues({
-    currentVenueId: venue.id,
-  });
-  const portalVenue = findVenueInRelatedVenues({ spaceId: portalSpaceId });
-
-  const hasRecentRoomUsers =
-    portalVenue?.recentUserCount && portalVenue?.recentUserCount > 0;
 
   const isUnclickable =
     room.visibility === RoomVisibility.unclickable ||
     room.type === RoomType.unclickable;
-  const isMapFrame = room.type === RoomType.mapFrame;
   const isCovertRoom = room.type && COVERT_ROOM_TYPES.includes(room.type);
-  const isLabelHidden =
-    (room.visibility === RoomVisibility.none ||
-      room.visibility === RoomVisibility.unclickable) ??
-    false;
-  const shouldShowLabel = !isCovertRoom && !isLabelHidden;
   const shouldBeClickable = !isCovertRoom && !isUnclickable;
-
-  const roomLabelConditions =
-    room.visibility === RoomVisibility.nameCount ||
-    (room.visibility === RoomVisibility.count && hasRecentRoomUsers);
-  const venueLabelConditions =
-    venue.roomVisibility === RoomVisibility.nameCount ||
-    (venue.roomVisibility === RoomVisibility.count && hasRecentRoomUsers);
-
-  const dispatch = useDispatch();
-
-  // @debt do we need to keep this retainAttendance stuff (for counting feature), or is it legacy tech debt?
-  const handleRoomHovered = useCallback(() => {
-    dispatch(retainAttendance(true));
-  }, [dispatch]);
-
-  // @debt do we need to keep this retainAttendance stuff (for counting feature), or is it legacy tech debt?
-  const handleRoomUnhovered = useCallback(() => {
-    dispatch(retainAttendance(false));
-  }, [dispatch]);
-
-  const containerClasses = classNames("maproom", {
-    "maproom--covert": isCovertRoom,
-    "maproom--unclickable": isUnclickable,
-    "maproom--iframe": isMapFrame,
-    "maproom--always-show-label":
-      shouldShowLabel && (roomLabelConditions || venueLabelConditions),
-  });
-
-  const titleClasses = classNames("maproom__title", {
-    "maproom__title--count":
-      !isCovertRoom &&
-      (room.visibility === RoomVisibility.count ||
-        venue.roomVisibility === RoomVisibility.count),
-  });
 
   const roomInlineStyles = useMemo(
     () => ({

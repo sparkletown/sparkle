@@ -16,6 +16,8 @@ import { ButtonNG } from "components/atoms/ButtonNG";
 import fIcon from "assets/icons/facebook-social-icon.svg";
 import gIcon from "assets/icons/google-social-icon.svg";
 
+import formStyles from "scss/formStyles.module.scss";
+
 export interface LoginFormProps {
   displayRegisterForm: () => void;
   displayPasswordResetForm: () => void;
@@ -42,17 +44,11 @@ export const LoginForm: React.FC<LoginFormProps> = ({
 }) => {
   const { signInWithGoogle, signInWithFacebook } = useSocialSignIn();
 
-  const {
-    register,
-    handleSubmit,
-    errors,
-    formState,
-    setError,
-    clearError,
-  } = useForm<LoginFormData>({
-    mode: "onChange",
-    reValidateMode: "onChange",
-  });
+  const { register, handleSubmit, errors, formState, setError, clearError } =
+    useForm<LoginFormData>({
+      mode: "onChange",
+      reValidateMode: "onChange",
+    });
 
   // @debt is `null` the best choice here? we might better show here a loading or error screen instead
   if (!space || !world) return null;
@@ -129,7 +125,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
       <div className="secondary-action">
         {`Don't have an account yet?`}
         <br />
-        <span className="link" onClick={displayRegisterForm}>
+        <span className={formStyles.inlineLink} onClick={displayRegisterForm}>
           Register instead!
         </span>
       </div>
@@ -151,7 +147,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
         <div className="input-group">
           <input
             name="email"
-            className="input-block input-centered auth-input"
+            className={formStyles.input}
             placeholder="Your email address"
             ref={register({ required: true })}
           />
@@ -167,7 +163,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
         <div className="input-group">
           <input
             name="password"
-            className="input-block input-centered auth-input"
+            className={formStyles.input}
             type="password"
             placeholder="Password"
             ref={register({
@@ -222,7 +218,10 @@ export const LoginForm: React.FC<LoginFormProps> = ({
       <div className="secondary-action">
         {`Forgot your password?`}
         <br />
-        <span className="link" onClick={displayPasswordResetForm}>
+        <span
+          className={formStyles.inlineLink}
+          onClick={displayPasswordResetForm}
+        >
           Reset your password
         </span>
       </div>

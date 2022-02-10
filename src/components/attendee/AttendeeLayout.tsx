@@ -1,18 +1,25 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
+import { withAuth } from "components/hocs/db/withAuth";
+import { withFallback } from "components/hocs/gate/withFallback";
+import { withRequired } from "components/hocs/gate/withRequired";
+import { compose } from "lodash/fp";
 
 import { useUser } from "hooks/useUser";
 
 import { VenuePage } from "pages/VenuePage";
 
+import { LoadingPage } from "components/molecules/LoadingPage";
+
+import { NotLoggedInFallback } from "components/atoms/NotLoggedInFallback";
+
 import { AttendeeHeader } from "./Header/AttendeeHeader";
-import { VideoHuddleProvider } from "./VideoHuddle/VideoHuddle";
+import { VideoHuddle, VideoHuddleProvider } from "./VideoHuddle/VideoHuddle";
 import { AttendeeFooter } from "./AttendeeFooter";
 import { ChatContainer } from "./ChatContainer";
-import { VideoHuddle } from "./VideoHuddle";
 
 import styles from "./AttendeeLayout.module.scss";
 
-export const AttendeeLayout: React.FC = () => {
+const _AttendeeLayout: React.FC = () => {
   const { userId } = useUser();
 
   useEffect(() => {
@@ -39,3 +46,12 @@ export const AttendeeLayout: React.FC = () => {
     </VideoHuddleProvider>
   );
 };
+
+export const AttendeeLayout = compose(
+  withAuth,
+  withFallback(["isAuthLoaded", "userId"], NotLoggedInFallback),
+  withRequired({
+    required: ["userId"],
+    fallback: LoadingPage,
+  })
+)(_AttendeeLayout);

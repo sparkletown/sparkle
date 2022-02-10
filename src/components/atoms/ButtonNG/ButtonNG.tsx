@@ -17,7 +17,7 @@ import {
   resolveUrlPath,
 } from "utils/url";
 
-import "./ButtonNG.scss";
+import styles from "./ButtonNG.module.scss";
 
 export type ButtonType = "button" | "reset" | "submit";
 export type ButtonVariant =
@@ -93,16 +93,21 @@ export const ButtonNG: React.FC<ButtonProps> = ({
 
   const resolvedUrl = useMemo(() => linkTo && resolveUrlPath(linkTo), [linkTo]);
 
-  const parentClasses = classNames({
+  const variantClassnameMap: Record<string, string> = {
+    primary: styles.buttonPrimary,
+    secondary: styles.buttonSecondary,
+  };
+  const variantStyle = variantClassnameMap[variant];
+
+  const parentClasses = classNames(!disabled && variantStyle, {
     [className]: className,
     "ButtonNG ButtonNG__link": isLink,
     "ButtonNG ButtonNG__button": !isLink,
-    "ButtonNG--disabled": disabled,
+    [styles.buttonDisabled]: disabled,
     "ButtonNG--enabled": !disabled,
     "ButtonNG--loading": loading,
     [`ButtonNG--icon-only ButtonNG--${iconSize}`]: iconOnly,
     [`ButtonNG--icon-text`]: !iconOnly,
-    [`ButtonNG--${variant}`]: variant && !disabled,
   });
 
   const iconClasses = classNames({

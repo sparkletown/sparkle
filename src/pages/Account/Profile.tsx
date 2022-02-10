@@ -2,6 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn } from "react-use";
+import { useBackgroundGradient } from "components/attendee/useBackgroundGradient";
 
 import {
   ACCOUNT_PROFILE_QUESTIONS_URL,
@@ -26,6 +27,7 @@ import { updateUserProfile } from "./helpers";
 // @debt refactor the Profile related styles from Account.scss into Profile.scss
 import "./Account.scss";
 import "./Profile.scss";
+import formStyles from "scss/formStyles.module.scss";
 
 export interface ProfileFormData {
   partyName: string;
@@ -38,20 +40,16 @@ export const Profile: React.FC = () => {
 
   const { worldSlug, spaceSlug = DEFAULT_SPACE_SLUG } = useSpaceParams();
 
-  const {
-    register,
-    handleSubmit,
-    errors,
-    formState,
-    setValue,
-    watch,
-  } = useForm<ProfileFormData>({
-    mode: "onChange",
-    defaultValues: {
-      partyName: userWithId?.partyName,
-      pictureUrl: userWithId?.pictureUrl,
-    },
-  });
+  useBackgroundGradient();
+
+  const { register, handleSubmit, errors, formState, setValue, watch } =
+    useForm<ProfileFormData>({
+      mode: "onChange",
+      defaultValues: {
+        partyName: userWithId?.partyName,
+        pictureUrl: userWithId?.pictureUrl,
+      },
+    });
 
   const [{ loading: isUpdating, error: httpError }, onSubmit] = useAsyncFn(
     async (data: ProfileFormData) => {
@@ -89,7 +87,7 @@ export const Profile: React.FC = () => {
             {/* @debt refactor this to use InputField */}
             <input
               name="partyName"
-              className="input-block input-centered"
+              className={formStyles.input}
               placeholder="Your display name"
               ref={register({
                 required: true,
@@ -126,7 +124,7 @@ export const Profile: React.FC = () => {
             <ButtonNG
               type="submit"
               className="create-account__button"
-              variant="login-gradient"
+              variant="primary"
               disabled={!formState.isValid || isUpdating}
             >
               Create my profile

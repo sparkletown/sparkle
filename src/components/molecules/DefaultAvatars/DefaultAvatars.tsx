@@ -11,7 +11,7 @@ import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import "firebase/storage";
 
-import "./DefaultAvatars.scss";
+import styles from "./DefaultAvatars.module.scss";
 
 export interface DefaultAvatarsProps extends ContainerClassName {
   onAvatarClick: (url: string) => void;
@@ -27,24 +27,20 @@ export const DefaultAvatars: React.FC<DefaultAvatarsProps> = ({
   avatarPictureClassName,
   containerClassName,
 }) => {
-  const {
-    sovereignVenueId,
-    isLoading: isSovereignVenueLoading,
-  } = useRelatedVenues();
+  const { sovereignVenueId, isLoading: isSovereignVenueLoading } =
+    useRelatedVenues();
 
-  const {
-    value: customAvatars,
-    loading: isLoadingCustomAvatars,
-  } = useAsync(async () => {
-    if (!sovereignVenueId) return;
+  const { value: customAvatars, loading: isLoadingCustomAvatars } =
+    useAsync(async () => {
+      if (!sovereignVenueId) return;
 
-    const storageRef = firebase.storage().ref();
-    const list = await storageRef
-      .child(`/assets/avatars/${sovereignVenueId}`)
-      .listAll();
+      const storageRef = firebase.storage().ref();
+      const list = await storageRef
+        .child(`/assets/avatars/${sovereignVenueId}`)
+        .listAll();
 
-    return Promise.all(list.items.map((item) => item.getDownloadURL()));
-  }, [sovereignVenueId]);
+      return Promise.all(list.items.map((item) => item.getDownloadURL()));
+    }, [sovereignVenueId]);
 
   const defaultAvatars = customAvatars?.length
     ? customAvatars
@@ -91,8 +87,6 @@ export const DefaultAvatars: React.FC<DefaultAvatarsProps> = ({
     (customAvatars !== undefined || isLoadingExternal !== undefined);
 
   return (
-    <div className={classNames("DefaultAvatars", containerClassName)}>
-      {!isLoading && avatarImages}
-    </div>
+    <div className={styles.defaultAvatars}>{!isLoading && avatarImages}</div>
   );
 };
