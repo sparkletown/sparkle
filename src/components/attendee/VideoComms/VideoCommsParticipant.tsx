@@ -1,7 +1,6 @@
 import React from "react";
 
 import { AudioTrackPlayer } from "./internal/AudioTrackPlayer";
-import { VideoCommsControls } from "./internal/VideoCommsControls";
 import { Participant, VideoSource, VideoTrack } from "./types";
 import { VideoTrackDisplay } from "./VideoTrackDisplay";
 
@@ -38,7 +37,6 @@ export const VideoCommsParticipant: React.FC<VideoCommsParticipantProps> = ({
       {participant.audioTracks.map((track) => (
         <AudioTrackPlayer key={track.id} track={track} />
       ))}
-      {isLocal && <VideoCommsControls />}
     </div>
   );
 };

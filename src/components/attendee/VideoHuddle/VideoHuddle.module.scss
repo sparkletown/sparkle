@@ -33,6 +33,23 @@
   flex-direction: column;
   justify-self: start;
   border-left: 1px solid $sparkle-border;
+
+  span {
+    border-bottom: 1px solid $sparkle-border;
+    width: $button-height;
+    height: $button-height;
+    opacity: 0.5;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    &:hover {
+      opacity: 1;
+    }
+
+    svg {
+      margin: auto;
+    }
+  }
 }
 
 .VideoHuddleVideos {

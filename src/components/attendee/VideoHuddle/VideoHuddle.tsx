@@ -1,5 +1,14 @@
 import React, { useCallback } from "react";
+import { faTimesCircle } from "@fortawesome/free-regular-svg-icons";
+import {
+  faVideo,
+  faVideoSlash,
+  faVolumeMute,
+  faVolumeUp,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+import { useVideoComms } from "../VideoComms/hooks";
 import { VideoTrack } from "../VideoComms/types";
 
 import { ExtraButton } from "./internal/ExtraButton";
@@ -21,6 +30,15 @@ export const VideoHuddle: React.FC<VideoHuddleProps> = ({ userId }) => {
     leaveHuddle,
   } = useVideoHuddle();
 
+  const {
+    isTransmittingAudio,
+    isTransmittingVideo,
+    startAudio,
+    startVideo,
+    stopAudio,
+    stopVideo,
+  } = useVideoComms();
+
   const addButtons = useCallback(
     (track: VideoTrack) => {
       return (
@@ -41,18 +59,23 @@ export const VideoHuddle: React.FC<VideoHuddleProps> = ({ userId }) => {
   return (
     <div className={styles.VideoHuddle}>
       <div className={styles.VideoHuddleControls}>
-        <a id="video-control-leave" href="#!" onClick={leaveHuddle}>
-          <span className="caption">Leave </span>
-          <span className="icon"></span>
-        </a>
-        <a id="video-control-audio" href="#!">
-          <span className="caption">Mute audio </span>
-          <span className="icon"></span>
-        </a>
-        <a id="video-control-camera" href="#!">
-          <span className="caption">Turn off camera </span>
-          <span className="icon"></span>
-        </a>
+        <span onClick={leaveHuddle}>
+          <FontAwesomeIcon icon={faTimesCircle} />
+        </span>
+        <span onClick={isTransmittingAudio ? stopAudio : startAudio}>
+          {isTransmittingAudio ? (
+            <FontAwesomeIcon icon={faVolumeUp} />
+          ) : (
+            <FontAwesomeIcon icon={faVolumeMute} />
+          )}
+        </span>
+        <span onClick={isTransmittingVideo ? stopVideo : startVideo}>
+          {isTransmittingVideo ? (
+            <FontAwesomeIcon icon={faVideo} />
+          ) : (
+            <FontAwesomeIcon icon={faVideoSlash} />
+          )}
+        </span>
       </div>
       <div className={styles.VideoHuddleVideos}>
         {localParticipant && (
