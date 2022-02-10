@@ -102,9 +102,11 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
     setSeatedAtTable(undefined);
   }, [userId, venue.id]);
 
-  if (!inHuddle && seatedAtTable) {
-    leaveTable();
-  }
+  useEffect(() => {
+    if (!inHuddle && seatedAtTable) {
+      leaveTable();
+    }
+  }, [inHuddle, leaveTable, seatedAtTable]);
 
   const [expandedIframe, setExpandedIframe] = useState(false);
 
