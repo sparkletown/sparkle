@@ -48,14 +48,16 @@ export const Login: React.FC<LoginProps> = ({
 
   useBackgroundGradient();
 
-  const { loading: isCustomAuthConfigLoading, value: customAuthConfig } =
-    useAsync(async () => {
-      return tracePromise(
-        "Login::fetchCustomAuthConfig",
-        () => fetchCustomAuthConfig(spaceId),
-        { attributes: { spaceId }, withDebugLog: true }
-      );
-    }, [spaceId]);
+  const {
+    loading: isCustomAuthConfigLoading,
+    value: customAuthConfig,
+  } = useAsync(async () => {
+    return tracePromise(
+      "Login::fetchCustomAuthConfig",
+      () => fetchCustomAuthConfig(spaceId),
+      { attributes: { spaceId }, withDebugLog: true }
+    );
+  }, [spaceId]);
 
   const { customAuthName, customAuthConnectPath } = customAuthConfig ?? {};
 

@@ -1,4 +1,5 @@
-@import "../scss/AttendeeMixins.scss";
+@use "scss/attendee/mixins.scss"as *;
+@use "scss/attendee/variables.scss"as *;
 
 .NavOverlay {
   @include sparkle-color-glass;
@@ -25,20 +26,6 @@
     right: $whitespace;
     cursor: pointer;
     z-index: $z-index-attendee-overlay-close-btn;
-
-    &_icon {
-      position: relative;
-      overflow: hidden;
-      display: inline-block;
-      width: 1.3rem;
-      height: 1.3rem;
-      background-size: contain;
-      background-position: center;
-      background-repeat: no-repeat;
-      margin-left: $whitespace / 2;
-      background-image: url(~assets/icons/icon-close-portal.svg);
-      filter: invert(1);
-    }
   }
 
   &__container {
@@ -68,17 +55,6 @@
     @media (max-width: 768px) {
       margin: auto;
     }
-
-    &_button {
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      padding: 0 $whitespace;
-      height: $element-height-normal;
-      border-radius: $border-radius-normal;
-      padding: 0;
-      font-size: $font-size-large;
-    }
   }
 
   &__content {
@@ -96,4 +72,29 @@
       #000 80px
     );
   }
+}
+
+.closeIcon {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+  width: 1.3rem;
+  height: 1.3rem;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  margin-left: $whitespace / 2;
+  background-image: url(~assets/icons/icon-close-portal.svg);
+  filter: invert(1);
+}
+
+.navigationButton {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 0 $whitespace;
+  height: $element-height-normal;
+  border-radius: $border-radius-normal;
+  padding: 0;
+  font-size: $font-size-large;
 }

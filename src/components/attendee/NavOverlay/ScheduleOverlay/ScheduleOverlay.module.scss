@@ -1,4 +1,4 @@
-@import "../../scss/AttendeeMixins.scss";
+@use "scss/attendee/variables.scss"as *;
 
 .ScheduleOverlay {
   &__wrapper {
@@ -32,6 +32,10 @@
   &__button {
     display: flex;
     justify-content: center;
+    background: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
   }
 
   &__bookmark {

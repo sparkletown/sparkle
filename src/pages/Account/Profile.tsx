@@ -42,14 +42,20 @@ export const Profile: React.FC = () => {
 
   useBackgroundGradient();
 
-  const { register, handleSubmit, errors, formState, setValue, watch } =
-    useForm<ProfileFormData>({
-      mode: "onChange",
-      defaultValues: {
-        partyName: userWithId?.partyName,
-        pictureUrl: userWithId?.pictureUrl,
-      },
-    });
+  const {
+    register,
+    handleSubmit,
+    errors,
+    formState,
+    setValue,
+    watch,
+  } = useForm<ProfileFormData>({
+    mode: "onChange",
+    defaultValues: {
+      partyName: userWithId?.partyName,
+      pictureUrl: userWithId?.pictureUrl,
+    },
+  });
 
   const [{ loading: isUpdating, error: httpError }, onSubmit] = useAsyncFn(
     async (data: ProfileFormData) => {

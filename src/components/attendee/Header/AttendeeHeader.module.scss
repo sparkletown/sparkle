@@ -1,4 +1,4 @@
-@import "../scss/AttendeeMixins.scss";
+@use "scss/attendee/variables.scss"as *;
 
 .AttendeeHeader {
   display: flex;

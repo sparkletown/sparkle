@@ -1,4 +1,5 @@
 import { useState } from "react";
+import classNames from "classnames";
 
 import { SPACE_TAXON } from "settings";
 
@@ -7,7 +8,7 @@ import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 
 import { ScheduleOverlay } from "./ScheduleOverlay/ScheduleOverlay";
 
-import styles from "./NavOverlay.module.scss";
+import SN from "./NavOverlay.module.scss";
 
 type navOverlayProps = {
   isShown: boolean;
@@ -54,16 +55,19 @@ export const NavOverlay: React.FC<navOverlayProps> = ({
   };
 
   return (
-    <div className={styles.NavOverlay}>
-      <div className={styles.NavOverlay__close} onClick={onClose}>
+    <div className={SN.NavOverlay}>
+      <div className={SN.NavOverlay__close} onClick={onClose}>
         Close
-        <span className={styles.NavOverlay__close_icon} />
+        <span className={classNames("NavOverlay__close-icon", SN.closeIcon)} />
       </div>
-      <div className={styles.NavOverlay__container}>
-        <div className={styles.NavOverlay__navigation}>
+      <div className={SN.NavOverlay__container}>
+        <div className={SN.NavOverlay__navigation}>
           {Object.entries(navOverlayTypeList).map(([key, label]) => (
             <span
-              className={styles.NavOverlay__navigation_button}
+              className={classNames(
+                "NavOverlay__navigation-button",
+                SN.navigationButton
+              )}
               key={key}
               onClick={() => setnavOverlay(label)}
             >
@@ -71,7 +75,7 @@ export const NavOverlay: React.FC<navOverlayProps> = ({
             </span>
           ))}
         </div>
-        <div className={styles.NavOverlay__content}>
+        <div className={SN.NavOverlay__content}>
           {navOverlayType === "Schedule" && <ScheduleOverlay />}
         </div>
       </div>
