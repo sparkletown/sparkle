@@ -156,6 +156,10 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
         </div>
       )}
 
+      <div className={styles.componentSpaceInfo}>
+        {venue.name && <h1>{venue.name}</h1>}
+      </div>
+
       {/*!seatedAtTable && (
         <UserList
           usersSample={venue.recentUsersSample ?? ALWAYS_EMPTY_ARRAY}
