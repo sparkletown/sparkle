@@ -1,10 +1,10 @@
-@use "../../scss/AttendeeMixins.scss";
+@use "scss/attendee/mixins.scss";
 
 .huddleParticipant {
   display: flex;
   justify-content: center;
 
-  @include AttendeeMixins.rounded;
+  @include mixins.rounded;
   overflow: hidden;
 }
 
