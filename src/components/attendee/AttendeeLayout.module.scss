@@ -1,8 +1,19 @@
 @use "scss/attendee/mixins.scss"as *;
 @use "scss/attendee/variables.scss"as *;
 
+@font-face {
+  font-family: "Sparkle";
+  font-style: normal;
+  font-weight: 400;
+  src: url("~assets/fonts/ABCArizonaPlusVariable-Trial.woff2") format("woff2");
+}
+
 .html {
   overflow-y: scroll;
+  font-family: Sparkle, serif;
+  font-variation-settings: "wght" 350, "ital" 0, "SRFF" 20;
+  font-size: 14px;
+  line-height: 1.4;
 }
 
 .Space {
