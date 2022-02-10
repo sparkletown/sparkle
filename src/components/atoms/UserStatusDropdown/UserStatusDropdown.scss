@@ -27,8 +27,8 @@
     }
 
     &__menu {
-      top: 30px;
-      width: 150px;
+      top: font-size--parent(1.5);
+      min-width: font-size--parent(9);
     }
 
     &__value-container {
@@ -41,6 +41,10 @@
 
     &__control {
       padding: 0;
+    }
+
+    &__option {
+      padding: 0 font-size--parent(1);
     }
   }
 }
