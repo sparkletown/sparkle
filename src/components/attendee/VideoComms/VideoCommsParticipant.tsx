@@ -5,6 +5,8 @@ import { VideoCommsControls } from "./internal/VideoCommsControls";
 import { Participant, VideoSource, VideoTrack } from "./types";
 import { VideoTrackDisplay } from "./VideoTrackDisplay";
 
+import styles from "./scss/VideoCommsParticipant.module.scss";
+
 interface VideoCommsParticipantProps {
   participant: Participant;
   isLocal?: boolean;
@@ -22,7 +24,7 @@ export const VideoCommsParticipant: React.FC<VideoCommsParticipantProps> = ({
   videoTrackControls,
 }) => {
   return (
-    <>
+    <div className={styles.videoCommsParticipant}>
       {participant.videoTracks.map((track) => (
         <React.Fragment key={track.id}>
           <VideoTrackDisplay
@@ -37,6 +39,6 @@ export const VideoCommsParticipant: React.FC<VideoCommsParticipantProps> = ({
         <AudioTrackPlayer key={track.id} track={track} />
       ))}
       {isLocal && <VideoCommsControls />}
-    </>
+    </div>
   );
 };
