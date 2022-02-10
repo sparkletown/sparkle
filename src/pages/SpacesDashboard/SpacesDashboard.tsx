@@ -46,7 +46,9 @@ export const SpacesDashboard: React.FC<SpacesDashboardProps> = ({
 }) => {
   const isWorldAdmin = userId ? world?.owners.includes(userId) : undefined;
 
-  const spaces = useWorldSpaces(world?.id);
+  const { spaces } = useWorldSpaces({ worldId });
+
+  console.log({ worldId, spaces });
 
   const [
     currentSortingOption,

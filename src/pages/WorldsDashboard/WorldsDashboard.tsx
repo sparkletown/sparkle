@@ -6,6 +6,7 @@ import { ADMIN_IA_WORLD_CREATE_URL } from "settings";
 import { UserId } from "types/id";
 
 import { useOwnedVenues } from "hooks/useOwnedVenues";
+import { useAdminRole } from "hooks/user/useAdminRole";
 import { useOwnWorlds } from "hooks/worlds/useOwnWorlds";
 import { useWorlds } from "hooks/worlds/useWorlds";
 
@@ -28,7 +29,9 @@ type WorldsDashboardProps = { userId: UserId };
 export const WorldsDashboard: React.FC<WorldsDashboardProps> = ({ userId }) => {
   const { ownedVenues } = useOwnedVenues({ userId });
   const worlds = useWorlds();
-  const ownWorlds = useOwnWorlds();
+  const { ownWorlds } = useOwnWorlds();
+
+  const { isAdminUser: isMasterAdmin } = useAdminRole({ userId });
 
   const ownedUniqueWorldIds = useMemo(
     () =>
@@ -83,13 +86,15 @@ export const WorldsDashboard: React.FC<WorldsDashboardProps> = ({ userId }) => {
                   <span className="WorldsDashboard__header-text">
                     My worlds
                   </span>
-                  <ButtonNG
-                    variant="normal-gradient"
-                    linkTo={ADMIN_IA_WORLD_CREATE_URL}
-                    className="WorldsDashboard__header-button"
-                  >
-                    Create new world
-                  </ButtonNG>
+                  {isMasterAdmin && (
+                    <ButtonNG
+                      variant="normal-gradient"
+                      linkTo={ADMIN_IA_WORLD_CREATE_URL}
+                      className="WorldsDashboard__header-button"
+                    >
+                      Create new world
+                    </ButtonNG>
+                  )}
                 </div>
                 {renderedWorldsList}
               </AdminShowcase>

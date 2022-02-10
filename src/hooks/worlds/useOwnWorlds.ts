@@ -10,7 +10,10 @@ import { WithId } from "utils/id";
 
 import { useUser } from "hooks/useUser";
 
-export const useOwnWorlds = (): WithId<World>[] => {
+export const useOwnWorlds = (): {
+  isLoading: boolean;
+  ownWorlds: WithId<World>[];
+} => {
   const firestore = useFirestore();
   const { userId } = useUser();
 
@@ -20,12 +23,14 @@ export const useOwnWorlds = (): WithId<World>[] => {
     where("owners", "array-contains", userId ?? "")
   ).withConverter(CONVERTER_WORLD_WITH_ID);
 
-  const { data: ownWorlds } = useFirestoreCollectionData<WithId<World>>(
+  const { data: ownWorlds, status } = useFirestoreCollectionData<WithId<World>>(
     ownWorldsRef,
     {
       initialData: ALWAYS_EMPTY_ARRAY,
     }
   );
 
-  return ownWorlds;
+  const isLoading = status === "loading";
+
+  return { ownWorlds, isLoading };
 };
