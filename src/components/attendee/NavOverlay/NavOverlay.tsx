@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { SPACE_TAXON } from "settings";
 
@@ -6,11 +6,11 @@ import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 
 import { ScheduleOverlay } from "./ScheduleOverlay/ScheduleOverlay";
+import { SearchOverlay } from "./SearchOverlay/SearchOverlay";
 
 import styles from "./NavOverlay.module.scss";
 
 type navOverlayProps = {
-  isShown: boolean;
   onClose: () => void;
   type?: string;
 };
@@ -31,20 +31,16 @@ const navOverlayTypeMap: Readonly<Record<NavOverlayTab, String>> = {
   [NavOverlayTab.help]: "Help",
 };
 
-export const NavOverlay: React.FC<navOverlayProps> = ({
-  isShown,
-  onClose,
-  type,
-}) => {
-  const [navOverlayType, setnavOverlay] = useState(
-    type ?? navOverlayTypeMap.schedule
-  );
+export const NavOverlay: React.FC<navOverlayProps> = ({ onClose, type }) => {
+  const [navOverlayType, setNavOverlay] = useState(type);
   const { worldSlug, spaceSlug } = useSpaceParams();
   const { space } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
 
-  if (!isShown) {
-    return null;
-  }
+  useEffect(() => {
+    setNavOverlay(type);
+
+    return () => setNavOverlay("");
+  }, [type]);
 
   const spaceName = space?.name ?? SPACE_TAXON.lower;
 
@@ -65,14 +61,17 @@ export const NavOverlay: React.FC<navOverlayProps> = ({
             <span
               className={styles.NavOverlay__navigation_button}
               key={key}
-              onClick={() => setnavOverlay(label)}
+              onClick={() => setNavOverlay(key)}
             >
               {label}
             </span>
           ))}
         </div>
         <div className={styles.NavOverlay__content}>
-          {navOverlayType === "Schedule" && <ScheduleOverlay />}
+          {navOverlayType === NavOverlayTab.schedule && <ScheduleOverlay />}
+          {navOverlayType === NavOverlayTab.search && (
+            <SearchOverlay onClose={onClose} />
+          )}
         </div>
       </div>
     </div>
