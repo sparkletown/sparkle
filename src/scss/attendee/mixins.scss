@@ -1,4 +1,4 @@
-@import "scss/AttendeeVariables.scss";
+@use "./variables.scss"as *;
 
 @mixin font-core {
   font-size: 14px;

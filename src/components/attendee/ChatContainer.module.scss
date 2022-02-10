@@ -1,4 +1,5 @@
-@import "scss/AttendeeMixins.scss";
+@use "scss/attendee/mixins.scss"as *;
+@use "scss/attendee/variables.scss"as *;
 
 @keyframes scroll-left {
   0% {
