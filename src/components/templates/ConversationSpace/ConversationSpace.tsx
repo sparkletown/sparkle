@@ -132,20 +132,18 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
               )}
             </div>
           </div>
-          <div className="seated-area">
-            <TablesUserList
-              setSeatedAtTable={setSeatedAtTable}
-              seatedAtTable={seatedAtTable}
-              venueId={venue.id}
-              TableComponent={TableComponent}
-              joinMessage={venue.hideVideo === false}
-              customTables={tables}
-              defaultTables={CONVERSATION_TABLES}
-              showOnlyAvailableTables={showOnlyAvailableTables}
-              venue={venue}
-              template={VenueTemplate.conversationspace}
-            />
-          </div>
+          <TablesUserList
+            setSeatedAtTable={setSeatedAtTable}
+            seatedAtTable={seatedAtTable}
+            venueId={venue.id}
+            TableComponent={TableComponent}
+            joinMessage={venue.hideVideo === false}
+            customTables={tables}
+            defaultTables={CONVERSATION_TABLES}
+            showOnlyAvailableTables={showOnlyAvailableTables}
+            venue={venue}
+            template={VenueTemplate.conversationspace}
+          />
           <UserList
             usersSample={venue.recentUsersSample ?? ALWAYS_EMPTY_ARRAY}
             userCount={venue.recentUserCount ?? 0}
