@@ -70,43 +70,15 @@
     position: relative;
   }
 }
-/*
-  a {
-    @include atom-button;
-    border-radius: 0;
-    width: $button-height;
-    position: relative;
-    .caption {
-      position: absolute;
-      top: -500px;
-    }
-    .icon {
-      @include atom-icon;
-      opacity: $opacity;
-      @media (prefers-color-scheme: dark) {
-        filter: invert(1);
-      }
-    }
-    &#media-control-expand {
-      overflow: hidden;
-      .icon {
-        background-image: url(icons/icon-expand.svg);
-      }
-    }
-    &:hover,
-    &:focus {
-      .icon {
-        opacity: 1;
-      }
-    }
+
+.componentSpaceInfo {
+  text-align: center;
+  padding: 0 AttendeeVariables.$whitespace * 2;
+  margin: 0 auto;
+  width: 100%;
+  // TODO Decide why this is 416..
+  max-width: 416px;
+  h1 {
+    font-size: 23px;
   }
 }
-&.expanded {
-  .video {
-    max-width: 960px;
-  }
-  #media-controls a#media-control-expand .icon {
-    background-image: url(icons/icon-collapse.svg);
-  }
-}
-*/
