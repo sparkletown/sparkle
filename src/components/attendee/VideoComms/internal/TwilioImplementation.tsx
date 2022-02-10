@@ -32,8 +32,8 @@ const wrapTrack = <Kind, TrackType extends Tracklike>(
 ) => ({
   kind,
   id,
-  attach: track.attach,
-  detach: track.detach,
+  attach: track.attach.bind(track),
+  detach: track.detach.bind(track),
   twilioTrack: track,
   enabled: track.isEnabled,
   sourceType: getTrackSource(track),
