@@ -40,6 +40,11 @@ export interface Participant {
   id: string;
 
   /**
+   * ID of the participant from the point of view of Sparkle. e.g. userId
+   */
+  sparkleId: string;
+
+  /**
    * Video tracks
    */
   videoTracks: VideoTrack[];

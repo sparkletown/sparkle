@@ -1,9 +1,9 @@
 import React, { useCallback } from "react";
 
 import { VideoTrack } from "../VideoComms/types";
-import { VideoCommsParticipant } from "../VideoComms/VideoCommsParticipant";
 
 import { ExtraButton } from "./internal/ExtraButton";
+import { HuddleParticipant } from "./internal/HuddleParticipant";
 import { useVideoHuddle } from "./useVideoHuddle";
 
 import styles from "./VideoHuddle.module.scss";
@@ -56,21 +56,19 @@ export const VideoHuddle: React.FC<VideoHuddleProps> = ({ userId }) => {
       </div>
       <div className={styles.VideoHuddleVideos}>
         {localParticipant && (
-          <div className={styles.VideoContainer} key={localParticipant.id}>
-            <VideoCommsParticipant
-              isLocal
-              participant={localParticipant}
-              videoTrackControls={addButtons}
-            />
-          </div>
+          <HuddleParticipant
+            key={localParticipant.id}
+            participant={localParticipant}
+            addButtons={addButtons}
+            isLocal
+          />
         )}
         {remoteParticipants.map((participant) => (
-          <div key={participant.id} className={styles.VideoContainer}>
-            <VideoCommsParticipant
-              participant={participant}
-              videoTrackControls={addButtons}
-            />
-          </div>
+          <HuddleParticipant
+            key={participant.id}
+            participant={participant}
+            addButtons={addButtons}
+          />
         ))}
       </div>
     </div>

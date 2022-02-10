@@ -44,11 +44,3 @@
   justify-content: center;
   gap: $button-gap;
 }
-
-.VideoContainer {
-  display: flex;
-  justify-content: center;
-
-  @include rounded;
-  overflow: hidden;
-}

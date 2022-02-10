@@ -93,6 +93,7 @@ const localPublicationsToAudioTracks = (
 
 const wrapLocalParticipant = (room: Twilio.Room) => ({
   id: room.localParticipant.sid,
+  sparkleId: room.localParticipant.identity,
   audioTracks: localPublicationsToAudioTracks(
     room.localParticipant.audioTracks
   ),
@@ -165,6 +166,7 @@ export const TwilioImplementation = (
     );
     return {
       id: participant.sid,
+      sparkleId: participant.identity,
       audioTracks,
       videoTracks,
     };

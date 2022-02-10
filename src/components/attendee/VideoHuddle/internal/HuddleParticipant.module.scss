@@ -1,0 +1,13 @@
+@use "../../scss/AttendeeMixins.scss";
+
+.huddleParticipant {
+  display: flex;
+  justify-content: center;
+
+  @include AttendeeMixins.rounded;
+  overflow: hidden;
+}
+
+.avatarContainer {
+  display: flex;
+}
