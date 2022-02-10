@@ -1,4 +1,5 @@
-@import "~components/attendee/scss/AttendeeMixins.scss";
+@use "scss/attendee/mixins.scss"as *;
+@use "scss/attendee/variables.scss"as *;
 
 .MapRoom {
   display: flex;
@@ -33,15 +34,18 @@
   @include atom-button;
   @include rounded;
   @include sparkle-color-glass;
+
   &:hover {
     @include sparkle-color;
   }
 
   white-space: nowrap;
+
   & > span {
     display: flex;
     padding-left: $whitespace * 0.5;
     opacity: $opacity;
+
     span {
       @include atom-icon;
       background-image: url(~assets/icons/icon-users.svg);
@@ -64,6 +68,7 @@
   border-left: 1px solid $sparkle-border;
   border-radius: 0;
   padding-right: 0;
+
   span {
     @include atom-icon;
     background-image: url(~assets/icons/icon-info.svg);
@@ -84,11 +89,13 @@
   width: $portal-info-panel-width;
   margin-left: $portal-info-panel-width * -0.5;
   z-index: 100;
+
   h3 {
     @include font-body;
     text-align: center;
     margin: $whitespace;
   }
+
   p {
     text-align: center;
     margin: $whitespace;
