@@ -1,5 +1,5 @@
-@use "components/attendee/scss/AttendeeVariables.scss";
-@use "components/attendee/scss/AttendeeMixins.scss";
+@use "scss/attendee/variables.scss";
+@use "scss/attendee/mixins.scss";
 
 .componentMediaObject {
   position: sticky;
@@ -20,7 +20,7 @@
   height: auto;
   max-width: 600px;
   @media (min-width: 768px) {
-    margin-left: AttendeeVariables.$button-height;
+    margin-left: variables.$button-height;
     transition: max-width 0.2s ease;
   }
 
@@ -44,41 +44,42 @@
   left: 0;
   width: 100%;
   height: 100%;
-  @include AttendeeMixins.rounded;
+  @include mixins.rounded;
   overflow: hidden;
 }
 
 .mediaControls {
   display: none;
   position: relative;
-  margin-top: AttendeeVariables.$button-gap * -1;
-  width: AttendeeVariables.$button-height;
+  margin-top: variables.$button-gap * -1;
+  width: variables.$button-height;
   flex-direction: column;
   justify-self: start;
-  margin-left: AttendeeVariables.$whitespace;
+  margin-left: variables.$whitespace;
   @media (min-width: 768px) {
     display: flex;
   }
   svg {
-    @include AttendeeMixins.atom-icon;
-    opacity: AttendeeVariables.$opacity;
+    @include mixins.atom-icon;
+    opacity: variables.$opacity;
     @media (prefers-color-scheme: dark) {
       filter: invert(1);
     }
     border-radius: 0;
-    width: AttendeeVariables.$button-height;
+    width: variables.$button-height;
     position: relative;
   }
 }
 
 .componentSpaceInfo {
   text-align: center;
-  padding: 0 AttendeeVariables.$whitespace * 2;
+  padding: 0 variables.$whitespace * 2;
   margin: 0 auto;
   width: 100%;
   // TODO Decide why this is 416..
   max-width: 416px;
   h1 {
     font-size: 23px;
+    font-weight: 400;
   }
 }
