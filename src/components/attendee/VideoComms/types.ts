@@ -3,6 +3,7 @@ import Twilio from "twilio-video";
 import { Branded } from "utils/types";
 
 export type TrackId = Branded<string, "TrackId">;
+export type ChannelId = Branded<string, "ChannelId">;
 
 export enum VideoCommsStatus {
   Disconnected = "DISCONNECTED",
@@ -69,7 +70,7 @@ type Disconnect = () => void;
 type ShareScreen = () => void;
 
 export interface VideoCommsContextType {
-  channelId?: string;
+  channelId?: ChannelId;
   status: VideoCommsStatus;
   joinChannel: JoinChannel;
   disconnect: Disconnect;
