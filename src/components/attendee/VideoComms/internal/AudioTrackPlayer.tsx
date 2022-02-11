@@ -17,13 +17,13 @@ export const AudioTrackPlayer: React.FC<AudioTrackPlayerProps> = ({
   const audioRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
-    if (track && audioRef.current) {
-      track.attach(audioRef.current);
+    if (track?.twilioTrack && audioRef.current) {
+      track.twilioTrack.attach(audioRef.current);
       return () => {
-        track.detach();
+        track.twilioTrack.detach();
       };
     }
-  }, [track]);
+  }, [track?.twilioTrack]);
 
   return <audio ref={audioRef} autoPlay />;
 };
