@@ -1,14 +1,7 @@
 import React, { useCallback } from "react";
 import { faTimesCircle } from "@fortawesome/free-regular-svg-icons";
-import {
-  faVideo,
-  faVideoSlash,
-  faVolumeMute,
-  faVolumeUp,
-} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { useVideoComms } from "../VideoComms/hooks";
 import { VideoTrack } from "../VideoComms/types";
 
 import { ExtraButton } from "./internal/ExtraButton";
@@ -29,15 +22,6 @@ export const VideoHuddle: React.FC<VideoHuddleProps> = ({ userId }) => {
     remoteParticipants,
     leaveHuddle,
   } = useVideoHuddle();
-
-  const {
-    isTransmittingAudio,
-    isTransmittingVideo,
-    startAudio,
-    startVideo,
-    stopAudio,
-    stopVideo,
-  } = useVideoComms();
 
   const addButtons = useCallback(
     (track: VideoTrack) => {
@@ -61,20 +45,6 @@ export const VideoHuddle: React.FC<VideoHuddleProps> = ({ userId }) => {
       <div className={styles.VideoHuddleControls}>
         <span onClick={leaveHuddle}>
           <FontAwesomeIcon icon={faTimesCircle} />
-        </span>
-        <span onClick={isTransmittingAudio ? stopAudio : startAudio}>
-          {isTransmittingAudio ? (
-            <FontAwesomeIcon icon={faVolumeUp} />
-          ) : (
-            <FontAwesomeIcon icon={faVolumeMute} />
-          )}
-        </span>
-        <span onClick={isTransmittingVideo ? stopVideo : startVideo}>
-          {isTransmittingVideo ? (
-            <FontAwesomeIcon icon={faVideo} />
-          ) : (
-            <FontAwesomeIcon icon={faVideoSlash} />
-          )}
         </span>
       </div>
       <div className={styles.VideoHuddleVideos}>

@@ -1,3 +1,11 @@
+import {
+  faVideo,
+  faVideoSlash,
+  faVolumeMute,
+  faVolumeUp,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import { useVideoComms } from "../hooks";
 
 interface VideoCommsControlsProps {}
@@ -15,14 +23,22 @@ export const VideoCommsControls: React.FC<VideoCommsControlsProps> = () => {
   return (
     <>
       {isTransmittingAudio ? (
-        <span onClick={stopAudio}>Mute</span>
+        <span onClick={stopAudio}>
+          <FontAwesomeIcon icon={faVolumeUp} />
+        </span>
       ) : (
-        <span onClick={startAudio}>Unmute</span>
+        <span onClick={startAudio}>
+          <FontAwesomeIcon icon={faVolumeMute} />
+        </span>
       )}
       {isTransmittingVideo ? (
-        <span onClick={stopVideo}>Hide</span>
+        <span onClick={stopVideo}>
+          <FontAwesomeIcon icon={faVideo} />
+        </span>
       ) : (
-        <span onClick={startVideo}>Reveal</span>
+        <span onClick={startVideo}>
+          <FontAwesomeIcon icon={faVideoSlash} />
+        </span>
       )}
     </>
   );

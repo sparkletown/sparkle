@@ -1,6 +1,14 @@
 import React from "react";
+import classNames from "classnames";
+
+import { UserId } from "types/id";
+
+import { useProfileById } from "hooks/user/useProfileById";
+
+import { UserAvatar } from "components/atoms/UserAvatar";
 
 import { AudioTrackPlayer } from "./internal/AudioTrackPlayer";
+import { VideoCommsControls } from "./internal/VideoCommsControls";
 import { Participant, VideoSource, VideoTrack } from "./types";
 import { VideoTrackDisplay } from "./VideoTrackDisplay";
 
@@ -22,21 +30,49 @@ export const VideoCommsParticipant: React.FC<VideoCommsParticipantProps> = ({
   isLocal,
   videoTrackControls,
 }) => {
+  const { profile, isLoading } = useProfileById({
+    userId: participant.sparkleId as UserId,
+  });
+
+  const hasActiveVideoStream = participant.videoTracks.some(
+    (t) => t.sourceType === VideoSource.Webcam && t.enabled
+  );
+
+  const invertedControlsClassnames = classNames(
+    styles.videoCommsControlsContainer,
+    styles.videoCommsControlsContainer__darkButtons
+  );
+
   return (
     <div className={styles.videoCommsParticipant}>
       {participant.videoTracks.map((track) => (
-        <React.Fragment key={track.id}>
+        <div key={track.id} className={styles.trackContainer}>
           <VideoTrackDisplay
             key={track.id}
             track={track}
             isMirrored={isLocal && track.sourceType === VideoSource.Webcam}
           />
-          {videoTrackControls && videoTrackControls(track)}
-        </React.Fragment>
+          <div className={styles.videoCommsControlsContainer}>
+            {isLocal && <VideoCommsControls />}
+            {videoTrackControls && videoTrackControls(track)}
+          </div>
+        </div>
       ))}
       {participant.audioTracks.map((track) => (
         <AudioTrackPlayer key={track.id} track={track} />
       ))}
+
+      {!hasActiveVideoStream && !isLoading && (
+        <>
+          <UserAvatar
+            containerClassName={styles.avatarContainer}
+            user={profile}
+          />
+          <div className={invertedControlsClassnames}>
+            {isLocal && <VideoCommsControls />}
+          </div>
+        </>
+      )}
     </div>
   );
 };

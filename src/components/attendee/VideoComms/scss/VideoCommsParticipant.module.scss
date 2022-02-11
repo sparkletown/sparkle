@@ -1,4 +1,41 @@
 .videoCommsParticipant {
   display: flex;
   flex-direction: row;
+  position: relative;
+}
+
+.trackContainer {
+  display: flex;
+  position: relative;
+}
+
+.videoCommsControlsContainer {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: row-reverse;
+  font-size: 22px;
+  color: #f1f1f1;
+  background: rgba(0, 0, 0, 0.5);
+  border-top-left-radius: 4px;
+  span {
+    margin: 2px 7px;
+  }
+  &__darkButtons {
+    color: #000000;
+    background: none;
+  }
+}
+
+.avatarContainer {
+  display: flex;
+  border: 1px solid #dbdbdb;
+  background: #f0f0f0;
+  min-width: 186px;
+  img {
+    max-width: 64px;
+    max-height: 64px;
+    margin: auto;
+  }
 }

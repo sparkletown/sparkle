@@ -9,6 +9,7 @@
 
   @media (min-width: 768px) {
     @include sparkle-panel;
+    background-color: #f6f6f6;
     grid-column: 1 / 3;
     margin: 0 $whitespace * -1;
     width: calc(100% + #{$whitespace * 2});
@@ -26,6 +27,7 @@
 
 .VideoHuddleControls {
   @include sparkle-panel;
+  background-color: #f6f6f6;
   position: relative;
   margin-top: $button-gap * -1;
   width: $button-height;
