@@ -5,7 +5,6 @@ import {
   CONVERSATION_TABLES,
   DEFAULT_PARTY_NAME,
   JAZZBAR_TABLES,
-  STRING_PLUS,
   STRING_SPACE,
 } from "settings";
 
@@ -81,7 +80,7 @@ export const TableComponent: React.FunctionComponent<TableComponentPropsType> = 
           <img
             onClick={() => openUserProfileModal(user.id)}
             key={user.id}
-            className="TableComponent__profile-icon"
+            className="TableComponent__user-avatar"
             src={profilePic}
             onError={onLoadError}
             title={user.partyName || DEFAULT_PARTY_NAME}
@@ -95,69 +94,63 @@ export const TableComponent: React.FunctionComponent<TableComponentPropsType> = 
   );
 
   return (
-    <div className="TableComponent">
-      <div>
+    <div className="TableComponent TableComponent__table TableComponent__video-well">
+      <div className="TableComponent__table-header">
+        {isRemoveButtonShown && (
+          <img
+            className="TableComponent__delete-button"
+            src={PortalCloseIcon}
+            alt="remove table"
+            onClick={toggleModal}
+          />
+        )}
         <div className="TableComponent__occupancy-warning">
           {locked && "locked"}
           {!locked && full && "full"}
         </div>
-        <div className="TableComponent__item-wrapper">
-          <span className="TableComponent__title">{table.title}</span>
-
-          {isRemoveButtonShown && (
-            <img
-              className="TableComponent__delete-icon"
-              src={PortalCloseIcon}
-              alt="remove table"
-              onClick={toggleModal}
-            />
-          )}
-        </div>
-        <div className="TableComponent__users">
-          {renderedUserPictures}
-
-          {users &&
-            table.capacity &&
-            table.capacity - users.length >= 0 &&
-            [...Array(table.capacity - users.length)].map((e, i) => (
-              <span
-                key={i}
-                onClick={() => onJoinClicked(table.reference, locked)}
-                id={`join-table-${venue?.name}-${table.reference}`}
-                className="TableComponent__add-user"
-              >
-                {STRING_PLUS}
-              </span>
-            ))}
-        </div>
+        <span className="TableComponent__title">{table.title}</span>
       </div>
-      <Modal show={isModalShown} onHide={hideModal} centered bgVariant="dark">
-        <div className="TableComponent__modal-container">
-          <h2>Delete table</h2>
-          <p>
-            WARNING: This action cannot be undone and will permanently remove
-            {STRING_SPACE}
-            {table.title}
-          </p>
-          <div className="TableComponent__modal-buttons">
-            <ButtonNG
-              variant="secondary"
-              onClick={hideModal}
-              disabled={isDeletingTable}
-            >
-              Cancel
-            </ButtonNG>
+      <div className="TableComponent__table-users">
+        {renderedUserPictures}
 
-            <ButtonNG
-              disabled={isDeletingTable}
-              variant="danger"
-              onClick={removeTable}
-            >
-              Delete
-            </ButtonNG>
+        {users && table.capacity && table.capacity - users.length >= 0 && (
+          <span
+            key={"join-button"}
+            onClick={() => onJoinClicked(table.reference, locked)}
+            id={`join-table-${venue?.name}-${table.reference}`}
+            className="TableComponent__video-well TableComponent__join-button"
+          >
+            Join
+          </span>
+        )}
+        <Modal show={isModalShown} onHide={hideModal} centered bgVariant="dark">
+          <div className="TableComponent__modal-container">
+            <h2>Delete table</h2>
+            <p>
+              WARNING: This action cannot be undone and will permanently remove
+              {STRING_SPACE}
+              {table.title}
+            </p>
+            <div className="TableComponent__modal-buttons">
+              <ButtonNG
+                variant="secondary"
+                onClick={hideModal}
+                disabled={isDeletingTable}
+              >
+                Cancel
+              </ButtonNG>
+
+              <ButtonNG
+                disabled={isDeletingTable}
+                variant="danger"
+                onClick={removeTable}
+              >
+                Delete
+              </ButtonNG>
+            </div>
           </div>
-        </div>
-      </Modal>
+        </Modal>
+      </div>
     </div>
   );
 };

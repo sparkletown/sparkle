@@ -207,7 +207,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
 
   return (
     <>
-      {renderedTables}
+      <div className="TablesUserList">{renderedTables}</div>
       {allowCreateEditTable && (
         <StartTable
           defaultTables={defaultTables}
