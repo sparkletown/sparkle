@@ -1,0 +1,72 @@
+@use "scss/attendee/variables.scss";
+@use "scss/attendee/mixins.scss";
+
+.componentMediaObject {
+  position: sticky;
+  top: 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  z-index: 50;
+  padding: 21px 6px 0;
+  margin-top: 21px;
+  margin-bottom: 42px;
+  height: min-content;
+}
+
+.video {
+  position: relative;
+  width: 100%;
+  height: auto;
+  max-width: 600px;
+  @media (min-width: 768px) {
+    margin-left: variables.$button-height;
+    transition: max-width 0.2s ease;
+  }
+
+  // This is needed to force the video to size correctly and so display
+  &:before {
+    content: " ";
+    position: relative;
+    display: block;
+    width: 100%;
+    padding-bottom: 56.25%;
+  }
+
+  &__expanded {
+    max-width: 960px;
+  }
+}
+
+.iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  @include mixins.rounded;
+  overflow: hidden;
+}
+
+.mediaControls {
+  display: none;
+  position: relative;
+  margin-top: variables.$button-gap * -1;
+  width: variables.$button-height;
+  flex-direction: column;
+  justify-self: start;
+  margin-left: variables.$whitespace;
+  @media (min-width: 768px) {
+    display: flex;
+  }
+  svg {
+    @include mixins.atom-icon;
+    opacity: variables.$opacity;
+    @media (prefers-color-scheme: dark) {
+      filter: invert(1);
+    }
+    border-radius: 0;
+    width: variables.$button-height;
+    position: relative;
+  }
+}
