@@ -189,7 +189,6 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
         tableLocked={tableLocked}
         onJoinClicked={onJoinClicked}
         venue={venue}
-        template={template}
       />
     ));
   }, [
@@ -201,7 +200,6 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
     usersSeatedAtTables,
     onJoinClicked,
     venue,
-    template,
   ]);
 
   if (!isSeatedTableUsersLoaded) return <Loading />;

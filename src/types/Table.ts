@@ -1,5 +1,4 @@
 import { DisplayUser } from "types/User";
-import { VenueTemplate } from "types/VenueTemplate";
 
 import { WithId } from "utils/id";
 
@@ -21,7 +20,5 @@ export interface TableComponentPropsType {
   users: readonly WithId<DisplayUser>[];
   tableCapacity?: number;
   onJoinClicked: (table: string, locked: boolean) => void;
-  imageSize?: number;
   venue: WithId<AnyVenue>;
-  template?: VenueTemplate;
 }
