@@ -25,7 +25,7 @@ import { ButtonNG } from "components/atoms/ButtonNG";
 
 import PortalCloseIcon from "assets/icons/icon-close-portal.svg";
 
-import "./TableComponent.scss";
+import styles from "./TableComponent.module.scss";
 
 export const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
   users,
@@ -80,7 +80,7 @@ export const TableComponent: React.FunctionComponent<TableComponentPropsType> = 
           <img
             onClick={() => openUserProfileModal(user.id)}
             key={user.id}
-            className="TableComponent__user-avatar"
+            className={styles.userAvatar}
             src={profilePic}
             onError={onLoadError}
             title={user.partyName || DEFAULT_PARTY_NAME}
@@ -94,23 +94,23 @@ export const TableComponent: React.FunctionComponent<TableComponentPropsType> = 
   );
 
   return (
-    <div className="TableComponent TableComponent__table TableComponent__video-well">
-      <div className="TableComponent__table-header">
+    <div className={styles.tableContainer}>
+      <div className={styles.tableHeader}>
         {isRemoveButtonShown && (
           <img
-            className="TableComponent__delete-button"
+            className={styles.deleteButton}
             src={PortalCloseIcon}
             alt="remove table"
             onClick={toggleModal}
           />
         )}
-        <div className="TableComponent__occupancy-warning">
+        <div>
           {locked && "locked"}
           {!locked && full && "full"}
         </div>
-        <span className="TableComponent__title">{table.title}</span>
+        <span>{table.title}</span>
       </div>
-      <div className="TableComponent__table-users">
+      <div className={styles.tableUsers}>
         {renderedUserPictures}
 
         {users && table.capacity && table.capacity - users.length >= 0 && (
@@ -118,20 +118,20 @@ export const TableComponent: React.FunctionComponent<TableComponentPropsType> = 
             key={"join-button"}
             onClick={() => onJoinClicked(table.reference, locked)}
             id={`join-table-${venue?.name}-${table.reference}`}
-            className="TableComponent__video-well TableComponent__join-button"
+            className={styles.joinButton}
           >
             Join
           </span>
         )}
         <Modal show={isModalShown} onHide={hideModal} centered bgVariant="dark">
-          <div className="TableComponent__modal-container">
+          <div>
             <h2>Delete table</h2>
             <p>
               WARNING: This action cannot be undone and will permanently remove
               {STRING_SPACE}
               {table.title}
             </p>
-            <div className="TableComponent__modal-buttons">
+            <div>
               <ButtonNG
                 variant="secondary"
                 onClick={hideModal}
@@ -142,7 +142,7 @@ export const TableComponent: React.FunctionComponent<TableComponentPropsType> = 
 
               <ButtonNG
                 disabled={isDeletingTable}
-                variant="danger"
+                variant="secondary"
                 onClick={removeTable}
               >
                 Delete
