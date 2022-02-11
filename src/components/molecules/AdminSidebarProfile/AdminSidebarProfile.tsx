@@ -29,7 +29,7 @@ export const AdminSidebarProfile: React.FC<AdminSidebarProfileProps> = ({
 
   return (
     <div
-      className="flex-shrink-0 flex bg-gray-700 p-4"
+      className="AdminSidebarProfile flex-shrink-0 flex bg-gray-700 p-4"
       onClick={handleAvatarClick}
     >
       <div className="flex-shrink-0 w-full group block">

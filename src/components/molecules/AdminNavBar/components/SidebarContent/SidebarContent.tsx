@@ -26,6 +26,9 @@ import { useWorldBySlug } from "hooks/worlds/useWorldBySlug";
 
 import { AdminSidebarProfile } from "components/molecules/AdminSidebarProfile";
 
+import * as TW from "./SidebarContent.tailwind";
+
+import SparkleLogo from "assets/icons/sparkle-300.png";
 const navigation = [
   {
     name: "Spaces",
@@ -61,19 +64,15 @@ export const SidebarContent = () => {
 
         const isCurrentRoute = targetUrl === location.pathname;
 
-        const linkClasses = classNames(
-          isCurrentRoute
-            ? "bg-sparkle text-white"
-            : "text-gray-300 hover:bg-sparkle-darker hover:text-white",
-          "group flex items-center px-2 py-2 text-base font-regular rounded-md"
-        );
+        const linkClasses = classNames(TW.menuLinkGeneral, {
+          [TW.menuLinkCurrent]: isCurrentRoute,
+          [TW.menuLinkNotCurrent]: !isCurrentRoute,
+        });
 
-        const iconClasses = classNames(
-          isCurrentRoute
-            ? "text-gray-300"
-            : "text-gray-400 group-hover:text-gray-300",
-          "mr-4 flex-shrink-0 h-6 w-6"
-        );
+        const iconClasses = classNames(TW.menuIconGeneral, {
+          [TW.menuIconCurrent]: isCurrentRoute,
+          [TW.menuIconNotCurrent]: !isCurrentRoute,
+        });
 
         return (
           <Link to={targetUrl} key={item.name} className={linkClasses}>
@@ -85,27 +84,21 @@ export const SidebarContent = () => {
     [location.pathname, worldSlug]
   );
 
-  const switchWorldLinkClasses = classNames(
-    "flex items-center px-2 py-2 text-sm uppercase tracking-wider rounded-md group",
-    worldIsChosen
-      ? "text-gray-300 hover:bg-gray-700 hover:text-white font-regular"
-      : "text-gray-30 font-medium bg-sparkle text-white"
-  );
+  const switchWorldLinkClasses = classNames(TW.linkGeneral, {
+    [TW.linkWorldIsChosen]: worldIsChosen,
+    [TW.linkWorldIsNotChosen]: !worldIsChosen,
+  });
 
-  const switchWorldIconClasses = classNames(
-    "mr-3 flex-shrink-0 h-6 w-6",
-    worldIsChosen ? "text-gray-400 group-hover:text-gray-300" : "text-gray-300"
-  );
+  const switchWorldIconClasses = classNames(TW.switchWorldIconGeneral, {
+    [TW.switchWorldIconChosen]: worldIsChosen,
+    [TW.switchWorldIconNotChosen]: !worldIsChosen,
+  });
 
   return (
-    <div className="flex-1 flex flex-col min-h-0 bg-gray-800">
+    <div className="SidebarContent flex-1 flex flex-col min-h-0 bg-gray-800">
       <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
         <div className="flex items-center flex-shrink-0 px-4">
-          <img
-            className="block h-8 w-auto"
-            src="/images/sparkle-300.png"
-            alt="Sparkle"
-          />
+          <img className="block h-8 w-auto" src={SparkleLogo} alt="Sparkle" />
         </div>
         {worldIsChosen && (
           <nav className="mt-5 px-2 space-y-1">

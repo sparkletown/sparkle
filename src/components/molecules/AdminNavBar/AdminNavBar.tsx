@@ -1,6 +1,7 @@
 import React, { Fragment, useCallback } from "react";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dialog, Transition } from "@headlessui/react";
-import { XIcon } from "@heroicons/react/outline";
 
 import { SidebarContent } from "./components/SidebarContent";
 
@@ -62,7 +63,10 @@ export const AdminNavBar: React.FC<AdminNavBarPropsType> = ({
                     onClick={onCloseSidebar}
                   >
                     <span className="sr-only">Close sidebar</span>
-                    <XIcon className="h-6 w-6 text-white" aria-hidden="true" />
+                    <FontAwesomeIcon
+                      className="h-6 w-6 text-white"
+                      icon={faTimes}
+                    />
                   </button>
                 </div>
               </Transition.Child>

@@ -1,5 +1,6 @@
 import { ReactNode, useEffect, useMemo, useState } from "react";
-import { MenuIcon } from "@heroicons/react/outline";
+import { faBars } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { AdminProfileModal } from "components/organisms/AdminProfileModal";
 
@@ -35,7 +36,7 @@ export const AdminLayout: React.FC<AdminLayoutPropsType> = ({ children }) => {
   );
 
   return (
-    <div>
+    <div className="AdminLayout">
       <AdminNavBar
         sidebarOpen={pageLayout.sidebarOpen}
         setSidebarOpen={setSidebarOpen}
@@ -50,7 +51,7 @@ export const AdminLayout: React.FC<AdminLayoutPropsType> = ({ children }) => {
             }}
           >
             <span className="sr-only">Open sidebar</span>
-            <MenuIcon className="h-6 w-6" aria-hidden="true" />
+            <FontAwesomeIcon className="h-6 w-6" icon={faBars} />
           </button>
         </div>
         <main className="flex-1">
