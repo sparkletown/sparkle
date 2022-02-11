@@ -29,11 +29,11 @@ interface UserWithVisits {
 
 const getUsersWithVisits = async (spaceIds: string[]) => {
   const dto = await chunk(spaceIds, 10)
-    .map(async (idsArray) => {
+    .map(async (spaceIdsChunk) => {
       return await admin
         .firestore()
         .collection("users")
-        .where("enteredspaceIds", "array-contains-any", idsArray)
+        .where("enteredVenueIds", "array-contains-any", spaceIdsChunk)
         .get()
         .then((usersSnapshot) =>
           usersSnapshot.docs.map(async (userDoc) => {
@@ -124,6 +124,8 @@ const generateAnalytics: HttpsFunctionHandler<{
     (acc, authUser) => ({ ...acc, [authUser.uid]: authUser }),
     {}
   );
+
+  console.log({ usersWithVisits, authUsers });
 
   // TODO: filter enteredspaceIds and visitsTimeSpent so that they only contain related venues?
   const result = usersWithVisits
