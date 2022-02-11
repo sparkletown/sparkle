@@ -23,12 +23,10 @@ import styles from "./TableComponent.module.scss";
 export const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
   users,
   onJoinClicked,
-  imageSize = 50,
   table,
   tableLocked,
   venue,
   userId,
-  template,
 }) => {
   const locked = tableLocked(table.reference);
   const numberOfSeatsLeft = table.capacity && table.capacity - users.length;

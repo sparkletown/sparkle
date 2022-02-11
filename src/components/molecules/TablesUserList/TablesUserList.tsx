@@ -186,7 +186,6 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
         tableLocked={tableLocked}
         onJoinClicked={onJoinClicked}
         venue={venue}
-        template={template}
         userId={user.id}
       />
     ));
@@ -199,7 +198,6 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
     usersSeatedAtTables,
     onJoinClicked,
     venue,
-    template,
     user.id,
   ]);
 
