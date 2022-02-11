@@ -29,7 +29,7 @@ interface ProjectedVideoTrackProps {
 // Not entirely convinced they are the same though.
 const ProjectedVideoTrack: React.FC<ProjectedVideoTrackProps> = ({ track }) => {
   return (
-    <div className={styles.ProjectedVideoTrack}>
+    <div className={styles.projectedVideoTrack}>
       <VideoTrackDisplay track={track} />
     </div>
   );
@@ -64,7 +64,6 @@ const _ExperimentalSpace: React.FC<ExperimentalSpaceProps> = ({
       },
     ]);
     return () => {
-      console.log("doing disconnect");
       setExtraButtons([]);
       leaveHuddle();
     };
@@ -98,14 +97,14 @@ const _ExperimentalSpace: React.FC<ExperimentalSpaceProps> = ({
   );
 
   return (
-    <div className={styles.Container}>
+    <div className={styles.container}>
       <div>
         {inHuddle && <p onClick={disconnectCallback}>Disconnect</p>}
         {!inHuddle && <p onClick={connectCallback}>Connect</p>}
         {inHuddle && <p onClick={shareScreenCallback}>Share screen</p>}
       </div>
 
-      <div className={styles.ContentBox}>
+      <div className={styles.contentBox}>
         {projectedVideoTrack ? (
           <ProjectedVideoTrack track={projectedVideoTrack} />
         ) : (
