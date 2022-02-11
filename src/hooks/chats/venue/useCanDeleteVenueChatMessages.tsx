@@ -10,9 +10,9 @@ type UseCanDeleteVenueChatMessagesProps = {
 };
 
 export const useCanDeleteVenueChatMessages = (
-  props: UseCanDeleteVenueChatMessagesProps
+  options: UseCanDeleteVenueChatMessagesProps
 ) => {
-  const { world, space } = props;
+  const { world, space } = options;
   const { userId } = useUser();
 
   if (!userId) return false;
