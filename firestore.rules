@@ -45,8 +45,10 @@ service cloud.firestore {
     match /venues/{venue} {
       allow read: if true;
 
-      // Allow anyone to set the centrally project track.
-      // TODO Decide whether this belongs on the venue, or, somewhere else.
+      // =======================================================================
+      // TODO Do not merge this into production. This needs far more thought and
+      // is only here to support a prototype space.
+      // =======================================================================
       allow update: if (request.resource.data.diff(resource.data).affectedKeys()
         .hasOnly(['projectedVideoTrackId']));
 

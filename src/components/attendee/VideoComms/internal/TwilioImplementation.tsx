@@ -2,6 +2,8 @@ import Twilio from "twilio-video";
 
 import { getTwilioVideoToken } from "api/video";
 
+import { isDefined } from "utils/types";
+
 import {
   AudioTrack,
   Participant,
@@ -53,18 +55,12 @@ const wrapLocalAudioPublication = (
   publication: Twilio.LocalAudioTrackPublication
 ): AudioTrack => wrapTrack(publication.track, "audio", publication.trackSid);
 
-/**
- * Used with filter to allow Typescript to convert arrays that might have nulls
- * in them into arrays of just a specific type.
- */
-const notNull = <T,>(value: T | null): value is T => value !== null;
-
 const remotePublicationsToTracks = (
   publications: Map<String, Twilio.RemoteVideoTrackPublication>
 ): VideoTrack[] => {
   return Array.from(publications.values())
     .map((vt) => vt.track && wrapRemoteVideoTrack(vt.track))
-    .filter(notNull);
+    .filter(isDefined);
 };
 
 const remotePublicationsToAudioTracks = (
@@ -72,7 +68,7 @@ const remotePublicationsToAudioTracks = (
 ): AudioTrack[] => {
   return Array.from(publications.values())
     .map((at) => at.track && wrapRemoteAudioTrack(at.track))
-    .filter(notNull);
+    .filter(isDefined);
 };
 
 const localPublicationsToVideoTracks = (
@@ -80,7 +76,7 @@ const localPublicationsToVideoTracks = (
 ): VideoTrack[] => {
   return Array.from(publications.values())
     .map((p) => p.track && wrapLocalVideoPublication(p))
-    .filter(notNull);
+    .filter(isDefined);
 };
 
 const localPublicationsToAudioTracks = (
@@ -88,7 +84,7 @@ const localPublicationsToAudioTracks = (
 ): AudioTrack[] => {
   return Array.from(publications.values())
     .map((p) => p.track && wrapLocalAudioPublication(p))
-    .filter(notNull);
+    .filter(isDefined);
 };
 
 const wrapLocalParticipant = (room: Twilio.Room) => ({
