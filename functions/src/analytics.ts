@@ -27,13 +27,13 @@ interface UserWithVisits {
   visits: UntimedVisit[];
 }
 
-const getUsersWithVisits = async (venueIdsArray: string[]) => {
-  const dto = await chunk(venueIdsArray, 10)
+const getUsersWithVisits = async (spaceIds: string[]) => {
+  const dto = await chunk(spaceIds, 10)
     .map(async (idsArray) => {
       return await admin
         .firestore()
         .collection("users")
-        .where("enteredVenueIds", "array-contains-any", idsArray)
+        .where("enteredspaceIds", "array-contains-any", idsArray)
         .get()
         .then((usersSnapshot) =>
           usersSnapshot.docs.map(async (userDoc) => {
@@ -87,23 +87,23 @@ const generateAnalytics: HttpsFunctionHandler<{
   const [world] = matchingWorlds.docs;
   const worldId = world.id;
 
-  const matchingVenues = await admin
+  const matchingSpaces = await admin
     .firestore()
     .collection("venues")
     .where("worldId", "==", worldId)
     .get();
 
-  if (matchingVenues.empty) {
+  if (matchingSpaces.empty) {
     throw new HttpsError(
       "internal",
       `The world ${data.worldSlug} does not have any venues`
     );
   }
 
-  const venueIds = matchingVenues.docs.map((venue) => venue.id);
+  const spaceIds = matchingSpaces.docs.map((space) => space.id);
   // TODO: extract this as a generic helper function?
   const usersWithVisits: UserWithVisits[] = await Promise.all(
-    await getUsersWithVisits(venueIds).then((res) => res.flat())
+    await getUsersWithVisits(spaceIds).then((res) => res.flat())
   );
 
   // TODO: extract this as a generic helper function?
@@ -125,9 +125,7 @@ const generateAnalytics: HttpsFunctionHandler<{
     {}
   );
 
-  // const allSpaceVisitsFileName = "allSpaceVisits.csv";
-
-  // TODO: filter enteredVenueIds and visitsTimeSpent so that they only contain related venues?
+  // TODO: filter enteredspaceIds and visitsTimeSpent so that they only contain related venues?
   const result = usersWithVisits
     .reduce((arr: UserWithVisits[], userWithVisits) => {
       const { user, visits } = userWithVisits;
