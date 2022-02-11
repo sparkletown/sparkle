@@ -393,7 +393,7 @@ export const setAuditoriumSections = functions.https.onCall(
       worldId: space.worldId,
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      uid: context.auth.token.user_id,
+      userId: context.auth.token.user_id,
     });
 
     const batch = admin.firestore().batch();
@@ -444,7 +444,7 @@ export const addVenueOwner = functions.https.onCall(async (data, context) => {
     worldId: space.worldId,
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    uid: context.auth.token.user_id,
+    userId: context.auth.token.user_id,
   });
 
   await admin
@@ -473,7 +473,7 @@ export const removeVenueOwner = functions.https.onCall(
       worldId: space.worldId,
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      uid: context.auth.token.user_id,
+      userId: context.auth.token.user_id,
     });
 
     await admin
@@ -543,7 +543,7 @@ export const upsertRoom = functions.https.onCall(async (data, context) => {
     worldId: space.worldId,
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    uid: context.auth.token.user_id,
+    userId: context.auth.token.user_id,
   });
 
   const doc = await admin.firestore().collection("venues").doc(venueId).get();
@@ -579,7 +579,7 @@ export const deleteRoom = functions.https.onCall(async (data, context) => {
     worldId: space.worldId,
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    uid: context.auth.token.user_id,
+    userId: context.auth.token.user_id,
   });
 
   const doc = await admin.firestore().collection("venues").doc(venueId).get();
@@ -621,7 +621,7 @@ export const updateVenue_v2 = functions.https.onCall(async (data, context) => {
     worldId: space.worldId,
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    uid: context.auth.token.user_id,
+    userId: context.auth.token.user_id,
   });
 
   if (!data.worldId) {
@@ -704,7 +704,7 @@ export const updateMapBackground = functions.https.onCall(
       worldId: space.worldId,
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      uid: context.auth.token.user_id,
+      userId: context.auth.token.user_id,
     });
 
     if (!data.worldId) {
@@ -743,7 +743,7 @@ export const updateVenueNG = functions.https.onCall(async (data, context) => {
     worldId: space.worldId,
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    uid: context.auth.token.user_id,
+    userId: context.auth.token.user_id,
   });
 
   if (!data.worldId) {
@@ -931,7 +931,7 @@ export const deleteTable = functions.https.onCall(async (data, context) => {
     worldId: space.worldId,
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    uid: context.auth.token.user_id,
+    userId: context.auth.token.user_id,
   });
 
   const doc = await admin.firestore().collection("venues").doc(spaceId).get();
@@ -979,7 +979,7 @@ export const deleteVenue = functions.https.onCall(async (data, context) => {
     worldId: space.worldId,
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    uid: context.auth.token.user_id,
+    userId: context.auth.token.user_id,
   });
 
   admin.firestore().collection("venues").doc(venueId).delete();
@@ -1033,7 +1033,7 @@ export const adminUpdateBannerMessage = functions.https.onCall(
       worldId: space.worldId,
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      uid: context.auth.token.user_id,
+      userId: context.auth.token.user_id,
     });
 
     await admin
@@ -1055,7 +1055,7 @@ export const adminUpdateIframeUrl = functions.https.onCall(
       worldId: space.worldId,
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      uid: context.auth.token.user_id,
+      userId: context.auth.token.user_id,
     });
 
     await admin
@@ -1105,7 +1105,7 @@ export const upsertScreeningRoomVideo = functions.https.onCall(
       worldId: space.worldId,
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      uid: context.auth.token.user_id,
+      userId: context.auth.token.user_id,
     });
 
     const videosCollection = await admin
@@ -1133,7 +1133,7 @@ export const deleteScreeningRoomVideo = functions.https.onCall(
       worldId: space.worldId,
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      uid: context.auth.token.user_id,
+      userId: context.auth.token.user_id,
     });
 
     await admin

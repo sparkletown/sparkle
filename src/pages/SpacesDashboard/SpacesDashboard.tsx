@@ -48,8 +48,6 @@ export const SpacesDashboard: React.FC<SpacesDashboardProps> = ({
 
   const { spaces } = useWorldSpaces({ worldId });
 
-  console.log({ worldId, spaces });
-
   const [
     currentSortingOption,
     setCurrentSortingOption,

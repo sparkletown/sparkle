@@ -6,14 +6,14 @@ import { isEmpty, isNil } from "lodash";
 import { LandingPageConfig } from "./types/venue";
 import { assertValidAuth } from "./utils/assert";
 import {
-  throwErrorIfNotMasterAdmin,
+  throwErrorIfNotSuperAdmin,
   throwErrorIfNotWorldOwner,
 } from "./utils/permissions";
 
 export const createWorld = functions.https.onCall(async (data, context) => {
   assertValidAuth(context);
 
-  await throwErrorIfNotMasterAdmin(context.auth?.token.user_id);
+  await throwErrorIfNotSuperAdmin(context.auth?.token.user_id);
 
   const worldData = {
     name: data.name,
@@ -75,7 +75,7 @@ export const updateWorld = functions.https.onCall(async (data, context) => {
 
   await throwErrorIfNotWorldOwner({
     worldId,
-    uid: context.auth?.token.user_id,
+    userId: context.auth?.token.user_id,
   });
 
   let landingPageConfig: LandingPageConfig | undefined = undefined;
@@ -137,7 +137,7 @@ export const deleteWorld = functions.https.onCall(async (data, context) => {
 
   await throwErrorIfNotWorldOwner({
     worldId,
-    uid: context.auth?.token.user_id,
+    userId: context.auth?.token.user_id,
   });
 
   admin.firestore().collection("worlds").doc(worldId).delete();

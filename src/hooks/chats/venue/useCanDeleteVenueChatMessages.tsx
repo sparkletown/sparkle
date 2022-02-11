@@ -1,11 +1,11 @@
 import { World } from "api/world";
 
-import { AnyVenue } from "types/venues";
+import { SpaceWithId } from "types/id";
 
 import { useUser } from "hooks/useUser";
 
 type UseCanDeleteVenueChatMessagesProps = {
-  space: AnyVenue;
+  space: SpaceWithId;
   world?: World;
 };
 

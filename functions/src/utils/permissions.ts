@@ -1,7 +1,7 @@
 import * as admin from "firebase-admin";
 import { HttpsError } from "firebase-functions/v1/https";
 
-export const throwErrorIfNotMasterAdmin = async (uid: string) => {
+export const throwErrorIfNotSuperAdmin = async (userId: string) => {
   try {
     const adminDoc = await admin
       .firestore()
@@ -16,7 +16,7 @@ export const throwErrorIfNotMasterAdmin = async (uid: string) => {
     const admins = adminDoc.data();
     const users = admins?.users;
 
-    if (Array.isArray(users) && users.includes(uid)) {
+    if (Array.isArray(users) && users.includes(userId)) {
       return;
     }
 
@@ -24,19 +24,19 @@ export const throwErrorIfNotMasterAdmin = async (uid: string) => {
   } catch (error) {
     throw new HttpsError(
       "internal",
-      `Error occurred checking admin ${uid}: ${error}`
+      `Error occurred checking admin ${userId}: ${error}`
     );
   }
 };
 
 const checkIfSpaceOwner = async ({
   spaceId,
-  uid,
+  userId,
 }: {
   spaceId: string;
-  uid: string;
+  userId: string;
 }): Promise<boolean> => {
-  return await admin
+  return admin
     .firestore()
     .collection("venues")
     .doc(spaceId)
@@ -50,30 +50,7 @@ const checkIfSpaceOwner = async ({
       if (!venue) {
         throw new HttpsError("internal", "No data returned");
       }
-      if (venue.owners && venue.owners.includes(uid)) return true;
-
-      if (venue.parentId) {
-        const doc = await admin
-          .firestore()
-          .collection("venues")
-          .doc(venue.parentId)
-          .get();
-
-        if (!doc.exists) {
-          throw new HttpsError(
-            "not-found",
-            `Venue ${spaceId} references missing parent ${venue.parentId}`
-          );
-        }
-        const parentVenue = doc.data();
-
-        if (!parentVenue) {
-          throw new HttpsError("internal", "No data returned");
-        }
-        if (parentVenue.owners && parentVenue.owners.includes(uid)) return true;
-
-        return false;
-      }
+      if (venue.owners && venue.owners.includes(userId)) return true;
 
       return false;
     })
@@ -87,27 +64,27 @@ const checkIfSpaceOwner = async ({
 
 export const throwErrorIfNotSpaceOwner = async ({
   spaceId,
-  uid,
+  userId,
 }: {
   spaceId: string;
-  uid: string;
+  userId: string;
 }) => {
-  const isSpaceOwner = await checkIfSpaceOwner({ spaceId, uid });
+  const isSpaceOwner = await checkIfSpaceOwner({ spaceId, userId });
 
   if (!isSpaceOwner) {
     throw new HttpsError(
       "permission-denied",
-      `User is not an owner of ${spaceId} nor its parent`
+      `User is not an owner of ${spaceId} space`
     );
   }
 };
 
 const checkIfWorldOwner = async ({
   worldId,
-  uid,
+  userId,
 }: {
   worldId: string;
-  uid: string;
+  userId: string;
 }) => {
   try {
     const worldDoc = await admin
@@ -125,7 +102,7 @@ const checkIfWorldOwner = async ({
       throw new HttpsError("internal", "Data not found");
     }
 
-    if (world.owners && world.owners.includes(uid)) {
+    if (world.owners && world.owners.includes(userId)) {
       return true;
     }
 
@@ -140,12 +117,12 @@ const checkIfWorldOwner = async ({
 
 export const throwErrorIfNotWorldOwner = async ({
   worldId,
-  uid,
+  userId,
 }: {
   worldId: string;
-  uid: string;
+  userId: string;
 }) => {
-  const isWorldOwner = await checkIfWorldOwner({ worldId, uid });
+  const isWorldOwner = await checkIfWorldOwner({ worldId, userId });
 
   if (!isWorldOwner) {
     throw new HttpsError(
@@ -158,20 +135,19 @@ export const throwErrorIfNotWorldOwner = async ({
 export const throwErrorIfNeitherWorldNorSpaceOwner = async ({
   worldId,
   spaceId,
-  uid,
+  userId,
 }: {
   worldId: string;
   spaceId: string;
-  uid: string;
+  userId: string;
 }) => {
-  console.log("I'm inside");
-  const isWorldOwner = await checkIfWorldOwner({ worldId, uid });
-  const isSpaceOwner = await checkIfSpaceOwner({ spaceId, uid });
+  const isWorldOwner = await checkIfWorldOwner({ worldId, userId });
+  const isSpaceOwner = await checkIfSpaceOwner({ spaceId, userId });
 
   if (!isWorldOwner && !isSpaceOwner) {
     throw new HttpsError(
       "permission-denied",
-      `User is not an owner neither of ${worldId} nor he's an owner of ${spaceId}`
+      `User is not an owner neither of ${worldId} world nor he's an owner of ${spaceId} space`
     );
   }
 };

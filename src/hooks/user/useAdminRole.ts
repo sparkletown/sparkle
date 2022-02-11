@@ -17,7 +17,7 @@ export type AdminRole = {
 };
 
 export type UseAdminRole = (options: {
-  userId?: string;
+  userId: string;
 }) => LoadStatus & {
   adminRole: WithId<AdminRole>;
   adminUserIds: string[];
@@ -31,7 +31,7 @@ export const useAdminRole: UseAdminRole = ({ userId }) => {
     "admin",
   ]);
 
-  const { isLoading: isOwnWorldsLoading, ownWorlds } = useOwnWorlds();
+  const { isLoading: isOwnWorldsLoading, ownWorlds } = useOwnWorlds({ userId });
   const isAnyWorldOwner = !isOwnWorldsLoading && ownWorlds.length > 0;
 
   const { ownedVenues, isLoading: isOwnVenuesLoading } = useOwnedVenues({

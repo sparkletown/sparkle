@@ -11,7 +11,7 @@ type UseWorldSpaces = (options: {
   worldId: WorldId;
 }) => { spaces: SpaceWithId[] };
 
-export const useWorldSpaces: UseWorldSpaces = ({ worldId = "" }) => {
+export const useWorldSpaces: UseWorldSpaces = ({ worldId }) => {
   const firestore = useFirestore();
   const worldSpacesRef = query(
     collection(firestore, COLLECTION_SPACES),

@@ -29,11 +29,11 @@ type WorldsDashboardProps = { userId: UserId };
 export const WorldsDashboard: React.FC<WorldsDashboardProps> = ({ userId }) => {
   const { ownedVenues } = useOwnedVenues({ userId });
   const worlds = useWorlds();
-  const { ownWorlds } = useOwnWorlds();
+  const { ownWorlds } = useOwnWorlds({ userId });
 
-  const { isAdminUser: isMasterAdmin } = useAdminRole({ userId });
+  const { isAdminUser: isSuperAdmin } = useAdminRole({ userId });
 
-  const ownedUniqueWorldIds = useMemo(
+  const visibleWorldIds = useMemo(
     () =>
       uniq([
         ...ownedVenues.map(({ worldId }) => worldId),
@@ -42,10 +42,10 @@ export const WorldsDashboard: React.FC<WorldsDashboardProps> = ({ userId }) => {
     [ownedVenues, ownWorlds]
   );
 
-  // Firebase query where([world.id, 'in', ownedUniqueWorldIds]) has a limit of 10 items in ownedUniqueWorldIds. Because of that, it is filtered here
-  const uniqueWorlds = useMemo(
-    () => worlds.filter(({ id }) => ownedUniqueWorldIds.includes(id)),
-    [worlds, ownedUniqueWorldIds]
+  // NOTE: Firebase query where([world.id, 'in', visibleWorldIds]) has a limit of 10 items in visibleWorldIds. Because of that, it is filtered here
+  const visibleWorlds = useMemo(
+    () => worlds.filter(({ id }) => visibleWorldIds.includes(id)),
+    [worlds, visibleWorldIds]
   );
 
   const hasWorlds = !!worlds.length;
@@ -65,12 +65,12 @@ export const WorldsDashboard: React.FC<WorldsDashboardProps> = ({ userId }) => {
   const renderedWorldsList = useMemo(
     () => (
       <div className="WorldsDashboard__worlds-list">
-        {uniqueWorlds.map((world) => (
+        {visibleWorlds.map((world) => (
           <WorldCard key={world.id} world={world} />
         ))}
       </div>
     ),
-    [uniqueWorlds]
+    [visibleWorlds]
   );
 
   return (
@@ -86,7 +86,7 @@ export const WorldsDashboard: React.FC<WorldsDashboardProps> = ({ userId }) => {
                   <span className="WorldsDashboard__header-text">
                     My worlds
                   </span>
-                  {isMasterAdmin && (
+                  {isSuperAdmin && (
                     <ButtonNG
                       variant="normal-gradient"
                       linkTo={ADMIN_IA_WORLD_CREATE_URL}
