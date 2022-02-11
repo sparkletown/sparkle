@@ -1,4 +1,5 @@
-@import "./scss/AttendeeMixins.scss";
+@use "scss/attendee/mixins.scss"as *;
+@use "scss/attendee/variables.scss"as *;
 
 .AttendeeFooter {
   @include sparkle-panel;
@@ -7,10 +8,12 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+
   p {
     padding: $whitespace;
     opacity: $opacity;
   }
+
   nav {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -18,15 +21,18 @@
     justify-content: center;
     width: 100%;
     padding: $whitespace * 2 15%;
+
     @media (min-width: 768px) {
       display: flex;
       flex-direction: row;
       flex-wrap: wrap;
       padding: $whitespace * 2 0;
     }
+
     a {
       @include atom-button;
       opacity: $opacity;
+
       &:hover,
       &:focus {
         opacity: 1;

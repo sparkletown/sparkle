@@ -1,5 +1,4 @@
 import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { LocalParticipant, RemoteParticipant } from "twilio-video";
 
@@ -9,8 +8,6 @@ import { ContainerClassName } from "types/utility";
 import { WithId } from "utils/id";
 
 import { useParticipantState } from "hooks/twilio/useParticipantState";
-
-import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
 import styles from "./VideoParticipant.module.scss";
 
@@ -39,18 +36,7 @@ export const VideoParticipant: React.FC<VideoParticipantProps> = ({
   const {
     shouldDisableExternally: shouldDisableVideoExternally,
     ref: videoRef,
-    handleToggle: toggleVideo,
-    icon: videoIcon,
-    iconColor: videoIconColor,
   } = useParticipantState("video", participant, defaultVideoHidden);
-
-  const {
-    shouldDisableExternally: shouldDisableAudioExternally,
-    ref: audioRef,
-    handleToggle: toggleAudio,
-    icon: audioIcon,
-    iconColor: audioIconColor,
-  } = useParticipantState("audio", participant, defaultMute);
 
   const videoClassNames = classNames({
     [styles.Mirrored]: shouldMirrorVideo,

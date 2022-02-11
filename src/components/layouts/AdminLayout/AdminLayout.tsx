@@ -3,6 +3,8 @@ import { MenuIcon } from "@heroicons/react/outline";
 
 import { AdminNavBar } from "components/molecules/AdminNavBar";
 
+import "scss/admin/initial.scss";
+
 export interface AdminLayoutPropsType {
   children: ReactNode;
 }
