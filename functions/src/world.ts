@@ -5,12 +5,15 @@ import { isEmpty, isNil } from "lodash";
 
 import { LandingPageConfig } from "./types/venue";
 import { assertValidAuth } from "./utils/assert";
-import { checkIsAdmin, checkIsWorldOwner } from "./utils/permissions";
+import {
+  throwErrorIfNotSuperAdmin,
+  throwErrorIfNotWorldOwner,
+} from "./utils/permissions";
 
 export const createWorld = functions.https.onCall(async (data, context) => {
   assertValidAuth(context);
 
-  await checkIsAdmin(context.auth?.token.user_id);
+  await throwErrorIfNotSuperAdmin(context.auth?.token.user_id);
 
   const worldData = {
     name: data.name,
@@ -70,8 +73,10 @@ export const updateWorld = functions.https.onCall(async (data, context) => {
     );
   }
 
-  await checkIsWorldOwner(worldId, context.auth?.token.user_id);
-  await checkIsAdmin(context.auth?.token.user_id);
+  await throwErrorIfNotWorldOwner({
+    worldId,
+    userId: context.auth?.token.user_id,
+  });
 
   let landingPageConfig: LandingPageConfig | undefined = undefined;
   if (bannerImageUrl || subtitle || description) {
@@ -130,8 +135,10 @@ export const deleteWorld = functions.https.onCall(async (data, context) => {
 
   const worldId = data.id;
 
-  await checkIsWorldOwner(worldId, context.auth?.token.user_id);
-  await checkIsAdmin(context.auth?.token.user_id);
+  await throwErrorIfNotWorldOwner({
+    worldId,
+    userId: context.auth?.token.user_id,
+  });
 
   admin.firestore().collection("worlds").doc(worldId).delete();
 });
