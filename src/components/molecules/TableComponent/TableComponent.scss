@@ -1,0 +1,99 @@
+@use "scss/attendee/mixins.scss"as *;
+@use "scss/attendee/variables.scss"as *;
+
+.TableComponent {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: $whitespace * 2 $whitespace * 3.5 $button-height * 2;
+  flex-wrap: wrap;
+
+  &__delete-button {
+    align-self: flex-start;
+  }
+
+  &__table-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  &__table-users {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__video-well {
+    margin: $whitespace * 0.5 $whitespace * 0.5;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    flex-direction: column;
+    @include sparkle-panel-glass;
+    @include rounded;
+    border: 1px solid $sparkle-border;
+    padding: $whitespace;
+    width: 100%;
+
+    h2 {
+      flex-grow: 1;
+      width: 100%;
+      padding: $whitespace * 0.5 $whitespace;
+
+      span {
+        float: right;
+        opacity: $opacity;
+      }
+    }
+
+    hr {
+      width: 100%;
+      border: none;
+      margin: $whitespace 0 0;
+      flex-grow: 1;
+    }
+  }
+
+  &__user-avatar {
+    @include atom-avatar;
+    margin: $whitespace * 0.5;
+    width: $whitespace * 4;
+    height: $whitespace * 4;
+    border-radius: 100%;
+
+    @media (min-width: 768px) {
+      width: $whitespace * 5;
+      height: $whitespace * 5;
+    }
+  }
+
+  &__join-button {
+    border-radius: 50%;
+    @include sparkle-panel;
+    margin: $whitespace * 0.5;
+    border: 1px solid $sparkle-border;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: $whitespace * 4;
+    height: $whitespace * 4;
+    cursor: pointer;
+
+    @media (min-width: 768px) {
+      width: $whitespace * 5;
+      height: $whitespace * 5;
+    }
+
+    &.hidden {
+      display: none;
+    }
+  }
+
+  &__table {
+    @media (min-width: 768px) {
+      max-width: $whitespace * 33;
+    }
+  }
+}
