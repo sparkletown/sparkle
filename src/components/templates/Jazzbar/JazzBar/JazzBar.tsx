@@ -1,25 +1,15 @@
 import React, { useCallback, useEffect, useState } from "react";
-import {
-  faCompressArrowsAlt,
-  faExpandArrowsAlt,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import classNames from "classnames";
+import { MediaPlayer } from "components/attendee/MediaPlayer";
 import { useBackgroundGradient } from "components/attendee/useBackgroundGradient";
 import { useVideoHuddle } from "components/attendee/VideoHuddle/useVideoHuddle";
 
-import {
-  DEFAULT_REACTIONS_MUTED,
-  IFRAME_ALLOW,
-  JAZZBAR_TABLES,
-} from "settings";
+import { DEFAULT_REACTIONS_MUTED, JAZZBAR_TABLES } from "settings";
 
 import { unsetTableSeat } from "api/venue";
 
 import { JazzbarVenue } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
 
-import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { WithId } from "utils/id";
 
 import { useAnalytics } from "hooks/useAnalytics";
@@ -44,10 +34,6 @@ interface JazzProps {
 export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
   const { isShown: showOnlyAvailableTables } = useShowHide();
   const { parentVenue } = useRelatedVenues({ currentVenueId: venue.id });
-  const embedIframeUrl = convertToEmbeddableUrl({
-    url: venue.iframeUrl,
-    autoPlay: venue.autoPlay,
-  });
   const analytics = useAnalytics({ venue });
 
   useBackgroundGradient();
@@ -108,48 +94,12 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
     }
   }, [inHuddle, leaveTable, seatedAtTable]);
 
-  const [expandedIframe, setExpandedIframe] = useState(false);
-
-  const toggleExpandedIframe = useCallback(() => {
-    setExpandedIframe((prevValue) => !prevValue);
-  }, [setExpandedIframe]);
-
-  if (!venue) return <>Loading...</>;
-
-  const videoClassnames = classNames(styles.video, {
-    [styles.video__expanded]: expandedIframe,
-  });
-
   return (
     <>
       {parentVenue && <BackButton variant="simple" space={parentVenue} />}
 
       {!venue.hideVideo && (
-        <div className={styles.componentMediaObject}>
-          <div className={videoClassnames}>
-            {embedIframeUrl ? (
-              <iframe
-                key="main-event"
-                title="main event"
-                className={styles.iframe}
-                src={embedIframeUrl}
-                frameBorder="0"
-                allow={IFRAME_ALLOW}
-              />
-            ) : (
-              <div className="iframe-video">
-                {/* TODO */}
-                Embedded Video URL not yet set up
-              </div>
-            )}
-          </div>
-          <div className={styles.mediaControls}>
-            <FontAwesomeIcon
-              icon={expandedIframe ? faCompressArrowsAlt : faExpandArrowsAlt}
-              onClick={toggleExpandedIframe}
-            />
-          </div>
-        </div>
+        <MediaPlayer url={venue.iframeUrl} autoPlay={venue.autoPlay || false} />
       )}
 
       <div className={styles.componentSpaceInfo}>
