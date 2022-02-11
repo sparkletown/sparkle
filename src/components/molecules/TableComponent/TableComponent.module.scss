@@ -1,0 +1,75 @@
+@use "scss/attendee/mixins.scss";
+@use "scss/attendee/variables.scss";
+
+.tableContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+
+  margin: variables.$whitespace * 0.5 variables.$whitespace * 0.5;
+  flex-direction: column;
+  @include mixins.sparkle-panel-glass;
+  @include mixins.rounded;
+  border: 1px solid variables.$sparkle-border;
+  padding: variables.$whitespace;
+  width: 100%;
+
+  @media (min-width: 768px) {
+    max-width: variables.$whitespace * 33;
+  }
+
+  h2 {
+    flex-grow: 1;
+    width: 100%;
+    padding: variables.$whitespace * 0.5 variables.$whitespace;
+  }
+}
+
+.tableHeader {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.deleteButton {
+  align-self: flex-start;
+}
+
+.tableUsers {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.joinButton {
+  border-radius: 50%;
+  @include mixins.sparkle-panel;
+  margin: variables.$whitespace * 0.5;
+  border: 1px solid variables.$sparkle-border;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: variables.$whitespace * 4;
+  height: variables.$whitespace * 4;
+  cursor: pointer;
+
+  @media (min-width: 768px) {
+    width: variables.$whitespace * 5;
+    height: variables.$whitespace * 5;
+  }
+}
+
+.userAvatar {
+  @include mixins.atom-avatar;
+  margin: variables.$whitespace * 0.5;
+  width: variables.$whitespace * 4;
+  height: variables.$whitespace * 4;
+  border-radius: 100%;
+
+  @media (min-width: 768px) {
+    width: variables.$whitespace * 5;
+    height: variables.$whitespace * 5;
+  }
+}
