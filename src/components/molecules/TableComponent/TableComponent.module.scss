@@ -67,6 +67,7 @@
   width: variables.$whitespace * 4;
   height: variables.$whitespace * 4;
   border-radius: 100%;
+  display: flex;
 
   @media (min-width: 768px) {
     width: variables.$whitespace * 5;

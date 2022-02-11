@@ -1,27 +1,20 @@
 import React, { useMemo } from "react";
 import { useAsyncFn } from "react-use";
 
-import {
-  CONVERSATION_TABLES,
-  DEFAULT_PARTY_NAME,
-  JAZZBAR_TABLES,
-  STRING_SPACE,
-} from "settings";
+import { CONVERSATION_TABLES, JAZZBAR_TABLES, STRING_SPACE } from "settings";
 
 import { deleteTable } from "api/table";
 
 import { TableComponentPropsType } from "types/Table";
 import { VenueTemplate } from "types/VenueTemplate";
 
-import { determineAvatar } from "utils/image";
-
-import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useAdminRole } from "hooks/user/useAdminRole";
 import { useShowHide } from "hooks/useShowHide";
 
 import { Modal } from "components/molecules/Modal";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
+import { UserAvatar } from "components/atoms/UserAvatar";
 
 import PortalCloseIcon from "assets/icons/icon-close-portal.svg";
 
@@ -37,7 +30,6 @@ export const TableComponent: React.FunctionComponent<TableComponentPropsType> = 
   userId,
   template,
 }) => {
-  const { openUserProfileModal } = useProfileModalControls();
   const locked = tableLocked(table.reference);
   const numberOfSeatsLeft = table.capacity && table.capacity - users.length;
   const full = numberOfSeatsLeft === 0;
@@ -71,26 +63,14 @@ export const TableComponent: React.FunctionComponent<TableComponentPropsType> = 
     () =>
       users &&
       users.length >= 0 &&
-      users.map((user) => {
-        const { src: profilePic, onError: onLoadError } = determineAvatar({
-          user,
-        });
-
-        return (
-          <img
-            onClick={() => openUserProfileModal(user.id)}
-            key={user.id}
-            className={styles.userAvatar}
-            src={profilePic}
-            onError={onLoadError}
-            title={user.partyName || DEFAULT_PARTY_NAME}
-            alt={`${user.partyName || DEFAULT_PARTY_NAME} profile`}
-            width={imageSize}
-            height={imageSize}
-          />
-        );
-      }),
-    [imageSize, openUserProfileModal, users]
+      users.map((user) => (
+        <UserAvatar
+          key={user.id}
+          containerClassName={styles.userAvatar}
+          user={user}
+        />
+      )),
+    [users]
   );
 
   return (
