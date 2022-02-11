@@ -24,9 +24,9 @@ import { Room } from "components/organisms/Room";
 
 import { InformationCard } from "components/molecules/InformationCard";
 import { TableComponent } from "components/molecules/TableComponent";
+import { TableGrid } from "components/molecules/TableGrid";
 import { TableHeader } from "components/molecules/TableHeader";
 import { TablesControlBar } from "components/molecules/TablesControlBar";
-import { TablesUserList } from "components/molecules/TablesUserList";
 import { UserList } from "components/molecules/UserList";
 
 import { BackButton } from "components/atoms/BackButton";
@@ -132,7 +132,7 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
               )}
             </div>
           </div>
-          <TablesUserList
+          <TableGrid
             setSeatedAtTable={setSeatedAtTable}
             seatedAtTable={seatedAtTable}
             venueId={venue.id}
