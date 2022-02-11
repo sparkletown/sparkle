@@ -71,10 +71,26 @@ const generateAnalytics: HttpsFunctionHandler<{
 
   await checkIsAdmin(context.auth.token.user_id);
 
+  const matchingWorlds = await admin
+    .firestore()
+    .collection("worlds")
+    .where("slug", "==", data.worldSlug)
+    .get();
+
+  if (matchingWorlds.empty) {
+    throw new HttpsError(
+      "internal",
+      `The world with ${data.worldSlug} does not exist`
+    );
+  }
+
+  const [world] = matchingWorlds.docs;
+  const worldId = world.id;
+
   const matchingVenues = await admin
     .firestore()
     .collection("venues")
-    .where("worldId", "==", data.worldSlug)
+    .where("worldId", "==", worldId)
     .get();
 
   if (matchingVenues.empty) {
