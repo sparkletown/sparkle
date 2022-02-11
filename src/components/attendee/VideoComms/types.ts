@@ -11,31 +11,31 @@ export enum VideoCommsStatus {
   Errored = "ERRORED",
 }
 
-interface Track {
-  kind: "video" | "audio";
-  id: TrackId;
-  enabled: boolean;
-}
-
 export enum VideoSource {
   Webcam = "WEBCAM",
   Screenshare = "SCREENSHARE",
 }
 
-export interface VideoTrack extends Track {
+export type VideoTrack = {
+  id: TrackId;
   attach: (el: HTMLVideoElement) => void;
   detach: () => void;
   kind: "video";
   twilioTrack: Twilio.VideoTrack;
   sourceType: VideoSource;
-}
+  enabled: boolean;
+};
 
-export interface AudioTrack extends Track {
+export type AudioTrack = {
+  id: TrackId;
   attach: (el: HTMLAudioElement) => void;
   detach: () => void;
   kind: "audio";
   twilioTrack: Twilio.AudioTrack;
-}
+  enabled: boolean;
+};
+
+export type Track = VideoTrack | AudioTrack;
 
 export interface Participant {
   /**
