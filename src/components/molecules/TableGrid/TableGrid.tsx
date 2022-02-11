@@ -1,12 +1,13 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useVideoHuddle } from "components/attendee/VideoHuddle/useVideoHuddle";
 import { groupBy } from "lodash";
 
 import { ALLOWED_EMPTY_TABLES_NUMBER } from "settings";
 
-import { setTableSeat } from "api/venue";
+import { setTableSeat, unsetTableSeat } from "api/venue";
 
 import { Table, TableComponentPropsType } from "types/Table";
-import { TableSeatedUser, User } from "types/User";
+import { TableSeatedUser } from "types/User";
 import { AnyVenue } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
 
@@ -14,9 +15,12 @@ import { WithId } from "utils/id";
 import { generateTable } from "utils/table";
 import { arrayIncludes, isTruthy } from "utils/types";
 
+import { useAnalytics } from "hooks/useAnalytics";
 import { useExperience } from "hooks/useExperience";
 import { useSeatedTableUsers } from "hooks/useSeatedTableUsers";
 import { useShowHide } from "hooks/useShowHide";
+import { useUpdateTableRecentSeatedUsers } from "hooks/useUpdateRecentSeatedUsers";
+import { useUser } from "hooks/useUser";
 
 import { Loading } from "components/molecules/Loading";
 import { Modal } from "components/molecules/Modal";
@@ -27,8 +31,6 @@ import { ButtonNG } from "components/atoms/ButtonNG";
 import styles from "./TableGrid.module.scss";
 
 interface TableGridProps {
-  setSeatedAtTable: (value: string) => void;
-  seatedAtTable: string | undefined;
   customTables: Table[];
   defaultTables: Table[];
   showOnlyAvailableTables?: boolean;
@@ -37,23 +39,52 @@ interface TableGridProps {
   leaveText?: string;
   venue: WithId<AnyVenue>;
   venueId: string;
-  template: VenueTemplate;
-  user: WithId<User>;
+  userId: string;
 }
 
 export const TableGrid: React.FC<TableGridProps> = ({
   venueId,
-  setSeatedAtTable,
-  seatedAtTable,
   customTables,
   defaultTables,
   showOnlyAvailableTables = false,
   TableComponent,
   joinMessage,
   venue,
-  template,
-  user,
+  userId,
 }) => {
+  const analytics = useAnalytics({ venue });
+  const [seatedAtTable, setSeatedAtTable] = useState<string>();
+
+  useUpdateTableRecentSeatedUsers(
+    VenueTemplate.jazzbar,
+    seatedAtTable && venue?.id
+  );
+
+  useEffect(() => {
+    seatedAtTable && analytics.trackSelectTableEvent();
+  }, [analytics, seatedAtTable]);
+
+  const { joinHuddle, inHuddle } = useVideoHuddle();
+
+  const joinTable = useCallback(
+    (table) => {
+      joinHuddle(userId || "", `${venue.id}-${table}`);
+      setSeatedAtTable(table);
+    },
+    [joinHuddle, userId, venue.id]
+  );
+
+  const leaveTable = useCallback(async () => {
+    await unsetTableSeat(userId, { venueId: venue.id });
+    setSeatedAtTable(undefined);
+  }, [userId, venue.id]);
+
+  useEffect(() => {
+    if (!inHuddle && seatedAtTable) {
+      leaveTable();
+    }
+  }, [inHuddle, leaveTable, seatedAtTable]);
+
   // NOTE: custom tables can already contain default tables and this check here is to only doubleconfrim the data coming from the above
   const tables: Table[] = customTables || defaultTables;
 
@@ -71,33 +102,36 @@ export const TableGrid: React.FC<TableGridProps> = ({
 
   const [joiningTable, setJoiningTable] = useState("");
 
+  const { userWithId } = useUser();
   const { data: experience } = useExperience();
 
-  const isCurrentUserAdmin = arrayIncludes(venue.owners, user.id);
+  const isCurrentUserAdmin = arrayIncludes(venue.owners, userId);
 
   const [seatedTableUsers, isSeatedTableUsersLoaded] = useSeatedTableUsers(
     venueId
   );
 
-  const userTableReference = seatedTableUsers.find((u) => u.id === user.id)
-    ?.path?.tableReference;
+  const userTableReference = seatedTableUsers.find((u) => u.id === userId)?.path
+    ?.tableReference;
 
   useEffect(() => {
     if (userTableReference) {
-      setSeatedAtTable(userTableReference);
+      joinTable(userTableReference);
     }
-  }, [setSeatedAtTable, userTableReference]);
+  }, [joinTable, userTableReference]);
 
   const isSeatedAtTable = !!seatedAtTable;
 
   const takeSeat = useCallback(
     async (table: string) => {
-      await setTableSeat(user, {
+      if (!userWithId) return;
+
+      await setTableSeat(userWithId, {
         venueId,
         tableReference: table,
       });
     },
-    [user, venueId]
+    [userWithId, venueId]
   );
 
   const usersSeatedAtTables: Record<
@@ -186,7 +220,7 @@ export const TableGrid: React.FC<TableGridProps> = ({
         tableLocked={tableLocked}
         onJoinClicked={onJoinClicked}
         venue={venue}
-        userId={user.id}
+        userId={userId}
       />
     ));
   }, [
@@ -198,7 +232,7 @@ export const TableGrid: React.FC<TableGridProps> = ({
     usersSeatedAtTables,
     onJoinClicked,
     venue,
-    user.id,
+    userId,
   ]);
 
   if (!isSeatedTableUsersLoaded) return <Loading />;

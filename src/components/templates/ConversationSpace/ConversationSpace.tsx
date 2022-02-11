@@ -24,8 +24,6 @@ import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 import { Room } from "components/organisms/Room";
 
 import { InformationCard } from "components/molecules/InformationCard";
-import { TableComponent } from "components/molecules/TableComponent";
-import { TableGrid } from "components/molecules/TableGrid";
 import { TableHeader } from "components/molecules/TableHeader";
 import { TablesControlBar } from "components/molecules/TablesControlBar";
 import { UserList } from "components/molecules/UserList";
@@ -150,6 +148,7 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
               user={userWithId}
             />
           )}
+
           <UserList
             usersSample={venue.recentUsersSample ?? ALWAYS_EMPTY_ARRAY}
             userCount={venue.recentUserCount ?? 0}
