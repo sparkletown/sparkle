@@ -125,8 +125,6 @@ const generateAnalytics: HttpsFunctionHandler<{
     {}
   );
 
-  console.log({ usersWithVisits, authUsers });
-
   // TODO: filter enteredspaceIds and visitsTimeSpent so that they only contain related venues?
   const result = usersWithVisits
     .reduce((arr: UserWithVisits[], userWithVisits) => {
