@@ -1,8 +1,19 @@
-@import "./scss/AttendeeMixins.scss";
+@use "scss/attendee/mixins.scss"as *;
+@use "scss/attendee/variables.scss"as *;
+
+@font-face {
+  font-family: "Sparkle";
+  font-style: normal;
+  font-weight: 400;
+  src: url("~assets/fonts/ABCArizonaPlusVariable-Trial.woff2") format("woff2");
+}
 
 .html {
   overflow-y: scroll;
-  font-size: $font-size-default;
+  font-family: Sparkle, serif;
+  font-variation-settings: "wght" 350, "ital" 0, "SRFF" 20;
+  font-size: 14px;
+  line-height: 1.4;
 }
 
 .Space {
@@ -41,8 +52,10 @@
   @media (max-width: 767px) {
     display: flex;
     flex-direction: column;
+
     &[open] {
       height: 45vh;
+
       &.has-component-shoutout {
         height: calc(45vh - #{$button-height + $whitespace});
       }
@@ -56,6 +69,7 @@
     grid-gap: $whitespace;
     background: transparent;
   }
+
   @media (min-width: 960px) {
     grid-template-columns: 1fr $sidebar-width;
     justify-items: center;

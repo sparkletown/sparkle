@@ -1,4 +1,5 @@
-@import "~components/attendee/scss/AttendeeMixins.scss";
+@use "scss/attendee/mixins.scss"as *;
+@use "scss/attendee/variables.scss"as *;
 
 .MapBackground {
   position: absolute;
@@ -9,12 +10,15 @@
   background-position: center;
   background-size: cover;
   background-attachment: fixed;
+
   @media (min-width: 768px) {
     bottom: 0 - $button-height - $whitespace;
     background-attachment: scroll;
+
     @media (orientation: portrait) {
       background-size: auto 100%;
     }
+
     @media (orientation: landscape) {
       background-size: 100% auto;
     }

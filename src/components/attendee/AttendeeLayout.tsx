@@ -17,6 +17,7 @@ import { VideoHuddle, VideoHuddleProvider } from "./VideoHuddle/VideoHuddle";
 import { AttendeeFooter } from "./AttendeeFooter";
 import { ChatContainer } from "./ChatContainer";
 
+import "scss/attendee/initial.scss";
 import styles from "./AttendeeLayout.module.scss";
 
 const _AttendeeLayout: React.FC = () => {
