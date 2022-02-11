@@ -64,14 +64,22 @@ export const TableGrid: React.FC<TableGridProps> = ({
     seatedAtTable && analytics.trackSelectTableEvent();
   }, [analytics, seatedAtTable]);
 
-  const { joinHuddle, inHuddle } = useVideoHuddle();
+  const { joinHuddle, leaveHuddle, inHuddle } = useVideoHuddle();
 
+  const wasPrevAtTable = !!seatedAtTable;
   const joinTable = useCallback(
     (table) => {
-      joinHuddle(userId || "", `${venue.id}-${table}`);
+      // If the user is already in a huddle and was previously at another
+      // table then make sure to leave the huddle first. This covers the
+      // scenario where a user clicks "join" when already at a different
+      // table
+      if (wasPrevAtTable && table) {
+        leaveHuddle();
+      }
+      joinHuddle(userId, `${venue.id}-${table}`);
       setSeatedAtTable(table);
     },
-    [joinHuddle, userId, venue.id]
+    [wasPrevAtTable, joinHuddle, userId, venue.id, leaveHuddle]
   );
 
   const leaveTable = useCallback(async () => {
@@ -111,14 +119,18 @@ export const TableGrid: React.FC<TableGridProps> = ({
     venueId
   );
 
-  const userTableReference = seatedTableUsers.find((u) => u.id === userId)?.path
-    ?.tableReference;
+  const userTableReference = useMemo(
+    () =>
+      seatedTableUsers.find((u) => u.id === userWithId?.id)?.path
+        ?.tableReference,
+    [seatedTableUsers, userWithId?.id]
+  );
 
   useEffect(() => {
-    if (userTableReference) {
+    if (userTableReference && userTableReference !== seatedAtTable) {
       joinTable(userTableReference);
     }
-  }, [joinTable, userTableReference]);
+  }, [joinTable, userTableReference, seatedAtTable]);
 
   const isSeatedAtTable = !!seatedAtTable;
 
