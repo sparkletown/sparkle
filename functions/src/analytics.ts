@@ -10,7 +10,7 @@ import { chunk } from "lodash";
 
 import { HttpsFunctionHandler } from "./types/utility";
 import { assertValidAuth } from "./utils/assert";
-import { checkIsAdmin } from "./utils/permissions";
+import { throwErrorIfNotSuperAdmin } from "./utils/permissions";
 import { formatSecondsAsHHMMSS } from "./utils/time";
 
 const functionsConfig = functions.config();
@@ -69,7 +69,7 @@ const generateAnalytics: HttpsFunctionHandler<{
     throw new HttpsError("internal", `No authentication context`);
   }
 
-  await checkIsAdmin(context.auth.token.user_id);
+  await throwErrorIfNotSuperAdmin(context.auth.token.user_id);
 
   const matchingWorlds = await admin
     .firestore()

@@ -1,6 +1,5 @@
 import { withSlugs } from "components/hocs/context/withSlugs";
 import { withAuth } from "components/hocs/db/withAuth";
-import { withOwnSpaces } from "components/hocs/db/withOwnSpaces";
 import { withWorldBySlug } from "components/hocs/db/withWorldBySlug";
 import { withRequired } from "components/hocs/gate/withRequired";
 import { compose } from "lodash/fp";
@@ -16,7 +15,5 @@ export const SpacesDashboard = compose(
   withRequired({
     required: ["worldId", "userId", "world"],
     fallback: LoadingPage,
-  }),
-  withOwnSpaces,
-  withRequired({ required: ["ownSpaces"], fallback: LoadingPage })
+  })
 )(_SpacesDashboard);

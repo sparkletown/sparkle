@@ -5,6 +5,7 @@ import { HttpsError } from "firebase-functions/v1/https";
 import { addAdmin, removeAdmin } from "./api/roles";
 import { LandingPageConfig } from "./types/venue";
 import { assertValidAuth } from "./utils/assert";
+import { throwErrorIfNeitherWorldNorSpaceOwner } from "./utils/permissions";
 import { checkIfValidVenueId } from "./utils/venue";
 import { ROOM_TAXON } from "./taxonomy";
 
@@ -62,60 +63,18 @@ const DEFAULT_SHOW_SHOUTOUTS = true;
 
 const DEFAULT_ENABLE_JUKEBOX = false;
 
-const checkUserIsOwner = async (venueId: string, uid: string) => {
-  await admin
-    .firestore()
-    .collection("venues")
-    .doc(venueId)
-    .get()
-    .then(async (doc) => {
-      if (!doc.exists) {
-        throw new HttpsError("not-found", `Venue ${venueId} does not exist`);
-      }
-      const venue = doc.data();
+const getSpaceById = async (spaceId: string) => {
+  const doc = await admin.firestore().collection("venues").doc(spaceId).get();
 
-      if (!venue) {
-        throw new HttpsError("internal", "No data returned");
-      }
-      if (venue.owners && venue.owners.includes(uid)) return;
+  if (!doc || !doc.exists) {
+    throw new HttpsError("not-found", `Space ${spaceId} not found`);
+  }
+  const space = doc.data();
+  if (!space) {
+    throw new HttpsError("internal", `Space not found`);
+  }
 
-      if (venue.parentId) {
-        const doc = await admin
-          .firestore()
-          .collection("venues")
-          .doc(venue.parentId)
-          .get();
-
-        if (!doc.exists) {
-          throw new HttpsError(
-            "not-found",
-            `Venue ${venueId} references missing parent ${venue.parentId}`
-          );
-        }
-        const parentVenue = doc.data();
-
-        if (!parentVenue) {
-          throw new HttpsError("internal", "No data returned");
-        }
-        if (!(parentVenue.owners && parentVenue.owners.includes(uid))) {
-          throw new HttpsError(
-            "permission-denied",
-            `User is not an owner of ${venueId} nor parent ${venue.parentId}`
-          );
-        }
-      }
-
-      throw new HttpsError(
-        "permission-denied",
-        `User is not an owner of ${venueId}`
-      );
-    })
-    .catch((err) => {
-      throw new HttpsError(
-        "internal",
-        `Error occurred obtaining venue ${venueId}: ${err.toString()}`
-      );
-    });
+  return space;
 };
 
 // @debt extract this into a new functions/chat backend script file
@@ -427,9 +386,15 @@ export const setAuditoriumSections = functions.https.onCall(
 
     const { venueId, numberOfSections } = data;
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    await checkUserIsOwner(venueId, context.auth.token.user_id);
+    const space = await getSpaceById(venueId);
+
+    await throwErrorIfNeitherWorldNorSpaceOwner({
+      spaceId: venueId,
+      worldId: space.worldId,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      userId: context.auth.token.user_id,
+    });
 
     const batch = admin.firestore().batch();
 
@@ -472,9 +437,15 @@ export const addVenueOwner = functions.https.onCall(async (data, context) => {
 
   const { venueId, newOwnerId } = data;
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  await checkUserIsOwner(venueId, context.auth.token.user_id);
+  const space = await getSpaceById(venueId);
+
+  await throwErrorIfNeitherWorldNorSpaceOwner({
+    spaceId: venueId,
+    worldId: space.worldId,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    userId: context.auth.token.user_id,
+  });
 
   await admin
     .firestore()
@@ -495,9 +466,15 @@ export const removeVenueOwner = functions.https.onCall(
 
     const { venueId, ownerId } = data;
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    await checkUserIsOwner(venueId, context.auth.token.user_id);
+    const space = await getSpaceById(venueId);
+
+    await throwErrorIfNeitherWorldNorSpaceOwner({
+      spaceId: venueId,
+      worldId: space.worldId,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      userId: context.auth.token.user_id,
+    });
 
     await admin
       .firestore()
@@ -559,9 +536,15 @@ export const upsertRoom = functions.https.onCall(async (data, context) => {
 
   const { venueId, roomIndex, room } = data;
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  await checkUserIsOwner(venueId, context.auth.token.user_id);
+  const space = await getSpaceById(venueId);
+
+  await throwErrorIfNeitherWorldNorSpaceOwner({
+    spaceId: venueId,
+    worldId: space.worldId,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    userId: context.auth.token.user_id,
+  });
 
   const doc = await admin.firestore().collection("venues").doc(venueId).get();
 
@@ -589,9 +572,15 @@ export const deleteRoom = functions.https.onCall(async (data, context) => {
 
   const { venueId, room } = data;
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  await checkUserIsOwner(venueId, context.auth.token.user_id);
+  const space = await getSpaceById(venueId);
+
+  await throwErrorIfNeitherWorldNorSpaceOwner({
+    spaceId: venueId,
+    worldId: space.worldId,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    userId: context.auth.token.user_id,
+  });
 
   const doc = await admin.firestore().collection("venues").doc(venueId).get();
 
@@ -625,10 +614,15 @@ export const updateVenue_v2 = functions.https.onCall(async (data, context) => {
 
   assertValidAuth(context);
 
-  // @debt updateVenue uses checkUserIsOwner rather than checkUserIsAdminOrOwner. Should these be the same? Which is correct?
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  await checkUserIsOwner(venueId, context.auth.token.user_id);
+  const space = await getSpaceById(venueId);
+
+  await throwErrorIfNeitherWorldNorSpaceOwner({
+    spaceId: venueId,
+    worldId: space.worldId,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    userId: context.auth.token.user_id,
+  });
 
   if (!data.worldId) {
     throw new HttpsError(
@@ -703,9 +697,15 @@ export const updateMapBackground = functions.https.onCall(
 
     assertValidAuth(context);
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    await checkUserIsOwner(venueId, context.auth.token.user_id);
+    const space = await getSpaceById(venueId);
+
+    await throwErrorIfNeitherWorldNorSpaceOwner({
+      spaceId: venueId,
+      worldId: space.worldId,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      userId: context.auth.token.user_id,
+    });
 
     if (!data.worldId) {
       throw new HttpsError(
@@ -734,10 +734,17 @@ export const updateMapBackground = functions.https.onCall(
 export const updateVenueNG = functions.https.onCall(async (data, context) => {
   assertValidAuth(context);
 
-  // @debt updateVenue uses checkUserIsOwner rather than checkUserIsAdminOrOwner. Should these be the same? Which is correct?
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  await checkUserIsOwner(data.id, context.auth.token.user_id);
+  const spaceId = data.id;
+
+  const space = await getSpaceById(spaceId);
+
+  await throwErrorIfNeitherWorldNorSpaceOwner({
+    spaceId: spaceId,
+    worldId: space.worldId,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    userId: context.auth.token.user_id,
+  });
 
   if (!data.worldId) {
     throw new HttpsError(
@@ -917,9 +924,15 @@ export const deleteTable = functions.https.onCall(async (data, context) => {
 
   const { venueId: spaceId, tableName, defaultTables } = data;
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  await checkUserIsOwner(spaceId, context.auth.token.user_id);
+  const space = await getSpaceById(spaceId);
+
+  await throwErrorIfNeitherWorldNorSpaceOwner({
+    spaceId,
+    worldId: space.worldId,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    userId: context.auth.token.user_id,
+  });
 
   const doc = await admin.firestore().collection("venues").doc(spaceId).get();
 
@@ -959,9 +972,15 @@ export const deleteVenue = functions.https.onCall(async (data, context) => {
 
   assertValidAuth(context);
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  await checkUserIsOwner(venueId, context.auth.token.user_id);
+  const space = await getSpaceById(venueId);
+
+  await throwErrorIfNeitherWorldNorSpaceOwner({
+    spaceId: venueId,
+    worldId: space.worldId,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    userId: context.auth.token.user_id,
+  });
 
   admin.firestore().collection("venues").doc(venueId).delete();
 });
@@ -1005,14 +1024,22 @@ export const voteInPoll = functions.https.onCall(
 
 export const adminUpdateBannerMessage = functions.https.onCall(
   async (data, context) => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    await checkUserIsOwner(data.venueId, context.auth.token.user_id);
+    const venueId = data.venueId;
+
+    const space = await getSpaceById(venueId);
+
+    await throwErrorIfNeitherWorldNorSpaceOwner({
+      spaceId: venueId,
+      worldId: space.worldId,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      userId: context.auth.token.user_id,
+    });
 
     await admin
       .firestore()
       .collection("venues")
-      .doc(data.venueId)
+      .doc(venueId)
       .update({ banner: data.banner || null });
   }
 );
@@ -1021,9 +1048,15 @@ export const adminUpdateIframeUrl = functions.https.onCall(
   async (data, context) => {
     const { venueId, iframeUrl } = data;
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    await checkUserIsOwner(venueId, context.auth.token.user_id);
+    const space = await getSpaceById(venueId);
+
+    await throwErrorIfNeitherWorldNorSpaceOwner({
+      spaceId: venueId,
+      worldId: space.worldId,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      userId: context.auth.token.user_id,
+    });
 
     await admin
       .firestore()
@@ -1065,9 +1098,15 @@ export const upsertScreeningRoomVideo = functions.https.onCall(
   async (data, context) => {
     const { spaceId, video, videoId } = data;
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    await checkUserIsOwner(spaceId, context.auth.token.user_id);
+    const space = await getSpaceById(spaceId);
+
+    await throwErrorIfNeitherWorldNorSpaceOwner({
+      spaceId: spaceId,
+      worldId: space.worldId,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      userId: context.auth.token.user_id,
+    });
 
     const videosCollection = await admin
       .firestore()
@@ -1087,9 +1126,15 @@ export const deleteScreeningRoomVideo = functions.https.onCall(
   async (data, context) => {
     const { spaceId, videoId } = data;
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    await checkUserIsOwner(spaceId, context.auth.token.user_id);
+    const space = await getSpaceById(spaceId);
+
+    await throwErrorIfNeitherWorldNorSpaceOwner({
+      spaceId,
+      worldId: space.worldId,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      userId: context.auth.token.user_id,
+    });
 
     await admin
       .firestore()
