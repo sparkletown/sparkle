@@ -24,9 +24,9 @@ import { StartTable } from "components/molecules/StartTable";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 
-import "./TablesUserList.scss";
+import styles from "./TableGrid.module.scss";
 
-export interface TablesUserListProps {
+interface TableGridProps {
   setSeatedAtTable: (value: string) => void;
   seatedAtTable: string | undefined;
   customTables: Table[];
@@ -41,7 +41,7 @@ export interface TablesUserListProps {
   user: WithId<User>;
 }
 
-export const TablesUserList: React.FC<TablesUserListProps> = ({
+export const TableGrid: React.FC<TableGridProps> = ({
   venueId,
   setSeatedAtTable,
   seatedAtTable,
@@ -205,7 +205,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
 
   return (
     <>
-      <div className="TablesUserList">{renderedTables}</div>
+      <div className={styles.tableGrid}>{renderedTables}</div>
       {allowCreateEditTable && (
         <StartTable
           defaultTables={defaultTables}
@@ -216,7 +216,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
         />
       )}
       <Modal show={isLockedMessageVisible} onHide={hideLockedMessage}>
-        <div className="TableUserList__modal modal-container modal-container_message">
+        <div>
           <p>{`Can't join this table because it's been locked.`}</p>
 
           <p>Perhaps ask in the chat?</p>
@@ -236,7 +236,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
         onHide={hideJoinMessage}
         autoHide={false}
       >
-        <div className="TableUserList__modal modal-container modal-container_message">
+        <div>
           <p>
             You are now entering a video chat space. Please ALLOW camera &
             microphone access. You will be able to turn them back off again once

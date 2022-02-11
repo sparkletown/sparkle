@@ -31,7 +31,7 @@ import { useUser } from "hooks/useUser";
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import { TableComponent } from "components/molecules/TableComponent";
-import { TablesUserList } from "components/molecules/TablesUserList";
+import { TableGrid } from "components/molecules/TableGrid";
 
 import { BackButton } from "components/atoms/BackButton";
 
@@ -122,12 +122,6 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
 
   return (
     <>
-      {/*
-      <VenueWithOverlay
-        venue={venue}
-        containerClassNames={`music-bar ${containerClasses}`}
-      >
-      */}
       {parentVenue && <BackButton variant="simple" space={parentVenue} />}
 
       {!venue.hideVideo && (
@@ -162,24 +156,6 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
         {venue.name && <h1>{venue.name}</h1>}
       </div>
 
-      {/*!seatedAtTable && (
-        <UserList
-          usersSample={venue.recentUsersSample ?? ALWAYS_EMPTY_ARRAY}
-          userCount={venue.recentUserCount ?? 0}
-          activity={venue.activity ?? "here"}
-        />
-      )*/}
-
-      {/*seatedAtTable && (
-        <TableHeader
-          seatedAtTable={seatedAtTable}
-          setSeatedAtTable={setSeatedAtTable}
-          venueName={venue.name}
-          tables={jazzbarTables}
-          venueId={venue.id}
-          defaultTables={JAZZBAR_TABLES}
-        />
-      )*/}
       {venue.description?.text && (
         <div className="row">
           <div className="col">
@@ -190,32 +166,19 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
         </div>
       )}
 
-      {/*seatedAtTable && (
-        <JazzBarRoom
-          roomName={`${venue.id}-${seatedAtTable}`}
-          venueId={venue.id}
-          setSeatedAtTable={setSeatedAtTable}
-          isReactionsMuted={isUserAudioMuted}
-        />
-      )*/}
-      {userWithId && (
-        <TablesUserList
-          setSeatedAtTable={joinTable}
-          seatedAtTable={seatedAtTable}
-          venueId={venue.id}
-          TableComponent={TableComponent}
-          joinMessage={!venue.hideVideo ?? true}
-          customTables={jazzbarTables}
-          showOnlyAvailableTables={showOnlyAvailableTables}
-          venue={venue}
-          defaultTables={JAZZBAR_TABLES}
-          template={VenueTemplate.jazzbar}
-          user={userWithId}
-        />
-      )}
-      {/*
-      </VenueWithOverlay>
-        */}
+      <TableGrid
+        setSeatedAtTable={joinTable}
+        seatedAtTable={seatedAtTable}
+        venueId={venue.id}
+        TableComponent={TableComponent}
+        joinMessage={!venue.hideVideo ?? true}
+        customTables={jazzbarTables}
+        showOnlyAvailableTables={showOnlyAvailableTables}
+        venue={venue}
+        defaultTables={JAZZBAR_TABLES}
+        template={VenueTemplate.jazzbar}
+        user={userWithId}
+      />
     </>
   );
 };

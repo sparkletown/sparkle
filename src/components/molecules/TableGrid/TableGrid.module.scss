@@ -1,0 +1,10 @@
+@use "scss/attendee/variables.scss";
+
+.tableGrid {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: variables.$whitespace * 2 variables.$whitespace * 3.5
+    variables.$button-height * 2;
+  flex-wrap: wrap;
+}
