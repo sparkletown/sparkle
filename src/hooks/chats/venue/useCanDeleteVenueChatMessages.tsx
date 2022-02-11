@@ -4,13 +4,13 @@ import { SpaceWithId } from "types/id";
 
 import { useUser } from "hooks/useUser";
 
-type UseCanDeleteVenueChatMessagesProps = {
+type UseCanDeleteVenueChatMessagesOptions= {
   space: SpaceWithId;
   world?: World;
 };
 
 export const useCanDeleteVenueChatMessages = (
-  options: UseCanDeleteVenueChatMessagesProps
+  options: UseCanDeleteVenueChatMessagesOptions
 ) => {
   const { world, space } = options;
   const { userId } = useUser();
