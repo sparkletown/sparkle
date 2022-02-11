@@ -1,5 +1,9 @@
 import Twilio from "twilio-video";
 
+import { Branded } from "utils/types";
+
+export type TrackId = Branded<string, "TrackId">;
+
 export enum VideoCommsStatus {
   Disconnected = "DISCONNECTED",
   Connecting = "CONNECTING",
@@ -9,7 +13,7 @@ export enum VideoCommsStatus {
 
 interface Track {
   kind: "video" | "audio";
-  id: string;
+  id: TrackId;
   enabled: boolean;
 }
 

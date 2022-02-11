@@ -8,6 +8,7 @@ import {
   AudioTrack,
   Participant,
   StateUpdateCallback,
+  TrackId,
   VideoCommsStatus,
   VideoSource,
   VideoTrack,
@@ -30,7 +31,7 @@ interface Tracklike {
 const wrapTrack = <Kind, TrackType extends Tracklike>(
   track: TrackType,
   kind: Kind,
-  id: string
+  id: TrackId
 ) => ({
   kind,
   id,
@@ -42,18 +43,20 @@ const wrapTrack = <Kind, TrackType extends Tracklike>(
 });
 
 const wrapRemoteVideoTrack = (track: Twilio.RemoteVideoTrack): VideoTrack =>
-  wrapTrack(track, "video", track.sid);
+  wrapTrack(track, "video", track.sid as TrackId);
 
 const wrapLocalVideoPublication = (
   publication: Twilio.LocalVideoTrackPublication
-): VideoTrack => wrapTrack(publication.track, "video", publication.trackSid);
+): VideoTrack =>
+  wrapTrack(publication.track, "video", publication.trackSid as TrackId);
 
 const wrapRemoteAudioTrack = (track: Twilio.RemoteAudioTrack): AudioTrack =>
-  wrapTrack(track, "audio", track.sid);
+  wrapTrack(track, "audio", track.sid as TrackId);
 
 const wrapLocalAudioPublication = (
   publication: Twilio.LocalAudioTrackPublication
-): AudioTrack => wrapTrack(publication.track, "audio", publication.trackSid);
+): AudioTrack =>
+  wrapTrack(publication.track, "audio", publication.trackSid as TrackId);
 
 const remotePublicationsToTracks = (
   publications: Map<String, Twilio.RemoteVideoTrackPublication>
