@@ -4,7 +4,7 @@ import { SpaceWithId } from "types/id";
 
 import { useUser } from "hooks/useUser";
 
-type UseCanDeleteVenueChatMessagesOptions= {
+type UseCanDeleteVenueChatMessagesOptions = {
   space: SpaceWithId;
   world?: World;
 };
