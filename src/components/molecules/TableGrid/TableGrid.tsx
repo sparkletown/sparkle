@@ -1,9 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useVideoHuddle } from "components/attendee/VideoHuddle/useVideoHuddle";
 import { groupBy } from "lodash";
 
 import { ALLOWED_EMPTY_TABLES_NUMBER } from "settings";
 
-import { setTableSeat } from "api/venue";
+import { setTableSeat, unsetTableSeat } from "api/venue";
 
 import { Table, TableComponentPropsType } from "types/Table";
 import { TableSeatedUser } from "types/User";
@@ -14,9 +15,11 @@ import { WithId } from "utils/id";
 import { generateTable } from "utils/table";
 import { arrayIncludes, isTruthy } from "utils/types";
 
+import { useAnalytics } from "hooks/useAnalytics";
 import { useExperience } from "hooks/useExperience";
 import { useSeatedTableUsers } from "hooks/useSeatedTableUsers";
 import { useShowHide } from "hooks/useShowHide";
+import { useUpdateTableRecentSeatedUsers } from "hooks/useUpdateRecentSeatedUsers";
 import { useUser } from "hooks/useUser";
 
 import { Loading } from "components/molecules/Loading";
@@ -28,8 +31,6 @@ import { ButtonNG } from "components/atoms/ButtonNG";
 import styles from "./TableGrid.module.scss";
 
 interface TableGridProps {
-  setSeatedAtTable: (value: string) => void;
-  seatedAtTable: string | undefined;
   customTables: Table[];
   defaultTables: Table[];
   showOnlyAvailableTables?: boolean;
@@ -38,21 +39,54 @@ interface TableGridProps {
   leaveText?: string;
   venue: WithId<AnyVenue>;
   venueId: string;
-  template: VenueTemplate;
+  userId: string;
 }
 
 export const TableGrid: React.FC<TableGridProps> = ({
   venueId,
-  setSeatedAtTable,
-  seatedAtTable,
   customTables,
   defaultTables,
   showOnlyAvailableTables = false,
   TableComponent,
   joinMessage,
   venue,
-  template,
+  userId,
 }) => {
+  const analytics = useAnalytics({ venue });
+  const [seatedAtTable, setSeatedAtTable] = useState<string>();
+
+  useUpdateTableRecentSeatedUsers(
+    VenueTemplate.jazzbar,
+    seatedAtTable && venue?.id
+  );
+
+  useEffect(() => {
+    seatedAtTable && analytics.trackSelectTableEvent();
+  }, [analytics, seatedAtTable]);
+
+  const { joinHuddle, inHuddle } = useVideoHuddle();
+
+  const joinTable = useCallback(
+    (table) => {
+      joinHuddle(userId || "", `${venue.id}-${table}`);
+      setSeatedAtTable(table);
+    },
+    [joinHuddle, userId, venue.id]
+  );
+
+  const leaveTable = useCallback(async () => {
+    if (!userId) return;
+
+    await unsetTableSeat(userId, { venueId: venue.id });
+    setSeatedAtTable(undefined);
+  }, [userId, venue.id]);
+
+  useEffect(() => {
+    if (!inHuddle && seatedAtTable) {
+      leaveTable();
+    }
+  }, [inHuddle, leaveTable, seatedAtTable]);
+
   // NOTE: custom tables can already contain default tables and this check here is to only doubleconfrim the data coming from the above
   const tables: Table[] = customTables || defaultTables;
 
@@ -85,9 +119,9 @@ export const TableGrid: React.FC<TableGridProps> = ({
 
   useEffect(() => {
     if (userTableReference) {
-      setSeatedAtTable(userTableReference);
+      joinTable(userTableReference);
     }
-  }, [setSeatedAtTable, userTableReference]);
+  }, [joinTable, userTableReference]);
 
   const isSeatedAtTable = !!seatedAtTable;
 
