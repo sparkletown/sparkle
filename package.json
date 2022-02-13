@@ -184,7 +184,7 @@
     "uuid": "^8.3.2",
     "ws": "^8.4.2",
     "xhr2": "^0.2.1",
-    "yup": "^0.29.2"
+    "yup": "^0.32.11"
   },
   "optionalDependencies": {
     "fsevents": "^2.3.2"
