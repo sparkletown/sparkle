@@ -1,10 +1,13 @@
 import React, { useMemo } from "react";
+import { uniq } from "lodash/fp";
 
 import { ADMIN_IA_WORLD_CREATE_URL } from "settings";
 
 import { UserId } from "types/id";
 
 import { useOwnedVenues } from "hooks/useOwnedVenues";
+import { useAdminRole } from "hooks/user/useAdminRole";
+import { useOwnWorlds } from "hooks/worlds/useOwnWorlds";
 import { useWorlds } from "hooks/worlds/useWorlds";
 
 import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
@@ -26,17 +29,23 @@ type WorldsDashboardProps = { userId: UserId };
 export const WorldsDashboard: React.FC<WorldsDashboardProps> = ({ userId }) => {
   const { ownedVenues } = useOwnedVenues({ userId });
   const worlds = useWorlds();
+  const { ownWorlds } = useOwnWorlds({ userId });
 
-  const ownedUniqueWorldIds = useMemo(
-    // @debt should use uniq function of Lodash, or create our own in ./src/utils
-    () => [...new Set(ownedVenues.map(({ worldId }) => worldId))],
-    [ownedVenues]
+  const { isAdminUser: isSuperAdmin } = useAdminRole({ userId });
+
+  const visibleWorldIds = useMemo(
+    () =>
+      uniq([
+        ...ownedVenues.map(({ worldId }) => worldId),
+        ...ownWorlds.map((world) => world.id),
+      ]),
+    [ownedVenues, ownWorlds]
   );
 
-  // Firebase query where([world.id, 'in', ownedUniqueWorldIds]) has a limit of 10 items in ownedUniqueWorldIds. Because of that, it is filtered here
-  const uniqueWorlds = useMemo(
-    () => worlds.filter(({ id }) => ownedUniqueWorldIds.includes(id)),
-    [worlds, ownedUniqueWorldIds]
+  // NOTE: Firebase query where([world.id, 'in', visibleWorldIds]) has a limit of 10 items in visibleWorldIds. Because of that, it is filtered here
+  const visibleWorlds = useMemo(
+    () => worlds.filter(({ id }) => visibleWorldIds.includes(id)),
+    [worlds, visibleWorldIds]
   );
 
   const hasWorlds = !!worlds.length;
@@ -56,12 +65,12 @@ export const WorldsDashboard: React.FC<WorldsDashboardProps> = ({ userId }) => {
   const renderedWorldsList = useMemo(
     () => (
       <div className="WorldsDashboard__worlds-list">
-        {uniqueWorlds.map((world) => (
+        {visibleWorlds.map((world) => (
           <WorldCard key={world.id} world={world} />
         ))}
       </div>
     ),
-    [uniqueWorlds]
+    [visibleWorlds]
   );
 
   return (
@@ -77,13 +86,15 @@ export const WorldsDashboard: React.FC<WorldsDashboardProps> = ({ userId }) => {
                   <span className="WorldsDashboard__header-text">
                     My worlds
                   </span>
-                  <ButtonNG
-                    variant="normal-gradient"
-                    linkTo={ADMIN_IA_WORLD_CREATE_URL}
-                    className="WorldsDashboard__header-button"
-                  >
-                    Create new world
-                  </ButtonNG>
+                  {isSuperAdmin && (
+                    <ButtonNG
+                      variant="normal-gradient"
+                      linkTo={ADMIN_IA_WORLD_CREATE_URL}
+                      className="WorldsDashboard__header-button"
+                    >
+                      Create new world
+                    </ButtonNG>
+                  )}
                 </div>
                 {renderedWorldsList}
               </AdminShowcase>

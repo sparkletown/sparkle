@@ -1,16 +1,24 @@
-import { AnyVenue } from "types/venues";
+import { World } from "api/world";
 
-import { useRoles } from "hooks/useRoles";
+import { SpaceWithId } from "types/id";
+
 import { useUser } from "hooks/useUser";
 
-export const useCanDeleteVenueChatMessages = (venue: AnyVenue) => {
+type UseCanDeleteVenueChatMessagesOptions = {
+  space: SpaceWithId;
+  world?: World;
+};
+
+export const useCanDeleteVenueChatMessages = (
+  options: UseCanDeleteVenueChatMessagesOptions
+) => {
+  const { world, space } = options;
   const { userId } = useUser();
-  const { userRoles } = useRoles();
 
   if (!userId) return false;
 
-  const isAdmin = Boolean(userRoles?.includes("admin"));
-  const isOwner = venue.owners?.includes(userId);
+  const isWorldOwner = world?.owners.includes(userId);
+  const isOwner = space.owners?.includes(userId);
 
-  return isAdmin && isOwner;
+  return isWorldOwner || isOwner;
 };

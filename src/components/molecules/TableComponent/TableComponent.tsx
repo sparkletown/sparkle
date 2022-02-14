@@ -20,7 +20,6 @@ import { determineAvatar } from "utils/image";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useAdminRole } from "hooks/user/useAdminRole";
 import { useShowHide } from "hooks/useShowHide";
-import { useUser } from "hooks/useUser";
 
 import { Modal } from "components/molecules/Modal";
 
@@ -32,6 +31,7 @@ import "./TableComponent.scss";
 
 export const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
   users,
+  userId,
   onJoinClicked,
   imageSize = 50,
   table,
@@ -43,7 +43,6 @@ export const TableComponent: React.FunctionComponent<TableComponentPropsType> = 
   const locked = tableLocked(table.reference);
   const numberOfSeatsLeft = table.capacity && table.capacity - users.length;
   const full = numberOfSeatsLeft === 0;
-  const { userId } = useUser();
 
   const { isAdminUser, isLoading: isCheckingRole } = useAdminRole({ userId });
 
