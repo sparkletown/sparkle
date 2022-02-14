@@ -1,11 +1,11 @@
 import * as admin from "firebase-admin";
 import { HttpsError } from "firebase-functions/v1/https";
 
-type GetWorldBySlugProps = {
+type GetWorldBySlugOptions = {
   worldSlug: string;
 };
 
-export const getWorldBySlug = async ({ worldSlug }: GetWorldBySlugProps) => {
+export const getWorldBySlug = async ({ worldSlug }: GetWorldBySlugOptions) => {
   const matchingWorlds = await admin
     .firestore()
     .collection("worlds")
