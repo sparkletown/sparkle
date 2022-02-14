@@ -6,7 +6,7 @@ import { addAdmin, removeAdmin } from "./api/roles";
 import { LandingPageConfig } from "./types/venue";
 import { assertValidAuth } from "./utils/assert";
 import { throwErrorIfNeitherWorldNorSpaceOwner } from "./utils/permissions";
-import { checkIfValidVenueId } from "./utils/venue";
+import { checkIfValidVenueId, getSpaceById } from "./utils/venue";
 import { ROOM_TAXON } from "./taxonomy";
 
 const VENUE_CHAT_MESSAGES_COUNTER_SHARDS_COUNT = 10;
@@ -62,20 +62,6 @@ const DEFAULT_SHOW_REACTIONS = true;
 const DEFAULT_SHOW_SHOUTOUTS = true;
 
 const DEFAULT_ENABLE_JUKEBOX = false;
-
-const getSpaceById = async (spaceId: string) => {
-  const doc = await admin.firestore().collection("venues").doc(spaceId).get();
-
-  if (!doc || !doc.exists) {
-    throw new HttpsError("not-found", `Space ${spaceId} not found`);
-  }
-  const space = doc.data();
-  if (!space) {
-    throw new HttpsError("internal", `Space not found`);
-  }
-
-  return space;
-};
 
 // @debt extract this into a new functions/chat backend script file
 const checkIfUserHasVoted = async (
