@@ -6,12 +6,6 @@ export const AnalyticsScript: SelfServeScript = {
   name: "Analytics CSV",
   description: "Creates visit analytics based on the data supplied",
   functionLocation: "analytics-generateAnalytics",
-  arguments: [
-    {
-      name: "worldSlug",
-      title: "World slug",
-      isRequired: true,
-    },
-  ],
+  arguments: [],
   outputComponent: AnalyticsOutput,
 };

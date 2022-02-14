@@ -3,7 +3,7 @@ import * as functions from "firebase-functions";
 import { HttpsError } from "firebase-functions/v1/https";
 
 import { HttpsFunctionHandler } from "./types/utility";
-import { throwErrorIfNotWorldOwner } from "./utils/permissions";
+import { throwErrorIfNotSuperAdmin } from "./utils/permissions";
 import { getWorldBySlug } from "./utils/world";
 
 export const makeUserWorldOwner: HttpsFunctionHandler<{
@@ -20,26 +20,44 @@ export const makeUserWorldOwner: HttpsFunctionHandler<{
     throw new HttpsError("internal", `World slug was not passed`);
   }
 
-  if (!userEmail) {
-    throw new HttpsError("internal", `User email was not passed`);
-  }
-
   const world = await getWorldBySlug({ worldSlug });
 
-  throwErrorIfNotWorldOwner({ userId: context.auth.uid, worldId: world.id });
+  await throwErrorIfNotSuperAdmin(context.auth.token.user_id);
 
-  const authUser = await admin.auth().getUserByEmail(userEmail);
+  const worldRef = admin.firestore().collection("worlds").doc(world.id);
 
-  await admin
-    .firestore()
-    .collection("worlds")
-    .doc(world.id)
-    .update({
-      owners: admin.firestore.FieldValue.arrayUnion(authUser.uid),
+  let addedAuthUser;
+
+  if (userEmail) {
+    addedAuthUser = await admin.auth().getUserByEmail(userEmail);
+
+    await worldRef.update({
+      owners: admin.firestore.FieldValue.arrayUnion(addedAuthUser.uid),
     });
+  }
+
+  const updatedWorld = await (await worldRef.get()).data();
+
+  const worldAdminIds = updatedWorld ? updatedWorld.owners : [];
+
+  const worldAdmins = await Promise.all(
+    worldAdminIds.map(async (adminId: string) => {
+      const worldAdmin = await admin
+        .firestore()
+        .collection("users")
+        .doc(adminId)
+        .get();
+
+      return {
+        id: worldAdmin.id,
+        ...worldAdmin.data(),
+      };
+    })
+  );
 
   return {
-    userEmail: authUser.email,
+    userEmail: addedAuthUser?.email,
+    worldAdmins,
   };
 };
 

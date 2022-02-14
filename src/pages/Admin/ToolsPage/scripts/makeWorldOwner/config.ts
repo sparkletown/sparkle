@@ -8,14 +8,9 @@ export const AddWorldOwnerScript: SelfServeScript = {
   functionLocation: "user-makeUserWorldOwner",
   arguments: [
     {
-      name: "worldSlug",
-      title: "World slug",
-      isRequired: true,
-    },
-    {
       name: "userEmail",
       title: "User Email",
-      isRequired: true,
+      isRequired: false,
     },
   ],
   outputComponent: AddWorldOwnerOutput,
