@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useMemo } from "react";
+import { ChangeEvent, useCallback, useMemo, useState } from "react";
 
 import {
   COVERT_ROOM_TYPES,
@@ -32,19 +32,20 @@ type SearchOverlayProps = {
 export const SearchOverlay: React.FC<SearchOverlayProps> = ({ onClose }) => {
   const { worldSlug, spaceSlug } = useSpaceParams();
   const { space, worldId } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
+  const [searchValue, setSearchValue] = useState("");
 
-  const {
-    searchInputValue,
-    searchQuery,
-    setSearchInputValue,
-  } = useDebounceSearch();
+  const { searchQuery, setSearchInputValue } = useDebounceSearch();
 
   const onSearchInputChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      setSearchInputValue(e.target.value);
+      setSearchValue(e.target.value);
     },
-    [setSearchInputValue]
+    [setSearchValue]
   );
+
+  const initiateSearch = () => {
+    setSearchInputValue(searchValue);
+  };
 
   const { isLoading, relatedVenues } = useRelatedVenues();
 
@@ -90,15 +91,14 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ onClose }) => {
 
   const foundUsers = useMemo<JSX.Element[]>(() => {
     const usersResults = algoliaSearchState?.value?.[AlgoliaSearchIndex.USERS];
-    console.log(usersResults);
     if (!usersResults) return [];
 
     return usersResults.hits.map((hit) => {
-      const userFields = {
-        ...hit,
-        id: hit.objectID,
-      };
-      console.log(userFields);
+      // const userFields = {
+      //   ...hit,
+      //   id: hit.objectID,
+      // };
+
       return (
         <div key={`user-${hit.objectID}`}>
           <div className={styles.SearchOverlay__result_header}>
@@ -119,9 +119,11 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ onClose }) => {
       </div>
       <div className={styles.SearchOverlay__search}>
         <InputField
-          value={searchInputValue}
+          value={searchValue}
           inputClassName={styles.SearchOverlay__search_input}
           onChange={onSearchInputChange}
+          onLabelClick={initiateSearch}
+          label="Search"
           autoComplete="off"
         />
       </div>

@@ -50,6 +50,8 @@ interface InputFieldProps
   error?: FieldError;
   onIconStartClick?: () => void;
   onIconEndClick?: () => void;
+  onLabelClick?: () => void;
+  label?: string;
 }
 
 export const _InputField: React.ForwardRefRenderFunction<
@@ -66,7 +68,9 @@ export const _InputField: React.ForwardRefRenderFunction<
     onIconStartClick,
     iconEnd,
     onIconEndClick,
+    onLabelClick,
     error,
+    label,
     ...extraInputProps
   },
   ref
@@ -86,8 +90,13 @@ export const _InputField: React.ForwardRefRenderFunction<
   return (
     <div className={containerClassNames}>
       <div className="InputField__wrapper">
-        <input ref={ref} className={inputClassNames} {...extraInputProps} />
-
+        {label ? (
+          <label data-label={label} onClick={onLabelClick}>
+            <input ref={ref} className={inputClassNames} {...extraInputProps} />
+          </label>
+        ) : (
+          <input ref={ref} className={inputClassNames} {...extraInputProps} />
+        )}
         {iconStart &&
           renderIcon(
             iconStart,

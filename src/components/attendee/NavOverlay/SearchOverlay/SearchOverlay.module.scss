@@ -1,4 +1,5 @@
-@import "../../scss/AttendeeMixins.scss";
+@use "scss/attendee/mixins.scss"as *;
+@use "scss/attendee/variables.scss"as *;
 
 .SearchOverlay {
   &__wrapper {
@@ -8,7 +9,7 @@
     flex-direction: column;
     max-width: 800px;
     min-height: 100vh;
-    margin: $whitespace * 10 auto 0 $whitespace * 5;
+    margin: $whitespace * 10 auto 0;
     padding: $whitespace * 4 $whitespace * 3;
 
     @media (max-width: 768px) {
@@ -47,7 +48,7 @@
     height: 42px;
     border-radius: 4px;
     box-sizing: border-box;
-    padding-right: 4em;
+    padding-right: 5em;
     width: 100%;
     background-color: transparent;
   }
