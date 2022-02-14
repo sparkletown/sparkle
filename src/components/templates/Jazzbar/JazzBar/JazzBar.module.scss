@@ -8,7 +8,7 @@
   // TODO Decide why this is 416..
   max-width: 416px;
   h1 {
-    font-size: 23px;
-    font-weight: 400;
+    font-size: variables.$font-size-large;
+    font-weight: variables.$font-weight-normal;
   }
 }

@@ -52,6 +52,7 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
         <MediaPlayer url={venue.iframeUrl} autoPlay={venue.autoPlay || false} />
       )}
 
+      {/* TODO Does this want extracting out into its own component? */}
       <div className={styles.componentSpaceInfo}>
         {venue.name && <h1>{venue.name}</h1>}
       </div>
