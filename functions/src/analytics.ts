@@ -71,7 +71,7 @@ const generateAnalytics: HttpsFunctionHandler<{
   }
 
   if (!data.worldSlug) {
-    throw new HttpsError("internal", `World slug was not passed`);
+    throw new HttpsError("internal", `World slug missing`);
   }
 
   await throwErrorIfNotSuperAdmin(context.auth.token.user_id);
