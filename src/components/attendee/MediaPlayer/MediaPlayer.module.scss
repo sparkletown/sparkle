@@ -8,9 +8,9 @@
   justify-content: center;
   align-items: flex-end;
   z-index: 50;
-  padding: 21px 6px 0;
-  margin-top: 21px;
-  margin-bottom: 42px;
+  padding: variables.$whitespace * 2 0 0;
+  margin-top: variables.$whitespace * 2;
+  margin-bottom: variables.$whitespace * 4;
   height: min-content;
 }
 
