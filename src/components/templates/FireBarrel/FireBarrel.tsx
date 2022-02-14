@@ -1,4 +1,5 @@
 import React, { useMemo } from "react";
+import { VideoCommsParticipant } from "components/attendee/VideoComms/VideoCommsParticipant";
 import styled, { css } from "styled-components";
 
 import { AnyVenue } from "types/venues";
@@ -8,8 +9,6 @@ import { WithId } from "utils/id";
 
 import { useVideoRoomState } from "hooks/twilio/useVideoRoomState";
 import { useUser } from "hooks/useUser";
-
-import { VideoParticipant } from "components/organisms/Video";
 
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 
@@ -138,21 +137,15 @@ export const FireBarrel: React.FC<FireBarrelProps> = ({ venue }) => {
         if (!!localParticipant && isMe) {
           return (
             <StyledChair key={userId}>
-              <VideoParticipant
-                participant={localParticipant}
-                participantUser={userWithId}
-              />
+              <VideoCommsParticipant participant={localParticipant} isLocal />
             </StyledChair>
           );
         }
 
         if (participants.length && !!participants[index]) {
           return (
-            <StyledChair key={participant.identity}>
-              <VideoParticipant
-                participant={participant}
-                participantUser={userWithId}
-              />
+            <StyledChair key={participant.sparkleId}>
+              <VideoCommsParticipant participant={participant} />
             </StyledChair>
           );
         }
