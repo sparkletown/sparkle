@@ -19,7 +19,7 @@
   width: 100%;
   height: auto;
   max-width: 600px;
-  @media (min-width: 768px) {
+  @media (min-width: variables.$mobile-breakpoint) {
     margin-left: variables.$button-height;
     transition: max-width 0.2s ease;
   }
@@ -56,7 +56,7 @@
   flex-direction: column;
   justify-self: start;
   margin-left: variables.$whitespace;
-  @media (min-width: 768px) {
+  @media (min-width: variables.$mobile-breakpoint) {
     display: flex;
   }
   svg {

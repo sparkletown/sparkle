@@ -15,7 +15,7 @@
   padding: variables.$whitespace;
   width: 100%;
 
-  @media (min-width: 768px) {
+  @media (min-width: variables.$mobile-breakpoint) {
     max-width: variables.$whitespace * 33;
   }
 
@@ -55,7 +55,7 @@
   height: variables.$whitespace * 4;
   cursor: pointer;
 
-  @media (min-width: 768px) {
+  @media (min-width: variables.$mobile-breakpoint) {
     width: variables.$whitespace * 5;
     height: variables.$whitespace * 5;
   }
@@ -69,7 +69,7 @@
   border-radius: 100%;
   display: flex;
 
-  @media (min-width: 768px) {
+  @media (min-width: variables.$mobile-breakpoint) {
     width: variables.$whitespace * 5;
     height: variables.$whitespace * 5;
   }
