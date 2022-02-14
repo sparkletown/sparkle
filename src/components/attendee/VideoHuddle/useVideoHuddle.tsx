@@ -43,8 +43,8 @@ export const useVideoHuddle = () => {
       setInHuddle((prevInHuddle) => {
         if (prevInHuddle) {
           disconnect();
-          setInHuddle(() => false);
         }
+        return false;
       });
     };
   }, [disconnect, setInHuddle]);
