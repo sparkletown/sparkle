@@ -12,6 +12,7 @@ import { HttpsFunctionHandler } from "./types/utility";
 import { assertValidAuth } from "./utils/assert";
 import { throwErrorIfNotSuperAdmin } from "./utils/permissions";
 import { formatSecondsAsHHMMSS } from "./utils/time";
+import { getWorldBySlug } from "./utils/world";
 
 const functionsConfig = functions.config();
 
@@ -69,22 +70,14 @@ const generateAnalytics: HttpsFunctionHandler<{
     throw new HttpsError("internal", `No authentication context`);
   }
 
-  await throwErrorIfNotSuperAdmin(context.auth.token.user_id);
-
-  const matchingWorlds = await admin
-    .firestore()
-    .collection("worlds")
-    .where("slug", "==", data.worldSlug)
-    .get();
-
-  if (matchingWorlds.empty) {
-    throw new HttpsError(
-      "internal",
-      `The world with ${data.worldSlug} does not exist`
-    );
+  if (!data.worldSlug) {
+    throw new HttpsError("internal", `World slug was not passed`);
   }
 
-  const [world] = matchingWorlds.docs;
+  await throwErrorIfNotSuperAdmin(context.auth.token.user_id);
+
+  const world = await getWorldBySlug({ worldSlug: data.worldSlug });
+
   const worldId = world.id;
 
   const matchingSpaces = await admin
