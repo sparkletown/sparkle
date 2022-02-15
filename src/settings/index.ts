@@ -602,3 +602,10 @@ export const VENUE_CHAT_MESSAGES_COUNTER_SHARDS_COUNT = 10;
 export const NON_EXISTENT_FIRESTORE_ID = "NON_EXISTENT_FIRESTORE_ID";
 
 export const INVALID_SLUG_CHARS_REGEX = /[^a-zA-Z0-9]/g;
+
+export const DEFAULT_SHOW_MORE_SETTINGS = {
+  more: "Show more",
+  less: "Show less",
+  expanded: false,
+  truncatedEndingComponent: "... ",
+};

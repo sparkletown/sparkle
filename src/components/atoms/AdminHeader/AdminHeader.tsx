@@ -2,6 +2,7 @@ import React, { Fragment } from "react";
 import { Menu, Transition } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/solid";
 import classNames from "classnames";
+import { HeaderButtonProps } from "components/admin/HeaderButton";
 
 // TODO
 // import TabsFullWidth from "./tabs-full-width";
@@ -16,16 +17,13 @@ interface Subtitle {
   icon: (props: React.ComponentProps<"svg">) => JSX.Element;
 }
 
-interface HeaderButtonProps {
-  name: string;
-  href: string;
-}
-
 interface HeaderProps {
   title: string;
   crumbtrail?: Crumb[];
   subtitleItems?: Subtitle[];
-  children?: React.ReactElement<HeaderButtonProps>[];
+  children?:
+    | React.ReactElement<HeaderButtonProps>
+    | React.ReactElement<HeaderButtonProps>[];
 }
 
 export const AdminHeader: React.FC<HeaderProps> = ({
@@ -37,7 +35,7 @@ export const AdminHeader: React.FC<HeaderProps> = ({
   //const tabNames = props.tabNames;
   //const currentTab = props.currentTab;
   //const onTabClick = props.onTabClick;
-  const headerButtons = children;
+  const headerButtons = Array.isArray(children) ? children : [children];
 
   return (
     <header className="bg-white shadow px-4 sm:px-6 pt-4 sm:pt-6">
@@ -127,7 +125,7 @@ export const AdminHeader: React.FC<HeaderProps> = ({
                     <Menu.Item key={headerButton.props.name}>
                       {({ active }) => (
                         <a
-                          href={headerButton.props.href}
+                          href={headerButton.props.to}
                           className={classNames(
                             active ? "bg-gray-100" : "",
                             "block px-4 py-2 text-sm text-gray-700"

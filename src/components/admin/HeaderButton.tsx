@@ -12,7 +12,7 @@ const TW = {
     "inline-flex items-center px-4 py-2 border rounded-md shadow-sm text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500",
 };
 
-interface HeaderButtonProps {
+export interface HeaderButtonProps {
   name?: string;
   to?: string;
   icon?: (props: React.ComponentProps<"svg">) => JSX.Element;
