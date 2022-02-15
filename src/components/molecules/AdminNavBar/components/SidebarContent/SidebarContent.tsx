@@ -49,7 +49,7 @@ export const SidebarContent = () => {
   const { worldSlug } = useSpaceParams();
   const { world } = useWorldBySlug(worldSlug);
 
-  const worldIsChosen = !!worldSlug;
+  const hasWorld = !!worldSlug;
 
   const location = useLocation();
 
@@ -85,13 +85,13 @@ export const SidebarContent = () => {
   );
 
   const switchWorldLinkClasses = classNames(TW.linkGeneral, {
-    [TW.linkWorldIsChosen]: worldIsChosen,
-    [TW.linkWorldIsNotChosen]: !worldIsChosen,
+    [TW.linkWorldIsChosen]: hasWorld,
+    [TW.linkWorldIsNotChosen]: !hasWorld,
   });
 
   const switchWorldIconClasses = classNames(TW.switchWorldIconGeneral, {
-    [TW.switchWorldIconChosen]: worldIsChosen,
-    [TW.switchWorldIconNotChosen]: !worldIsChosen,
+    [TW.switchWorldIconChosen]: hasWorld,
+    [TW.switchWorldIconNotChosen]: !hasWorld,
   });
 
   return (
@@ -100,7 +100,7 @@ export const SidebarContent = () => {
         <div className="flex items-center flex-shrink-0 px-4">
           <img className="block h-8 w-auto" src={SparkleLogo} alt="Sparkle" />
         </div>
-        {worldIsChosen && (
+        {hasWorld && (
           <nav className="mt-5 px-2 space-y-1">
             <h3 className="flex-1 flex flex-col overflow-y-auto px-2 py-1 text-sm text-gray-400 uppercase tracking-wider">
               {world?.name}

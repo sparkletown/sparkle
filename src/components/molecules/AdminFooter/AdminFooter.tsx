@@ -1,10 +1,10 @@
 const navigation = [
-  { name: "About", href: "#" },
-  { name: "Blog", href: "#" },
-  { name: "Jobs", href: "#" },
-  { name: "Press", href: "#" },
-  { name: "Accessibility", href: "#" },
-  { name: "Partners", href: "#" },
+  { name: "About", href: "#about" },
+  { name: "Blog", href: "#blog" },
+  { name: "Jobs", href: "#jobs" },
+  { name: "Press", href: "#press" },
+  { name: "Accessibility", href: "#accessibility" },
+  { name: "Partners", href: "#partners" },
 ];
 
 const renderedMenuItems = navigation.map((item) => (
@@ -25,7 +25,7 @@ export const AdminFooter = () => (
         {renderedMenuItems}
       </nav>
       <p className="mt-8 text-center text-base text-gray-400">
-        &copy; 2020 Workflow, Inc. All rights reserved.
+        &copy; Copyright SparkleVerse Inc & Contributors 2020 to 2021.
       </p>
     </div>
   </footer>

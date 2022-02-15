@@ -1,6 +1,8 @@
 import { Fragment, useRef } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 
+import { STRING_ZERO_WIDTH_SPACE } from "settings";
+
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 
 import { AdminButton } from "components/atoms/AdminButton";
@@ -15,7 +17,7 @@ export const AdminProfileModal = () => {
     <Transition.Root show={hasSelectedProfile} as={Fragment}>
       <Dialog
         as="div"
-        className="fixed z-10 inset-0 overflow-y-auto"
+        className="AdminProfileModal fixed z-10 inset-0 overflow-y-auto"
         initialFocus={cancelButtonRef}
         onClose={closeUserProfileModal}
       >
@@ -37,7 +39,7 @@ export const AdminProfileModal = () => {
             className="hidden sm:inline-block sm:align-middle sm:h-screen"
             aria-hidden="true"
           >
-            &#8203;
+            {STRING_ZERO_WIDTH_SPACE}
           </span>
           <Transition.Child
             as={Fragment}
