@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { FieldErrors, useForm } from "react-hook-form";
+import { useCallback, useEffect, useState } from "react";
+import { FieldErrors, useFieldArray, useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import { Button } from "components/attendee/Button/Button";
 import firebase from "firebase/compat/app";
@@ -52,6 +52,7 @@ export const ProfileOverlay: React.FC<ProfileOverlayProps> = ({ profile }) => {
     getValues,
     setValue,
     formState,
+    control,
     reset,
   } = useForm<UserProfileModalFormData>({
     mode: "onBlur",
@@ -60,10 +61,15 @@ export const ProfileOverlay: React.FC<ProfileOverlayProps> = ({ profile }) => {
     defaultValues,
   });
   const values = getValues();
-  const pLinks: ProfileLink[] = useMemo(
-    () => watch(formProp("profileLinks")) ?? [{ url: "", title: "" }],
-    [watch]
-  );
+
+  const {
+    fields: links,
+    append: addLink,
+    remove: removeLink,
+  } = useFieldArray<ProfileLink>({
+    control,
+    name: formProp("profileLinks"),
+  });
 
   useEffect(() => {
     if (defaultValues.partyName && !values.partyName) {
@@ -73,17 +79,14 @@ export const ProfileOverlay: React.FC<ProfileOverlayProps> = ({ profile }) => {
 
   const onDeleteLink = useCallback(
     (i: number) => {
-      setValue("profileLinks", [
-        ...pLinks.slice(0, i),
-        ...pLinks.slice(i + 1, pLinks.length),
-      ]);
+      removeLink(i);
     },
-    [pLinks, setValue]
+    [removeLink]
   );
 
   const addLinkHandler = useCallback(() => {
-    setValue("profileLinks", [...pLinks, { url: "", title: "" }]);
-  }, [pLinks, setValue]);
+    addLink({ url: "", title: "" });
+  }, [addLink]);
 
   const setLinkTitle = useCallback(
     (index: number, title: string) => {
@@ -183,7 +186,7 @@ export const ProfileOverlay: React.FC<ProfileOverlayProps> = ({ profile }) => {
           <ProfileModalEditLinks
             register={register}
             initialLinks={defaultValues.profileLinks ?? []}
-            links={pLinks}
+            links={links}
             setLinkTitle={setLinkTitle}
             setLinkUrl={setLinkUrl}
             errors={errors?.profileLinks}
