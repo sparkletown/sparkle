@@ -17,10 +17,15 @@ export const PasswordResetForm: React.FunctionComponent<PropsType> = ({
   displayLoginForm,
   closeAuthenticationModal,
 }) => {
-  const { register, handleSubmit, errors, formState, setError } =
-    useForm<PasswordResetFormData>({
-      mode: "onChange",
-    });
+  const {
+    register,
+    handleSubmit,
+    errors,
+    formState,
+    setError,
+  } = useForm<PasswordResetFormData>({
+    mode: "onChange",
+  });
 
   const [emailSentTo, setEmailSentTo] = useState("");
 

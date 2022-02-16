@@ -19,8 +19,13 @@ const usage = makeScriptUsage({
     "co-reality-map mypartymap Password abc123 [theMatchingAccountServiceKey.json] / co-reality-map mypartymap Emails emails-one-per-line.txt [theMatchingAccountServiceKey.json] / co-reality-map mypartymap Codes ticket-codes-one-per-line.txt [theMatchingAccountServiceKey.json]",
 });
 
-const [projectId, venueId, method, accessDetail, credentialPath] =
-  process.argv.slice(2);
+const [
+  projectId,
+  venueId,
+  method,
+  accessDetail,
+  credentialPath,
+] = process.argv.slice(2);
 if (!projectId || !venueId || !method || !accessDetail) {
   usage();
 }

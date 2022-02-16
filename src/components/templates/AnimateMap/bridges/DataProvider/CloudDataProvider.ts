@@ -50,8 +50,7 @@ interface CloudDataProviderSetting {
  */
 export class CloudDataProvider
   extends utils.EventEmitter
-  implements DataProvider
-{
+  implements DataProvider {
   readonly player: PlayerDataProvider;
   readonly users: UsersDataProvider;
   readonly commonInterface: CommonInterface;

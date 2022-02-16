@@ -42,9 +42,11 @@ export interface CurrentUserProfileModalContentProps {
   onCancelEditing: () => void;
 }
 
-export const EditingProfileModalContent: React.FC<
-  CurrentUserProfileModalContentProps
-> = ({ user, space, onCancelEditing }) => {
+export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContentProps> = ({
+  user,
+  space,
+  onCancelEditing,
+}) => {
   const { questions, answers } = useProfileQuestions(user, space?.worldId);
   const firebaseUser = firebase.auth()?.currentUser;
 
@@ -56,8 +58,10 @@ export const EditingProfileModalContent: React.FC<
 
   const checkOldPassword = useCheckOldPassword();
 
-  const { isShown: isChangePasswordShown, show: showChangePassword } =
-    useShowHide();
+  const {
+    isShown: isChangePasswordShown,
+    show: showChangePassword,
+  } = useShowHide();
 
   const {
     register,

@@ -14,9 +14,11 @@ export type ScreeningRoomVideoAddEditModalProps = {
   video?: WithId<ScreeningRoomVideo>;
 };
 
-export const ScreeningRoomVideoAddEditModal: React.FC<
-  ScreeningRoomVideoAddEditModalProps
-> = ({ onHide, show, video }) => (
+export const ScreeningRoomVideoAddEditModal: React.FC<ScreeningRoomVideoAddEditModalProps> = ({
+  onHide,
+  show,
+  video,
+}) => (
   <Modal show={show} onHide={onHide} centered autoHide>
     <ScreeningRoomVideoAddEditForm onDone={onHide} video={video} />
   </Modal>

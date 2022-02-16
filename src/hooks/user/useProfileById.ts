@@ -9,7 +9,9 @@ import { convertToFirestoreKey } from "utils/id";
 
 import { useRefiDocument } from "hooks/fire/useRefiDocument";
 
-type UseProfileById = (options: { userId: UserId }) => LoadStatus & {
+type UseProfileById = (options: {
+  userId: UserId;
+}) => LoadStatus & {
   profile?: UserWithId;
   userId?: UserId;
 };

@@ -55,16 +55,15 @@ export const useChatMessages = <T extends ChatMessage>(
 ): [PartitionMessagesFromRepliesReturn<T>, boolean] => {
   const [chatMessages, isLoaded] = useChatMessagesRaw<T>(messagesRef);
 
-  const filteredMessages = useMemo(
-    () => chatMessages.filter(filter),
-    [chatMessages, filter]
-  );
+  const filteredMessages = useMemo(() => chatMessages.filter(filter), [
+    chatMessages,
+    filter,
+  ]);
 
   return [
-    useMemo(
-      () => partitionMessagesFromReplies<T>(filteredMessages),
-      [filteredMessages]
-    ),
+    useMemo(() => partitionMessagesFromReplies<T>(filteredMessages), [
+      filteredMessages,
+    ]),
     isLoaded,
   ];
 };
@@ -72,15 +71,17 @@ export const useChatMessages = <T extends ChatMessage>(
 export const useChatMessagesRaw = <T extends BaseChatMessage>(
   messagesRef: Query<T>
 ): [WithId<T>[], boolean] => {
-  const { data: rawMessages = ALWAYS_EMPTY_ARRAY, status } =
-    useFirestoreCollectionData(
-      query(messagesRef, orderBy("timestamp", "desc")).withConverter<WithId<T>>(
-        withIdConverter()
-      ),
-      {
-        idField: "id",
-      }
-    );
+  const {
+    data: rawMessages = ALWAYS_EMPTY_ARRAY,
+    status,
+  } = useFirestoreCollectionData(
+    query(messagesRef, orderBy("timestamp", "desc")).withConverter<WithId<T>>(
+      withIdConverter()
+    ),
+    {
+      idField: "id",
+    }
+  );
 
   const chatMessages = useMemo(
     () =>

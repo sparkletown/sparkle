@@ -47,14 +47,16 @@ export const Login: React.FC<LoginProps> = ({
     sovereignSpace?.samlAuthProviderId
   );
 
-  const { loading: isCustomAuthConfigLoading, value: customAuthConfig } =
-    useAsync(async () => {
-      return tracePromise(
-        "Login::fetchCustomAuthConfig",
-        () => fetchCustomAuthConfig(spaceId),
-        { attributes: { spaceId }, withDebugLog: true }
-      );
-    }, [spaceId]);
+  const {
+    loading: isCustomAuthConfigLoading,
+    value: customAuthConfig,
+  } = useAsync(async () => {
+    return tracePromise(
+      "Login::fetchCustomAuthConfig",
+      () => fetchCustomAuthConfig(spaceId),
+      { attributes: { spaceId }, withDebugLog: true }
+    );
+  }, [spaceId]);
 
   const { customAuthName, customAuthConnectPath } = customAuthConfig ?? {};
 

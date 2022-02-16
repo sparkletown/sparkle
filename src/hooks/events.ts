@@ -43,11 +43,7 @@ type UseSpaceEvents = (options: {
 };
 
 export const useSpaceEvents: UseSpaceEvents = ({ worldId, spaceIds }) => {
-  const {
-    isLoaded,
-    isLoading,
-    events: worldEvents,
-  } = useWorldEvents({
+  const { isLoaded, isLoading, events: worldEvents } = useWorldEvents({
     worldId,
   });
 

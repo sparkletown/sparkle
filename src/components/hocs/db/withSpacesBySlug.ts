@@ -28,8 +28,9 @@ export const withSpacesBySlug = <T extends Attributes>(
   Component: React.FC<Props<T>>
 ) => {
   const WithSpacesBySlug = (props: Props<T>) => {
-    const { space, spaces, spaceId, isLoaded, isLoading } =
-      useSpacesBySlug(props);
+    const { space, spaces, spaceId, isLoaded, isLoading } = useSpacesBySlug(
+      props
+    );
 
     return React.createElement(Component, {
       ...props,

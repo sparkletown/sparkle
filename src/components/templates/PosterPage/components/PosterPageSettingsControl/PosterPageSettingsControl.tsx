@@ -16,9 +16,10 @@ export interface PosterPageSettingsControlProps {
   isPosterLive?: boolean;
 }
 
-export const PosterPageSettingsControl: React.FC<
-  PosterPageSettingsControlProps
-> = ({ venueId, isPosterLive = false }) => {
+export const PosterPageSettingsControl: React.FC<PosterPageSettingsControlProps> = ({
+  venueId,
+  isPosterLive = false,
+}) => {
   const setVenueLiveOn = useCallback(() => {
     setVenueLiveStatus({ venueId, isLive: true });
   }, [venueId]);

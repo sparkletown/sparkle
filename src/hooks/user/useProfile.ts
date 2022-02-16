@@ -11,7 +11,9 @@ import { extractLocationFromUser, omitLocationFromUser } from "utils/user";
 
 import { useRefiDocument } from "hooks/fire/useRefiDocument";
 
-type UseProfile = (options: { auth?: RefiAuthUser }) => LoadStatus & {
+type UseProfile = (options: {
+  auth?: RefiAuthUser;
+}) => LoadStatus & {
   auth?: RefiAuthUser;
   profile?: Profile;
   userLocation?: UserLocation;
@@ -25,11 +27,10 @@ export const useProfile: UseProfile = (props) => {
   const auth = props?.auth;
   const userId = auth?.uid as UserId | undefined;
 
-  const {
-    status,
-    data: profileDataWithLocation,
-    error,
-  } = useRefiDocument([COLLECTION_USERS, convertToFirestoreKey(userId)]);
+  const { status, data: profileDataWithLocation, error } = useRefiDocument([
+    COLLECTION_USERS,
+    convertToFirestoreKey(userId),
+  ]);
 
   const profile: Profile | undefined = useMemo(
     () =>

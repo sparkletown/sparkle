@@ -65,10 +65,9 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
     [filteredSpaces]
   );
 
-  const spaceOptions = useMemo(
-    () => [spaceNoneOption, ...sortedSpaces],
-    [sortedSpaces]
-  );
+  const spaceOptions = useMemo(() => [spaceNoneOption, ...sortedSpaces], [
+    sortedSpaces,
+  ]);
 
   useEffect(() => {
     if (parentSpace) {

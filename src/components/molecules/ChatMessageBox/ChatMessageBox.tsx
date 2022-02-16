@@ -52,12 +52,18 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
   const selectedThreadId = useSelectedReplyThread()?.id;
   const hasChosenThread = Boolean(selectedThreadId);
 
-  const { register, handleSubmit, watch, reset, setValue, getValues } =
-    useForm<{
-      message: string;
-    }>({
-      mode: "onSubmit",
-    });
+  const {
+    register,
+    handleSubmit,
+    watch,
+    reset,
+    setValue,
+    getValues,
+  } = useForm<{
+    message: string;
+  }>({
+    mode: "onSubmit",
+  });
 
   const sendMessage = useChatboxSendChatMessage();
 

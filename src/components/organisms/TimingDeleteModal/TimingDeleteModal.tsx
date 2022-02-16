@@ -53,13 +53,15 @@ export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
     }
   }, [event, reset]);
 
-  const [{ loading: isDeletingEvent }, deleteVenueEvent] =
-    useAsyncFn(async () => {
-      if (event && eventSpaceId) {
-        await deleteEvent(event);
-      }
-      onHide();
-    }, [event, onHide, eventSpaceId]);
+  const [
+    { loading: isDeletingEvent },
+    deleteVenueEvent,
+  ] = useAsyncFn(async () => {
+    if (event && eventSpaceId) {
+      await deleteEvent(event);
+    }
+    onHide();
+  }, [event, onHide, eventSpaceId]);
 
   const eventStartTime = event
     ? dayjs(event.startUtcSeconds * 1000).format("ha")

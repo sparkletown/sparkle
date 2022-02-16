@@ -21,9 +21,10 @@ interface ScreeningRoomVideosStripFormProps {
   spaceId: string;
 }
 
-export const ScreeningRoomVideosStripForm: React.FC<
-  ScreeningRoomVideosStripFormProps
-> = ({ video, spaceId }) => {
+export const ScreeningRoomVideosStripForm: React.FC<ScreeningRoomVideosStripFormProps> = ({
+  video,
+  spaceId,
+}) => {
   const { title, thumbnailSrc } = video;
   const {
     isShown: isModalShown,

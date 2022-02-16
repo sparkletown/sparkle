@@ -41,12 +41,17 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
   event,
   setShowDeleteEventModal,
 }) => {
-  const { register, handleSubmit, errors, formState, reset } =
-    useForm<EventInput>({
-      mode: "onSubmit",
-      reValidateMode: "onChange",
-      validationSchema: eventEditSchema,
-    });
+  const {
+    register,
+    handleSubmit,
+    errors,
+    formState,
+    reset,
+  } = useForm<EventInput>({
+    mode: "onSubmit",
+    reValidateMode: "onChange",
+    validationSchema: eventEditSchema,
+  });
 
   // When we're creating a new event it will default to
   // being on the space that triggered this modal.

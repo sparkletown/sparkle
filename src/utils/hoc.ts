@@ -27,8 +27,8 @@ type HoistHocStatics = <Twrapper, Twrapped>(
 
 export const hoistHocStatics: HoistHocStatics = (name, Wrapper, Wrapped) => {
   hoistNonReactStatics(
-    Wrapper as unknown as React.FC,
-    Wrapped as unknown as React.FC
+    (Wrapper as unknown) as React.FC,
+    (Wrapped as unknown) as React.FC
   );
 
   Wrapper.displayName = `${name}(${determineDisplayName(Wrapped)})`;

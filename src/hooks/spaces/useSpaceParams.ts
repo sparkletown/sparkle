@@ -8,8 +8,10 @@ import { SpaceSlug, SpaceSlugLocation, WorldSlug } from "types/id";
  * or the search query string ( ?spaceSlug= , &worldSlug= )
  */
 export const useSpaceParams = () => {
-  const { spaceSlug: spaceSlugFromParams, worldSlug: worldSlugFromParams } =
-    useParams<Partial<SpaceSlugLocation>>();
+  const {
+    spaceSlug: spaceSlugFromParams,
+    worldSlug: worldSlugFromParams,
+  } = useParams<Partial<SpaceSlugLocation>>();
 
   // fallback for ?foo=bar pattern in case it is used as a redirect back
   const spaceSlugFromQuery = useSearchParam("spaceSlug") as SpaceSlug;

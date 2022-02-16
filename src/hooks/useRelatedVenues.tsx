@@ -160,10 +160,9 @@ const WorldSpacesProvider: React.FC<WorldIdLocation> = ({
   // considering only worldId is provided, before this being defined maybe a whole world could be made to have a default space
   const sovereignVenueId = undefined;
 
-  const relatedVenueIds = useMemo(
-    () => relatedVenues.map(({ id }) => id),
-    [relatedVenues]
-  );
+  const relatedVenueIds = useMemo(() => relatedVenues.map(({ id }) => id), [
+    relatedVenues,
+  ]);
 
   const descendantVenues = useMemo(
     () => relatedVenues.filter(({ id }) => id !== sovereignVenueId),

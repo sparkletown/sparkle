@@ -20,13 +20,14 @@ export const useRecipientChatMessages = (recipient: WithId<DisplayUser>) => {
     "chats"
   ) as CollectionReference<PrivateChatMessage>;
 
-  const [messagesToDisplay, replies] =
-    useChatMessagesForDisplay<PrivateChatMessage>(
-      messagesRef,
-      (message) =>
-        message.toUser.id === recipient.id ||
-        message.fromUser.id === recipient.id
-    );
+  const [
+    messagesToDisplay,
+    replies,
+  ] = useChatMessagesForDisplay<PrivateChatMessage>(
+    messagesRef,
+    (message) =>
+      message.toUser.id === recipient.id || message.fromUser.id === recipient.id
+  );
 
   return {
     messagesToDisplay,

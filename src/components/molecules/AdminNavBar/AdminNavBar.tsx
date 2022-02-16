@@ -36,10 +36,12 @@ export const AdminNavBar: React.FC<Props> = ({
   worldSlug,
   spaceId,
 }) => {
-  const { currentVenue: relatedSpace, parentVenue: parentSpace } =
-    useRelatedVenues({
-      currentVenueId: spaceId,
-    });
+  const {
+    currentVenue: relatedSpace,
+    parentVenue: parentSpace,
+  } = useRelatedVenues({
+    currentVenueId: spaceId,
+  });
 
   const { push: openUrlUsingRouter } = useHistory();
   const { openUserProfileModal } = useProfileModalControls();

@@ -53,7 +53,7 @@ const useJukeboxActions = (
 const useJukeboxMessages = (venueId?: string) => {
   const [{ messages }] = useChatMessages<JukeboxMessage>(
     collection(
-      getVenueRef(venueId ?? "") as unknown as DocumentReference,
+      (getVenueRef(venueId ?? "") as unknown) as DocumentReference,
       "jukeboxMessages"
     ).withConverter<JukeboxMessage>(withIdConverter())
   );

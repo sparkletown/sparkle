@@ -10,8 +10,10 @@ export const withOwnSpaces = <T extends UseOwnedVenuesOptions>(
   Component: React.FC<WithOwnSpacesInProps<T>>
 ) => {
   const WithOwnSpaces = (props: WithOwnSpacesInProps<T>) => {
-    const { ownedVenues: ownSpaces, isLoading: isLoadingOwnSpaces } =
-      useOwnedVenues(props);
+    const {
+      ownedVenues: ownSpaces,
+      isLoading: isLoadingOwnSpaces,
+    } = useOwnedVenues(props);
 
     return React.createElement(Component, {
       ...props,

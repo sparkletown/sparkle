@@ -36,8 +36,11 @@ export const usePosterVenues = (posterHallId: string) => {
 export const usePosters = (posterHallId: string) => {
   const { posterVenues, isPostersLoaded } = usePosterVenues(posterHallId);
 
-  const { searchInputValue, searchQuery, setSearchInputValue } =
-    useDebounceSearch();
+  const {
+    searchInputValue,
+    searchQuery,
+    setSearchInputValue,
+  } = useDebounceSearch();
 
   const [displayedPostersCount, setDisplayedPostersAmount] = useState(
     DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT

@@ -7,7 +7,9 @@ import { convertToFirestoreKey } from "utils/id";
 
 import { useRefiDocument } from "hooks/fire/useRefiDocument";
 
-type UseSpaceById = (options: { spaceId?: SpaceId }) => LoadStatus & {
+type UseSpaceById = (options: {
+  spaceId?: SpaceId;
+}) => LoadStatus & {
   space?: SpaceWithId;
   spaceId?: SpaceId;
   worldId?: WorldId;
@@ -15,11 +17,7 @@ type UseSpaceById = (options: { spaceId?: SpaceId }) => LoadStatus & {
 };
 
 export const useSpaceById: UseSpaceById = (options) => {
-  const {
-    data: space,
-    isLoading,
-    isLoaded,
-  } = useRefiDocument<SpaceWithId>([
+  const { data: space, isLoading, isLoaded } = useRefiDocument<SpaceWithId>([
     COLLECTION_SPACES,
     convertToFirestoreKey(options?.spaceId),
   ]);

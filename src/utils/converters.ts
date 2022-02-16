@@ -11,15 +11,14 @@ import {
 
 import { WithId, withId } from "utils/id";
 
-export const CONVERTER_DISTRIBUTED_COUNTER_VALUE: ModularFirestoreDataConverter<DistributedCounterValue> =
-  {
-    fromFirestore: (
-      snapshot: InterimQueryDocumentSnapshot<InterimDocumentData>
-    ): DistributedCounterValue => ({ value: snapshot.data().value }),
-    toFirestore: ({ value }: DistributedCounterValue): InterimDocumentData => ({
-      value,
-    }),
-  };
+export const CONVERTER_DISTRIBUTED_COUNTER_VALUE: ModularFirestoreDataConverter<DistributedCounterValue> = {
+  fromFirestore: (
+    snapshot: InterimQueryDocumentSnapshot<InterimDocumentData>
+  ): DistributedCounterValue => ({ value: snapshot.data().value }),
+  toFirestore: ({ value }: DistributedCounterValue): InterimDocumentData => ({
+    value,
+  }),
+};
 Object.freeze(CONVERTER_DISTRIBUTED_COUNTER_VALUE);
 
 // @debt can be replaced with a call to withIdConverter() (or the function can be deprecated)

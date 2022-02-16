@@ -22,17 +22,19 @@ export interface ScreeningRoomVideosTableProps {
   space: WithId<AnyVenue>;
 }
 
-export const ScreeningRoomVideosTable: React.FC<
-  ScreeningRoomVideosTableProps
-> = ({ space }) => {
+export const ScreeningRoomVideosTable: React.FC<ScreeningRoomVideosTableProps> = ({
+  space,
+}) => {
   const {
     isShown: isShownCreateModal,
     hide: hideCreateModal,
     show: showCreateModal,
   } = useShowHide(false);
 
-  const { screeningRoomVideos, isScreeningRoomVideosLoaded: isVideosLoaded } =
-    useScreeningRoomVideos(space.id);
+  const {
+    screeningRoomVideos,
+    isScreeningRoomVideosLoaded: isVideosLoaded,
+  } = useScreeningRoomVideos(space.id);
 
   return (
     <div className="ScreeningRoomVideosTable">

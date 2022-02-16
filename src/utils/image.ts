@@ -135,10 +135,10 @@ export const generateFallback: GenerateFallback = (options) => {
   return list[hash % list.length];
 };
 
-const makeProfileImageLoadErrorHandler =
-  (src: string): React.ReactEventHandler<HTMLImageElement> =>
-  ({ currentTarget }) => {
-    // @debt if our fallback image does not exist either we can report that to Bugsnag
-    currentTarget.onerror = null; // prevents looping
-    currentTarget.src = src;
-  };
+const makeProfileImageLoadErrorHandler = (
+  src: string
+): React.ReactEventHandler<HTMLImageElement> => ({ currentTarget }) => {
+  // @debt if our fallback image does not exist either we can report that to Bugsnag
+  currentTarget.onerror = null; // prevents looping
+  currentTarget.src = src;
+};

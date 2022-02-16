@@ -53,8 +53,9 @@ const _CustomSoundsProvider: React.FC<CustomSoundsProviderProps> = ({
   userId,
   children,
 }) => {
-  const [soundConfigs, setSoundConfigs] =
-    useState<SoundConfigMap>(ALWAYS_EMPTY_OBJECT);
+  const [soundConfigs, setSoundConfigs] = useState<SoundConfigMap>(
+    ALWAYS_EMPTY_OBJECT
+  );
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // Fetch the sound configs data on first load

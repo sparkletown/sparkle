@@ -21,9 +21,10 @@ export interface ProfileModalBasicTextInfoProps extends ContainerClassName {
   user: WithId<User>;
 }
 
-export const ProfileModalBasicTextInfo: React.FC<
-  ProfileModalBasicTextInfoProps
-> = ({ user, containerClassName }) => {
+export const ProfileModalBasicTextInfo: React.FC<ProfileModalBasicTextInfoProps> = ({
+  user,
+  containerClassName,
+}) => {
   const { worldSlug, spaceSlug } = useSpaceParams();
   const { world } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
 

@@ -38,14 +38,20 @@ export const Profile: React.FC = () => {
 
   const { worldSlug, spaceSlug = DEFAULT_SPACE_SLUG } = useSpaceParams();
 
-  const { register, handleSubmit, errors, formState, setValue, watch } =
-    useForm<ProfileFormData>({
-      mode: "onChange",
-      defaultValues: {
-        partyName: userWithId?.partyName,
-        pictureUrl: userWithId?.pictureUrl,
-      },
-    });
+  const {
+    register,
+    handleSubmit,
+    errors,
+    formState,
+    setValue,
+    watch,
+  } = useForm<ProfileFormData>({
+    mode: "onChange",
+    defaultValues: {
+      partyName: userWithId?.partyName,
+      pictureUrl: userWithId?.pictureUrl,
+    },
+  });
 
   const [{ loading: isUpdating, error: httpError }, onSubmit] = useAsyncFn(
     async (data: ProfileFormData) => {

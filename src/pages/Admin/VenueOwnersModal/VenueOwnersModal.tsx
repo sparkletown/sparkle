@@ -25,7 +25,9 @@ interface PartitionedOwnersOthers {
   others: WithId<User>[];
 }
 
-type MakePartitionOwnersFromOthersReducer = (ownerIds: string[]) => (
+type MakePartitionOwnersFromOthersReducer = (
+  ownerIds: string[]
+) => (
   { owners, others }: PartitionedOwnersOthers,
   user: WithId<User>
 ) => {
@@ -33,16 +35,15 @@ type MakePartitionOwnersFromOthersReducer = (ownerIds: string[]) => (
   others: WithId<User>[];
 };
 
-const makePartitionOwnersFromOthersReducer: MakePartitionOwnersFromOthersReducer =
-
-    (ownerIds) =>
-    ({ owners, others }, user) => {
-      if (ownerIds.includes(user.id)) {
-        return { owners: [...owners, user], others };
-      } else {
-        return { owners, others: [...others, user] };
-      }
-    };
+const makePartitionOwnersFromOthersReducer: MakePartitionOwnersFromOthersReducer = (
+  ownerIds
+) => ({ owners, others }, user) => {
+  if (ownerIds.includes(user.id)) {
+    return { owners: [...owners, user], others };
+  } else {
+    return { owners, others: [...others, user] };
+  }
+};
 
 const emptyPartition: () => PartitionedOwnersOthers = () => ({
   owners: [],

@@ -31,10 +31,9 @@ export const useSendChatMessage = <T extends BaseChatMessage>(
   additionalMessageFields: ExcludeBuiltMessage<T>
 ): SendChatMessage<SendChatMessageProps> => {
   const getCollections = useCallback(() => chats, [chats]);
-  const getAdditionalFields = useCallback(
-    () => additionalMessageFields,
-    [additionalMessageFields]
-  );
+  const getAdditionalFields = useCallback(() => additionalMessageFields, [
+    additionalMessageFields,
+  ]);
 
   return useSendMessage<T, SendChatMessageProps>({
     getCollections,
@@ -93,11 +92,12 @@ export const useSendMessage = <
 
         const batch = writeBatch(firestore);
 
-        const collections: CompatCollectionReference<CompatDocumentData>[] =
-          getCollections(props);
+        const collections: CompatCollectionReference<CompatDocumentData>[] = getCollections(
+          props
+        );
         for (const ref of collections) {
           batch.set<DocumentData>(
-            doc(ref as unknown as CollectionReference),
+            doc((ref as unknown) as CollectionReference),
             processedMessage
           );
         }

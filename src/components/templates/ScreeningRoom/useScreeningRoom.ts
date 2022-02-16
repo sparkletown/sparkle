@@ -32,11 +32,16 @@ export const useScreeningRoomVideos = (screeningRoomVenueId: string) => {
 };
 
 export const useScreeningRoom = (screeningRoomVenueId: string) => {
-  const { screeningRoomVideos, isScreeningRoomVideosLoaded: isVideosLoaded } =
-    useScreeningRoomVideos(screeningRoomVenueId);
+  const {
+    screeningRoomVideos,
+    isScreeningRoomVideosLoaded: isVideosLoaded,
+  } = useScreeningRoomVideos(screeningRoomVenueId);
 
-  const { searchInputValue, searchQuery, setSearchInputValue } =
-    useDebounceSearch();
+  const {
+    searchInputValue,
+    searchQuery,
+    setSearchInputValue,
+  } = useDebounceSearch();
 
   const [categoryFilter, _setCategoryFilter] = useState<string>();
   const [subCategoryFilter, setSubCategoryFilter] = useState<string>();

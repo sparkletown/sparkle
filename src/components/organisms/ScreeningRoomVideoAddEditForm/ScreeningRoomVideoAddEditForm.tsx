@@ -32,9 +32,10 @@ export interface ScreeningRoomVideoAddEditFormProps {
   video?: WithId<ScreeningRoomVideo>;
 }
 
-export const ScreeningRoomVideoAddEditForm: React.FC<
-  ScreeningRoomVideoAddEditFormProps
-> = ({ video, onDone }) => {
+export const ScreeningRoomVideoAddEditForm: React.FC<ScreeningRoomVideoAddEditFormProps> = ({
+  video,
+  onDone,
+}) => {
   const { user } = useUser();
   const { worldSlug, spaceSlug } = useParams<AdminVenueViewRouteParams>();
   const { spaceId: currentSpaceId } = useWorldAndSpaceBySlug(
@@ -66,13 +67,19 @@ export const ScreeningRoomVideoAddEditForm: React.FC<
     ]
   );
 
-  const { register, getValues, handleSubmit, errors, setValue, reset } =
-    useForm({
-      reValidateMode: "onChange",
+  const {
+    register,
+    getValues,
+    handleSubmit,
+    errors,
+    setValue,
+    reset,
+  } = useForm({
+    reValidateMode: "onChange",
 
-      validationSchema: screeningRoomVideoSchema,
-      defaultValues,
-    });
+    validationSchema: screeningRoomVideoSchema,
+    defaultValues,
+  });
 
   useEffect(() => reset(defaultValues), [defaultValues, reset]);
   const changeRoomImageUrl = useCallback(
@@ -82,48 +89,50 @@ export const ScreeningRoomVideoAddEditForm: React.FC<
     [setValue]
   );
 
-  const [{ loading: isLoading, error: submitError }, addVideo] =
-    useAsyncFn(async () => {
-      if (!user || !currentSpaceId) return;
+  const [
+    { loading: isLoading, error: submitError },
+    addVideo,
+  ] = useAsyncFn(async () => {
+    if (!user || !currentSpaceId) return;
 
-      const {
-        title,
-        category,
-        authorName,
-        videoSrc,
-        subCategory,
-        introduction,
-        // @debt this needs resolving properly
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        thumbnailSrcFile,
-      } = getValues();
+    const {
+      title,
+      category,
+      authorName,
+      videoSrc,
+      subCategory,
+      introduction,
+      // @debt this needs resolving properly
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      thumbnailSrcFile,
+    } = getValues();
 
-      const videoSource = video ? omit(video, ["id"]) : {};
-      const fileDirectory = `users/${user.uid}/venues/${currentSpaceId}`;
-      const thumbnailSrc = thumbnailSrcFile
-        ? await uploadFile(fileDirectory, thumbnailSrcFile)
-        : video?.thumbnailSrc;
+    const videoSource = video ? omit(video, ["id"]) : {};
+    const fileDirectory = `users/${user.uid}/venues/${currentSpaceId}`;
+    const thumbnailSrc = thumbnailSrcFile
+      ? await uploadFile(fileDirectory, thumbnailSrcFile)
+      : video?.thumbnailSrc;
 
-      const videoData: ScreeningRoomVideo = {
-        ...videoSource,
-        title,
-        category: category.toLocaleLowerCase(),
-        authorName,
-        thumbnailSrc: thumbnailSrc ?? "",
-        videoSrc,
-        subCategory,
-        introduction,
-      };
+    const videoData: ScreeningRoomVideo = {
+      ...videoSource,
+      title,
+      category: category.toLocaleLowerCase(),
+      authorName,
+      thumbnailSrc: thumbnailSrc ?? "",
+      videoSrc,
+      subCategory,
+      introduction,
+    };
 
-      if (video) {
-        await upsertScreeningRoomVideo(videoData, currentSpaceId, video.id);
-      } else {
-        await upsertScreeningRoomVideo(videoData, currentSpaceId);
-      }
+    if (video) {
+      await upsertScreeningRoomVideo(videoData, currentSpaceId, video.id);
+    } else {
+      await upsertScreeningRoomVideo(videoData, currentSpaceId);
+    }
 
-      await onDone();
-    }, [currentSpaceId, getValues, onDone, video, user]);
+    await onDone();
+  }, [currentSpaceId, getValues, onDone, video, user]);
 
   const [{ loading: isDeleting, error: deleteError }, deleteVideo] = useAsyncFn(
     async () => {

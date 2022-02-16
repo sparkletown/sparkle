@@ -14,8 +14,9 @@ export const withSpaceById = <T extends Attributes>(
   Component: React.FC<Props<T>>
 ) => {
   const WithSpaceById = (props: Props<T>) => {
-    const { space, spaceId, worldId, isLoaded, isLoading } =
-      useSpaceById(props);
+    const { space, spaceId, worldId, isLoaded, isLoading } = useSpaceById(
+      props
+    );
     return React.createElement(Component, {
       ...props,
       space,

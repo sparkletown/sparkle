@@ -42,9 +42,12 @@ export type RoomWithFullData = (WithVenue<Room> | Room) & {
 // @debt use ALWAYS_EMPTY_ARRAY to avoid shared mutable state
 const emptyRelatedVenues: WithId<AnyVenue>[] = [];
 
-export const CloudDataProviderWrapper: React.FC<
-  CloudDataProviderWrapperProps
-> = ({ venue, newDataProviderCreate, relatedRooms, reInitOnError }) => {
+export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> = ({
+  venue,
+  newDataProviderCreate,
+  relatedRooms,
+  reInitOnError,
+}) => {
   const [dataProvider, setDataProvider] = useState<CloudDataProvider | null>(
     null
   );

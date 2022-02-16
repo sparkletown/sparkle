@@ -45,9 +45,14 @@ type VenueLandingPageContentProps = WorldAndSpaceIdLocation &
     world: WorldWithId;
   };
 
-export const VenueLandingPageContent: React.FC<
-  VenueLandingPageContentProps
-> = ({ userId, space, spaceSlug, world, worldId, worldSlug }) => {
+export const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
+  userId,
+  space,
+  spaceSlug,
+  world,
+  worldId,
+  worldSlug,
+}) => {
   const landingPageConfig = space.config?.landingPageConfig;
   const logoUrl = space?.host?.icon;
   const coverUrl = landingPageConfig?.coverImageUrl;
