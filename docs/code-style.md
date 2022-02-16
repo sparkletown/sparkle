@@ -1,5 +1,19 @@
 # Code Style
 
+---
+
+**NOTE**:
+
+Most of the information in this document is meant to help keep the code looking
+similar and predictable while being worked on by different people. It isn't
+meant to be rigid and static, but a suggestion. Thus, rule of thumb:
+
+1. use your own best judgement
+2. try to follow style of code in place
+3. notify others of issues and possible improvements
+
+---
+
 ## Style Sheets (coding/design)
 
 Over the course of the codebase there has been a revolving door of different
@@ -121,7 +135,7 @@ For extensive range in values, branded types could be more useful.
 
 If the following practices aren't observed, there would be a tendency to have
 different styles in the same file/component/etc. so a good rule of thumb is to
-**try to follow the style of the code style already in place**.
+**try to follow the style of the code already in place**.
 
 #### Functions
 
