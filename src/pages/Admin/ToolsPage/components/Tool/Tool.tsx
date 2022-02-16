@@ -4,6 +4,8 @@ import { useAsyncFn } from "react-use";
 import { FIREBASE } from "core/firebase";
 import { httpsCallable } from "firebase/functions";
 
+import { WorldSlug } from "types/id";
+
 import { Loading } from "components/molecules/Loading";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
@@ -13,22 +15,30 @@ import { SelfServeScript } from "../../types";
 
 import "./Tool.scss";
 
+type ToolOptions = {
+  tool: SelfServeScript;
+  worldSlug?: WorldSlug;
+};
+
 type ReturnedDataProps = { [key: string]: string };
-export const Tool: React.FC<{ tool: SelfServeScript }> = ({ tool }) => {
+
+export const Tool: React.FC<ToolOptions> = ({ tool, worldSlug }) => {
   const { register, handleSubmit, errors } = useForm();
 
   const [returnedData, setReturnedData] = useState<ReturnedDataProps>();
 
   const [{ loading: isLoading }, onSubmit] = useAsyncFn(
     async (data: Object) => {
+      if (!worldSlug) return;
+
       const response = await httpsCallable<Object, ReturnedDataProps>(
         FIREBASE.functions,
         tool.functionLocation
-      )(data);
+      )({ worldSlug, ...data });
 
       setReturnedData(response.data);
     },
-    [tool.functionLocation]
+    [tool.functionLocation, worldSlug]
   );
 
   if (returnedData) {

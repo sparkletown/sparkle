@@ -15,22 +15,27 @@
     }
   }
 
-  .Dropdown {
-    &__button__menu {
+  &__dropdown .Select {
+    &__menu {
       background-color: var(--accent--under);
-      border-radius: 24px;
-      top: -65px;
-      left: -65px;
-      width: 150px;
+      border-radius: $border-radius--xl;
+      padding: 0 font-size--root(1);
+      left: font-size--root(1);
+      top: font-size--root(-5);
+      min-width: font-size--root(10);
+      max-width: calc(100% - #{font-size--root(2)});
     }
 
-    &__button__control {
-      padding: 0px;
+    &__control {
+      padding: 0;
     }
 
-    &__button__option {
-      padding: 8px 12px;
+    &__indicators {
+      display: none;
+    }
 
+    &__option {
+      padding: $spacing--sm $spacing--md;
       display: flex;
       justify-content: space-between;
       font-weight: $font-weight--500;

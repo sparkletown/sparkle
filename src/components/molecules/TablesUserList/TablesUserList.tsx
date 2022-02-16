@@ -70,7 +70,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
 
   const [joiningTable, setJoiningTable] = useState("");
 
-  const { userWithId } = useUser();
+  const { userWithId, userId } = useUser();
   const { data: experience } = useExperience();
 
   const isCurrentUserAdmin = arrayIncludes(venue.owners, userWithId?.id);
@@ -174,7 +174,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
     (isCurrentUserAdmin || emptyTables.length <= ALLOWED_EMPTY_TABLES_NUMBER);
 
   const renderedTables = useMemo(() => {
-    if (isSeatedAtTable) return;
+    if (isSeatedAtTable || !userId) return;
 
     const tablesToShow = showOnlyAvailableTables
       ? tables.filter(
@@ -188,6 +188,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
         // @debt provide usersAtTables instead of (experienceName + users) for better perfomance
         users={usersSeatedAtTables?.[table.reference] ?? []}
         table={table}
+        userId={userId}
         tableLocked={tableLocked}
         onJoinClicked={onJoinClicked}
         venue={venue}
@@ -198,6 +199,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
     isSeatedAtTable,
     showOnlyAvailableTables,
     tables,
+    userId,
     isFullTable,
     tableLocked,
     TableComponent,
