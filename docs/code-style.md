@@ -8,9 +8,9 @@ Most of the information in this document is meant to help keep the code looking
 similar and predictable while being worked on by different people. It isn't
 meant to be rigid and static, but a suggestion. Thus, rule of thumb:
 
-1. use your own best judgement
-2. try to follow style of code in place
-3. notify others of issues and possible improvements
+1. use your own best judgement;
+2. try to follow style of code already in place;
+3. notify others of issues and possible improvements.
 
 ---
 
@@ -21,9 +21,9 @@ line comments, not block ones. However, few tags, due to familiarity with JSDoc,
 can be found outside these `/** */` blocks:
 
 - `@debt` is usually some future issue or pull request to repay with better code
-  solution be it refactor or replacement
-- `@deprecated` is usually a comment that give an explanation and alternative
-- `@see` is usually followed by URL or similar reference for further info
+  solution be it refactor or replacement;
+- `@deprecated` is usually a comment that gives an explanation and alternative;
+- `@see` is usually followed by URL or similar reference for further info.
 
 ## Style Sheets (coding/design)
 
@@ -84,47 +84,99 @@ the prop:
 <div className={cn("Component", CN.component)}></div>
 ```
 
+## Injected Class Names
+
+In the past, class names were being injected from parent components. Like this:
+
+```tsx
+<Component
+  value={value}
+  containerClassNames={`some-class-names-here ${containerClasses}`}
+>
+```
+
+However, the above causes tight coupling of parent/child components as well as
+unchecked possibility for minor differences that would cause every use of the
+child component be slightly different and break uniformed UI/UX.
+
+Some most basic components might still use `classNames` to inject classes and be
+in sync with React's own naming. But this should be considered a rare exception
+that deals with most generic components and as a workaround to a greater
+problem. Example:
+
+```tsx
+<ButtonNG
+  className="AdminRestricted__switch-button"
+  variant="primary"
+  loading={isLoggingOut}
+  disabled={isLoggingOut}
+  onClick={handleLogout}
+>
+```
+
+The way to "inject" some classes but still keep the number of variations to the
+minimum, a variance prop can be used. Such example is the above
+`variant="primary"`, but should not be limited to it.
+
+Example: A component can have prop named
+
+```tsx
+width ? : "wide" | "narrow" | "normal"
+```
+
+and those strings be the names of exported constants in `Component.twillio.ts`.
+These classes can be accessed as `TW[width]` in a code like:
+
+```tsx
+const componentClasses = cn(className, TW.common, {
+  [TW[variant]]: variant,
+  [TW[width]]: width,
+  [TW.disabled]: disabled,
+  [TW.enabled]: !disabled,
+  [TW.loading]: loading,
+  [TW.notLoading]: !loading,
+});
+```
+
 ## TypeScript code (coding)
 
 ## Imports
 
 Prefer shorthand (absolute) imports over relative ones. You can access every
-directory under `./src` with just typing its name. Example: instead of
-`../../../../settings`, you can write `settings`.
+directory under `. /src` with just typing its name. Example: instead of
+`../../../../settings`, you can write`settings`.
 
-## Exports
+##
 
-Should try to not export types and interfaces that aren't used elsewhere outside
-that single file. There is a tool (`npm run prune`) that can generate a list of
-all unused exports. This tool might be used alongside the linters that execute
-before each commit.
+Exports
 
-As for components, if they're only imported by a sibling `index.ts` file, then
-there should be a check if that component is used anywhere and if it's good to
-keep or delete it.
+Should try to not export types and interfaces that aren 't used elsewhere
+outside that single file.There is a tool(`npm run prune`) that can generate a
+list of all unused exports.This tool might be used alongside the linters that
+execute before each commit.As for components, if they're only imported by a
+sibling `index.ts` file, then there should be a check if that component is used
+anywhere and if it's good to keep or delete it.
 
-### Types vs Interfaces
+###
 
-Usually types declared with `interface` were used to define a components props.
+Types vs Interfaces
 
-However `type`s syntax allows for more robust definitions and should be
+Usually types declared with `interface` were used to define a components
+props.However`type` s syntax allows for more robust definitions and should be
 preferred in most cases and will allow for more uniformed looking code.
 
-### Enums
+###
+
+Enums
 
 A simplistic explanation of TypeScript is it removes type information upon
-compilation.
-
-The formal words used in the documentation is "type-level extension" since most
-TS additions are type-level extensions to JS, and they don't affect the code's
-runtime behavior.
-
-TypeScript's solution in the enum case is to break its own rule. When compiling
-it, extra JS code is emitted that never existed in the original TS code. This
-adds a confusing complication to the otherwise simple compiler model. For this
-reason, recommendation is to avoid enums in favor of using unions.
-
-Example:
+compilation.The formal words used in the documentation is "type-level extension"
+since most TS additions are type - level extensions to JS, and they don 't
+affect the code' s runtime behavior.TypeScript 's solution in the enum case is
+to break its own rule. When compiling it, extra JS code is emitted that never
+existed in the original TS code.This adds a confusing complication to the
+otherwise simple compiler model.For this reason, recommendation is to avoid
+enums in favor of using unions.Example :
 
 ```ts
 enum AllowedColor {
