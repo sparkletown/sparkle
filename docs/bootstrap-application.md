@@ -4,8 +4,8 @@
 
 Make sure that you're located in `./scripts` folder.
 
-In order to complete following steps you'd need to log in your Firebase account via CLI.
-
+In order to complete following steps you'd need to log in your Firebase account
+via CLI.
 
 ```
 # Note that if you were already logged in via Firebase CLI you'd first need to run:
@@ -25,7 +25,7 @@ Now you're ready to proceed.
 
 First of all, you need to boostrap an environment using the following command:
 
-* Run the bootstrap script
+- Run the bootstrap script
 
 ```
 ./bootstrap-new-environment.ts TODO-PROJECT-ID example-project-firebase-adminsdk-XXXXX-XXXXXXXXXX.json
@@ -66,7 +66,6 @@ User successfully added to ( or already existed in ) 'admin' role
 
 ## Update Firestore rules
 
-
 Please run the following command:
 
 ```
@@ -85,10 +84,11 @@ Deploy Completed!
 
 ## Configure ENV file
 
-In order for your application to connect to the proper Firebase environment you'll need to set up `.env.local` config. Please follow steps below:
+In order for your application to connect to the proper Firebase environment
+you'll need to set up `.env.local` config. Please follow steps below:
 
-* Locate or create `.env.local` file inside project root folder
-* Paste the following config
+- Locate or create `.env.local` file inside project root folder
+- Paste the following config
 
 ```
 REACT_APP_PROJECT_ID=
@@ -98,8 +98,10 @@ REACT_APP_MEASUREMENT_ID=
 REACT_APP_BUCKET_URL=
 ```
 
-You can find all of these values in the Firebase - _Project Settings_ - _General_ tab.
+You can find all of these values in the Firebase - _Project Settings_ -
+_General_ tab.
 
-Once you've populated the ENV file with correct data, please proceed to the next part where you will be able to launch your project.
+Once you've populated the ENV file with correct data, please proceed to the next
+part where you will be able to launch your project.
 
 Proceed to [Getting Started](getting-started.md) to launch your application.
