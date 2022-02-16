@@ -51,13 +51,15 @@ export const VideoCommsParticipant: React.FC<VideoCommsParticipantProps> = ({
 
   const invertedControlsClassnames = classNames(
     styles.videoCommsControlsContainer,
-    styles.videoCommsControlsContainer__darkButtons
+    { [styles.videoCommsControlsContainer__darkButtons]: !hasActiveVideoStream }
   );
 
   // These muted controls are only for muting the playback of remote participants
   // Local participant audio is controlled via useVideoComms
   const { isMuted, mute, unmute } = useMute();
 
+  // @debt realistically, we only allow for one audio stream and two video streams
+  // we should simplify the code for that
   return (
     <div className={styles.videoCommsParticipant}>
       {hasActiveVideoStream &&
@@ -68,9 +70,30 @@ export const VideoCommsParticipant: React.FC<VideoCommsParticipantProps> = ({
               track={track}
               isMirrored={isLocal && track.sourceType === VideoSource.Webcam}
             />
-            <div className={styles.videoCommsControlsContainer}>
-              {videoTrackControls && videoTrackControls(track)}
-            </div>
+            {/* TODO Improve this logic, it's a mess */}
+            {track.sourceType === VideoSource.Webcam && (
+              <div className={invertedControlsClassnames}>
+                {isLocal ? (
+                  <>
+                    {videoTrackControls && videoTrackControls(track)}
+                    <VideoCommsControls
+                      startAudio={startAudio}
+                      stopAudio={stopAudio}
+                      startVideo={startVideo}
+                      stopVideo={stopVideo}
+                      audioEnabled={isTransmittingAudio}
+                      videoEnabled={isTransmittingVideo}
+                    />
+                  </>
+                ) : (
+                  <VideoCommsControls
+                    startAudio={unmute}
+                    stopAudio={mute}
+                    audioEnabled={!isMuted}
+                  />
+                )}
+              </div>
+            )}
           </div>
         ))}
       {!isLocal &&
@@ -84,24 +107,27 @@ export const VideoCommsParticipant: React.FC<VideoCommsParticipantProps> = ({
           user={profile}
         />
       )}
-      <div className={invertedControlsClassnames}>
-        {isLocal ? (
-          <VideoCommsControls
-            startAudio={startAudio}
-            stopAudio={stopAudio}
-            startVideo={startVideo}
-            stopVideo={stopVideo}
-            audioEnabled={isTransmittingAudio}
-            videoEnabled={isTransmittingVideo}
-          />
-        ) : (
-          <VideoCommsControls
-            startAudio={unmute}
-            stopAudio={mute}
-            audioEnabled={!isMuted}
-          />
-        )}
-      </div>
+
+      {!hasActiveVideoStream && (
+        <div className={invertedControlsClassnames}>
+          {isLocal ? (
+            <VideoCommsControls
+              startAudio={startAudio}
+              stopAudio={stopAudio}
+              startVideo={startVideo}
+              stopVideo={stopVideo}
+              audioEnabled={isTransmittingAudio}
+              videoEnabled={isTransmittingVideo}
+            />
+          ) : (
+            <VideoCommsControls
+              startAudio={unmute}
+              stopAudio={mute}
+              audioEnabled={!isMuted}
+            />
+          )}
+        </div>
+      )}
     </div>
   );
 };

@@ -16,5 +16,9 @@ export const ExtraButton: React.FC<ExtraButtonProps> = ({
   const clickHandler = useCallback(() => {
     buttonConfig.callback({ track });
   }, [buttonConfig, track]);
-  return <FontAwesomeIcon icon={buttonConfig.icon} onClick={clickHandler} />;
+  return (
+    <span>
+      <FontAwesomeIcon icon={buttonConfig.icon} onClick={clickHandler} />
+    </span>
+  );
 };
