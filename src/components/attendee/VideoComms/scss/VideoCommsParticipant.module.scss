@@ -1,0 +1,55 @@
+@use "scss/constants";
+
+.videoCommsParticipant {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  height: 100%;
+  max-width: constants.$video-participant-optimal-width;
+  min-width: constants.$video-participant-optimal-width;
+  max-height: constants.$video-participant-optimal-height;
+  width: 100%;
+  background: #3d3a3f;
+  border-radius: constants.$border-radius--xl;
+  overflow: hidden;
+}
+
+.trackContainer {
+  display: flex;
+  position: relative;
+  width: 100%;
+  video {
+    object-fit: cover;
+    width: 100%;
+  }
+}
+
+.videoCommsControlsContainer {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: row-reverse;
+  font-size: 22px;
+  color: #f1f1f1;
+  background: rgba(0, 0, 0, 0.5);
+  border-top-left-radius: 4px;
+  span {
+    margin: 2px 7px;
+    cursor: pointer;
+  }
+}
+
+.avatarContainer {
+  border-radius: constants.$border-radius--xl;
+  width: 64px;
+  height: 64px;
+  position: absolute;
+  left: 8px;
+  bottom: 8px;
+  img {
+    max-width: 64px;
+    max-height: 64px;
+    margin: auto;
+  }
+}
