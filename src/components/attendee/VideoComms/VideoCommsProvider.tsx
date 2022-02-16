@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { noop } from "lodash";
 
 import { TwilioClient } from "./internal/TwilioClient";
@@ -47,13 +47,7 @@ export const VideoCommsProvider: React.FC = ({ children }) => {
     isTransmittingVideo: false,
   });
 
-  const doUpdate = useCallback((payload) => {
-    setCommsState(payload);
-  }, []);
-
-  const twilio = useMemo(() => TwilioClient(doUpdate), [doUpdate]);
-
-  console.log("got state", commsStatus);
+  const twilio = useMemo(() => TwilioClient(setCommsState), [setCommsState]);
 
   useEffect(() => {
     // This gives us a reasonably good chance of disconnecting from any ongoing

@@ -28,7 +28,6 @@ export const useVideoHuddle = () => {
   const { inHuddle, setInHuddle, extraButtons, setExtraButtons } = useContext(
     HuddleContext
   );
-  console.log("use the hduddle", inHuddle, localParticipant);
 
   const joinHuddle = useMemo(() => {
     return (userId: string, huddleId: string) => {

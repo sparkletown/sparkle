@@ -32,7 +32,6 @@ export const VideoHuddle: React.FC = () => {
     [extraButtons]
   );
 
-  console.log("farts", inHuddle, localParticipant);
   if (!inHuddle) {
     return <></>;
   }
