@@ -15,17 +15,45 @@
   align-items: center;
   width: 100vw;
 
-  &__close {
+  &__header {
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    width: 100%;
     padding: 0 $whitespace;
     height: $element-height-normal;
     border-radius: $border-radius-normal;
     position: fixed;
     top: $whitespace;
-    right: $whitespace;
     cursor: pointer;
     z-index: $z-index-attendee-overlay-close-btn;
+  }
+
+  &__back {
+    display: none;
+
+    @media (max-width: 768px) {
+      display: flex;
+
+      &_icon {
+        position: relative;
+        overflow: hidden;
+        display: inline-block;
+        width: 1.3rem;
+        height: 1.3rem;
+        background-size: contain;
+        background-position: center;
+        background-repeat: no-repeat;
+        margin-left: calc($whitespace / 2);
+        background-image: url(~assets/icons/icon-close-portal.svg);
+        filter: invert(1);
+      }
+    }
+  }
+
+  &__close {
+    display: flex;
+    margin-left: auto;
 
     &_icon {
       position: relative;

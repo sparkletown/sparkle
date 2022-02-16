@@ -2,11 +2,26 @@
 @use "scss/attendee/variables.scss"as *;
 
 .Button {
-  @include sparkle-color-glass;
   padding: 0 $whitespace;
   height: $element-height-normal;
   margin: $button-gap;
   border-radius: $border-radius-normal;
   white-space: nowrap;
   cursor: pointer;
+  border: none;
+  color: white;
+  font-size: 14px;
+  line-height: 1.4;
+
+  &__primary {
+    @include sparkle-color-glass;
+  }
+  &__alternative {
+    background: transparent;
+  }
+
+  &__alternativeBorder {
+    background: transparent;
+    border: 1px solid white;
+  }
 }

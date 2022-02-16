@@ -38,11 +38,17 @@ export const AttendeeHeader = () => {
     <header className={styles.AttendeeHeader}>
       <div className={styles.AttendeeHeader__container}>
         <div>
-          <Button>{space?.name ?? `This ${SPACE_TAXON.title}`}</Button>
+          <Button variant="primary">
+            {space?.name ?? `This ${SPACE_TAXON.title}`}
+          </Button>
         </div>
         <div>
           {Object.entries(headerTypeMap).map(([key, label]) => (
-            <Button onClick={() => handleOverlayOpen(key)} key={key}>
+            <Button
+              variant="primary"
+              onClick={() => handleOverlayOpen(key)}
+              key={key}
+            >
               {label}
             </Button>
           ))}

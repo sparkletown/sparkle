@@ -1,5 +1,3 @@
-import { useMemo } from "react";
-
 import { DEFAULT_PARTY_NAME } from "settings";
 
 import {
@@ -14,26 +12,28 @@ import { determineAvatar } from "utils/image";
 
 export const useProfileModalFormDefaultValues: (
   user: WithId<User>,
-  questions: Question[],
-  answers: string[]
+  questions?: Question[],
+  answers?: string[]
 ) => Omit<UserProfileModalFormData, keyof UserProfileModalFormDataPasswords> = (
   user,
   questions,
   answers
-) =>
-  useMemo(
-    () => ({
-      profileLinks: user.profileLinks ?? [],
-      pictureUrl: determineAvatar({ user }).src,
-      partyName: user.partyName ?? DEFAULT_PARTY_NAME,
-      ...(questions
-        ? Object.assign(
-            {},
-            ...questions.map((q, i) => ({
-              [q.name]: answers?.[i],
-            }))
-          )
-        : {}),
-    }),
-    [answers, questions, user]
-  );
+) => {
+  if (!user) {
+    return {};
+  }
+
+  return {
+    profileLinks: user.profileLinks ?? [],
+    pictureUrl: determineAvatar({ user }).src,
+    partyName: user.partyName ?? DEFAULT_PARTY_NAME,
+    ...(questions
+      ? Object.assign(
+          {},
+          ...questions.map((q, i) => ({
+            [q.name]: answers?.[i],
+          }))
+        )
+      : {}),
+  };
+};

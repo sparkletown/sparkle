@@ -9,7 +9,7 @@
     flex-direction: column;
     max-width: 800px;
     min-height: 100vh;
-    margin: $whitespace * 10 auto 0;
+    margin: $whitespace * 10 auto 0 0;
     padding: $whitespace * 4 $whitespace * 3;
 
     @media (max-width: 768px) {

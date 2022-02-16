@@ -1,0 +1,31 @@
+@use "scss/attendee/variables.scss"as *;
+
+.InputSelect {
+  &__wrapper {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    width: 100%;
+    font-size: 14px;
+    padding: 4px 0px;
+  }
+
+  &__input {
+    padding: 4px 5em 4px 12px;
+    height: 42px;
+    border-radius: 4px 0px 0px 4px;
+    box-sizing: border-box;
+    width: 80%;
+    border: none;
+    border-right: 1px solid $input-separator-color;
+  }
+
+  &__select {
+    padding: 4px 4px 4px 16px;
+    height: 42px;
+    border-radius: 0px 4px 4px 0px;
+    box-sizing: border-box;
+    width: 20%;
+    border: none;
+  }
+}
