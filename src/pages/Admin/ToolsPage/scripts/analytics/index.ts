@@ -1,0 +1,1 @@
+export { AnalyticsScript } from "./config";
