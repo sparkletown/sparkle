@@ -10,11 +10,7 @@ import { useVideoHuddle } from "./useVideoHuddle";
 
 import styles from "./VideoHuddle.module.scss";
 
-interface VideoHuddleProps {
-  userId: string;
-}
-
-export const VideoHuddle: React.FC<VideoHuddleProps> = ({ userId }) => {
+export const VideoHuddle: React.FC = () => {
   const {
     inHuddle,
     extraButtons,
@@ -36,6 +32,7 @@ export const VideoHuddle: React.FC<VideoHuddleProps> = ({ userId }) => {
     [extraButtons]
   );
 
+  console.log("farts", inHuddle, localParticipant);
   if (!inHuddle) {
     return <></>;
   }
@@ -50,7 +47,7 @@ export const VideoHuddle: React.FC<VideoHuddleProps> = ({ userId }) => {
       <div className={styles.VideoHuddleVideos}>
         {localParticipant && (
           <HuddleParticipant
-            key={localParticipant.id}
+            key={localParticipant.sparkleId}
             participant={localParticipant}
             addButtons={addButtons}
             isLocal
@@ -58,7 +55,7 @@ export const VideoHuddle: React.FC<VideoHuddleProps> = ({ userId }) => {
         )}
         {remoteParticipants.map((participant) => (
           <HuddleParticipant
-            key={participant.id}
+            key={participant.sparkleId}
             participant={participant}
             addButtons={addButtons}
           />

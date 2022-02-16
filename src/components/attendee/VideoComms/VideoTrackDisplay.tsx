@@ -15,11 +15,7 @@ export const VideoTrackDisplay: React.FC<VideoTrackDisplayProps> = ({
   track,
   isMirrored = false,
 }) => {
-  return (
-    <>
-      {track.enabled && (
-        <TwilioTrackDisplay isMirrored={isMirrored} track={track.twilioTrack} />
-      )}
-    </>
-  );
+  return track.enabled ? (
+    <TwilioTrackDisplay isMirrored={isMirrored} track={track.twilioTrack} />
+  ) : null;
 };

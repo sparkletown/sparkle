@@ -42,7 +42,7 @@ export interface Participant {
   /**
    * ID of the participant - used for communication with the video platform
    */
-  id: string;
+  twilioId: string;
 
   /**
    * ID of the participant from the point of view of Sparkle. e.g. userId
@@ -60,12 +60,14 @@ export interface Participant {
   audioTracks: AudioTrack[];
 }
 
-type JoinChannel = (
-  userId: string,
-  channelId: string,
-  enableVideo: boolean,
-  enableAudio: boolean
-) => void;
+export interface JoinChannelOptions {
+  userId: string;
+  channelId: string;
+  enableVideo: boolean;
+  enableAudio: boolean;
+}
+
+type JoinChannel = (options: JoinChannelOptions) => void;
 type Disconnect = () => void;
 type ShareScreen = () => void;
 
@@ -86,7 +88,7 @@ export interface VideoCommsContextType {
   isTransmittingVideo: boolean;
 }
 
-export interface StateUpdateCallbackContext {
+export interface StateUpdateContext {
   localParticipant?: Participant;
   remoteParticipants: Participant[];
   status: VideoCommsStatus;
@@ -94,4 +96,4 @@ export interface StateUpdateCallbackContext {
   isTransmittingVideo: boolean;
 }
 
-export type StateUpdateCallback = (update: StateUpdateCallbackContext) => void;
+export type StateUpdateCallback = (update: StateUpdateContext) => void;

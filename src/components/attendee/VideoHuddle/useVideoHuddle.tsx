@@ -28,10 +28,16 @@ export const useVideoHuddle = () => {
   const { inHuddle, setInHuddle, extraButtons, setExtraButtons } = useContext(
     HuddleContext
   );
+  console.log("use the hduddle", inHuddle, localParticipant);
 
   const joinHuddle = useMemo(() => {
     return (userId: string, huddleId: string) => {
-      joinChannel(userId, huddleId, false, false);
+      joinChannel({
+        userId,
+        channelId: huddleId,
+        enableAudio: false,
+        enableVideo: false,
+      });
       setInHuddle(() => true);
     };
   }, [joinChannel, setInHuddle]);

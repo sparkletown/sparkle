@@ -6,40 +6,45 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { useVideoComms } from "../hooks";
+interface VideoCommsControlsProps {
+  startAudio?: () => void;
+  stopAudio?: () => void;
+  startVideo?: () => void;
+  stopVideo?: () => void;
+  audioEnabled?: boolean;
+  videoEnabled?: boolean;
+}
 
-interface VideoCommsControlsProps {}
-
-export const VideoCommsControls: React.FC<VideoCommsControlsProps> = () => {
-  const {
-    startAudio,
-    stopAudio,
-    startVideo,
-    stopVideo,
-    isTransmittingAudio,
-    isTransmittingVideo,
-  } = useVideoComms();
-
+export const VideoCommsControls: React.FC<VideoCommsControlsProps> = ({
+  startAudio,
+  stopAudio,
+  startVideo,
+  stopVideo,
+  audioEnabled,
+  videoEnabled,
+}) => {
   return (
     <>
-      {isTransmittingAudio ? (
-        <span onClick={stopAudio}>
-          <FontAwesomeIcon icon={faVolumeUp} />
-        </span>
-      ) : (
-        <span onClick={startAudio}>
-          <FontAwesomeIcon icon={faVolumeMute} />
-        </span>
-      )}
-      {isTransmittingVideo ? (
-        <span onClick={stopVideo}>
-          <FontAwesomeIcon icon={faVideo} />
-        </span>
-      ) : (
-        <span onClick={startVideo}>
-          <FontAwesomeIcon icon={faVideoSlash} />
-        </span>
-      )}
+      {startAudio &&
+        (audioEnabled ? (
+          <span onClick={stopAudio}>
+            <FontAwesomeIcon icon={faVolumeUp} />
+          </span>
+        ) : (
+          <span onClick={startAudio}>
+            <FontAwesomeIcon icon={faVolumeMute} />
+          </span>
+        ))}
+      {startVideo &&
+        (videoEnabled ? (
+          <span onClick={stopVideo}>
+            <FontAwesomeIcon icon={faVideo} />
+          </span>
+        ) : (
+          <span onClick={startVideo}>
+            <FontAwesomeIcon icon={faVideoSlash} />
+          </span>
+        ))}
     </>
   );
 };

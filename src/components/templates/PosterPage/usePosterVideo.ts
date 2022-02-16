@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { LocalParticipant, RemoteParticipant } from "twilio-video";
+import { Participant } from "components/attendee/VideoComms/types";
 
 import { ParticipantWithUser } from "types/rooms";
 import { User } from "types/User";
@@ -20,7 +20,7 @@ export const usePosterVideo = (venueId: string) => {
   } = useVideoRoomState(userId, venueId, false);
 
   const localParticipantWithUser:
-    | ParticipantWithUser<LocalParticipant>
+    | ParticipantWithUser<Participant>
     | undefined = useMemo(
     () =>
       localParticipant && userWithId
@@ -42,7 +42,7 @@ export const usePosterVideo = (venueId: string) => {
       allParticipants.reduce<{
         passiveListeners: WithId<User>[];
         activeParticipants: {
-          participant: RemoteParticipant | LocalParticipant;
+          participant: Participant;
           user: WithId<User>;
         }[];
       }>(
@@ -50,7 +50,7 @@ export const usePosterVideo = (venueId: string) => {
           if (!user) return acc;
 
           // If participant is not broadcasting video, put them into passiveListeners
-          if (participant.videoTracks.size === 0) {
+          if (participant.videoTracks.length === 0) {
             return {
               ...acc,
               passiveListeners: [...acc.passiveListeners, user],
@@ -76,7 +76,8 @@ export const usePosterVideo = (venueId: string) => {
   const isMeActiveParticipant = useMemo(
     () =>
       !!activeParticipants.find(
-        (activeParticipant) => activeParticipant.participant.identity === userId
+        (activeParticipant) =>
+          activeParticipant.participant.sparkleId === userId
       ),
     [activeParticipants, userId]
   );
@@ -89,5 +90,6 @@ export const usePosterVideo = (venueId: string) => {
 
     becomeActiveParticipant,
     becomePassiveParticipant,
+    localParticipant,
   };
 };

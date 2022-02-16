@@ -1,22 +1,22 @@
-import Twilio from "twilio-video";
-
-import { getTwilioVideoToken } from "api/video";
-
-import { isDefined } from "utils/types";
-
 import {
   AudioTrack,
+  JoinChannelOptions,
   Participant,
   StateUpdateCallback,
   TrackId,
   VideoCommsStatus,
   VideoSource,
   VideoTrack,
-} from "../types";
+} from "components/attendee/VideoComms/types";
+import Twilio from "twilio-video";
+
+import { getTwilioVideoToken } from "api/video";
+
+import { isDefined } from "utils/types";
 
 const TRACK_NAME_SCREENSHARE = "screenshare";
 
-const getTrackSource = (track: Tracklike) =>
+const determineTrackSource = (track: Tracklike) =>
   track.name === TRACK_NAME_SCREENSHARE
     ? VideoSource.Screenshare
     : VideoSource.Webcam;
@@ -28,41 +28,55 @@ interface Tracklike {
   isEnabled: boolean;
 }
 
-const wrapTrack = <Kind, TrackType extends Tracklike>(
-  track: TrackType,
-  kind: Kind,
-  id: TrackId
-) => ({
-  kind,
-  id,
+const wrapRemoteVideoTrack = (track: Twilio.RemoteVideoTrack): VideoTrack => ({
+  kind: "video",
+  id: track.sid as TrackId,
   attach: track.attach.bind(track),
   detach: track.detach.bind(track),
   twilioTrack: track,
   enabled: track.isEnabled,
-  sourceType: getTrackSource(track),
+  sourceType: determineTrackSource(track),
 });
 
-const wrapRemoteVideoTrack = (track: Twilio.RemoteVideoTrack): VideoTrack =>
-  wrapTrack(track, "video", track.sid as TrackId);
+const wrapLocalVideoPublication = ({
+  track,
+  trackSid,
+}: Twilio.LocalVideoTrackPublication): VideoTrack => ({
+  kind: "video",
+  id: trackSid as TrackId,
+  attach: track.attach.bind(track),
+  detach: track.detach.bind(track),
+  twilioTrack: track,
+  enabled: track.isEnabled,
+  sourceType: determineTrackSource(track),
+});
 
-const wrapLocalVideoPublication = (
-  publication: Twilio.LocalVideoTrackPublication
-): VideoTrack =>
-  wrapTrack(publication.track, "video", publication.trackSid as TrackId);
+const wrapRemoteAudioTrack = (track: Twilio.RemoteAudioTrack): AudioTrack => ({
+  kind: "audio",
+  id: track.sid as TrackId,
+  attach: track.attach.bind(track),
+  detach: track.detach.bind(track),
+  twilioTrack: track,
+  enabled: track.isEnabled,
+});
 
-const wrapRemoteAudioTrack = (track: Twilio.RemoteAudioTrack): AudioTrack =>
-  wrapTrack(track, "audio", track.sid as TrackId);
-
-const wrapLocalAudioPublication = (
-  publication: Twilio.LocalAudioTrackPublication
-): AudioTrack =>
-  wrapTrack(publication.track, "audio", publication.trackSid as TrackId);
+const wrapLocalAudioPublication = ({
+  track,
+  trackSid,
+}: Twilio.LocalAudioTrackPublication): AudioTrack => ({
+  kind: "audio",
+  id: trackSid as TrackId,
+  attach: track.attach.bind(track),
+  detach: track.detach.bind(track),
+  twilioTrack: track,
+  enabled: track.isEnabled,
+});
 
 const remotePublicationsToTracks = (
   publications: Map<String, Twilio.RemoteVideoTrackPublication>
 ): VideoTrack[] => {
   return Array.from(publications.values())
-    .map((vt) => vt.track && wrapRemoteVideoTrack(vt.track))
+    .map(({ track }) => track && wrapRemoteVideoTrack(track))
     .filter(isDefined);
 };
 
@@ -70,7 +84,7 @@ const remotePublicationsToAudioTracks = (
   publications: Map<String, Twilio.RemoteAudioTrackPublication>
 ): AudioTrack[] => {
   return Array.from(publications.values())
-    .map((at) => at.track && wrapRemoteAudioTrack(at.track))
+    .map(({ track }) => track && wrapRemoteAudioTrack(track))
     .filter(isDefined);
 };
 
@@ -91,7 +105,7 @@ const localPublicationsToAudioTracks = (
 };
 
 const wrapLocalParticipant = (room: Twilio.Room) => ({
-  id: room.localParticipant.sid,
+  twilioId: room.localParticipant.sid,
   sparkleId: room.localParticipant.identity,
   audioTracks: localPublicationsToAudioTracks(
     room.localParticipant.audioTracks
@@ -112,9 +126,7 @@ const wrapLocalParticipant = (room: Twilio.Room) => ({
  * It is expected that this is not used directly by developers and all
  * interactions happen via the hooks and components provided in VideoComms.
  */
-export const TwilioImplementation = (
-  onStateUpdateCallback: StateUpdateCallback
-) => {
+export const TwilioClient = (onStateUpdateCallback: StateUpdateCallback) => {
   let room: Twilio.Room | undefined;
   let status = VideoCommsStatus.Disconnected;
   let isTransmittingAudio = true;
@@ -164,19 +176,19 @@ export const TwilioImplementation = (
       participant.audioTracks
     );
     return {
-      id: participant.sid,
+      twilioId: participant.sid,
       sparkleId: participant.identity,
       audioTracks,
       videoTracks,
     };
   };
 
-  const joinChannel = async (
-    userId: string,
-    newChannelId: string,
-    enableVideo: boolean,
-    enableAudio: boolean
-  ) => {
+  const joinChannel = async ({
+    userId,
+    channelId: newChannelId,
+    enableVideo,
+    enableAudio,
+  }: JoinChannelOptions) => {
     if (room) {
       console.error(
         "Attempting to join channel before disconnecting. Call disconnect first."

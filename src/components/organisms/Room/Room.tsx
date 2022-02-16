@@ -1,11 +1,10 @@
 import React, { Fragment, useCallback, useMemo } from "react";
+import { VideoCommsParticipant } from "components/attendee/VideoComms/VideoCommsParticipant";
 
 import { unsetTableSeat } from "api/venue";
 
 import { useVideoRoomState } from "hooks/twilio/useVideoRoomState";
 import { useUser } from "hooks/useUser";
-
-import { VideoParticipant } from "components/organisms/Video";
 
 import { Loading } from "components/molecules/Loading";
 
@@ -60,16 +59,12 @@ export const Room: React.FC<RoomProps> = ({
       userWithId && (
         <div
           className={`participant-container ${participantContainerClassName}`}
-          key={localParticipant.identity}
+          key={localParticipant.sparkleId}
         >
-          <VideoParticipant
-            participant={localParticipant}
-            participantUser={userWithId}
-            defaultMute={defaultMute}
-          />
+          <VideoCommsParticipant participant={localParticipant} isLocal />
         </div>
       ),
-    [localParticipant, userWithId, defaultMute, participantContainerClassName]
+    [localParticipant, userWithId, participantContainerClassName]
   );
 
   const othersComponents = useMemo(
@@ -81,13 +76,10 @@ export const Room: React.FC<RoomProps> = ({
 
         return (
           <div
-            key={participant.participant.identity}
+            key={participant.participant.sparkleId}
             className={`participant-container ${participantContainerClassName}`}
           >
-            <VideoParticipant
-              participant={participant.participant}
-              participantUser={participant.user}
-            />
+            <VideoCommsParticipant participant={participant.participant} />
           </div>
         );
       }),

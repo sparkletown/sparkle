@@ -41,7 +41,7 @@ const _AttendeeLayout: React.FC<_AttendeeLayoutProps> = ({ userId }) => {
           </section>
           <div className={styles.LayerUi}>
             <ChatContainer />
-            <VideoHuddle userId={userId} />
+            <VideoHuddle />
           </div>
         </main>
 

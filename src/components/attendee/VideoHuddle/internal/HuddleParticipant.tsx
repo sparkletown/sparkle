@@ -15,7 +15,7 @@ export const HuddleParticipant: React.FC<HuddleParticipantProps> = ({
   addButtons,
 }) => {
   return (
-    <div key={participant.id} className={styles.huddleParticipant}>
+    <div key={participant.sparkleId} className={styles.huddleParticipant}>
       <VideoCommsParticipant
         participant={participant}
         videoTrackControls={addButtons}

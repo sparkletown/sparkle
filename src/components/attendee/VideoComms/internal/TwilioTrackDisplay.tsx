@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import classnames from "classnames";
 import Twilio from "twilio-video";
 
 import styles from "./scss/TwilioTrackDisplay.module.scss";
@@ -17,16 +18,17 @@ export const TwilioTrackDisplay: React.FC<TwilioTrackDisplayProps> = ({
   track,
   isMirrored,
 }) => {
-  const classNames = isMirrored ? styles.mirrored : "";
+  const classes = classnames({
+    [styles.mirrored]: isMirrored,
+  });
 
   const videoRef = useRef<HTMLVideoElement>(null);
   useEffect(() => {
     if (videoRef.current) {
       track.attach(videoRef.current);
-      return () => {
-        track.detach();
-      };
+
+      return () => void track.detach();
     }
   }, [track]);
-  return <video className={classNames} ref={videoRef} autoPlay />;
+  return <video className={classes} ref={videoRef} autoPlay />;
 };

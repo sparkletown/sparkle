@@ -53,7 +53,7 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
   const jazzbarTables = venue.config?.tables ?? JAZZBAR_TABLES;
 
   const [seatedAtTable, setSeatedAtTable] = useState<string>();
-  const { userId } = useUser();
+  const { userWithId, userId } = useUser();
 
   useUpdateTableRecentSeatedUsers(
     VenueTemplate.jazzbar,
@@ -174,18 +174,21 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
           isReactionsMuted={isUserAudioMuted}
         />
       )*/}
-      <TablesUserList
-        setSeatedAtTable={joinTable}
-        seatedAtTable={seatedAtTable}
-        venueId={venue.id}
-        TableComponent={TableComponent}
-        joinMessage={!venue.hideVideo ?? true}
-        customTables={jazzbarTables}
-        showOnlyAvailableTables={showOnlyAvailableTables}
-        venue={venue}
-        defaultTables={JAZZBAR_TABLES}
-        template={VenueTemplate.jazzbar}
-      />
+      {userWithId && (
+        <TablesUserList
+          setSeatedAtTable={joinTable}
+          seatedAtTable={seatedAtTable}
+          venueId={venue.id}
+          TableComponent={TableComponent}
+          joinMessage={!venue.hideVideo ?? true}
+          customTables={jazzbarTables}
+          showOnlyAvailableTables={showOnlyAvailableTables}
+          venue={venue}
+          defaultTables={JAZZBAR_TABLES}
+          template={VenueTemplate.jazzbar}
+          user={userWithId}
+        />
+      )}
       {/*
       </VenueWithOverlay>
         */}

@@ -1,16 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { noop } from "lodash";
 
-import { TwilioImplementation } from "./internal/TwilioImplementation";
+import { TwilioClient } from "./internal/TwilioClient";
 import {
-  StateUpdateCallbackContext,
+  StateUpdateContext,
   VideoCommsContextType,
   VideoCommsStatus,
 } from "./types";
-
-interface VideoCommsProviderProps {
-  children: React.ReactNode;
-}
 
 export const VideoCommsContext = React.createContext<VideoCommsContextType>({
   status: VideoCommsStatus.Disconnected,
@@ -39,46 +35,44 @@ export const VideoCommsContext = React.createContext<VideoCommsContextType>({
  * follow, hard to debug and often re-rendered unexpectedly.
  *
  * It is expected that developers wanting to add video comms to their
- * spaces will use the components *outside* of the `internal` folder. The
+ * spaces will use the components *outside* of the `internal` directory. The
  * internal components are low level primitives that are used by the higher
  * level components.
  */
-export const VideoCommsProvider: React.FC<VideoCommsProviderProps> = ({
-  children,
-}) => {
-  const [commsStatus, setCommsState] = useState<StateUpdateCallbackContext>({
+export const VideoCommsProvider: React.FC = ({ children }) => {
+  const [commsStatus, setCommsState] = useState<StateUpdateContext>({
     status: VideoCommsStatus.Disconnected,
     remoteParticipants: [],
     isTransmittingAudio: false,
     isTransmittingVideo: false,
   });
 
-  const twilioCallback = useCallback((update: StateUpdateCallbackContext) => {
-    setCommsState(update);
+  const doUpdate = useCallback((payload) => {
+    setCommsState(payload);
   }, []);
 
-  const twilioImpl = useMemo(() => TwilioImplementation(twilioCallback), [
-    twilioCallback,
-  ]);
+  const twilio = useMemo(() => TwilioClient(doUpdate), [doUpdate]);
+
+  console.log("got state", commsStatus);
 
   useEffect(() => {
     // This gives us a reasonably good chance of disconnecting from any ongoing
-    // sessions when the user navigates away. It is not 100% guaranteed.
-    // See https://developer.mozilla.org/en-US/docs/Web/API/Window/beforeunload_event#usage_notes
+    // sessions if the user navigates away. It is not 100% guaranteed.
+    // @see https://developer.mozilla.org/en-US/docs/Web/API/Window/beforeunload_event#usage_notes
     window.addEventListener("beforeunload", (event) => {
-      twilioImpl.disconnect();
+      twilio.disconnect();
     });
-  }, [twilioImpl]);
+  }, [twilio]);
 
   const contextState: VideoCommsContextType = {
     ...commsStatus,
-    joinChannel: twilioImpl.joinChannel,
-    disconnect: twilioImpl.disconnect,
-    shareScreen: twilioImpl.shareScreen,
-    startAudio: twilioImpl.startAudio,
-    stopAudio: twilioImpl.stopAudio,
-    startVideo: twilioImpl.startVideo,
-    stopVideo: twilioImpl.stopVideo,
+    joinChannel: twilio.joinChannel,
+    disconnect: twilio.disconnect,
+    shareScreen: twilio.shareScreen,
+    startAudio: twilio.startAudio,
+    stopAudio: twilio.stopAudio,
+    startVideo: twilio.startVideo,
+    stopVideo: twilio.stopVideo,
   };
 
   return (

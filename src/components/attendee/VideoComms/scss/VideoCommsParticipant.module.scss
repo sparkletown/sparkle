@@ -1,3 +1,5 @@
+@use "scss/attendee/variables";
+
 .videoCommsParticipant {
   display: flex;
   flex-direction: row;
@@ -25,6 +27,7 @@
   &__darkButtons {
     color: #000000;
     background: none;
+    cursor: pointer;
   }
 }
 
