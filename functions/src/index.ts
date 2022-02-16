@@ -32,6 +32,7 @@ admin.initializeApp({
 export const access = require("./access");
 export const analytics = require("./analytics");
 export const auth = require("./auth");
+export const user = require("./user");
 export const venue = require("./venue");
 export const video = require("./video");
 export const scheduled = require("./scheduled");

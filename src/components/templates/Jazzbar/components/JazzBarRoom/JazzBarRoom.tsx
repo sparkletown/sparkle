@@ -1,11 +1,10 @@
 import React, { useCallback, useMemo } from "react";
+import { VideoCommsParticipant } from "components/attendee/VideoComms/VideoCommsParticipant";
 
 import { unsetTableSeat } from "api/venue";
 
 import { useVideoRoomState } from "hooks/twilio/useVideoRoomState";
 import { useUser } from "hooks/useUser";
-
-import { VideoParticipant } from "components/organisms/Video";
 
 import { Loading } from "components/molecules/Loading";
 
@@ -29,10 +28,8 @@ export const JazzBarRoom: React.FC<RoomProps> = ({
   roomName,
   venueId,
   setSeatedAtTable,
-  defaultMute,
-  isReactionsMuted,
 }) => {
-  const { userId, profile, userWithId } = useUser();
+  const { userId, profile } = useUser();
 
   const {
     localParticipant,
@@ -71,38 +68,28 @@ export const JazzBarRoom: React.FC<RoomProps> = ({
   return (
     <>
       {localParticipant && profile && (
-        <div className="jazzbar-room__participant" key={localParticipant.sid}>
-          <VideoParticipant
-            participant={localParticipant}
-            participantUser={userWithId}
-            defaultMute={defaultMute}
-            isAudioEffectDisabled={isReactionsMuted}
-          />
+        <div
+          className="jazzbar-room__participant"
+          key={localParticipant.sparkleId}
+        >
+          <VideoCommsParticipant participant={localParticipant} isLocal />
         </div>
       )}
       {sidedVideoParticipants.map((participant) => (
         <div
-          key={participant.participant.identity}
+          key={participant.participant.sparkleId}
           className="jazzbar-room__participant"
         >
-          <VideoParticipant
-            participant={participant.participant}
-            participantUser={participant.user}
-            isAudioEffectDisabled={isReactionsMuted}
-          />
+          <VideoCommsParticipant participant={participant.participant} />
         </div>
       ))}
       <div className="jazzbar-room__participants">
         {otherVideoParticipants.map((participant) => (
           <div
-            key={participant.participant.identity}
+            key={participant.participant.sparkleId}
             className="jazzbar-room__participant"
           >
-            <VideoParticipant
-              participant={participant.participant}
-              participantUser={participant.user}
-              isAudioEffectDisabled={isReactionsMuted}
-            />
+            <VideoCommsParticipant participant={participant.participant} />
           </div>
         ))}
       </div>

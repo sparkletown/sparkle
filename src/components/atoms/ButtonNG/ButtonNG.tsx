@@ -50,7 +50,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   iconName?: IconProp;
   iconSize?: ButtonIconSize;
   title?: string;
-  forwaredRef?: RefObject<HTMLButtonElement>;
+  forwardRef?: RefObject<HTMLButtonElement>;
 }
 
 export const ButtonNG: React.FC<ButtonProps> = ({
@@ -69,7 +69,7 @@ export const ButtonNG: React.FC<ButtonProps> = ({
   iconName,
   iconSize = "1x",
   title,
-  forwaredRef,
+  forwardRef,
   ...extraParams
 }) => {
   const history = useHistory();
@@ -113,7 +113,7 @@ export const ButtonNG: React.FC<ButtonProps> = ({
   if (loading) {
     return (
       <button
-        ref={forwaredRef}
+        ref={forwardRef}
         className={parentClasses}
         style={style}
         type={type}
@@ -156,7 +156,7 @@ export const ButtonNG: React.FC<ButtonProps> = ({
       className={parentClasses}
       style={style}
       type={type}
-      ref={forwaredRef}
+      ref={forwardRef}
       onClick={handleClick}
       disabled={disabled}
       title={title ?? resolvedUrl}

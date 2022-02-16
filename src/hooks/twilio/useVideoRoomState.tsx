@@ -1,17 +1,14 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { useAsync, useAsyncRetry, useList } from "react-use";
-import {
-  connect,
-  LocalParticipant,
-  LocalVideoTrack,
-  RemoteParticipant,
-  Room,
-} from "twilio-video";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useAsyncRetry } from "react-use";
+import { useVideoComms } from "components/attendee/VideoComms/hooks";
+import { VideoCommsStatus } from "components/attendee/VideoComms/types";
 
 import { getUser } from "api/profile";
 import { getTwilioVideoToken } from "api/video";
 
-import { ParticipantWithUser } from "types/rooms";
+import { User } from "types/User";
+
+import { WithId } from "utils/id";
 
 import { useShowHide } from "hooks/useShowHide";
 
@@ -22,105 +19,93 @@ export const useVideoRoomState = (
   roomName?: string | undefined,
   activeParticipantByDefault = true
 ) => {
-  const [room, setRoom] = useState<Room>();
+  const {
+    joinChannel,
+    localParticipant,
+    remoteParticipants,
+    status,
+    disconnect,
+  } = useVideoComms();
+
+  const [idToUserMap, setIdToUserMap] = useState<
+    Record<string, WithId<User> | undefined>
+  >({});
+
   const [videoError, setVideoError] = useState("");
   const dismissVideoError = useCallback(() => setVideoError(""), []);
-  const [localParticipant, setLocalParticipant] = useState<LocalParticipant>();
-  const [
-    participants,
-    { upsert: upsertParticipant, filter: filterParticipants },
-  ] = useList<ParticipantWithUser<RemoteParticipant>>([]);
-
-  const disconnect = useCallback(() => {
-    setRoom((currentRoom) => {
-      if (currentRoom?.localParticipant?.state !== "connected")
-        return currentRoom;
-
-      currentRoom.localParticipant.tracks.forEach((trackPublication) => {
-        (trackPublication.track as LocalVideoTrack).stop();
-      });
-
-      currentRoom.disconnect();
-
-      return undefined;
-    });
-  }, []);
 
   const {
-    isShown: isActiveParticipant,
-
     show: becomeActiveParticipant,
     hide: becomePassiveParticipant,
   } = useShowHide(activeParticipantByDefault);
 
-  const participantConnected = useCallback(
-    async (participant: RemoteParticipant) => {
-      const user = await getUser(participant.identity);
-      upsertParticipant(
-        (existing) => existing.participant.identity === participant.identity,
-        {
-          participant: participant,
-          user,
+  useEffect(() => {
+    return () => {
+      disconnect();
+    };
+  }, [disconnect]);
+
+  const participants = useMemo(
+    () =>
+      remoteParticipants.map((remoteParticipant) => {
+        if (!(remoteParticipant.sparkleId in idToUserMap)) {
+          // Set the user to undefined so that multiple fetches aren't queued
+          // at the same time.
+          setIdToUserMap((prevIdToUserMap) => {
+            return {
+              ...prevIdToUserMap,
+              [remoteParticipant.sparkleId]: undefined,
+            };
+          });
+
+          getUser(remoteParticipant.sparkleId).then((user) => {
+            setIdToUserMap((prevIdToUserMap) => {
+              return { ...prevIdToUserMap, [user.id]: user };
+            });
+          });
         }
-      );
-    },
-    [upsertParticipant]
+        return {
+          user: idToUserMap[remoteParticipant.sparkleId],
+          participant: remoteParticipant,
+        };
+      }),
+    [remoteParticipants, idToUserMap]
   );
 
-  const participantDisconnected = useCallback(
-    (participant: RemoteParticipant) => {
-      filterParticipants(
-        (existing) => existing.participant.identity !== participant.identity
-      );
-    },
-    [filterParticipants]
-  );
+  const {
+    loading: roomLoading,
+    retry: retryConnect,
+  } = useAsyncRetry(async () => {
+    if (!userId || !roomName) return;
 
-  const { loading: roomLoading, retry: retryConnect } =
-    useAsyncRetry(async () => {
-      if (!userId || !roomName) return;
+    const token = await getTwilioVideoToken({ userId, roomName });
+    if (!token) return;
 
-      const token = await getTwilioVideoToken({ userId, roomName });
-      if (!token) return;
+    dismissVideoError();
 
-      dismissVideoError();
+    try {
+      joinChannel({
+        userId,
+        channelId: roomName,
+        enableVideo: true,
+        enableAudio: true,
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        const message = error.message;
 
-      // https://media.twiliocdn.com/sdk/js/video/releases/2.7.1/docs/global.html#ConnectOptions
-      await connect(token, {
-        name: roomName,
-        video: isActiveParticipant,
-        audio: isActiveParticipant,
-        enableDscp: true,
-      })
-        .then(setRoom)
-        .catch((error) => {
-          const message = error.message;
-
-          if (message.toLowerCase().includes("unknown")) {
-            setVideoError(
-              `${message}; common remedies include closing any other programs using your camera, and giving your browser permission to access the camera.`
-            );
-          } else setVideoError(message);
-        });
-    }, [userId, roomName, dismissVideoError, isActiveParticipant]);
+        if (message.toLowerCase().includes("unknown")) {
+          setVideoError(
+            `${message}; common remedies include closing any other programs using your camera, and giving your browser permission to access the camera.`
+          );
+        } else setVideoError(message);
+      } else {
+        throw error;
+      }
+    }
+  }, [userId, roomName, dismissVideoError, joinChannel]);
 
   useEffect(() => () => disconnect(), [disconnect]);
-
-  const { loading: participantsLoading } = useAsync(async () => {
-    if (!room) return;
-
-    room.on("participantConnected", participantConnected);
-    room.on("participantDisconnected", participantDisconnected);
-
-    setLocalParticipant(room.localParticipant);
-    [...room.participants.values()].forEach(participantConnected);
-
-    return () => {
-      setLocalParticipant(undefined);
-      room.off("participantConnected", participantConnected);
-      room.off("participantDisconnected", participantDisconnected);
-    };
-  }, [room, participantConnected, participantDisconnected]);
 
   const renderErrorModal = useCallback(
     (onBack?: () => void) => {
@@ -142,7 +127,7 @@ export const useVideoRoomState = (
   );
 
   return {
-    loading: participantsLoading || roomLoading,
+    loading: status === VideoCommsStatus.Connecting || roomLoading,
 
     localParticipant,
     participants,

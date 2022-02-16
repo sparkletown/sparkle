@@ -28,11 +28,17 @@ export const BannerAdmin: React.FC<BannerAdminProps> = ({
   venue,
   onClose,
 }) => {
-  const { register, handleSubmit, errors, reset, watch, setValue } =
-    useForm<Banner>({
-      mode: "onChange",
-      reValidateMode: "onChange",
-    });
+  const {
+    register,
+    handleSubmit,
+    errors,
+    reset,
+    watch,
+    setValue,
+  } = useForm<Banner>({
+    mode: "onChange",
+    reValidateMode: "onChange",
+  });
   const isUrlButtonActive = watch(
     "isActionButton",
     venue?.banner?.isActionButton
@@ -97,7 +103,7 @@ export const BannerAdmin: React.FC<BannerAdminProps> = ({
           name="isActionButton"
           label="Call to Action Button"
           toggler
-          forwardedRef={register}
+          forwardRef={register}
           defaultChecked={venue?.banner?.isActionButton}
         />
 
@@ -124,7 +130,7 @@ export const BannerAdmin: React.FC<BannerAdminProps> = ({
           />
         </div>
         <Checkbox
-          forwardedRef={register}
+          forwardRef={register}
           containerClassName="BannerAdmin__checkbox"
           labelClassName="BannerAdmin__checkbox__label"
           name="isFullScreen"
@@ -134,7 +140,7 @@ export const BannerAdmin: React.FC<BannerAdminProps> = ({
         />
 
         <Checkbox
-          forwardedRef={register}
+          forwardRef={register}
           containerClassName="BannerAdmin__checkbox"
           labelClassName={forceFunnelLabelClasses}
           name="isForceFunnel"

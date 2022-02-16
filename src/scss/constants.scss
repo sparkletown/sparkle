@@ -339,6 +339,10 @@ $z-layers: (
   @return 0 2px 4px $color;
 }
 
+@function box-shadow--menu($color) {
+  @return 0 10px 20px var($color);
+}
+
 @function box-shadow--small($color) {
   @return 0 2px 4px 0 $color;
 }

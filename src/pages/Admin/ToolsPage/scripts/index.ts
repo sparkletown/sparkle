@@ -1,1 +1,2 @@
-export * from "./analytics/config";
+export * from "./analytics";
+export * from "./makeWorldOwner";

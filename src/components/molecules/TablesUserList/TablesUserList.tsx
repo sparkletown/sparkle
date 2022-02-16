@@ -70,13 +70,14 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
 
   const [joiningTable, setJoiningTable] = useState("");
 
-  const { userWithId } = useUser();
+  const { userWithId, userId } = useUser();
   const { data: experience } = useExperience();
 
   const isCurrentUserAdmin = arrayIncludes(venue.owners, userWithId?.id);
 
-  const [seatedTableUsers, isSeatedTableUsersLoaded] =
-    useSeatedTableUsers(venueId);
+  const [seatedTableUsers, isSeatedTableUsersLoaded] = useSeatedTableUsers(
+    venueId
+  );
 
   const userTableReference = seatedTableUsers.find(
     (u) => u.id === userWithId?.id
@@ -102,15 +103,17 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
     [userWithId, venueId]
   );
 
-  const usersSeatedAtTables: Record<string, WithId<TableSeatedUser>[]> =
-    useMemo(() => {
-      const tableReferences = tables.map((t) => t.reference);
+  const usersSeatedAtTables: Record<
+    string,
+    WithId<TableSeatedUser>[]
+  > = useMemo(() => {
+    const tableReferences = tables.map((t) => t.reference);
 
-      const filteredUsers = seatedTableUsers.filter((user) =>
-        tableReferences.includes(user.path.tableReference)
-      );
-      return groupBy(filteredUsers, (user) => user.path.tableReference);
-    }, [seatedTableUsers, tables]);
+    const filteredUsers = seatedTableUsers.filter((user) =>
+      tableReferences.includes(user.path.tableReference)
+    );
+    return groupBy(filteredUsers, (user) => user.path.tableReference);
+  }, [seatedTableUsers, tables]);
 
   const isFullTable = useCallback(
     (table: Table) => {
@@ -171,7 +174,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
     (isCurrentUserAdmin || emptyTables.length <= ALLOWED_EMPTY_TABLES_NUMBER);
 
   const renderedTables = useMemo(() => {
-    if (isSeatedAtTable) return;
+    if (isSeatedAtTable || !userId) return;
 
     const tablesToShow = showOnlyAvailableTables
       ? tables.filter(
@@ -185,6 +188,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
         // @debt provide usersAtTables instead of (experienceName + users) for better perfomance
         users={usersSeatedAtTables?.[table.reference] ?? []}
         table={table}
+        userId={userId}
         tableLocked={tableLocked}
         onJoinClicked={onJoinClicked}
         venue={venue}
@@ -195,6 +199,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
     isSeatedAtTable,
     showOnlyAvailableTables,
     tables,
+    userId,
     isFullTable,
     tableLocked,
     TableComponent,
