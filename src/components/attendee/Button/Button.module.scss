@@ -16,6 +16,11 @@
   &__primary {
     @include sparkle-color-glass;
   }
+  &__primaryAlternate {
+    @include sparkle-color-glass;
+    background: transparent;
+    backdrop-filter: none;
+  }
   &__alternative {
     background: transparent;
   }

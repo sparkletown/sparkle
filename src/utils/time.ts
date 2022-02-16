@@ -228,6 +228,10 @@ export const formatDateRelativeToNow = (
 export const formatTimeLocalised = (dateOrTimestamp: Date | number): string =>
   format(dateOrTimestamp, "p");
 
+export const formatFullTimeLocalised = (
+  dateOrTimestamp: Date | number
+): string => format(dateOrTimestamp, DATEFNS_INPUT_TIME_FORMAT);
+
 export const oneHourAfterTimestamp = (timestamp: number) =>
   timestamp + ONE_HOUR_IN_SECONDS;
 

@@ -12,5 +12,9 @@
     display: flex;
     justify-content: space-between;
     width: 100%;
+
+    &_narrow {
+      @include sparkle-color-glass;
+    }
   }
 }
