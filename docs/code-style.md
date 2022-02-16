@@ -14,6 +14,17 @@ meant to be rigid and static, but a suggestion. Thus, rule of thumb:
 
 ---
 
+## Comments (general)
+
+There usually isn't a formal way of writing comments. Most common are simple
+line comments, not block ones. However, few tags, due to familiarity with JSDoc,
+can be found outside these `/** */` blocks:
+
+- `@debt` is usually some future issue or pull request to repay with better code
+  solution be it refactor or replacement
+- `@deprecated` is usually a comment that give an explanation and alternative
+- `@see` is usually followed by URL or similar reference for further info
+
 ## Style Sheets (coding/design)
 
 Over the course of the codebase there has been a revolving door of different
@@ -177,9 +188,9 @@ and it will tend to drift apart from the related changes in other parts of the
 code, thus by the time it may become useful to have, it will have to be
 refactored or rewritten.
 
-The safest way to deal with this situation is to outright:
+The safest way to deal with this situation is to:
 
-1. delete the code (and maybe put into a branch), or
+1. outright delete the code (and maybe put into a branch), or
 2. put it behind a disabling flag.
 
 The former is self-explanatory: unused code is just taking up space. The latter
@@ -250,6 +261,18 @@ uniformed naming can be observed:
   /sparkletown/purple       724257f85 [rnd/style-lib]
   /sparkletown/brown        0232b4ef8 [new/code-style-docs]
   ```
+
+## Pull Request Review
+
+To make it easy for the reviewee to determine what kind if any action they
+should take upon a comment, few tags at the beginning can be used:
+
+- > [OOS] this is out of scope for the current PR, but we really need another PR
+  > dealing with it
+- > [NOTE] maybe something to be considered, maybe for later, not necessary to
+  > act upon at this moment
+- > [OPTIONAL] the code suggestion down is nice to have, but I'd approve without
+  > it, especially if the PR is time sensitive
 
 ## Merge flow (devops)
 
