@@ -2,13 +2,13 @@ import { useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { faChartBar } from "@fortawesome/free-regular-svg-icons";
 import {
-  faBars,
+  faArrowRightArrowLeft,
   faCalendar,
+  faGear,
   faMap,
-  faUser,
+  faUserGroup,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { SwitchHorizontalIcon } from "@heroicons/react/outline";
 import classNames from "classnames";
 
 import {
@@ -41,12 +41,10 @@ const navigation = [
     route: ADMIN_IA_WORLD_SCHEDULE,
     icon: faCalendar,
   },
-  // @debt use "user-group" icon instead once fontawesome upgraded
-  { name: "Users", route: ADMIN_IA_WORLD_USERS, icon: faUser },
+  { name: "Users", route: ADMIN_IA_WORLD_USERS, icon: faUserGroup },
   // @debt use "chart-simple" icon instead once fontawesome upgraded
   { name: "Reports", route: ADMIN_IA_WORLD_REPORTS, icon: faChartBar },
-  // @debt use "gear" icon instead once fontawesome upgraded
-  { name: "Settings", route: ADMIN_IA_WORLD_SETTINGS, icon: faBars },
+  { name: "Settings", route: ADMIN_IA_WORLD_SETTINGS, icon: faGear },
 ];
 
 export const SidebarContent = () => {
@@ -121,10 +119,10 @@ export const SidebarContent = () => {
       <div className="flex-shrink-0">
         <div className="flex-1 flex flex-col overflow-y-auto px-2 py-2">
           <Link to={ADMIN_IA_WORLD_BASE_URL} className={switchWorldLinkClasses}>
-            {/* @debt use fontawesome icon */}
-            <SwitchHorizontalIcon
+            <FontAwesomeIcon
               className={switchWorldIconClasses}
               aria-hidden="true"
+              icon={faArrowRightArrowLeft}
             />
             Switch world
           </Link>
