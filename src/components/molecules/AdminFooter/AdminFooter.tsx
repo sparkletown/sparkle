@@ -1,10 +1,20 @@
+import {
+  ABOUT_URL,
+  ACCESSIBILITY_URL,
+  BLOG_URL,
+  COPYRIGHT_TEXT,
+  JOBS_URL,
+  PARTNERS_URL,
+  PRESS_URL,
+} from "settings";
+
 const navigation = [
-  { name: "About", href: "#about" },
-  { name: "Blog", href: "#blog" },
-  { name: "Jobs", href: "#jobs" },
-  { name: "Press", href: "#press" },
-  { name: "Accessibility", href: "#accessibility" },
-  { name: "Partners", href: "#partners" },
+  { name: "About", href: ABOUT_URL },
+  { name: "Blog", href: BLOG_URL },
+  { name: "Jobs", href: JOBS_URL },
+  { name: "Press", href: PRESS_URL },
+  { name: "Accessibility", href: ACCESSIBILITY_URL },
+  { name: "Partners", href: PARTNERS_URL },
 ];
 
 const renderedMenuItems = navigation.map((item) => (
@@ -25,7 +35,7 @@ export const AdminFooter = () => (
         {renderedMenuItems}
       </nav>
       <p className="mt-8 text-center text-base text-gray-400">
-        &copy; Copyright SparkleVerse Inc & Contributors 2020 to 2021.
+        {COPYRIGHT_TEXT}
       </p>
     </div>
   </footer>

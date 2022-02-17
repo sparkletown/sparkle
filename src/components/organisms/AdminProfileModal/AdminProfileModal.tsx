@@ -1,15 +1,16 @@
 import { Fragment, useRef } from "react";
 import { Dialog, Transition } from "@headlessui/react";
+import { Button } from "components/admin/Button";
 
-import { STRING_ZERO_WIDTH_SPACE } from "settings";
+import { STRING_SPACE, STRING_ZERO_WIDTH_SPACE } from "settings";
 
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 
-import { AdminButton } from "components/atoms/AdminButton";
-
 export const AdminProfileModal = () => {
-  const { hasSelectedProfile, closeUserProfileModal } =
-    useProfileModalControls();
+  const {
+    hasSelectedProfile,
+    closeUserProfileModal,
+  } = useProfileModalControls();
 
   const cancelButtonRef = useRef(null);
 
@@ -74,7 +75,7 @@ export const AdminProfileModal = () => {
                           tomcook@hotmail.co.uk
                         </p>
                         <span className="font-xs">
-                          is busy{" "}
+                          is busy{STRING_SPACE}
                           <a href="/" className="underline font-xs">
                             Change status
                           </a>
@@ -93,17 +94,15 @@ export const AdminProfileModal = () => {
                 </div>
               </div>
               <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-                <AdminButton onClick={closeUserProfileModal}>
-                  Edit profile
-                </AdminButton>
+                <Button onClick={closeUserProfileModal}>Edit profile</Button>
 
-                <AdminButton
+                <Button
                   onClick={closeUserProfileModal}
                   variant="secondary"
-                  forwaredRef={cancelButtonRef}
+                  forwardRef={cancelButtonRef}
                 >
                   Cancel
-                </AdminButton>
+                </Button>
               </div>
             </div>
           </Transition.Child>

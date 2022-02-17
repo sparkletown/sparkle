@@ -5,6 +5,7 @@ import { VenueTemplate } from "types/VenueTemplate";
 import { generateTables } from "utils/table";
 import { FIVE_MINUTES_MS } from "utils/time";
 
+import { STRING_COPYRIGHT } from "./interpolationSettings";
 import {
   ROOM_TAXON,
   ROOMS_TAXON,
@@ -602,3 +603,8 @@ export const VENUE_CHAT_MESSAGES_COUNTER_SHARDS_COUNT = 10;
 export const NON_EXISTENT_FIRESTORE_ID = "NON_EXISTENT_FIRESTORE_ID";
 
 export const INVALID_SLUG_CHARS_REGEX = /[^a-zA-Z0-9]/g;
+
+export const DEFAULT_MISSING_PLACEHOLDER = "Placeholder";
+
+export const CURRENT_YEAR = new Date().getFullYear();
+export const COPYRIGHT_TEXT = `${STRING_COPYRIGHT} Copyright SparkleVerse Inc & Contributors 2020 to ${CURRENT_YEAR}.`;

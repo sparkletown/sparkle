@@ -74,3 +74,11 @@ export const ADMIN_IA_WORLD_SCHEDULE = `${ADMIN_IA_WORLD_PARAM_URL}/world-schedu
 export const ADMIN_IA_WORLD_USERS = `${ADMIN_IA_WORLD_PARAM_URL}/users`; // e.g. /admin/w/world123/users
 export const ADMIN_IA_WORLD_REPORTS = `${ADMIN_IA_WORLD_PARAM_URL}/reports`; // e.g. /admin/w/world123/reports
 export const ADMIN_IA_WORLD_SETTINGS = `${ADMIN_IA_WORLD_PARAM_URL}/settings`; // e.g. /admin/w/world123/settings
+
+// @debt replace with real URLs
+export const ABOUT_URL = "#about";
+export const BLOG_URL = "#blog";
+export const JOBS_URL = "#jobs";
+export const PRESS_URL = "#press";
+export const ACCESSIBILITY_URL = "#accessibility";
+export const PARTNERS_URL = "#partners";

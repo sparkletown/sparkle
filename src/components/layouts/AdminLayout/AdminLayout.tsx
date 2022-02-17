@@ -12,6 +12,8 @@ export interface AdminLayoutPropsType {
 }
 
 const htmlClasses = "h-full bg-gray-100 js-focus-visible".split(" ");
+const sidebarButtonClasses =
+  "-ml-0.5 -mt-0.5 h-12 w-12 inline-flex items-center justify-center rounded-md text-gray-500 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500";
 
 export const AdminLayout: React.FC<AdminLayoutPropsType> = ({ children }) => {
   useEffect(() => {
@@ -49,7 +51,7 @@ export const AdminLayout: React.FC<AdminLayoutPropsType> = ({ children }) => {
         <div className="sticky top-0 z-10 md:hidden pl-1 pt-1 sm:pl-3 sm:pt-3 bg-gray-100">
           <button
             type="button"
-            className="-ml-0.5 -mt-0.5 h-12 w-12 inline-flex items-center justify-center rounded-md text-gray-500 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+            className={sidebarButtonClasses}
             onClick={triggerSidebar}
           >
             <span className="sr-only">Open sidebar</span>
