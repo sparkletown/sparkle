@@ -27,7 +27,7 @@ import { updateUserProfile } from "./helpers";
 // @debt refactor the Profile related styles from Account.scss into Profile.scss
 import "./Account.scss";
 import "./Profile.scss";
-import formStyles from "scss/attendee/formStyles.module.scss";
+import FORMS from "scss/attendee/forms.module.scss";
 
 export interface ProfileFormData {
   partyName: string;
@@ -93,7 +93,7 @@ export const Profile: React.FC = () => {
             {/* @debt refactor this to use InputField */}
             <input
               name="partyName"
-              className={formStyles.input}
+              className={FORMS.input}
               placeholder="Your display name"
               ref={register({
                 required: true,
