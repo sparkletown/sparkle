@@ -84,7 +84,7 @@ the prop:
 <div className={cn("Component", CN.component)}></div>
 ```
 
-## Injected Class Names
+## Injected class names vs. variance props
 
 In the past, class names were being injected from parent components. Like this:
 
@@ -115,8 +115,8 @@ problem. Example:
 ```
 
 The way to "inject" some classes but still keep the number of variations to the
-minimum, a variance prop can be used. Such example is the above
-`variant="primary"`, but should not be limited to it.
+minimum is a variance prop. Such example is the above `variant="primary"`, but
+not limited.
 
 Example: A component can have prop named
 
@@ -124,7 +124,7 @@ Example: A component can have prop named
 width ? : "wide" | "narrow" | "normal"
 ```
 
-and those strings be the names of exported constants in `Component.twillio.ts`.
+and those strings be the names of exported constants in `Component.tailwind.ts`.
 These classes can be accessed as `TW[width]` in a code like:
 
 ```tsx
