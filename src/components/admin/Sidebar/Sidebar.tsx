@@ -5,20 +5,20 @@ import { Dialog, Transition } from "@headlessui/react";
 
 import { SidebarContent } from "./components/SidebarContent";
 
-export interface AdminNavBarPropsType {
+export interface SidebarProps {
   sidebarOpen: boolean;
   onCloseSidebar: () => void;
 }
 
-export const AdminNavBar: React.FC<AdminNavBarPropsType> = ({
+export const Sidebar: React.FC<SidebarProps> = ({
   onCloseSidebar,
   sidebarOpen,
 }) => (
-  <div className="AdminNavBar">
+  <div className="Sidebar">
     <Transition.Root show={sidebarOpen} as={Fragment}>
       <Dialog
         as="div"
-        className="AdminNavBar__modal fixed inset-0 flex z-40 md:hidden"
+        className="Sidebar__modal fixed inset-0 flex z-40 md:hidden"
         onClose={onCloseSidebar}
       >
         <Transition.Child
@@ -76,7 +76,7 @@ export const AdminNavBar: React.FC<AdminNavBarPropsType> = ({
       </Dialog>
     </Transition.Root>
 
-    <div className="AdminNavBar__desktop hidden md:flex md:w-56 md:flex-col md:fixed md:inset-y-0">
+    <div className="Sidebar__desktop hidden md:flex md:w-56 md:flex-col md:fixed md:inset-y-0">
       {/* Sidebar component, swap this element with another sidebar if you like */}
       <SidebarContent />
     </div>

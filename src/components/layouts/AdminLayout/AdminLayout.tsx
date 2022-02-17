@@ -1,11 +1,10 @@
 import { ReactNode, useCallback, useEffect, useState } from "react";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Footer } from "components/admin/Footer";
+import { Sidebar } from "components/admin/Sidebar";
 
 import { AdminProfileModal } from "components/organisms/AdminProfileModal";
-
-import { AdminFooter } from "components/molecules/AdminFooter";
-import { AdminNavBar } from "components/molecules/AdminNavBar";
 
 import "scss/admin/initial.scss";
 
@@ -45,7 +44,7 @@ export const AdminLayout: React.FC<AdminLayoutPropsType> = ({ children }) => {
 
   return (
     <div className="AdminLayout">
-      <AdminNavBar
+      <Sidebar
         sidebarOpen={pageLayout.sidebarOpen}
         onCloseSidebar={closeSidebar}
       />
@@ -62,7 +61,7 @@ export const AdminLayout: React.FC<AdminLayoutPropsType> = ({ children }) => {
         </div>
         <main className="flex-1">
           {children}
-          <AdminFooter />
+          <Footer />
         </main>
       </div>
 
