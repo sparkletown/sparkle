@@ -1,5 +1,10 @@
 import React, { ChangeEvent, useCallback, useState } from "react";
-import { FieldError, NestDataObject, ValidateResult } from "react-hook-form";
+import {
+  FieldError,
+  FieldErrors,
+  UseFormRegister,
+  ValidateResult,
+} from "react-hook-form";
 import { IconDefinition } from "@fortawesome/fontawesome-common-types";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
@@ -28,8 +33,8 @@ export interface ProfileModalEditLinkProps extends ContainerClassName {
   link: Partial<ProfileLink>;
   otherUrls: (string | undefined)[];
   setTitle: (title: string) => void;
-  register: FormFieldProps["register"];
-  error?: NestDataObject<ProfileLink, FieldError>;
+  register: UseFormRegister<any>;
+  error?: FieldErrors<ProfileLink>;
   onDelete: () => void;
 }
 
@@ -49,8 +54,7 @@ export const ProfileModalEditLink: React.FC<ProfileModalEditLinkProps> = ({
   );
 
   const getInputNameForForm = useCallback(
-    (index: number, prop: keyof ProfileLink) =>
-      `${formProp("profileLinks")}[${index}].${prop}`,
+    (index: number, prop: keyof ProfileLink) => `profileLinks.${index}.${prop}`,
     []
   );
 
@@ -83,26 +87,30 @@ export const ProfileModalEditLink: React.FC<ProfileModalEditLinkProps> = ({
     <div className={classNames("ProfileModalEditLink", containerClassName)}>
       <div className="ProfileModalEditLink__url">
         <ProfileModalInput
-          name={getInputNameForForm(index, "url")}
           placeholder="Link URL"
-          onChange={handleUrlChanged}
-          ref={register({
+          name={`profileLinks.${index}.url`}
+          register={register}
+          rules={{
             required: "URL cannot be empty",
             pattern: {
               value: urlRegex,
               message: "URL must be valid",
             },
             validate: validateURLUnique,
-          })}
+          }}
+          onChange={handleUrlChanged}
           error={error?.url}
         />
       </div>
       <div className="ProfileModalEditLink__text">
         <ProfileModalInput
-          name={getInputNameForForm(index, "title")}
           onFocus={setTitleTouched}
           placeholder="Link Title"
-          ref={register({ required: "Title cannot empty" })}
+          register={register}
+          name={`profileLinks.${index}.title`}
+          rules={{
+            required: "Title cannot empty",
+          }}
           error={error?.title}
           iconEnd={linkIcon}
         />

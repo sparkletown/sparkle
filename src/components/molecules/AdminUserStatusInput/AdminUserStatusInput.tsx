@@ -1,8 +1,10 @@
 import React, { useCallback } from "react";
 import { CirclePicker, ColorResult } from "react-color";
+import { UseFormRegister } from "react-hook-form";
 import { faEyeDropper, faTimes } from "@fortawesome/free-solid-svg-icons";
 
 import { UserStatus } from "types/User";
+import { WorldAdvancedFormInput } from "types/world";
 
 import { useShowHide } from "hooks/useShowHide";
 
@@ -17,6 +19,7 @@ export interface AdminUserStatusInputProps
   item?: UserStatus;
   onChange?: (status: UserStatus) => void;
   onRemove?: () => void;
+  register: UseFormRegister<any>;
 }
 
 export const AdminUserStatusInput: React.FC<AdminUserStatusInputProps> = ({
@@ -67,9 +70,8 @@ export const AdminUserStatusInput: React.FC<AdminUserStatusInputProps> = ({
         />
         <input
           className="AdminUserStatusInput__color"
-          name={inputColor}
           type="hidden"
-          ref={register}
+          {...register(inputColor)}
         />
         <ButtonNG
           style={pickerStyles}

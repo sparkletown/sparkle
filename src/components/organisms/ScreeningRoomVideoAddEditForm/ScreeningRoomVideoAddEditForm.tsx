@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useMemo } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useFormState } from "react-hook-form";
 import { useParams } from "react-router";
 import { useAsyncFn } from "react-use";
+import { yupResolver } from "@hookform/resolvers/yup";
 import omit from "lodash/omit";
 
 import { deleteScreeningRoomVideo, upsertScreeningRoomVideo } from "api/admin";
@@ -71,20 +72,21 @@ export const ScreeningRoomVideoAddEditForm: React.FC<ScreeningRoomVideoAddEditFo
     register,
     getValues,
     handleSubmit,
-    errors,
     setValue,
     reset,
+    control,
   } = useForm({
     reValidateMode: "onChange",
-
-    validationSchema: screeningRoomVideoSchema,
+    resolver: yupResolver(screeningRoomVideoSchema),
     defaultValues,
   });
+
+  const { errors } = useFormState({ control });
 
   useEffect(() => reset(defaultValues), [defaultValues, reset]);
   const changeRoomImageUrl = useCallback(
     (val: string) => {
-      setValue("image_url", val, false);
+      // setValue("image_url", val, {shouldValidate: false});
     },
     [setValue]
   );
@@ -150,45 +152,45 @@ export const ScreeningRoomVideoAddEditForm: React.FC<ScreeningRoomVideoAddEditFo
     >
       <div className="ScreeningRoomVideoAddEditForm__title">{title}</div>
       <AdminInput
-        name="title"
         type="text"
         autoComplete="off"
         placeholder="Name your video"
         label="Title (required)"
         errors={errors}
+        name="title"
         register={register}
         disabled={isLoading}
       />
 
       <AdminInput
-        name="authorName"
         type="text"
         autoComplete="off"
         placeholder="Esmerelda Diamond"
         label="Author of video (required)"
         errors={errors}
+        name="authorName"
         register={register}
         disabled={isLoading}
       />
 
       <AdminInput
-        name="videoSrc"
         type="text"
         autoComplete="off"
         placeholder="https://"
         label="Embed URL (required)"
         errors={errors}
+        name="videoSrc"
         register={register}
         disabled={isLoading}
       />
 
       <AdminInput
-        name="category"
         type="text"
         autoComplete="off"
         placeholder="Add category"
         label="Category (required)"
         errors={errors}
+        name="category"
         register={register}
         disabled={isLoading}
       />
@@ -205,23 +207,23 @@ export const ScreeningRoomVideoAddEditForm: React.FC<ScreeningRoomVideoAddEditFo
       />
 
       <AdminInput
-        name="subCategory"
         type="text"
         autoComplete="off"
         placeholder="Add subcategory"
         label="Subcategory"
         errors={errors}
+        name="subCategory"
         register={register}
         disabled={isLoading}
       />
 
       <AdminInput
-        name="introduction"
         type="text"
         autoComplete="off"
         placeholder="Add introduction"
         label="Introduction"
         errors={errors}
+        name="introduction"
         register={register}
         disabled={isLoading}
       />

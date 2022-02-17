@@ -1,9 +1,10 @@
 import React, { useMemo } from "react";
-import { ArrayField, FieldError, NestDataObject } from "react-hook-form";
+import { FieldError, FieldErrors, UseFormRegister } from "react-hook-form";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
 
 import { FormFieldProps } from "types/forms";
+import { UserProfileModalFormData } from "types/profileModal";
 import { ProfileLink } from "types/User";
 import { ContainerClassName } from "types/utility";
 
@@ -15,10 +16,10 @@ import "./ProfileModalEditLinks.scss";
 
 export interface ProfileModalEditLinksProps extends ContainerClassName {
   initialLinks: ProfileLink[];
-  links: Partial<ArrayField<ProfileLink>>[];
+  links: ProfileLink[];
   setLinkTitle: (index: number, title: string) => void;
-  register: FormFieldProps["register"];
-  errors?: NestDataObject<ProfileLink, FieldError>[];
+  register: UseFormRegister<UserProfileModalFormData>;
+  errors?: FieldErrors<ProfileLink>[];
   onDeleteLink: (index: number) => void;
   onAddLink: () => void;
 }
@@ -41,13 +42,13 @@ export const ProfileModalEditLinks: React.FC<ProfileModalEditLinksProps> = ({
   const renderedLinks = useMemo(
     () =>
       register &&
-      links.map(({ id, ...link }, i) => {
+      links.map(({ ...link }, i) => {
         const otherUrls = links.filter((l) => l !== links[i]).map((l) => l.url);
 
         return (
           <ProfileModalEditLink
             containerClassName="ProfileModalEditLinks__link-group"
-            key={id}
+            key={i}
             index={i}
             register={register}
             initialTitle={initialLinks?.[i]?.title}

@@ -50,11 +50,10 @@ export const PollBox: React.FC<PollBoxProps> = ({ onPollSubmit }) => {
       fields.map((field, index) => (
         <section className="PollBox__section" key={field.id}>
           <InputField
-            ref={register({ required: true })}
+            {...register(`questions.${index}.name`, { required: true })}
             containerClassName="PollBox__input"
             autoComplete="off"
             placeholder={`Choice ${index + 1}`}
-            name={`questions.${index}.name`}
           />
           {checkIfQuestionCanBeAppended(index) && (
             <button className="PollBox__append-button" onClick={addQuestion}>
@@ -70,9 +69,8 @@ export const PollBox: React.FC<PollBoxProps> = ({ onPollSubmit }) => {
     <form className="PollBox" onSubmit={handlePollSubmit}>
       <section className="PollBox__section">
         <InputField
-          ref={register({ required: true })}
+          {...register("topic", { required: true })}
           containerClassName="PollBox__input"
-          name="topic"
           placeholder="Your question..."
           autoComplete="off"
         />

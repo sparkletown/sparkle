@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useFormState } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 import { updateWorldAdvancedSettings, World } from "api/world";
 
@@ -69,16 +70,16 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
     getValues,
     reset,
     watch,
-    formState: { dirty, isSubmitting },
-    errors,
+    control,
     handleSubmit,
     register,
   } = useForm<WorldAdvancedFormInput>({
     mode: "onSubmit",
     reValidateMode: "onChange",
-    validationSchema: emptyObjectSchema,
+    resolver: yupResolver(emptyObjectSchema),
     defaultValues,
   });
+  const { isDirty, isSubmitting, errors } = useFormState({ control });
 
   const values = watch();
 
@@ -104,7 +105,7 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
 
   const isSaveLoading = isSubmitting || isSaving;
   const isSaveDisabled = !(
-    dirty ||
+    isDirty ||
     isSaving ||
     isSubmitting ||
     isDirtyStatuses
@@ -156,34 +157,34 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
           withLabel
         >
           <AdminInput
-            name="attendeesTitle"
             autoComplete="off"
             placeholder="Attendees title"
             errors={errors}
+            name="attendeesTitle"
             register={register}
           />
         </AdminSection>
 
         <AdminSection>
           <AdminCheckbox
-            name="showBadges"
             label="Show badges"
             variant="toggler"
+            name="showBadges"
             register={register}
           />
         </AdminSection>
 
         <AdminSection>
           <AdminCheckbox
-            name="showRadio"
             label="Enable space radio"
             variant="toggler"
             errors={errors}
+            name="showRadio"
             register={register}
           />
           <AdminInput
-            name="radioStation"
             errors={errors}
+            name="radioStation"
             register={register}
             label="Radio station stream URL:"
             hidden={!values.showRadio}
@@ -192,29 +193,29 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
 
         <AdminSection>
           <AdminCheckbox
-            name="hasSocialLoginEnabled"
             label="Social Login"
             subtext="Users can login using Google/Facebook/Okta social networks"
             variant="toggler"
             errors={errors}
+            name="hasSocialLoginEnabled"
             register={register}
           />
         </AdminSection>
 
         <AdminSection>
           <AdminCheckbox
-            name="showSchedule"
             label="Show schedule"
             variant="toggler"
+            name="showSchedule"
             register={register}
           />
         </AdminSection>
 
         <AdminSection>
           <AdminCheckbox
-            name="showUserStatus"
             label="Show user status"
             variant="toggler"
+            name="showUserStatus"
             register={register}
           />
           {values.showUserStatus && (

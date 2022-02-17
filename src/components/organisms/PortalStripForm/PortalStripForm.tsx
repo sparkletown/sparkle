@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useFormState } from "react-hook-form";
 import { useAsync, useAsyncFn } from "react-use";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -94,7 +94,7 @@ export const PortalStripForm: React.FC<PortalStripFormProps> = ({
     }
   });
 
-  const { getValues, register, reset, errors, handleSubmit } = useForm({
+  const { getValues, register, reset, control, handleSubmit } = useForm({
     mode: "onSubmit",
     reValidateMode: "onChange",
     defaultValues: {
@@ -102,6 +102,8 @@ export const PortalStripForm: React.FC<PortalStripFormProps> = ({
       isEnabled: portal?.isEnabled ?? DEFAULT_PORTAL_IS_ENABLED,
     },
   });
+
+  const { errors } = useFormState({ control });
 
   const values = getValues();
 

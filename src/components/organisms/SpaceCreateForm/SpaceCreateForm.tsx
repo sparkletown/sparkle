@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useFormState } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn } from "react-use";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 import {
   ADMIN_IA_SPACE_BASE_PARAM_URL,
@@ -56,15 +57,17 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({
   >();
   const { icon: logoImageUrl, template } = selectedItem ?? {};
 
-  const { register, getValues, handleSubmit, errors, reset, watch } = useForm({
+  const { register, getValues, handleSubmit, control, reset, watch } = useForm({
     mode: "onSubmit",
     reValidateMode: "onSubmit",
-    validationSchema: createSpaceSchema,
+    resolver: yupResolver(createSpaceSchema),
     defaultValues: {
       venueName: "",
       template,
     },
   });
+
+  const { errors } = useFormState({ control });
 
   const { venueName } = getValues();
 
@@ -111,12 +114,11 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({
       <FormCover displayed={isLoading}>
         <AdminSection withLabel title={`${SPACE_TAXON.capital} name`}>
           <AdminInput
-            name="venueName"
             type="text"
             autoComplete="off"
             placeholder={`${SPACE_TAXON.capital} name`}
             errors={errors}
-            register={register}
+            {...register("venueName")}
             disabled={isLoading}
           />
         </AdminSection>

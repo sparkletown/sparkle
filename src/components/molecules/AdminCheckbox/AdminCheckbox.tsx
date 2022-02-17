@@ -1,9 +1,11 @@
 import React, { ReactNode } from "react";
-import { FieldErrors, FieldValues } from "react-hook-form";
+import { FieldErrors, FieldValues, UseFormRegister } from "react-hook-form";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { get } from "lodash";
+
+import { WorldEntranceFormInput } from "types/world";
 
 import { CheckboxProps } from "components/atoms/Checkbox";
 
@@ -18,7 +20,7 @@ export interface AdminCheckboxProps
   name: string;
   displayOn?: ReactNode | string;
   displayOff?: ReactNode | string;
-  register: (Ref: unknown, RegisterOptions?: unknown) => void;
+  register: UseFormRegister<any>;
   subtext?: ReactNode | string;
   variant?: "toggler" | "checkbox" | "flip-switch";
 }
@@ -63,7 +65,7 @@ export const AdminCheckbox: React.FC<AdminCheckboxProps> = ({
           hidden
           disabled={disabled}
           name={name}
-          ref={register}
+          {...register}
         />
         <span className="AdminCheckbox__box">
           <FontAwesomeIcon

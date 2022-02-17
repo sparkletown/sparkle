@@ -116,7 +116,7 @@ export const ProfileQuestions: React.FC = () => {
         </p>
 
         <form onSubmit={handleSubmit(onSubmit)} className="form">
-          {profileQuestions?.map((question: Question) => (
+          {profileQuestions?.map((question: Question, i) => (
             <div
               key={question.name}
               className="ProfileQuestions__question form-group"
@@ -125,9 +125,9 @@ export const ProfileQuestions: React.FC = () => {
                 <strong>{question.text}</strong>
                 <textarea
                   className="input-block input-centered"
-                  name={question.name}
                   placeholder={question.text}
-                  ref={register()}
+                  // TODO: Fix register here !!WARNING!!
+                  // {...register(question.name)}
                 />
               </label>
             </div>

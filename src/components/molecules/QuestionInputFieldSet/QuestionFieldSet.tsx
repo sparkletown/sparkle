@@ -1,7 +1,8 @@
 import React, { ChangeEventHandler, useCallback } from "react";
-import { FieldErrors, FieldValues } from "react-hook-form";
+import { FieldErrors, FieldValues, UseFormRegister } from "react-hook-form";
 
 import { Question } from "types/Question";
+import { WorldEntranceFormInput } from "types/world";
 
 import { UseArrayRemove, UseArrayUpdate } from "hooks/useArray";
 
@@ -18,7 +19,7 @@ export interface QuestionFieldSetProps {
   name: string;
   onUpdate: UseArrayUpdate<Question>;
   onRemove: UseArrayRemove<Question>;
-  register: (Ref: unknown, RegisterOptions?: unknown) => void;
+  register: UseFormRegister<any>;
 }
 
 export const QuestionFieldSet: React.FC<QuestionFieldSetProps> = ({
@@ -71,16 +72,16 @@ export const QuestionFieldSet: React.FC<QuestionFieldSetProps> = ({
   return (
     <fieldset className="QuestionFieldSet" name={fieldset}>
       <AdminInput
-        name={inputName}
         label="Title"
+        name={inputName}
         register={register}
         errors={errors}
         data-field={fieldName}
         onChange={handleChange}
       />
       <AdminInput
-        name={inputText}
         label="Text"
+        name={inputText}
         register={register}
         errors={errors}
         data-field={fieldText}
@@ -89,8 +90,8 @@ export const QuestionFieldSet: React.FC<QuestionFieldSetProps> = ({
 
       {hasLink && (
         <AdminInput
-          name={inputLink}
           label="Link"
+          name={inputLink}
           register={register}
           errors={errors}
           data-field={fieldLink}

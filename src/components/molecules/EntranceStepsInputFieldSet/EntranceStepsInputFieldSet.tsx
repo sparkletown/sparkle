@@ -1,10 +1,11 @@
 import React, { ChangeEventHandler, useCallback } from "react";
-import { FieldErrors, FieldValues } from "react-hook-form";
+import { FieldErrors, FieldValues, UseFormRegister } from "react-hook-form";
 
 import {
   EntranceStepButtonConfig,
   EntranceStepConfig,
 } from "types/EntranceStep";
+import { WorldEntranceFormInput } from "types/world";
 
 import {
   useArray,
@@ -29,7 +30,7 @@ export interface EntranceStepsInputFieldSetProps {
   name: string;
   onUpdate: UseArrayUpdate<EntranceStepConfig>;
   onRemove: UseArrayRemove<EntranceStepConfig>;
-  register: (Ref: unknown, RegisterOptions?: unknown) => void;
+  register: UseFormRegister<any>;
 }
 
 export const EntranceStepsInputFieldSet: React.FC<EntranceStepsInputFieldSetProps> = ({
@@ -129,16 +130,16 @@ export const EntranceStepsInputFieldSet: React.FC<EntranceStepsInputFieldSetProp
       />
       <AdminInput
         disabled
-        name={inputTemplate}
         label="Template"
+        name={inputTemplate}
         register={register}
         errors={errors}
         data-field={fieldTemplate}
         onChange={handleChange}
       />
       <AdminInput
-        name={inputUrl}
         label="Video URL"
+        name={inputUrl}
         register={register}
         errors={errors}
         data-field={fieldUrl}

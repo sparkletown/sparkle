@@ -1,5 +1,10 @@
 import React, { useCallback } from "react";
-import { FieldErrors, useFieldArray, useForm } from "react-hook-form";
+import {
+  FieldErrors,
+  useFieldArray,
+  useForm,
+  useFormState,
+} from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import firebase from "firebase/compat/app";
 import { pick, uniq } from "lodash";
@@ -66,35 +71,34 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
   const {
     register,
     reset,
-    errors,
     setError,
-    clearError,
+    clearErrors,
     watch,
     handleSubmit,
     getValues,
     setValue,
-    control,
     formState,
+    control,
   } = useForm<UserProfileModalFormData>({
     mode: "onBlur",
     reValidateMode: "onChange",
-    validateCriteriaMode: "all",
+    // validateCriteriaMode: "all",
     defaultValues,
   });
 
-  const {
-    fields: links,
-    append: addLink,
-    remove: removeLink,
-  } = useFieldArray<ProfileLink>({
+  const { errors, dirtyFields } = useFormState<UserProfileModalFormData>({
     control,
-    name: formProp("profileLinks"),
+  });
+
+  const { fields: links, append: addLink, remove: removeLink } = useFieldArray({
+    control,
+    name: "profileLinks",
   });
 
   const onDeleteLink = useCallback(
     (i: number) => {
       // @debt a hacky solution to mark profileLinks field dirty. For some reason, `remove` from useFieldArray is not enough
-      formState.dirtyFields.add("profileLinks");
+      // formState.dirtyFields.add("profileLinks");
       removeLink(i);
     },
     [formState.dirtyFields, removeLink]
@@ -111,12 +115,10 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
 
   const setLinkTitle = useCallback(
     (index: number, title: string) => {
-      setValue(
-        `${formProp("profileLinks")}[${index}].${propName<ProfileLink>(
-          "title"
-        )}`,
-        title
-      );
+      // setValue(
+      //   `pofileLinks.${index}.url`,
+      //   title
+      // );
     },
     [setValue]
   );
@@ -134,16 +136,19 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
       );
       if (passwordsNotEmpty) {
         if (!(await checkOldPassword(data.oldPassword))) {
-          setError(formProp("oldPassword"), "validate", "Incorrect password");
+          setError("oldPassword", {
+            type: "validate",
+            message: "Incorrect password",
+          });
           return;
         } else {
-          clearError(formProp("oldPassword"));
+          clearErrors("oldPassword");
           await firebaseUser.updatePassword(data.confirmNewPassword);
         }
       }
 
       const changedFields = uniq(
-        Array.from(formState.dirtyFields)
+        Array.from(Object.keys(dirtyFields))
           .filter(
             (k) =>
               !PASSWORD_FIELDS.includes(
@@ -152,9 +157,7 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
           )
           // formState.dirtyFields expressed nested fields like this: "profileLinks[0].url", "profileLinks[0].title"
           // so we need to transform them
-          .map((k) =>
-            k.startsWith(formProp("profileLinks")) ? "profileLinks" : k
-          )
+          .map((k) => (k.startsWith("pofileLinks") ? "profileLinks" : k))
       ) as (keyof UserProfileModalFormData)[];
 
       if (changedFields.length > 0) {
@@ -172,7 +175,7 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
       onCancelEditing,
       checkOldPassword,
       setError,
-      clearError,
+      clearErrors,
     ]
   );
 

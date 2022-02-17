@@ -14,4 +14,5 @@ export const screeningRoomVideoSchema = Yup.object().shape<RoomSchemaShape>({
   authorName: Yup.string().required("Author is required"),
   thumbnailSrcUrl: Yup.string().required("Thumbnail is required"),
   videoSrc: Yup.string().required("Video is required"),
+  introduction: Yup.string().notRequired(),
 });

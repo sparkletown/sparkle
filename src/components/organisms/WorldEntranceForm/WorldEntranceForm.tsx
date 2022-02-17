@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useFormState } from "react-hook-form";
 import { useAsyncFn } from "react-use";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 import { updateWorldEntranceSettings, World } from "api/world";
 
@@ -100,15 +101,16 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
     getValues,
     reset,
     register,
-    formState: { dirty, isSubmitting },
-    errors,
     handleSubmit,
+    control,
   } = useForm<WorldEntranceFormInput>({
     mode: "onSubmit",
     reValidateMode: "onChange",
-    validationSchema: worldEntranceSchema,
+    resolver: yupResolver(worldEntranceSchema),
     defaultValues,
   });
+
+  const { isDirty, isSubmitting, errors } = useFormState({ control });
 
   const [{ error, loading: isSaving }, submit] = useAsyncFn(
     async (input: WorldEntranceFormInput) => {
@@ -143,7 +145,7 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
 
   const isSaveLoading = isSubmitting || isSaving;
   const isSaveDisabled = !(
-    dirty ||
+    isDirty ||
     isSaving ||
     isSubmitting ||
     isDirtyCode ||
@@ -169,13 +171,12 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
           <TesterRestricted>
             <AdminCheckbox
               variant="toggler"
-              name="adultContent"
               label="Restrict entry to adults aged 18+"
+              name="adultContent"
               register={register}
             />
           </TesterRestricted>
           <AdminCheckbox
-            name="requiresDateOfBirth"
             label={
               <>
                 Restrict registration to 18+
@@ -183,6 +184,7 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
                 (adds a date of birth picker)
               </>
             }
+            name="requiresDateOfBirth"
             register={register}
           />
         </AdminSection>

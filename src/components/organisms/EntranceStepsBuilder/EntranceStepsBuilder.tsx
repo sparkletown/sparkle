@@ -1,7 +1,8 @@
 import React from "react";
-import { FieldErrors, FieldValues } from "react-hook-form";
+import { FieldErrors, FieldValues, UseFormRegister } from "react-hook-form";
 
 import { EntranceStepConfig } from "types/EntranceStep";
+import { WorldEntranceFormInput } from "types/world";
 
 import {
   UseArrayAdd,
@@ -22,7 +23,7 @@ import "./EntranceStepsBuilder.scss";
 export interface EntranceStepsBuilderProps {
   items?: EntranceStepConfig[];
   name: string;
-  register: (Ref: unknown, RegisterOptions?: unknown) => void;
+  register: UseFormRegister<WorldEntranceFormInput>;
   title?: string;
   errors?: FieldErrors<FieldValues>;
   onAdd: UseArrayAdd<EntranceStepConfig>;

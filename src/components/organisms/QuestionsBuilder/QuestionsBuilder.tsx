@@ -1,7 +1,8 @@
 import React from "react";
-import { FieldErrors, FieldValues } from "react-hook-form";
+import { FieldErrors, FieldValues, UseFormRegister } from "react-hook-form";
 
 import { Question } from "types/Question";
+import { WorldEntranceFormInput } from "types/world";
 
 import {
   UseArrayAdd,
@@ -22,7 +23,7 @@ export interface QuestionsBuilderProps {
   items: Question[];
   name: string;
   hasLink?: boolean;
-  register: (Ref: unknown, RegisterOptions?: unknown) => void;
+  register: UseFormRegister<WorldEntranceFormInput>;
   title?: string;
   errors?: FieldErrors<FieldValues>;
   onAdd: UseArrayAdd<Question>;

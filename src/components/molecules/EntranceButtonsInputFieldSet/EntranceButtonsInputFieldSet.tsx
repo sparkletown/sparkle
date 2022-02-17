@@ -1,7 +1,8 @@
 import React, { ChangeEventHandler, useCallback } from "react";
-import { FieldErrors, FieldValues } from "react-hook-form";
+import { FieldErrors, FieldValues, UseFormRegister } from "react-hook-form";
 
 import { EntranceStepButtonConfig } from "types/EntranceStep";
+import { WorldEntranceFormInput } from "types/world";
 
 import { UseArrayRemove, UseArrayUpdate } from "hooks/useArray";
 
@@ -18,7 +19,7 @@ export interface EntranceButtonsInputFieldSetProps {
   name: string;
   onUpdate: UseArrayUpdate<EntranceStepButtonConfig>;
   onRemove: UseArrayRemove<EntranceStepButtonConfig>;
-  register: (Ref: unknown, RegisterOptions?: unknown) => void;
+  register: UseFormRegister<any>;
 }
 
 export const EntranceButtonsInputFieldSet: React.FC<EntranceButtonsInputFieldSetProps> = ({
@@ -70,25 +71,25 @@ export const EntranceButtonsInputFieldSet: React.FC<EntranceButtonsInputFieldSet
   return (
     <fieldset className="EntranceButtonsInputFieldSet" name={fieldset}>
       <AdminInput
-        name={inputText}
         label="Text"
         register={register}
+        name={inputText}
         errors={errors}
         data-field={fieldText}
         onChange={handleChange}
       />
       <AdminInput
-        name={inputLink}
         label="Link"
         register={register}
+        name={inputLink}
         errors={errors}
         data-field={fieldLink}
         onChange={handleChange}
       />
       <AdminCheckbox
         variant="toggler"
-        name={inputProceed}
         register={register}
+        name={inputProceed}
         label="To space"
         data-field={fieldProceed}
         onChange={handleChange}

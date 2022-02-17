@@ -1,5 +1,5 @@
 import React, { ReactNode, useMemo } from "react";
-import { FieldErrors, FieldValues } from "react-hook-form";
+import { FieldErrors, FieldValues, UseFormRegister } from "react-hook-form";
 import classNames from "classnames";
 import { get } from "lodash";
 
@@ -12,7 +12,7 @@ export interface AdminTextareaProps
   name: string;
   label?: ReactNode | string;
   subtext?: ReactNode | string;
-  register: (Ref: unknown, RegisterOptions?: unknown) => void;
+  register: UseFormRegister<any>;
   errors?: FieldErrors<FieldValues>;
 }
 
@@ -48,7 +48,7 @@ export const AdminTextarea: React.FC<AdminTextareaProps> = ({
         {...inputProps}
         className="AdminTextarea__input"
         name={name}
-        ref={register}
+        {...register}
         id={id}
         disabled={disabled}
       />

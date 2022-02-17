@@ -125,8 +125,9 @@ export const Jukebox: React.FC<JukeboxTypeProps> = ({
           <InputField
             containerClassName="Jukebox__input-container"
             inputClassName="Jukebox__input"
-            ref={register({ required: true })}
             name="jukeboxMessage"
+            register={register}
+            rules={{ required: true }}
             placeholder="Add an embeddable link (YouTube, Vimeo, Twitch, etc.)"
             autoComplete="off"
           />
