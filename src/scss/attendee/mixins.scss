@@ -1,4 +1,4 @@
-@import "./AttendeeVariables.scss";
+@use "./variables.scss"as *;
 
 @mixin font-core {
   font-size: 14px;
@@ -17,6 +17,7 @@
 @mixin sparkle-panel {
   color: $text-lightmode;
   background: $panel-lightmode;
+
   @media (prefers-color-scheme: dark) {
     color: $text-darkmode;
     background: $panel-darkmode;
@@ -30,6 +31,7 @@
   -ms-backdrop-filter: blur($blur);
   -webkit-backdrop-filter: blur($blur);
   backdrop-filter: blur($blur);
+
   @media (prefers-color-scheme: dark) {
     color: $text-darkmode;
     background: rgba($panel-darkmode, 0.4);
@@ -39,21 +41,25 @@
 @mixin rounded {
   border-radius: 4px;
 }
+
 @mixin rounded-top {
   @include rounded;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 }
+
 @mixin rounded-left {
   @include rounded;
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
 }
+
 @mixin rounded-right {
   @include rounded;
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
 }
+
 @mixin rounded-bottom {
   @include rounded;
   border-top-left-radius: 0;
@@ -63,6 +69,7 @@
 @mixin atom-avatar {
   position: relative;
   overflow: visible;
+
   .image {
     position: absolute;
     top: 0;
@@ -72,6 +79,7 @@
     overflow: hidden;
     border-radius: 50%;
     object-fit: cover;
+
     img {
       width: 100%;
       height: 100%;
@@ -118,6 +126,7 @@
 @mixin atom-simple-form {
   position: relative;
   @include rounded;
+
   input {
     @include atom-button;
     box-sizing: border-box;
@@ -125,6 +134,7 @@
     width: 100%;
     background-color: transparent;
   }
+
   button {
     position: absolute;
     top: 0;

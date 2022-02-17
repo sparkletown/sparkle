@@ -1,12 +1,11 @@
 import React, { useCallback, useMemo } from "react";
+import { VideoCommsParticipant } from "components/attendee/VideoComms/VideoCommsParticipant";
 
 import { User } from "types/User";
 import { AnimateMapVenue } from "types/venues";
 
 import { useVideoRoomState } from "hooks/twilio/useVideoRoomState";
 import { useUser } from "hooks/useUser";
-
-import { VideoParticipant } from "components/organisms/Video";
 
 import { ButtonOG } from "components/atoms/ButtonOG";
 
@@ -104,13 +103,10 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
 
         return (
           <div
-            key={participant.participant.identity}
+            key={participant.participant.sparkleId}
             className="firebarrel-room__participant"
           >
-            <VideoParticipant
-              participant={participant.participant}
-              participantUser={participant.user}
-            />
+            <VideoCommsParticipant participant={participant.participant} />
           </div>
         );
       }),
@@ -126,13 +122,10 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
 
         return (
           <div
-            key={participant.participant.identity}
+            key={participant.participant.sparkleId}
             className="firebarrel-room__participant"
           >
-            <VideoParticipant
-              participant={participant.participant}
-              participantUser={participant.user}
-            />
+            <VideoCommsParticipant participant={participant.participant} />
           </div>
         );
       }),
@@ -141,16 +134,14 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
 
   const myVideo = useMemo(() => {
     return localParticipant && userWithId ? (
-      <div className="firebarrel-room__participant" key={localParticipant.sid}>
-        <VideoParticipant
-          participant={localParticipant}
-          participantUser={userWithId}
-          defaultMute={defaultMute}
-          isAudioEffectDisabled={isAudioEffectDisabled}
-        />
+      <div
+        className="firebarrel-room__participant"
+        key={localParticipant.twilioId}
+      >
+        <VideoCommsParticipant participant={localParticipant} isLocal />
       </div>
     ) : null;
-  }, [defaultMute, isAudioEffectDisabled, localParticipant, userWithId]);
+  }, [localParticipant, userWithId]);
 
   const onExitClick = useCallback(() => {
     // const users = getUserList(

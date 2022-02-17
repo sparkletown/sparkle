@@ -7,6 +7,8 @@ import { AdminProfileModal } from "components/organisms/AdminProfileModal";
 import { AdminFooter } from "components/molecules/AdminFooter";
 import { AdminNavBar } from "components/molecules/AdminNavBar";
 
+import "scss/admin/initial.scss";
+
 export interface AdminLayoutPropsType {
   children: ReactNode;
 }

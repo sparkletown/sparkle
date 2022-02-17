@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 
 import { useVideoRoomState } from "hooks/twilio/useVideoRoomState";
 
-import { VideoParticipant } from "components/organisms/Video";
+import { VideoCommsParticipant } from "../VideoComms/VideoCommsParticipant";
 
 import { useVideoHuddle } from "./useVideoHuddle";
 
@@ -22,7 +22,7 @@ interface VideoHuddleProps {
 }
 
 export const VideoHuddle: React.FC<VideoHuddleProps> = ({ userId }) => {
-  const { channelId, setChannelId } = useContext(VideoHuddleContext);
+  const { channelId } = useContext(VideoHuddleContext);
 
   if (!channelId) {
     return <></>;
@@ -39,12 +39,10 @@ const ActiveVideoHuddle: React.FC<ActiveVideoHuddleProps> = ({
   userId,
   channelId,
 }) => {
-  const {
-    localParticipant,
-    participants,
-    renderErrorModal,
-    loading,
-  } = useVideoRoomState(userId, channelId);
+  const { localParticipant, participants, loading } = useVideoRoomState(
+    userId,
+    channelId
+  );
 
   const { leaveHuddle } = useVideoHuddle();
 
@@ -75,22 +73,19 @@ const ActiveVideoHuddle: React.FC<ActiveVideoHuddleProps> = ({
       </div>
       <div className={styles.VideoHuddleVideos}>
         {localParticipant && (
-          <div className={styles.VideoContainer} key={localParticipant.sid}>
-            <VideoParticipant
-              participant={localParticipant}
-              shouldMirrorVideo
-            />
+          <div
+            className={styles.VideoContainer}
+            key={localParticipant.sparkleId}
+          >
+            <VideoCommsParticipant participant={localParticipant} isLocal />
           </div>
         )}
         {participants.map((participant) => (
           <div
-            key={participant.participant.identity}
+            key={participant.participant.sparkleId}
             className={styles.VideoContainer}
           >
-            <VideoParticipant
-              participant={participant.participant}
-              participantUser={participant.user}
-            />
+            <VideoCommsParticipant participant={participant.participant} />
           </div>
         ))}
       </div>

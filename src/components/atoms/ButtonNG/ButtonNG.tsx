@@ -17,7 +17,7 @@ import {
   resolveUrlPath,
 } from "utils/url";
 
-import "./ButtonNG.scss";
+import styles from "./ButtonNG.module.scss";
 
 export type ButtonType = "button" | "reset" | "submit";
 export type ButtonVariant =
@@ -50,7 +50,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   iconName?: IconProp;
   iconSize?: ButtonIconSize;
   title?: string;
-  forwaredRef?: RefObject<HTMLButtonElement>;
+  forwardRef?: RefObject<HTMLButtonElement>;
 }
 
 export const ButtonNG: React.FC<ButtonProps> = ({
@@ -69,7 +69,7 @@ export const ButtonNG: React.FC<ButtonProps> = ({
   iconName,
   iconSize = "1x",
   title,
-  forwaredRef,
+  forwardRef,
   ...extraParams
 }) => {
   const history = useHistory();
@@ -93,16 +93,21 @@ export const ButtonNG: React.FC<ButtonProps> = ({
 
   const resolvedUrl = useMemo(() => linkTo && resolveUrlPath(linkTo), [linkTo]);
 
-  const parentClasses = classNames({
+  const variantClassnameMap: Record<string, string> = {
+    primary: styles.buttonPrimary,
+    secondary: styles.buttonSecondary,
+  };
+  const variantStyle = variantClassnameMap[variant];
+
+  const parentClasses = classNames(!disabled && variantStyle, {
     [className]: className,
     "ButtonNG ButtonNG__link": isLink,
     "ButtonNG ButtonNG__button": !isLink,
-    "ButtonNG--disabled": disabled,
+    [styles.buttonDisabled]: disabled,
     "ButtonNG--enabled": !disabled,
     "ButtonNG--loading": loading,
     [`ButtonNG--icon-only ButtonNG--${iconSize}`]: iconOnly,
     [`ButtonNG--icon-text`]: !iconOnly,
-    [`ButtonNG--${variant}`]: variant && !disabled,
   });
 
   const iconClasses = classNames({
@@ -113,7 +118,7 @@ export const ButtonNG: React.FC<ButtonProps> = ({
   if (loading) {
     return (
       <button
-        ref={forwaredRef}
+        ref={forwardRef}
         className={parentClasses}
         style={style}
         type={type}
@@ -156,7 +161,7 @@ export const ButtonNG: React.FC<ButtonProps> = ({
       className={parentClasses}
       style={style}
       type={type}
-      ref={forwaredRef}
+      ref={forwardRef}
       onClick={handleClick}
       disabled={disabled}
       title={title ?? resolvedUrl}
