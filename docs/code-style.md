@@ -237,8 +237,8 @@ argument/parameter_.
 Commenting out code just in case it might be reused later should be considered
 bad practice. Such code usually remains invisible to tools (like the compiler)
 and it will tend to drift apart from the related changes in other parts of the
-code, thus by the time it may become useful to have, it will have to be
-refactored or rewritten.
+code, thus by the time it may become useful, it will have to be refactored or
+rewritten.
 
 The safest way to deal with this situation is to:
 
