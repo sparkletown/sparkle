@@ -167,9 +167,9 @@ export const EventsView: React.FC<EventsViewProps> = ({
             setHideCreateEventModal();
             adminEventModalOnHide();
           }}
-          venueId={spaceEventId}
+          spaceId={spaceEventId}
           event={editedEvent}
-          setEditedEvent={setEditedEvent}
+          onDelete={setEditedEvent}
           setShowDeleteEventModal={setShowDeleteEventModal}
           worldId={space?.worldId}
         />

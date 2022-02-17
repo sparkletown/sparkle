@@ -6,7 +6,6 @@ import { DAYJS_INPUT_DATE_FORMAT, DAYJS_INPUT_TIME_FORMAT } from "settings";
 
 import { createEvent, updateEvent, WorldScheduleEvent } from "api/admin";
 
-import { SpaceId } from "types/id";
 import { WorldEvent } from "types/venues";
 
 import { MaybeWithId } from "utils/id";
@@ -26,7 +25,7 @@ export type TimingEventModalProps = {
   show: boolean;
   onHide: () => void;
   event?: WorldEvent;
-  spaceId?: SpaceId;
+  spaceId?: string;
   onDelete?: (event?: WorldEvent) => void;
   setShowDeleteEventModal: () => void;
   worldId?: string;
