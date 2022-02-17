@@ -5,6 +5,7 @@ import { useAsyncFn } from "react-use";
 
 import {
   ADMIN_IA_SPACE_BASE_PARAM_URL,
+  ADMIN_IA_WORLD_PARAM_URL,
   PortalInfoItem,
   SPACE_INFO_LIST,
   SPACE_TAXON,
@@ -34,8 +35,6 @@ import { SubmitError } from "components/molecules/SubmitError";
 import { YourUrlDisplay } from "components/molecules/YourUrlDisplay";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
-
-import "./SpaceCreateForm.scss";
 
 // NOTE: add the keys of those errors that their respective fields have handled
 const HANDLED_ERRORS: string[] = ["venueName", "template"];
@@ -88,6 +87,16 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({
   const { venueName: watchedName } = watch();
   const slug = useMemo(() => createSlug(watchedName), [watchedName]);
 
+  const navigateToSpaces = () => {
+    history.push(
+      generateUrl({
+        route: ADMIN_IA_WORLD_PARAM_URL,
+        required: ["worldSlug"],
+        params: { worldSlug },
+      })
+    );
+  };
+
   const handlePortalClick = useCallback(
     ({ item }) => {
       setSelectedItem(item);
@@ -106,14 +115,25 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({
 
   const isSaveDisabled = isLoading || !slug || !template;
 
+  const saveButtonClasses =
+    "w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-sparkle text-base font-medium text-white disabled:bg-gray-200 disabled:text-gray-50 disabled:shadow-none disabled:cursor-not-allowed hover:bg-sparkle-darker focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm";
+  const cancelButtonClasses =
+    "mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm";
+  const footerClasses = "mt-5 sm:mt-4 sm:flex sm:flex-row-reverse";
+
   return (
     <form className="SpaceCreateForm" onSubmit={handleSubmit(createSpace)}>
       <FormCover displayed={isLoading}>
-        <AdminSection withLabel title={`${SPACE_TAXON.capital} name`}>
+        <AdminSection
+          withLabel
+          title={`${SPACE_TAXON.capital} name`}
+          subtitle="max 50 characters"
+        >
           <AdminInput
             name="venueName"
             type="text"
             autoComplete="off"
+            value={venueName}
             placeholder={`${SPACE_TAXON.capital} name`}
             errors={errors}
             register={register}
@@ -130,7 +150,7 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({
             slug={slug}
           />
         </AdminSection>
-        <AdminSection withLabel title="Pick a template">
+        <AdminSection withLabel title="Select a template">
           <PortalList
             name="template"
             variant="input"
@@ -143,14 +163,22 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({
         </AdminSection>
         <FormErrors errors={errors} omitted={HANDLED_ERRORS} />
         <SubmitError error={submitError} />
-        <div className="SpaceCreateForm__buttons">
+        <div className={footerClasses}>
           <ButtonNG
-            variant="primary"
-            disabled={isSaveDisabled}
-            title={`Create ${SPACE_TAXON.lower}`}
             type="submit"
+            disabled={isSaveDisabled}
+            className={saveButtonClasses}
+            title="Save"
           >
-            Create
+            Save
+          </ButtonNG>
+          <ButtonNG
+            onClick={navigateToSpaces}
+            className={cancelButtonClasses}
+            title="Cancel"
+            variant="white"
+          >
+            Cancel
           </ButtonNG>
         </div>
       </FormCover>

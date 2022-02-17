@@ -28,7 +28,7 @@ export const AdminSection: React.FC<AdminSectionProps> = ({
   );
 
   return (
-    <section className="AdminSection">
+    <section className="mb-6 mt-6 flow-root">
       {withLabel ? (
         <label className="AdminSection__label">{contents}</label>
       ) : (

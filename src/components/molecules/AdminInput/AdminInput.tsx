@@ -5,7 +5,7 @@ import { get } from "lodash";
 
 import { generateId } from "utils/string";
 
-import "./AdminInput.scss";
+import CN from "./AdminInput.module.scss";
 
 export interface AdminInputProps
   extends Omit<React.HTMLProps<HTMLInputElement>, "label"> {
@@ -41,7 +41,11 @@ export const AdminInput: React.FC<AdminInputProps> = ({
     "AdminInput--visible": !hidden,
   });
 
-  const hiddenClasses = classNames(parentClasses, "AdminInput__input");
+  const inputClasses = classNames(
+    "w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md",
+    CN.input
+  );
+  const hiddenClasses = classNames(parentClasses, inputClasses);
 
   return hidden ? (
     <input
@@ -62,7 +66,7 @@ export const AdminInput: React.FC<AdminInputProps> = ({
       )}
       <input
         {...inputProps}
-        className="AdminInput__input"
+        className={inputClasses}
         name={name}
         ref={register}
         id={id}

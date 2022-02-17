@@ -1,7 +1,7 @@
 import React from "react";
 import classNames from "classnames";
 
-import { ALWAYS_NOOP_FUNCTION, PortalInfoItem, ROOM_TAXON } from "settings";
+import { ALWAYS_NOOP_FUNCTION, PortalInfoItem } from "settings";
 
 import { useKeyPress } from "hooks/useKeyPress";
 
@@ -25,9 +25,8 @@ export const PortalListItem: React.FC<PortalListItemProps> = ({
   const { text, template, icon, hidden } = item;
 
   const parentClasses = classNames({
-    [`PortalListItem PortalListItem--${template}`]: true,
-    "PortalListItem--selected": selected,
-    "mod--hidden": hidden,
+    "bg-gray-200": selected,
+    hidden: hidden,
   });
 
   const handleKeyPress = useKeyPress({
@@ -35,21 +34,23 @@ export const PortalListItem: React.FC<PortalListItemProps> = ({
     onPress: onClick ?? ALWAYS_NOOP_FUNCTION,
   });
 
+  const itemClasses =
+    "flex items-center space-x-4 py-4 my-0 hover:bg-gray-100 hover:rounded active:bg-gray-200 selected:bg-gray-200 cursor-pointer";
+  const iconClasses = "h-8 w-8 rounded-full bg-black";
+  const nameClasses = "text-sm font-medium text-gray-900 truncate";
+
   // NOTE: tabIndex allows tab behavior, @see https://allyjs.io/data-tables/focusable.html
   return (
     <div className={parentClasses}>
       <div
-        className="PortalListItem__list-item"
+        className={itemClasses}
+        key={template}
         onClick={onClick}
         onKeyPress={handleKeyPress}
         tabIndex={tabIndex}
       >
-        <img
-          className="PortalListItem__icon"
-          alt={`${ROOM_TAXON.lower} icon`}
-          src={icon}
-        />
-        <div className="PortalListItem__name">{text}</div>
+        <img className={iconClasses} src={icon} alt={template} />
+        <div className={nameClasses}>{text}</div>
       </div>
     </div>
   );

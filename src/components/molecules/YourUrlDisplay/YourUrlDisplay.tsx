@@ -13,7 +13,7 @@ export const YourUrlDisplay: React.FC<YourUrlDisplayProps> = ({
   path,
   slug,
 }) => (
-  <span className="YourUrlDisplay">
+  <span className="text-sm">
     <span className="YourUrlDisplay__segment YourUrlDisplay__host">
       {window.location.protocol}
       {STRING_DOUBLE_SLASH}
