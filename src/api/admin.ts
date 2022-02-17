@@ -48,10 +48,8 @@ export interface WorldScheduleEvent {
   durationHours: number;
   durationMinutes?: number;
   host: string;
-  space?: {
-    id?: string;
-    name?: string;
-  };
+  spaceId?: string;
+  spaceName?: string;
 }
 
 type ImageFileKeys =

@@ -17,7 +17,7 @@ export interface UseUserResult {
   profile?: Profile;
   userLocation?: UserLocation;
   userWithId?: WithId<User>;
-  userId: UserId;
+  userId?: UserId;
   isTester: boolean;
   isLoading: boolean;
   authStatus: RefiStatus;

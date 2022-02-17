@@ -6,6 +6,7 @@ import { DAYJS_INPUT_DATE_FORMAT, DAYJS_INPUT_TIME_FORMAT } from "settings";
 
 import { createEvent, updateEvent, WorldScheduleEvent } from "api/admin";
 
+import { SpaceId } from "types/id";
 import { WorldEvent } from "types/venues";
 
 import { MaybeWithId } from "utils/id";
@@ -25,8 +26,8 @@ export type TimingEventModalProps = {
   show: boolean;
   onHide: () => void;
   event?: WorldEvent;
-  venueId?: string;
-  setEditedEvent: Function | undefined;
+  spaceId?: SpaceId;
+  onDelete?: (event?: WorldEvent) => void;
   setShowDeleteEventModal: () => void;
   worldId?: string;
 };
@@ -35,13 +36,13 @@ export type TimingEventModalProps = {
 export const TimingEventModal: React.FC<TimingEventModalProps> = ({
   show,
   onHide,
-  venueId,
+  spaceId,
   worldId,
-  setEditedEvent,
+  onDelete,
   event,
   setShowDeleteEventModal,
 }) => {
-  const eventSpaceId = event?.spaceId || venueId;
+  const eventSpaceId = event?.spaceId || spaceId;
 
   const {
     register,
@@ -92,7 +93,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
 
   const onUpdateEvent = useCallback(
     async (data: WorldScheduleEvent) => {
-      const spaceId = data.space?.id ?? eventSpaceId;
+      const spaceId = data.spaceId ?? eventSpaceId;
       const eventWorldId = eventSpace?.worldId ?? worldId;
 
       if (!spaceId || !eventWorldId) {
@@ -128,7 +129,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
   const showDeleteButton = event?.id;
   const handleDelete = () => {
     onHide();
-    setEditedEvent && setEditedEvent(event);
+    onDelete?.(event);
     setShowDeleteEventModal();
   };
 
@@ -158,11 +159,11 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
 
           {!eventSpace?.name && (
             <div className="TimingEventModal__input-group">
-              <Dropdown title={values.space?.name ?? "None"}>
+              <Dropdown title={values.spaceName ?? "None"}>
                 {renderedSpaceIds}
               </Dropdown>
-              {errors.space && (
-                <span className="input-error">{errors.space.message}</span>
+              {errors.spaceId && (
+                <span className="input-error">{errors.spaceId.message}</span>
               )}
             </div>
           )}

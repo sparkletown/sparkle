@@ -22,7 +22,7 @@ import { VenueAdminPage } from "pages/Admin/Venue/VenueAdminPage";
 import { SpaceCreatePage } from "pages/SpaceCreatePage";
 import { SpacesDashboard } from "pages/SpacesDashboard";
 import { WorldEditor } from "pages/WorldEditor";
-import { WorldSchedule } from "pages/WorldSchedule/WorldSchedule";
+import { WorldSchedule } from "pages/WorldSchedule";
 import { WorldsDashboard } from "pages/WorldsDashboard";
 
 import { AdminVenueView } from "components/organisms/AdminVenueView";

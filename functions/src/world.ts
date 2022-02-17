@@ -48,7 +48,7 @@ export const updateWorld = functions.https.onCall(async (data, context) => {
     attendeesTitle,
     bannerImageUrl,
     description,
-    endTimeUTC,
+    endTimeUnix,
     entrance,
     id: worldId,
     logoImageUrl,
@@ -63,7 +63,7 @@ export const updateWorld = functions.https.onCall(async (data, context) => {
     slug,
     subtitle,
     showSchedule,
-    startTimeUTC,
+    startTimeUnix,
     userStatuses,
     hasSocialLoginEnabled,
   } = data;
@@ -120,8 +120,8 @@ export const updateWorld = functions.https.onCall(async (data, context) => {
     ...(!isNil(slug) && { slug }),
     ...(!isNil(showBadges) && { showBadges }),
     ...(!isNil(hasSocialLoginEnabled) && { hasSocialLoginEnabled }),
-    ...(!isNil(startTimeUTC) && { startTimeUTC }),
-    ...(!isNil(endTimeUTC) && { endTimeUTC }),
+    ...(!isNil(startTimeUnix) && { startTimeUnix }),
+    ...(!isNil(endTimeUnix) && { endTimeUnix }),
   };
 
   await admin

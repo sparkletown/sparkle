@@ -45,6 +45,6 @@ export interface WorldScheduleFormInput {
 }
 
 export interface WorldScheduleSettings {
-  startTimeUTC?: number;
-  endTimeUTC?: number;
+  startTimeUnix?: number;
+  endTimeUnix?: number;
 }

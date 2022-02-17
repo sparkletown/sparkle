@@ -35,7 +35,7 @@ export interface World {
     };
   };
   createdAt: Date;
-  endTimeUTC?: number;
+  endTimeUnix?: number;
   entrance?: EntranceStepConfig[];
   host: {
     icon: string;
@@ -53,7 +53,7 @@ export interface World {
   showSchedule?: boolean;
   showUserStatus?: boolean;
   slug: WorldSlug;
-  startTimeUTC?: number;
+  startTimeUnix?: number;
   updatedAt: Date;
   userStatuses?: UserStatus[];
   hasSocialLoginEnabled?: boolean;
@@ -160,8 +160,8 @@ export const createFirestoreWorldScheduleInput: (
 ) => Promise<Partial<World>> = async (input) => {
   const worldUpdateData: Partial<WithId<World>> = {
     id: input.id,
-    startTimeUTC: input?.startTimeUTC,
-    endTimeUTC: input?.endTimeUTC,
+    startTimeUnix: input?.startTimeUnix,
+    endTimeUnix: input?.endTimeUnix,
   };
 
   return worldUpdateData;

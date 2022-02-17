@@ -1,4 +1,1 @@
-export enum EventsVariant {
-  world = "world",
-  space = "space",
-}
+export type EventsType = "world" | "space";

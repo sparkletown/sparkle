@@ -10,16 +10,13 @@ export interface SpaceType {
 }
 
 export const eventEditSchema = Yup.object().shape<WorldScheduleEvent>({
-  space: Yup.object()
-    .shape<SpaceType>({
-      id: Yup.string().notRequired(),
-      slug: Yup.string().notRequired(),
-    })
-    .when("$eventSpaceId", (eventSpaceId: string, schema: Yup.StringSchema) =>
+  spaceId: Yup.string().when(
+    "$eventSpaceId",
+    (eventSpaceId: string, schema: Yup.StringSchema) =>
       eventSpaceId
         ? schema.notRequired()
         : schema.test("space", "Space id required", (space) => !!space)
-    ),
+  ),
   name: Yup.string().required("Name required"),
   description: Yup.string().required("Description required"),
   startDate: Yup.string()

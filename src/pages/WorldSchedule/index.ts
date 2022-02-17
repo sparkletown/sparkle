@@ -1,3 +1,1 @@
-import { WorldSchedule } from "./WorldSchedule";
-
-export { WorldSchedule };
+export { WorldSchedule } from "./WorldSchedule";

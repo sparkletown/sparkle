@@ -3,6 +3,7 @@ import { faPen } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { format } from "date-fns";
 
+import { WorldId } from "types/id";
 import { WorldEvent } from "types/venues";
 
 import { eventEndTime, eventStartTime } from "utils/event";
@@ -13,7 +14,7 @@ import { useUser } from "hooks/useUser";
 
 export type TimingEventProps = {
   event: WorldEvent;
-  worldId?: string;
+  worldId?: WorldId;
   setShowCreateEventModal: () => void;
   setEditedEvent: (event: WorldEvent) => void;
 };

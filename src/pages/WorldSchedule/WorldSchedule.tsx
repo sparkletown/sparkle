@@ -7,8 +7,6 @@ import { ADMIN_IA_WORLD_PARAM_URL } from "settings";
 
 import { updateWorldScheduleSettings } from "api/world";
 
-import { EventsVariant } from "types/events";
-
 import {
   convertDateFromUtcSeconds,
   convertUtcSecondsFromInputDateAndTime,
@@ -47,8 +45,6 @@ const HANDLED_ERRORS: string[] = [
   "endTime",
 ];
 
-
-
 export interface WorldScheduleFormInput {
   startDate: string;
   startTime: string;
@@ -64,12 +60,12 @@ export const WorldSchedule = () => {
     const {
       inputFormattedDateSegment: startDate,
       inputFormattedTimeSegment: startTime,
-    } = convertDateFromUtcSeconds(world?.startTimeUTC ?? NaN);
+    } = convertDateFromUtcSeconds(world?.startTimeUnix ?? NaN);
 
     const {
       inputFormattedDateSegment: endDate,
       inputFormattedTimeSegment: endTime,
-    } = convertDateFromUtcSeconds(world?.endTimeUTC ?? NaN);
+    } = convertDateFromUtcSeconds(world?.endTimeUnix ?? NaN);
 
     return {
       startTime,
@@ -77,7 +73,7 @@ export const WorldSchedule = () => {
       endTime,
       endDate,
     };
-  }, [world?.startTimeUTC, world?.endTimeUTC]);
+  }, [world?.startTimeUnix, world?.endTimeUnix]);
 
   const {
     reset,
@@ -98,11 +94,11 @@ export const WorldSchedule = () => {
 
       await updateWorldScheduleSettings({
         id: world.id,
-        startTimeUTC: convertUtcSecondsFromInputDateAndTime({
+        startTimeUnix: convertUtcSecondsFromInputDateAndTime({
           date: input.startDate,
           time: input.startTime,
         }),
-        endTimeUTC: convertUtcSecondsFromInputDateAndTime({
+        endTimeUnix: convertUtcSecondsFromInputDateAndTime({
           date: input.endDate,
           time: input.endTime,
         }),
@@ -189,7 +185,7 @@ export const WorldSchedule = () => {
           </form>
         </AdminSidebar>
         <AdminShowcase>
-          <EventsView variant={EventsVariant.world} worldId={world.id} />
+          <EventsView variant="world" worldId={world.id} />
         </AdminShowcase>
       </AdminPanel>
     </>

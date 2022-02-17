@@ -2,8 +2,8 @@ import React, { useCallback, useMemo, useState } from "react";
 
 import { ROOM_TAXON } from "settings";
 
-import { EventsVariant } from "types/events";
-import { SpaceId, SpaceWithId } from "types/id";
+import { EventsType } from "types/events";
+import { SpaceId, SpaceWithId, WorldId } from "types/id";
 import { WorldEvent } from "types/venues";
 
 import { useSpaceEvents } from "hooks/events";
@@ -26,8 +26,8 @@ import "./EventsView.scss";
 export type EventsViewProps = {
   spaceId?: SpaceId | string;
   space?: SpaceWithId;
-  worldId?: string;
-  variant: EventsVariant;
+  worldId?: WorldId;
+  variant: EventsType;
 };
 
 export const EventsView: React.FC<EventsViewProps> = ({
@@ -51,7 +51,7 @@ export const EventsView: React.FC<EventsViewProps> = ({
     spaceIds: spaceIds,
   });
 
-  const isWorldEvent = variant === EventsVariant.world;
+  const isWorldEvent = variant === "world";
 
   const {
     isShown: showCreateEventModal,
@@ -65,10 +65,7 @@ export const EventsView: React.FC<EventsViewProps> = ({
     hide: setHideDeleteEventModal,
   } = useShowHide();
 
-  const {
-    isShown: showSplittedEvents,
-    toggle: toggleSplittedEvents,
-  } = useShowHide();
+  const { isShown: showSplitEvents, toggle: toggleSplitEvents } = useShowHide();
 
   const [editedEvent, setEditedEvent] = useState<WorldEvent>();
 
@@ -103,7 +100,7 @@ export const EventsView: React.FC<EventsViewProps> = ({
       if (!spaceId) {
         return undefined;
       }
-      const space = ownedVenues.find((space) => space.id === spaceId);
+      const space = ownedVenues.find(({ id }) => id === spaceId);
       if (!space) {
         return undefined;
       }
@@ -132,15 +129,15 @@ export const EventsView: React.FC<EventsViewProps> = ({
           <h4 className="EventsView__title">Experiences Schedule</h4>
           {isWorldEvent && (
             <Checkbox
-              checked={showSplittedEvents}
-              onChange={toggleSplittedEvents}
+              checked={showSplitEvents}
+              onChange={toggleSplitEvents}
               label={`Split by ${ROOM_TAXON.lower}`}
               labelClassName="WorldScheduleEvents__checkbox"
             />
           )}
         </div>
         <div className="EventsView__content">
-          {showSplittedEvents && isWorldEvent ? renderedSpaces : renderedEvents}
+          {showSplitEvents && isWorldEvent ? renderedSpaces : renderedEvents}
           {!hasVenueEvents && (
             <div className="EventsView__no-events">
               <p>No events yet, lets start planning!</p>
