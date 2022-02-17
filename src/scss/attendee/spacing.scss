@@ -1,0 +1,7 @@
+// NOTE: private because there is a public one already in variables.scss that should be moved here
+$-whitespace: 12px;
+
+// NOTE: don't add default of 1 to avoid typos like whitespace() that might have needed scale different from 1
+@function whitespace($scale) {
+  @return $-whitespace * $scale;
+}

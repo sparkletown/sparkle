@@ -1,19 +1,23 @@
 @use "./variables.scss"as *;
 
+// @debt move to scss/attendee/fonts.scss and rename to font--core
 @mixin font-core {
   font-size: 14px;
   line-height: 1.4;
 }
 
+// @debt move to scss/attendee/fonts.scss and rename to font--small
 @mixin font-small {
   font-size: 11px;
   line-height: 1.4;
 }
 
+// @debt move to scss/attendee/fonts.scss and rename to font--body
 @mixin font-body {
   font-size: 23px;
 }
 
+// @debt move to scss/attendee/effects.scss
 @mixin sparkle-panel {
   color: $text-lightmode;
   background: $panel-lightmode;
@@ -24,11 +28,10 @@
   }
 }
 
+// @debt move to scss/attendee/effects.scss
 @mixin sparkle-panel-glass {
   color: $text-lightmode;
   background: rgba($panel-lightmode, 0.4);
-  -moz-backdrop-filter: blur($blur);
-  -ms-backdrop-filter: blur($blur);
   -webkit-backdrop-filter: blur($blur);
   backdrop-filter: blur($blur);
 
@@ -38,28 +41,33 @@
   }
 }
 
+// @debt move to scss/attendee/rounded.scss
 @mixin rounded {
   border-radius: 4px;
 }
 
+// @debt move to scss/attendee/rounded.scss
 @mixin rounded-top {
   @include rounded;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 }
 
+// @debt move to scss/attendee/rounded.scss
 @mixin rounded-left {
   @include rounded;
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
 }
 
+// @debt move to scss/attendee/rounded.scss
 @mixin rounded-right {
   @include rounded;
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
 }
 
+// @debt move to scss/attendee/rounded.scss
 @mixin rounded-bottom {
   @include rounded;
   border-top-left-radius: 0;
@@ -148,18 +156,18 @@
   }
 }
 
+// @debt move to scss/attendee/effects.scss
 @mixin sparkle-color {
   color: $text-darkmode;
   -webkit-font-smoothing: antialiased;
   background-color: rgba($sparkle-theme, 1);
 }
 
+// @debt move to scss/attendee/effects.scss
 @mixin sparkle-color-glass {
   color: white;
   -webkit-font-smoothing: antialiased;
   background-color: rgba($sparkle-theme, 0.7);
-  -moz-backdrop-filter: blur($blur);
-  -ms-backdrop-filter: blur($blur);
   -webkit-backdrop-filter: blur($blur);
   backdrop-filter: blur($blur);
 }

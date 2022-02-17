@@ -38,7 +38,7 @@ import { ConfirmationModal } from "components/atoms/ConfirmationModal/Confirmati
 import fIcon from "assets/icons/facebook-social-icon.svg";
 import gIcon from "assets/icons/google-social-icon.svg";
 
-import formStyles from "scss/formStyles.module.scss";
+import formStyles from "scss/attendee/formStyles.module.scss";
 
 const validateDateOfBirth = (stringDate: string) => {
   const yearsDifference = differenceInYears(new Date(), parseISO(stringDate));
