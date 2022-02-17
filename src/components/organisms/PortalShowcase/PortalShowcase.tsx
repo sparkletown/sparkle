@@ -22,11 +22,13 @@ export const PortalShowcase: React.FC = () => {
       <div className="PortalShowcase__description">
         {selectedItem.description}
       </div>
-      <img
-        className="PortalShowcase__poster PortalShowcase__poster--selected"
-        src={selectedItem.poster}
-        alt="poster representing the selected portal"
-      />
+      {
+        <img
+          className="PortalShowcase__poster PortalShowcase__poster--selected"
+          src={selectedItem.poster}
+          alt="poster representing the selected portal"
+        />
+      }
     </section>
   );
 };

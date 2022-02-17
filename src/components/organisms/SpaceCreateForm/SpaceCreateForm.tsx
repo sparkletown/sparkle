@@ -2,6 +2,8 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn } from "react-use";
+import { FormSection } from "components/admin/FormSection";
+import { Input } from "components/admin/Input";
 
 import {
   ADMIN_IA_SPACE_BASE_PARAM_URL,
@@ -26,8 +28,6 @@ import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useDispatch } from "hooks/useDispatch";
 import { useUser } from "hooks/useUser";
 
-import { AdminInput } from "components/molecules/AdminInput";
-import { AdminSection } from "components/molecules/AdminSection";
 import { FormCover } from "components/molecules/FormCover";
 import { FormErrors } from "components/molecules/FormErrors";
 import { PortalList } from "components/molecules/PortalList";
@@ -35,6 +35,8 @@ import { SubmitError } from "components/molecules/SubmitError";
 import { YourUrlDisplay } from "components/molecules/YourUrlDisplay";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
+
+import * as TW from "./SpaceCreateForm.tailwind";
 
 // NOTE: add the keys of those errors that their respective fields have handled
 const HANDLED_ERRORS: string[] = ["venueName", "template"];
@@ -115,21 +117,15 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({
 
   const isSaveDisabled = isLoading || !slug || !template;
 
-  const saveButtonClasses =
-    "w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-sparkle text-base font-medium text-white disabled:bg-gray-200 disabled:text-gray-50 disabled:shadow-none disabled:cursor-not-allowed hover:bg-sparkle-darker focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm";
-  const cancelButtonClasses =
-    "mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm";
-  const footerClasses = "mt-5 sm:mt-4 sm:flex sm:flex-row-reverse";
-
   return (
     <form className="SpaceCreateForm" onSubmit={handleSubmit(createSpace)}>
       <FormCover displayed={isLoading}>
-        <AdminSection
+        <FormSection
           withLabel
           title={`${SPACE_TAXON.capital} name`}
           subtitle="max 50 characters"
         >
-          <AdminInput
+          <Input
             name="venueName"
             type="text"
             autoComplete="off"
@@ -139,8 +135,8 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({
             register={register}
             disabled={isLoading}
           />
-        </AdminSection>
-        <AdminSection title="Your URL will be">
+        </FormSection>
+        <FormSection title="Your URL will be">
           <YourUrlDisplay
             path={generateUrl({
               route: ADMIN_IA_SPACE_BASE_PARAM_URL,
@@ -149,8 +145,8 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({
             })}
             slug={slug}
           />
-        </AdminSection>
-        <AdminSection withLabel title="Select a template">
+        </FormSection>
+        <FormSection withLabel title="Select a template">
           <PortalList
             name="template"
             variant="input"
@@ -160,21 +156,22 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({
             register={register}
             errors={errors}
           />
-        </AdminSection>
+        </FormSection>
         <FormErrors errors={errors} omitted={HANDLED_ERRORS} />
         <SubmitError error={submitError} />
-        <div className={footerClasses}>
+        <div className={TW.footer}>
           <ButtonNG
             type="submit"
+            loading={isLoading}
             disabled={isSaveDisabled}
-            className={saveButtonClasses}
+            className={TW.saveButton}
             title="Save"
           >
             Save
           </ButtonNG>
           <ButtonNG
             onClick={navigateToSpaces}
-            className={cancelButtonClasses}
+            className={TW.cancelButton}
             title="Cancel"
             variant="white"
           >

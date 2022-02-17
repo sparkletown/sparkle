@@ -5,9 +5,11 @@ import { get } from "lodash";
 
 import { generateId } from "utils/string";
 
-import "./AdminInput.scss";
+import * as TW from "./Input.tailwind";
 
-export interface AdminInputProps
+import CN from "./Input.module.scss";
+
+export interface InputProps
   extends Omit<React.HTMLProps<HTMLInputElement>, "label"> {
   name: string;
   label?: ReactNode | string;
@@ -17,10 +19,7 @@ export interface AdminInputProps
   hidden?: boolean;
 }
 
-/**
- * @deprecated Use Input component instead.
- */
-export const AdminInput: React.FC<AdminInputProps> = ({
+export const Input: React.FC<InputProps> = ({
   name,
   label,
   subtext,
@@ -31,20 +30,17 @@ export const AdminInput: React.FC<AdminInputProps> = ({
   ...inputProps
 }) => {
   const error = get(errors, name);
-  const id = useMemo(
-    () => (label ? generateId("AdminInput-" + name) : undefined),
-    [label, name]
-  );
+  const id = useMemo(() => (label ? generateId("Input-" + name) : undefined), [
+    label,
+    name,
+  ]);
 
   const parentClasses = classNames({
-    AdminInput: true,
-    "AdminInput--invalid": error,
-    "AdminInput--disabled": disabled,
-    "AdminInput--hidden": hidden,
-    "AdminInput--visible": !hidden,
+    [TW.hidden]: hidden,
   });
 
-  const hiddenClasses = classNames(parentClasses, "AdminInput__input");
+  const inputClasses = classNames(TW.input, CN.input);
+  const hiddenClasses = classNames(parentClasses, inputClasses);
 
   return hidden ? (
     <input
@@ -58,11 +54,7 @@ export const AdminInput: React.FC<AdminInputProps> = ({
     />
   ) : (
     <p className={parentClasses}>
-      {label && (
-        <label className="AdminInput__label" htmlFor={id}>
-          {label}
-        </label>
-      )}
+      {label && <label htmlFor={id}>{label}</label>}
       <input
         {...inputProps}
         className={inputClasses}
@@ -71,8 +63,8 @@ export const AdminInput: React.FC<AdminInputProps> = ({
         id={id}
         disabled={disabled}
       />
-      {subtext && <span className="AdminInput__subtext">{subtext}</span>}
-      {error && <span className="AdminInput__error">{error?.message}</span>}
+      {subtext && <span>{subtext}</span>}
+      {error && <span className={TW.error}>{error?.message}</span>}
     </p>
   );
 };

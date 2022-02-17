@@ -4,6 +4,9 @@ import "./AdminSidebarSectionSubTitle.scss";
 
 export interface AdminSidebarSectionSubTitleProps {}
 
+/**
+ * @deprecated Use FormSectionSubtitle component instead.
+ */
 export const AdminSidebarSectionSubTitle: React.FC<AdminSidebarSectionSubTitleProps> = ({
   children,
-}) => <p className="mb-1 text-sm text-gray-500"> {children}</p>;
+}) => <p className="AdminSidebarSectionSubTitle"> {children}</p>;

@@ -11,6 +11,9 @@ export interface AdminSectionProps {
   withLabel?: boolean;
 }
 
+/**
+ * @deprecated Use FormSection component instead.
+ */
 export const AdminSection: React.FC<AdminSectionProps> = ({
   title,
   subtitle,
@@ -28,7 +31,7 @@ export const AdminSection: React.FC<AdminSectionProps> = ({
   );
 
   return (
-    <section className="mb-6 mt-6 flow-root">
+    <section className="AdminSection">
       {withLabel ? (
         <label className="AdminSection__label">{contents}</label>
       ) : (

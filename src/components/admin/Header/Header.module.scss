@@ -1,0 +1,8 @@
+@use "scss/colors.scss"as *;
+
+.header {
+  display: flex;
+  flex-direction: column;
+  background-color: $white;
+  padding: 24px;
+}
