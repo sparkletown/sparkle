@@ -65,7 +65,7 @@ export const AdminInput: React.FC<AdminInputProps> = ({
       )}
       <input
         {...inputProps}
-        className={inputClasses}
+        className={"AdminInput__input"}
         name={name}
         ref={register}
         id={id}
