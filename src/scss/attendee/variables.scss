@@ -1,12 +1,12 @@
-// @debt move to scss/attendee/theme.scss
+// @debt move to scss/attendee/colors.scss and rename to $c-sparkle--theme
 $sparkle-theme: rgb(99, 42, 199);
 
-// @debt move to scss/attendee/theme.scss
+// @debt move to scss/attendee/colors.scss and rename to $c-light--(text|panel|canvas)
 $text-lightmode: rgb(0, 0, 0);
 $panel-lightmode: rgb(255, 255, 255);
 $canvas-lightmode: rgb(230, 230, 230);
 
-// @debt move to scss/attendee/theme.scss
+// @debt move to scss/attendee/colors.scss and rename to $c-dark--(text|panel|canvas)
 $text-darkmode: rgb(255, 255, 255);
 $panel-darkmode: rgb(0, 0, 0);
 $canvas-darkmode: rgb(50, 50, 50);
@@ -20,10 +20,12 @@ $icon-size: 1.3rem;
 
 $opacity: 0.5;
 
+// @debt some of these component specific constants can be moved to a .module.scss file as to not add globals
 $sidebar-width: 416px;
 $portal-grid-column: 342px;
 
 $text-chat-height: 40vh;
 $video-chat-height: 160px;
 
+// @debt move to scss/attendee/colors.scss and rename to $c-sparkle--border
 $sparkle-border: rgba(130, 130, 130, 0.3);

@@ -5,3 +5,15 @@ $-whitespace: 12px;
 @function whitespace($scale) {
   @return $-whitespace * $scale;
 }
+
+@function font-size--parent($scale) {
+  @return $scale * 1em;
+}
+
+@function font-size--root($scale) {
+  @return $scale * 1rem;
+}
+
+@function font-size--width($scale) {
+  @return $scale * 1ch;
+}
