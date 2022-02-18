@@ -101,10 +101,7 @@ export const SpacesDashboard: React.FC<SpacesDashboardProps> = ({
   return (
     <AdminLayout>
       <div className="SpacesDashboard">
-        <WithNavigationBar
-          variant="internal-scroll"
-          title={`${world?.name ?? ""}`}
-        >
+        <WithNavigationBar variant="internal-scroll" title={world?.name ?? ""}>
           <AdminRestricted>
             <AdminTitleBar variant="grid-with-tools">
               <ButtonNG
