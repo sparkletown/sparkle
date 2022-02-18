@@ -7,10 +7,12 @@ import { SpaceCard } from "components/admin/SpaceCard";
 import { AdminLayout } from "components/layouts/AdminLayout";
 import { FullWidthLayout } from "components/layouts/FullWidthLayout";
 
-import { ADMIN_IA_WORLD_CREATE_URL, SPACE_TAXON } from "settings";
+import { ADMIN_IA_SPACE_CREATE_PARAM_URL, SPACE_TAXON } from "settings";
 
 import { UserId, WorldWithId } from "types/id";
 import { isNotPartyMapVenue, isPartyMapVenue } from "types/venues";
+
+import { generateUrl } from "utils/url";
 
 import { useWorldSpaces } from "hooks/spaces/useWorldSpaces";
 
@@ -71,13 +73,19 @@ export const SpacesDashboard: React.FC<SpacesDashboardProps> = ({
   const hasMaps = renderedMapCards.length > 0;
   const hasOtherSpaces = renderedOtherSpacesCards.length > 0;
 
+  const createNewSpaceUrl = generateUrl({
+    route: ADMIN_IA_SPACE_CREATE_PARAM_URL,
+    required: ["worldSlug"],
+    params: { worldSlug: world.slug },
+  });
+
   return (
     <AdminLayout>
       <AdminRestricted>
         <div className="SpacesDashboard">
           <AdminHeader title="Spaces">
             <HeaderButton
-              to={ADMIN_IA_WORLD_CREATE_URL}
+              to={createNewSpaceUrl}
               name="Create new space"
               variant="multicolor"
             />

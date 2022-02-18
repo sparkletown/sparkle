@@ -2,9 +2,12 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn } from "react-use";
+import { FormSection } from "components/admin/FormSection";
+import { Input } from "components/admin/Input";
 
 import {
   ADMIN_IA_SPACE_BASE_PARAM_URL,
+  ADMIN_IA_WORLD_PARAM_URL,
   PortalInfoItem,
   SPACE_INFO_LIST,
   SPACE_TAXON,
@@ -25,8 +28,6 @@ import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useDispatch } from "hooks/useDispatch";
 import { useUser } from "hooks/useUser";
 
-import { AdminInput } from "components/molecules/AdminInput";
-import { AdminSection } from "components/molecules/AdminSection";
 import { FormCover } from "components/molecules/FormCover";
 import { FormErrors } from "components/molecules/FormErrors";
 import { PortalList } from "components/molecules/PortalList";
@@ -35,7 +36,7 @@ import { YourUrlDisplay } from "components/molecules/YourUrlDisplay";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 
-import "./SpaceCreateForm.scss";
+import * as TW from "./SpaceCreateForm.tailwind";
 
 // NOTE: add the keys of those errors that their respective fields have handled
 const HANDLED_ERRORS: string[] = ["venueName", "template"];
@@ -88,6 +89,16 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({
   const { venueName: watchedName } = watch();
   const slug = useMemo(() => createSlug(watchedName), [watchedName]);
 
+  const navigateToSpaces = () => {
+    history.push(
+      generateUrl({
+        route: ADMIN_IA_WORLD_PARAM_URL,
+        required: ["worldSlug"],
+        params: { worldSlug },
+      })
+    );
+  };
+
   const handlePortalClick = useCallback(
     ({ item }) => {
       setSelectedItem(item);
@@ -109,18 +120,23 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({
   return (
     <form className="SpaceCreateForm" onSubmit={handleSubmit(createSpace)}>
       <FormCover displayed={isLoading}>
-        <AdminSection withLabel title={`${SPACE_TAXON.capital} name`}>
-          <AdminInput
+        <FormSection
+          withLabel
+          title={`${SPACE_TAXON.capital} name`}
+          subtitle="max 50 characters"
+        >
+          <Input
             name="venueName"
             type="text"
             autoComplete="off"
+            value={venueName}
             placeholder={`${SPACE_TAXON.capital} name`}
             errors={errors}
             register={register}
             disabled={isLoading}
           />
-        </AdminSection>
-        <AdminSection title="Your URL will be">
+        </FormSection>
+        <FormSection title="Your URL will be">
           <YourUrlDisplay
             path={generateUrl({
               route: ADMIN_IA_SPACE_BASE_PARAM_URL,
@@ -129,8 +145,8 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({
             })}
             slug={slug}
           />
-        </AdminSection>
-        <AdminSection withLabel title="Pick a template">
+        </FormSection>
+        <FormSection withLabel title="Select a template">
           <PortalList
             name="template"
             variant="input"
@@ -140,17 +156,26 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({
             register={register}
             errors={errors}
           />
-        </AdminSection>
+        </FormSection>
         <FormErrors errors={errors} omitted={HANDLED_ERRORS} />
         <SubmitError error={submitError} />
-        <div className="SpaceCreateForm__buttons">
+        <div className={TW.footer}>
           <ButtonNG
-            variant="primary"
-            disabled={isSaveDisabled}
-            title={`Create ${SPACE_TAXON.lower}`}
             type="submit"
+            loading={isLoading}
+            disabled={isSaveDisabled}
+            className={TW.saveButton}
+            title="Save"
           >
-            Create
+            Save
+          </ButtonNG>
+          <ButtonNG
+            onClick={navigateToSpaces}
+            className={TW.cancelButton}
+            title="Cancel"
+            variant="white"
+          >
+            Cancel
           </ButtonNG>
         </div>
       </FormCover>
