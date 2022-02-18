@@ -6,10 +6,10 @@
   z-index: 111;
   width: 100vw;
   padding: $whitespace;
+}
 
-  &__container {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-  }
+.attendeeHeaderContainer {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
 }

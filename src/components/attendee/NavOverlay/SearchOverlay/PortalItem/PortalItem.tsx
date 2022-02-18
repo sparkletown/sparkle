@@ -12,11 +12,13 @@ import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { useAnalytics } from "hooks/useAnalytics";
 import { usePortal } from "hooks/usePortal";
 
-import styles from "../SearchOverlay.module.scss";
+import CN from "../SearchOverlay.module.scss";
+
 type PortalItemProps = {
   portal: Room;
   onClick: () => void;
 };
+
 export const PortalItem: React.FC<PortalItemProps> = ({ portal, onClick }) => {
   const { worldSlug, spaceSlug } = useSpaceParams();
   const { space } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
@@ -39,14 +41,14 @@ export const PortalItem: React.FC<PortalItemProps> = ({ portal, onClick }) => {
   }, [analytics, enterWithSound, portal, onClick]);
 
   return (
-    <div className={styles.SearchOverlay__result_item}>
-      <div className={styles.SearchOverlay__result_header} onClick={enter}>
-        <h3>
+    <div>
+      <div className={CN.searchOverlayResultHeader} onClick={enter}>
+        <h3 className={CN.searchOverlayResultTitle}>
           {portal.title}
           <span>{SPACE_TAXON.title}</span>
         </h3>
       </div>
-      <p className={styles.SearchOverlay__result_subtitle}>{portal.subtitle}</p>
+      <p className={CN.searchOverlayResultSubtitle}>{portal.subtitle}</p>
     </div>
   );
 };

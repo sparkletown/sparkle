@@ -24,7 +24,7 @@ import { InputField } from "components/atoms/InputField";
 
 import { PortalItem } from "./PortalItem/PortalItem";
 
-import styles from "./SearchOverlay.module.scss";
+import CN from "./SearchOverlay.module.scss";
 
 type SearchOverlayProps = {
   onClose: () => void;
@@ -75,11 +75,9 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ onClose }) => {
         .filter((portal) => portal.title.toLowerCase().includes(searchQuery))
         .map((portal, index) => {
           return (
-            <PortalItem
-              key={`portal-${portal.title}-${index}`}
-              portal={portal}
-              onClick={onClose}
-            />
+            <div key={`portal-${portal.title}-${index}`}>
+              <PortalItem portal={portal} onClick={onClose} />
+            </div>
           );
         }) ?? []
     );
@@ -101,7 +99,7 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ onClose }) => {
 
       return (
         <div key={`user-${hit.objectID}`}>
-          <div className={styles.SearchOverlay__result_header}>
+          <div className={CN.searchOverlayResultHeader}>
             <h3>
               {hit?.partyName ?? DEFAULT_PARTY_NAME}
               <span>{PERSON_TAXON.title}</span>
@@ -112,26 +110,33 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ onClose }) => {
     });
   }, [algoliaSearchState.value]);
 
+  const totalResultNumber = foundPortals.length + foundUsers.length;
+
   return (
-    <div className={styles.SearchOverlay__wrapper}>
-      <div className={styles.SearchOverlay__header}>
+    <div className={CN.searchOverlayWrapper}>
+      <div className={CN.searchOverlayHeader}>
         {`Search ${space?.name ?? SPACE_TAXON.title}`}
       </div>
-      <div className={styles.SearchOverlay__search}>
+      <div className={CN.searchOverlaySearch}>
         <InputField
           value={searchValue}
-          inputClassName={styles.SearchOverlay__search_input}
+          inputClassName={CN.searchOverlaySearchInput}
           onChange={onSearchInputChange}
           onLabelClick={initiateSearch}
           label="Search"
           autoComplete="off"
         />
       </div>
-      <div className={styles.SearchOverlay__content}>
+      {!!totalResultNumber && (
+        <div>
+          {totalResultNumber} results for {`"${searchQuery}"`}
+        </div>
+      )}
+      <div className={CN.searchOverlayContent}>
         {isLoading ? (
           <Loading />
         ) : (
-          <div className="NavSearchBar__search-results">
+          <div className={CN.searchOverlayBody}>
             {foundPortals}
             {foundUsers}
           </div>
