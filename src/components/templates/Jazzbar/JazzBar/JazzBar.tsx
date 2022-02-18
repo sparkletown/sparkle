@@ -1,13 +1,9 @@
 import React, { useCallback, useEffect, useState } from "react";
-import classNames from "classnames";
 import { useBackgroundGradient } from "components/attendee/useBackgroundGradient";
 import { useVideoHuddle } from "components/attendee/VideoHuddle/useVideoHuddle";
 
 import {
-  ALWAYS_EMPTY_ARRAY,
   DEFAULT_REACTIONS_MUTED,
-  DEFAULT_SHOW_REACTIONS,
-  DEFAULT_SHOW_SHOUTOUTS,
   IFRAME_ALLOW,
   JAZZBAR_TABLES,
 } from "settings";
@@ -23,24 +19,16 @@ import { WithId } from "utils/id";
 import { useAnalytics } from "hooks/useAnalytics";
 import { useExperience } from "hooks/useExperience";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
-import { useSettings } from "hooks/useSettings";
 import { useShowHide } from "hooks/useShowHide";
 import { useUpdateTableRecentSeatedUsers } from "hooks/useUpdateRecentSeatedUsers";
 import { useUser } from "hooks/useUser";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
-import { ReactionsBar } from "components/molecules/ReactionsBar";
 import { TableComponent } from "components/molecules/TableComponent";
-import { TableHeader } from "components/molecules/TableHeader";
-import { TablesControlBar } from "components/molecules/TablesControlBar";
 import { TablesUserList } from "components/molecules/TablesUserList";
-import { UserList } from "components/molecules/UserList";
 
 import { BackButton } from "components/atoms/BackButton";
-import { VenueWithOverlay } from "components/atoms/VenueWithOverlay/VenueWithOverlay";
-
-import { JazzBarRoom } from "../components/JazzBarRoom";
 
 import "./JazzBar.scss";
 
@@ -49,12 +37,8 @@ interface JazzProps {
 }
 
 export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
-  const {
-    isShown: showOnlyAvailableTables,
-    toggle: toggleTablesVisibility,
-  } = useShowHide();
+  const { isShown: showOnlyAvailableTables } = useShowHide();
   const { parentVenue } = useRelatedVenues({ currentVenueId: venue.id });
-  const { isLoaded: areSettingsLoaded, settings } = useSettings();
   const embedIframeUrl = convertToEmbeddableUrl({
     url: venue.iframeUrl,
     autoPlay: venue.autoPlay,
@@ -69,7 +53,7 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
   const jazzbarTables = venue.config?.tables ?? JAZZBAR_TABLES;
 
   const [seatedAtTable, setSeatedAtTable] = useState<string>();
-  const { userId, profile, userWithId } = useUser();
+  const { userWithId, userId } = useUser();
 
   useUpdateTableRecentSeatedUsers(
     VenueTemplate.jazzbar,
@@ -77,14 +61,10 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
   );
 
   const isReactionsMuted = venue.isReactionsMuted ?? DEFAULT_REACTIONS_MUTED;
-  const isShoutoutsEnabled = venue.showShoutouts ?? DEFAULT_SHOW_SHOUTOUTS;
 
-  const {
-    isShown: isUserAudioMuted,
-    toggle: toggleUserAudio,
-    hide: enableUserAudio,
-    show: disableUserAudio,
-  } = useShowHide(isReactionsMuted);
+  const { hide: enableUserAudio, show: disableUserAudio } = useShowHide(
+    isReactionsMuted
+  );
 
   useEffect(() => {
     if (isReactionsMuted) {
@@ -101,12 +81,6 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
   useEffect(() => {
     seatedAtTable && analytics.trackSelectTableEvent();
   }, [analytics, seatedAtTable]);
-
-  const shouldShowReactions =
-    seatedAtTable &&
-    areSettingsLoaded &&
-    (settings.showReactions ?? DEFAULT_SHOW_REACTIONS) &&
-    (venue.showReactions ?? DEFAULT_SHOW_REACTIONS);
 
   const { joinHuddle, inHuddle } = useVideoHuddle();
 
@@ -199,18 +173,21 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
           isReactionsMuted={isUserAudioMuted}
         />
       )*/}
-      <TablesUserList
-        setSeatedAtTable={joinTable}
-        seatedAtTable={seatedAtTable}
-        venueId={venue.id}
-        TableComponent={TableComponent}
-        joinMessage={!venue.hideVideo ?? true}
-        customTables={jazzbarTables}
-        showOnlyAvailableTables={showOnlyAvailableTables}
-        venue={venue}
-        defaultTables={JAZZBAR_TABLES}
-        template={VenueTemplate.jazzbar}
-      />
+      {userWithId && (
+        <TablesUserList
+          setSeatedAtTable={joinTable}
+          seatedAtTable={seatedAtTable}
+          venueId={venue.id}
+          TableComponent={TableComponent}
+          joinMessage={!venue.hideVideo ?? true}
+          customTables={jazzbarTables}
+          showOnlyAvailableTables={showOnlyAvailableTables}
+          venue={venue}
+          defaultTables={JAZZBAR_TABLES}
+          template={VenueTemplate.jazzbar}
+          user={userWithId}
+        />
+      )}
       {/*
       </VenueWithOverlay>
         */}

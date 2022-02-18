@@ -5,12 +5,15 @@ import { SectionHeading } from "components/admin/SectionHeading";
 import { SectionTitle } from "components/admin/SectionTitle";
 import { AdminLayout } from "components/layouts/AdminLayout";
 import { FullWidthLayout } from "components/layouts/FullWidthLayout";
+import { uniq } from "lodash/fp";
 
 import { ADMIN_IA_WORLD_CREATE_URL } from "settings";
 
 import { UserId } from "types/id";
 
 import { useOwnedVenues } from "hooks/useOwnedVenues";
+import { useAdminRole } from "hooks/user/useAdminRole";
+import { useOwnWorlds } from "hooks/worlds/useOwnWorlds";
 import { useWorlds } from "hooks/worlds/useWorlds";
 
 import { AdminShowcaseTitle } from "components/organisms/AdminVenueView/components/AdminShowcaseTitle";
@@ -29,17 +32,23 @@ type WorldsDashboardProps = { userId: UserId };
 export const WorldsDashboard: React.FC<WorldsDashboardProps> = ({ userId }) => {
   const { ownedVenues } = useOwnedVenues({ userId });
   const worlds = useWorlds();
+  const { ownWorlds } = useOwnWorlds({ userId });
 
-  const ownedUniqueWorldIds = useMemo(
-    // @debt should use uniq function of Lodash, or create our own in ./src/utils
-    () => [...new Set(ownedVenues.map(({ worldId }) => worldId))],
-    [ownedVenues]
+  const { isAdminUser: isSuperAdmin } = useAdminRole({ userId });
+
+  const visibleWorldIds = useMemo(
+    () =>
+      uniq([
+        ...ownedVenues.map(({ worldId }) => worldId),
+        ...ownWorlds.map((world) => world.id),
+      ]),
+    [ownedVenues, ownWorlds]
   );
 
-  // Firebase query where([world.id, 'in', ownedUniqueWorldIds]) has a limit of 10 items in ownedUniqueWorldIds. Because of that, it is filtered here
-  const uniqueWorlds = useMemo(
-    () => worlds.filter(({ id }) => ownedUniqueWorldIds.includes(id)),
-    [worlds, ownedUniqueWorldIds]
+  // NOTE: Firebase query where([world.id, 'in', visibleWorldIds]) has a limit of 10 items in visibleWorldIds. Because of that, it is filtered here
+  const visibleWorlds = useMemo(
+    () => worlds.filter(({ id }) => visibleWorldIds.includes(id)),
+    [worlds, visibleWorldIds]
   );
 
   const hasWorlds = !!worlds.length;
@@ -66,13 +75,15 @@ export const WorldsDashboard: React.FC<WorldsDashboardProps> = ({ userId }) => {
               <Section>
                 <SectionHeading>
                   <SectionTitle>My worlds</SectionTitle>
-                  <HeaderButton
-                    to={ADMIN_IA_WORLD_CREATE_URL}
-                    name="Create new world"
-                    variant="primary"
-                  />
+                  {isSuperAdmin && (
+                    <HeaderButton
+                      to={ADMIN_IA_WORLD_CREATE_URL}
+                      name="Create new world"
+                      variant="primary"
+                    />
+                  )}
                 </SectionHeading>
-                <WorldsTable worlds={uniqueWorlds} />
+                <WorldsTable worlds={visibleWorlds} />
               </Section>
             </FullWidthLayout>
           </>

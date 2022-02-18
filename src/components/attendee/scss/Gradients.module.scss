@@ -1,5 +1,6 @@
 .Gradients {
   // TODO Figure out CSS dither that doesn't look terrible
+  min-height: 100vh;
   background: linear-gradient(#ff8888, transparent),
     linear-gradient(to top left, #88ff88, transparent),
     linear-gradient(to top right, #8888ff, transparent),

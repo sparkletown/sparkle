@@ -29,6 +29,7 @@ export const useFireCollection = <T extends object>(
 
   const { error, loading, value } = useAsync(async () => {
     if (!path?.length || path.some((segment) => !segment)) return;
+
     if (
       constraints?.length &&
       constraints.some((segment) => segment === null || segment === undefined)

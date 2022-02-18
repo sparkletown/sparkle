@@ -5,6 +5,7 @@ import { VenueTemplate } from "types/VenueTemplate";
 import { generateTables } from "utils/table";
 import { FIVE_MINUTES_MS } from "utils/time";
 
+import { STRING_COPYRIGHT } from "./interpolationSettings";
 import {
   ROOM_TAXON,
   ROOMS_TAXON,
@@ -609,3 +610,7 @@ export const DEFAULT_SHOW_MORE_SETTINGS = {
   expanded: false,
   truncatedEndingComponent: "... ",
 };
+export const DEFAULT_MISSING_PLACEHOLDER = "Placeholder";
+
+export const CURRENT_YEAR = new Date().getFullYear();
+export const COPYRIGHT_TEXT = `${STRING_COPYRIGHT} Copyright SparkleVerse Inc & Contributors 2020 to ${CURRENT_YEAR}.`;

@@ -9,29 +9,25 @@ import { FullWidthLayout } from "components/layouts/FullWidthLayout";
 
 import { ADMIN_IA_WORLD_CREATE_URL, SPACE_TAXON } from "settings";
 
-import { Spaces, UserId, WorldWithId } from "types/id";
+import { UserId, WorldWithId } from "types/id";
 import { isNotPartyMapVenue, isPartyMapVenue } from "types/venues";
 
+import { useWorldSpaces } from "hooks/spaces/useWorldSpaces";
+
 import { AdminHeader } from "components/atoms/AdminHeader";
+import { AdminRestricted } from "components/atoms/AdminRestricted";
 
 interface SpacesDashboardProps {
-  ownSpaces: Spaces;
   userId: UserId;
   world: WorldWithId;
 }
 
 export const SpacesDashboard: React.FC<SpacesDashboardProps> = ({
-  ownSpaces,
   userId,
   world,
 }) => {
   const isWorldAdmin = userId ? world?.owners.includes(userId) : undefined;
-
-  const spaces = useMemo(
-    () =>
-      world ? ownSpaces.filter((venue) => venue.worldId === world.id) : [],
-    [ownSpaces, world]
-  );
+  const { spaces } = useWorldSpaces({ worldId: world.id });
 
   const renderedMapCards = useMemo(
     () =>
@@ -77,37 +73,39 @@ export const SpacesDashboard: React.FC<SpacesDashboardProps> = ({
 
   return (
     <AdminLayout>
-      <div className="SpacesDashboard">
-        <AdminHeader title="Spaces">
-          <HeaderButton
-            to={ADMIN_IA_WORLD_CREATE_URL}
-            name="Create new space"
-            variant="multicolor"
-          />
-        </AdminHeader>
-        <FullWidthLayout>
-          {!hasSpaces && (
-            <div className="SpacesDashboard__welcome-message">
-              <p>Welcome!</p>
-              <p>Create your first Sparkle {SPACE_TAXON.lower}</p>
-            </div>
-          )}
+      <AdminRestricted>
+        <div className="SpacesDashboard">
+          <AdminHeader title="Spaces">
+            <HeaderButton
+              to={ADMIN_IA_WORLD_CREATE_URL}
+              name="Create new space"
+              variant="multicolor"
+            />
+          </AdminHeader>
+          <FullWidthLayout>
+            {!hasSpaces && (
+              <div className="SpacesDashboard__welcome-message">
+                <p>Welcome!</p>
+                <p>Create your first Sparkle {SPACE_TAXON.lower}</p>
+              </div>
+            )}
 
-          {hasMaps && (
-            <Section>
-              <SectionSubtitle>Maps</SectionSubtitle>
-              <CardList>{renderedMapCards}</CardList>
-            </Section>
-          )}
+            {hasMaps && (
+              <Section>
+                <SectionSubtitle>Maps</SectionSubtitle>
+                <CardList>{renderedMapCards}</CardList>
+              </Section>
+            )}
 
-          {hasOtherSpaces && (
-            <Section>
-              <SectionSubtitle>Other spaces</SectionSubtitle>
-              <CardList>{renderedOtherSpacesCards}</CardList>
-            </Section>
-          )}
-        </FullWidthLayout>
-      </div>
+            {hasOtherSpaces && (
+              <Section>
+                <SectionSubtitle>Other spaces</SectionSubtitle>
+                <CardList>{renderedOtherSpacesCards}</CardList>
+              </Section>
+            )}
+          </FullWidthLayout>
+        </div>
+      </AdminRestricted>
     </AdminLayout>
   );
 };
