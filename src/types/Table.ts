@@ -17,6 +17,7 @@ export interface Table {
 
 export interface TableComponentPropsType {
   table: Table;
+  userId: string;
   tableLocked: (table: string) => boolean;
   users: readonly WithId<DisplayUser>[];
   tableCapacity?: number;

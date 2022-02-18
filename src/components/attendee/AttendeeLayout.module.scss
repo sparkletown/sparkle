@@ -1,6 +1,7 @@
-@use "scss/attendee/variables.scss"as *;
 @use "scss/attendee/effects/sparkle";
 @use "scss/attendee/space";
+@use "scss/attendee/font";
+@use "scss/attendee/layout";
 
 @font-face {
   font-family: "Sparkle";
@@ -13,8 +14,7 @@
   overflow-y: scroll;
   font-family: Sparkle, serif;
   font-variation-settings: "wght" 350, "ital" 0, "SRFF" 20;
-  font-size: 14px;
-  line-height: 1.4;
+  @include font.core;
 }
 
 .Space {
@@ -72,7 +72,7 @@
   }
 
   @media (min-width: 960px) {
-    grid-template-columns: 1fr $sidebar-width;
+    grid-template-columns: 1fr layout.$w-sidebar;
     justify-items: center;
   }
 }

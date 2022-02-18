@@ -42,7 +42,7 @@ import { generateUrl } from "utils/url";
 import { spaceEditSchema } from "forms/spaceEditSchema";
 
 import { useFetchAssets } from "hooks/useFetchAssets";
-import { useOwnedVenues } from "hooks/useOwnedVenues";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { BackgroundSelect } from "pages/Admin/BackgroundSelect";
 
@@ -195,26 +195,26 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
 
   const isReactionsMutedDisabled = !values?.showReactions;
 
-  const { ownedVenues } = useOwnedVenues({ worldId: space.worldId, userId });
+  const { relatedVenues } = useRelatedVenues();
 
   const backButtonOptionList = useMemo(
     () =>
       Object.fromEntries(
-        ownedVenues
+        relatedVenues
           .filter(
             ({ id, worldId }) => !(space.worldId !== worldId || id === space.id)
           )
           .map((venue) => [venue.id, venue])
       ),
-    [ownedVenues, space.worldId, space.id]
+    [relatedVenues, space.worldId, space.id]
   );
 
   const parentSpace = useMemo(
     () =>
       space.parentId
-        ? ownedVenues.find(({ id }) => id === space.parentId)
+        ? relatedVenues.find(({ id }) => id === space.parentId)
         : { name: "" },
-    [ownedVenues, space.parentId]
+    [relatedVenues, space.parentId]
   );
 
   const { name: watchedName } = watch();
@@ -292,7 +292,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
               />
             </AdminSection>
             <AdminSection
-              title="Select the parent space for the “back” button"
+              title="Select the space for the “back” button"
               withLabel
             >
               <SpacesDropdown

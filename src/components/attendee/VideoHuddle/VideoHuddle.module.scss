@@ -1,8 +1,8 @@
-@use "scss/attendee/variables.scss"as *;
 @use "scss/attendee/theme";
 @use "scss/attendee/space";
 @use "scss/attendee/effects/sparkle";
 @use "scss/attendee/effects/rounded";
+@use "scss/attendee/layout";
 
 .VideoHuddle {
   position: relative;
@@ -17,7 +17,7 @@
     width: calc(100% + #{space.empty(2)});
   }
 
-  height: $video-chat-height;
+  height: layout.$h-video-chat;
   padding: space.gap(1);
   border-top: 1px solid theme.$sparkle--border;
   border-bottom: 1px solid theme.$sparkle--border;
@@ -34,7 +34,7 @@
   width: space.empty(1);
   display: flex;
   flex-direction: column;
-  justify-self: start;
+  justify-self: flex-start;
   border-left: 1px solid theme.$sparkle--border;
 }
 
@@ -42,7 +42,7 @@
   flex-grow: 1;
   overflow-x: scroll;
   overflow-y: hidden;
-  min-width: ($video-chat-height * 1.7 + 2) * 3;
+  min-width: (layout.$h-video-chat * 1.7 + 2) * 3;
   display: flex;
   justify-content: center;
   gap: space.gap(1);

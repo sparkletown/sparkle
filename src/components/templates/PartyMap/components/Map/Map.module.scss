@@ -1,4 +1,3 @@
-@use "scss/attendee/variables.scss"as *;
 @use "scss/attendee/space";
 
 .MapBackground {
@@ -39,6 +38,7 @@
   letter-spacing: -0.07em;
   line-height: 0.8;
   color: white;
+  overflow: hidden;
 
   @media (min-width: 768px) {
     position: absolute;

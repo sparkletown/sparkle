@@ -23,6 +23,7 @@ import {
 
 const DATEFNS_INPUT_TIME_FORMAT = "HH:mm";
 const DATEFNS_INPUT_DATE_FORMAT = "yyyy-MM-dd";
+const DATEFNS_DAY_FORMAT = "do";
 
 /**
  * @deprecated in favor of using date-fns functions
@@ -324,3 +325,19 @@ export const convertUtcSecondsFromInputDateAndTime: (input: {
   date: string;
   time: string;
 }) => number = ({ date, time }) => getUnixTime(new Date(`${date} ${time}`));
+
+export const formatDayLabel = (
+  day: Date | number,
+  isScheduleTimeshifted: boolean
+) => {
+  if (isScheduleTimeshifted) {
+    return format(day, DATEFNS_DAY_FORMAT);
+  }
+
+  return formatDateRelativeToNow(day, {
+    formatOtherDate: (dateOrTimestamp) =>
+      format(dateOrTimestamp, DATEFNS_DAY_FORMAT),
+    formatTomorrow: (dateOrTimestamp) =>
+      format(dateOrTimestamp, DATEFNS_DAY_FORMAT),
+  });
+};

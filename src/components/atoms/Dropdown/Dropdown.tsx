@@ -13,13 +13,17 @@ import "./Dropdown.scss";
 // if these are undefined, the 3rd party library will provide own defaults
 const NO_INLINE_STYLES_PLEASE = {
   menu: ALWAYS_NO_STYLE_FUNCTION,
+  input: ALWAYS_NO_STYLE_FUNCTION,
   option: ALWAYS_NO_STYLE_FUNCTION,
   control: ALWAYS_NO_STYLE_FUNCTION,
   menuList: ALWAYS_NO_STYLE_FUNCTION,
+  container: ALWAYS_NO_STYLE_FUNCTION,
   singleValue: ALWAYS_NO_STYLE_FUNCTION,
   valueContainer: ALWAYS_NO_STYLE_FUNCTION,
+  inputContainer: ALWAYS_NO_STYLE_FUNCTION,
   dropdownIndicator: ALWAYS_NO_STYLE_FUNCTION,
   indicatorSeparator: ALWAYS_NO_STYLE_FUNCTION,
+  indicatorsContainer: ALWAYS_NO_STYLE_FUNCTION,
 };
 Object.freeze(NO_INLINE_STYLES_PLEASE);
 
@@ -78,6 +82,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
       options={options}
       menuPlacement={placement}
       styles={NO_INLINE_STYLES_PLEASE}
+      // menuIsOpen // NOTE: useful for dev, keep under comment
     />
   );
 };

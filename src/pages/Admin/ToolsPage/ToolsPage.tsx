@@ -34,7 +34,7 @@ export const ToolsPage: React.FC = () => {
                 Back to Tools
               </ButtonNG>
             </div>
-            <Tool tool={chosenTool} />
+            <Tool tool={chosenTool} worldSlug={worldSlug} />
           </>
         ) : (
           <>

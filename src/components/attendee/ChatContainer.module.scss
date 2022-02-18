@@ -1,10 +1,13 @@
-@use "scss/attendee/variables.scss"as *;
 @use "scss/attendee/theme";
 @use "scss/attendee/font";
 @use "scss/attendee/space";
+@use "scss/attendee/opacity";
+@use "scss/attendee/layout";
 @use "scss/attendee/effects/sparkle";
 @use "scss/attendee/effects/rounded";
 @use "scss/attendee/effects/atom";
+
+$-h-text-chat: 40vh; // previously named $text-chat-height
 
 @keyframes scroll-left {
   0% {
@@ -40,7 +43,7 @@
     p {
       display: inline;
       overflow: hidden;
-      opacity: $opacity;
+      opacity: opacity.$md;
 
       span {
         position: absolute;
@@ -62,7 +65,7 @@
     a {
       @include atom.icon;
       margin-right: space.empty(0.5);
-      opacity: $opacity;
+      opacity: opacity.$md;
 
       &:hover,
       &:focus {
@@ -156,7 +159,7 @@
 
           &.muted .icon {
             background-image: url(/assets/icons/icon-mute.svg);
-            opacity: $opacity;
+            opacity: opacity.$md;
           }
         }
       }
@@ -182,7 +185,7 @@
           line-height: space.button(1);
           white-space: nowrap;
           width: min-content;
-          opacity: $opacity;
+          opacity: opacity.$md;
           transform: translateX(50%);
           -moz-animation: scroll-left 10s linear infinite;
           -webkit-animation: scroll-left 10s linear infinite;
@@ -254,13 +257,13 @@
 
   &.open {
     #chat-scrollbox {
-      height: $text-chat-height;
+      height: $-h-text-chat;
       overflow: visible;
     }
 
     &.component-table-video-open {
       #chat-scrollbox {
-        height: calc(#{$text-chat-height} - #{$video-chat-height});
+        height: calc(#{$-h-text-chat} - #{layout.$h-video-chat});
       }
     }
 
@@ -269,9 +272,9 @@
       margin-top: calc(-100vh + #{space.empty(2)} + #{space.button(1)});
 
       &.component-table-video-open {
-        height: calc(100vh - #{space.empty(2)} - #{$video-chat-height});
+        height: calc(100vh - #{space.empty(2)} - #{layout.$h-video-chat});
         margin-top: calc(
-          -100vh + #{space.empty(2)} + #{space.button(1)} + #{$video-chat-height}
+          -100vh + #{space.empty(2)} + #{space.button(1)} + #{layout.$h-video-chat}
         );
       }
 
