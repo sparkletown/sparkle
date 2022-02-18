@@ -1,5 +1,6 @@
 @use "scss/admin/constants.scss"as *;
 
+// @debt delete this .module.scss file and move the props into the .tailwind.ts one
 .input {
   padding: $inputSpacingY $inputSpacingX;
   border-width: 1px;

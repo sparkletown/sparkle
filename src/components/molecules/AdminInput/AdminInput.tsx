@@ -19,6 +19,7 @@ export interface AdminInputProps
 
 /**
  * @deprecated Use Input component instead.
+ * @see src/components/admin/Input/
  */
 export const AdminInput: React.FC<AdminInputProps> = ({
   name,
@@ -65,7 +66,7 @@ export const AdminInput: React.FC<AdminInputProps> = ({
       )}
       <input
         {...inputProps}
-        className={"AdminInput__input"}
+        className="AdminInput__input"
         name={name}
         ref={register}
         id={id}
