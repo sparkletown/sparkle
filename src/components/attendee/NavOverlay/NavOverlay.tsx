@@ -56,12 +56,12 @@ export const NavOverlay: React.FC<navOverlayProps> = ({
 
   return (
     <div className={CN.navOverlay}>
-      <div className={CN.navOverlay__close} onClick={onClose}>
+      <div className={CN.navOverlayClose} onClick={onClose}>
         Close
         <span className={cn("NavOverlay__close-icon", CN.closeIcon)} />
       </div>
-      <div className={CN.navOverlay__container}>
-        <div className={CN.navOverlay__navigation}>
+      <div className={CN.navOverlayContainer}>
+        <div className={CN.navOverlayNavigation}>
           {Object.entries(navOverlayTypeList).map(([key, label]) => (
             <span
               className={cn(
@@ -75,7 +75,7 @@ export const NavOverlay: React.FC<navOverlayProps> = ({
             </span>
           ))}
         </div>
-        <div className={CN.navOverlay__content}>
+        <div className={CN.navOverlayContent}>
           {navOverlayType === "Schedule" && <ScheduleOverlay />}
         </div>
       </div>

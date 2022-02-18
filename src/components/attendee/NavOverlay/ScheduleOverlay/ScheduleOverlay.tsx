@@ -48,8 +48,8 @@ export const ScheduleOverlay: React.FC = () => {
   const { space } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
 
   const {
-    isShown: showPersonalisedSchedule,
-    toggle: togglePersonalisedSchedule,
+    isShown: showBookmarkedEvents,
+    toggle: togglebookmarkedEvents,
   } = useShowHide(false);
 
   const {
@@ -75,38 +75,38 @@ export const ScheduleOverlay: React.FC = () => {
 
     return range(dayDifference)
       .map((dayIndex) => {
-        const day = addDays(firstScheduleDate, dayIndex);
+        const eventDay = addDays(firstScheduleDate, dayIndex);
 
-        const daysEvents = liveAndFutureEvents.filter(
-          isEventWithinDateAndNotFinished(day)
+        const daysWithEvents = liveAndFutureEvents.filter(
+          isEventWithinDateAndNotFinished(eventDay)
         );
 
-        const eventsFilledWithPriority = daysEvents.sort(
+        const prioritizedEvents = daysWithEvents.sort(
           eventTimeAndOrderComparator
         );
 
-        const personalisedSchedule = eventsFilledWithPriority.filter(
+        const bookmarkedEvents = prioritizedEvents.filter(
           (event) => event.isSaved
         );
-        const formattedDay = formatDayLabel(day, isScheduleTimeshifted);
+        const formattedDay = formatDayLabel(eventDay, isScheduleTimeshifted);
 
         return {
           scheduleDate: formattedDay,
-          daysEvents: showPersonalisedSchedule
-            ? personalisedSchedule
-            : eventsFilledWithPriority,
+          daysWithEvents: showBookmarkedEvents
+            ? bookmarkedEvents
+            : prioritizedEvents,
         };
       })
-      .filter((scheduleDay) => !!scheduleDay.daysEvents.length);
+      .filter((scheduleDay) => !!scheduleDay.daysWithEvents.length);
   }, [
     isScheduleTimeshifted,
     dayDifference,
     liveAndFutureEvents,
     firstScheduleDate,
-    showPersonalisedSchedule,
+    showBookmarkedEvents,
   ]);
 
-  const bookmarkEvent = useCallback(
+  const handleEventBookmark = useCallback(
     (
       e: React.MouseEvent<HTMLDivElement, MouseEvent>,
       event: ScheduledEvent
@@ -122,10 +122,10 @@ export const ScheduleOverlay: React.FC = () => {
 
   const renderedEvents = useMemo(
     () =>
-      weekdays.map(({ scheduleDate, daysEvents }) => (
+      weekdays.map(({ scheduleDate, daysWithEvents }) => (
         <div key={scheduleDate}>
           <div>{scheduleDate}</div>
-          {daysEvents.map((event) => {
+          {daysWithEvents.map((event) => {
             const isCurrentEventLive = isEventLive(event);
             const showDate = Boolean(
               differenceInCalendarDays(
@@ -155,7 +155,7 @@ export const ScheduleOverlay: React.FC = () => {
                 <div>{event.description}</div>
                 <div
                   className={CN.scheduleOverlay__bookmark}
-                  onClick={(e) => bookmarkEvent(e, event)}
+                  onClick={(e) => handleEventBookmark(e, event)}
                 >
                   {event.isSaved
                     ? "Removed from bookmarked"
@@ -166,7 +166,7 @@ export const ScheduleOverlay: React.FC = () => {
           })}
         </div>
       )),
-    [weekdays, bookmarkEvent]
+    [weekdays, handleEventBookmark]
   );
 
   return (
@@ -176,9 +176,9 @@ export const ScheduleOverlay: React.FC = () => {
       </div>
       <button
         className={CN.scheduleOverlay__button}
-        onClick={togglePersonalisedSchedule}
+        onClick={togglebookmarkedEvents}
       >
-        {showPersonalisedSchedule ? "Show all" : "Only show bookmarked events"}
+        {showBookmarkedEvents ? "Show all" : "Only show bookmarked events"}
       </button>
       <div className={CN.scheduleOverlay__content}>{renderedEvents}</div>
     </div>
