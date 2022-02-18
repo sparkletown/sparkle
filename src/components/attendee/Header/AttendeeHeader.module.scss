@@ -1,0 +1,15 @@
+@use "scss/attendee/variables.scss"as *;
+
+.attendeeHeader {
+  display: flex;
+  position: fixed;
+  z-index: 111;
+  width: 100vw;
+  padding: $whitespace;
+
+  &__container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+}

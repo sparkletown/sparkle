@@ -1,0 +1,13 @@
+@use "scss/attendee/mixins.scss"as *;
+@use "scss/attendee/variables.scss"as *;
+
+.button {
+  @include sparkle-color-glass;
+  padding: 0 $whitespace;
+  height: $element-height-normal;
+  margin: $button-gap;
+  border-radius: $border-radius-normal;
+  white-space: nowrap;
+  cursor: pointer;
+  border: none;
+}

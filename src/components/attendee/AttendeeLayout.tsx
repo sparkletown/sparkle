@@ -12,6 +12,7 @@ import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { NotLoggedInFallback } from "components/atoms/NotLoggedInFallback";
 
+import { AttendeeHeader } from "./Header/AttendeeHeader";
 import { VideoHuddle, VideoHuddleProvider } from "./VideoHuddle/VideoHuddle";
 import { AttendeeFooter } from "./AttendeeFooter";
 import { ChatContainer } from "./ChatContainer";
@@ -31,7 +32,7 @@ const _AttendeeLayout: React.FC = () => {
 
   return (
     <VideoHuddleProvider>
-      <header></header>
+      <AttendeeHeader />
       <main>
         <section className={styles.Space}>
           <VenuePage />

@@ -1,5 +1,7 @@
 $sparkle-theme: rgb(99, 42, 199);
 
+$font-size-default: 14px;
+
 $text-lightmode: rgb(0, 0, 0);
 $panel-lightmode: rgb(255, 255, 255);
 $canvas-lightmode: rgb(230, 230, 230);
@@ -13,6 +15,15 @@ $button-gap: 2px;
 $button-height: $whitespace * 3.5;
 $blur: 5px;
 $icon-size: 1.3rem;
+
+$element-height-normal: 42px;
+
+$border-radius-normal: 4px;
+
+$font-size-large: 23px;
+
+$z-index-attendee-overlay: 1;
+$z-index-attendee-overlay-close-btn: $z-index-attendee-overlay;
 
 $opacity: 0.5;
 

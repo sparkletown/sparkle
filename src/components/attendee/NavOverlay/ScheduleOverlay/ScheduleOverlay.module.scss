@@ -1,0 +1,42 @@
+@use "scss/attendee/variables.scss"as *;
+
+.scheduleOverlayWrapper {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  max-width: 800px;
+  min-height: 100vh;
+  margin: $whitespace * 10 auto 0 $whitespace * 5;
+  padding: $whitespace * 4 $whitespace * 3;
+
+  @media (max-width: 768px) {
+    margin: 0;
+  }
+}
+
+.scheduleOverlayHeader {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: $element-height-normal;
+  margin: $whitespace * 3 0;
+}
+
+.scheduleOverlayContent {
+  height: 100%;
+  width: 100%;
+}
+
+.scheduleOverlayButton {
+  display: flex;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+.scheduleOverlayBookmark {
+  cursor: pointer;
+}
