@@ -2,14 +2,13 @@ import { useCallback, useMemo } from "react";
 import {
   addDays,
   differenceInCalendarDays,
-  format,
   fromUnixTime,
   isToday,
   startOfDay,
   startOfToday,
 } from "date-fns";
 
-import { ALWAYS_EMPTY_ARRAY, SPACE_TAXON } from "settings";
+import { ALWAYS_EMPTY_ARRAY, SPACE_TAXON, STRING_SPACE } from "settings";
 
 import {
   addEventToPersonalizedSchedule,
@@ -26,7 +25,11 @@ import {
   isEventWithinDateAndNotFinished,
 } from "utils/event";
 import { range } from "utils/range";
-import { formatDateRelativeToNow, formatTimeLocalised } from "utils/time";
+import {
+  formatDateRelativeToNow,
+  formatDayLabel,
+  formatTimeLocalised,
+} from "utils/time";
 
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
@@ -34,7 +37,7 @@ import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 import useVenueScheduleEvents from "hooks/useVenueScheduleEvents";
 
-import styles from "./ScheduleOverlay.module.scss";
+import CN from "./ScheduleOverlay.module.scss";
 const emptyPersonalizedSchedule = {};
 
 export const ScheduleOverlay: React.FC = () => {
@@ -45,8 +48,8 @@ export const ScheduleOverlay: React.FC = () => {
   const { space } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
 
   const {
-    isShown: showPersonalisedSchedule,
-    toggle: togglePersonalisedSchedule,
+    isShown: showBookmarkedEvents,
+    toggle: togglebookmarkedEvents,
   } = useShowHide(false);
 
   const {
@@ -68,61 +71,47 @@ export const ScheduleOverlay: React.FC = () => {
   const isScheduleTimeshifted = !isToday(firstDayOfSchedule);
 
   const weekdays = useMemo(() => {
-    const formatDayLabel = (day: Date | number) => {
-      if (isScheduleTimeshifted) {
-        return format(day, "do");
-      } else {
-        return formatDateRelativeToNow(day, {
-          formatOtherDate: (dateOrTimestamp) => format(dateOrTimestamp, "do"),
-          formatTomorrow: (dateOrTimestamp) => format(dateOrTimestamp, "do"),
-        });
-      }
-    };
-
     if (dayDifference <= 0) return ALWAYS_EMPTY_ARRAY;
 
     return range(dayDifference)
       .map((dayIndex) => {
-        const day = addDays(firstScheduleDate, dayIndex);
+        const eventDay = addDays(firstScheduleDate, dayIndex);
 
-        const daysEvents = liveAndFutureEvents.filter(
-          isEventWithinDateAndNotFinished(day)
+        const daysWithEvents = liveAndFutureEvents.filter(
+          isEventWithinDateAndNotFinished(eventDay)
         );
 
-        const eventsFilledWithPriority = daysEvents.sort(
+        const prioritizedEvents = daysWithEvents.sort(
           eventTimeAndOrderComparator
         );
 
-        const personalisedSchedule = eventsFilledWithPriority.filter(
+        const bookmarkedEvents = prioritizedEvents.filter(
           (event) => event.isSaved
         );
-        const formattedDay = formatDayLabel(day);
+        const formattedDay = formatDayLabel(eventDay, isScheduleTimeshifted);
 
         return {
           scheduleDate: formattedDay,
-          daysEvents: showPersonalisedSchedule
-            ? personalisedSchedule
-            : eventsFilledWithPriority,
+          daysWithEvents: showBookmarkedEvents
+            ? bookmarkedEvents
+            : prioritizedEvents,
         };
       })
-      .filter((scheduleDay) => !!scheduleDay.daysEvents.length);
+      .filter((scheduleDay) => !!scheduleDay.daysWithEvents.length);
   }, [
     isScheduleTimeshifted,
     dayDifference,
     liveAndFutureEvents,
     firstScheduleDate,
-    showPersonalisedSchedule,
+    showBookmarkedEvents,
   ]);
 
-  const bookmarkEvent = useCallback(
+  const handleEventBookmark = useCallback(
     (
       e: React.MouseEvent<HTMLDivElement, MouseEvent>,
       event: ScheduledEvent
     ) => {
       if (!userWithId?.id) return;
-
-      // @debt get rid of stopPropagation() in the project allowing a valid event bubbling
-      e.stopPropagation();
 
       event.isSaved
         ? removeEventFromPersonalizedSchedule({ event, userId: userWithId.id })
@@ -133,10 +122,10 @@ export const ScheduleOverlay: React.FC = () => {
 
   const renderedEvents = useMemo(
     () =>
-      weekdays.map(({ scheduleDate, daysEvents }) => (
+      weekdays.map(({ scheduleDate, daysWithEvents }) => (
         <div key={scheduleDate}>
           <div>{scheduleDate}</div>
-          {daysEvents.map((event) => {
+          {daysWithEvents.map((event) => {
             const isCurrentEventLive = isEventLive(event);
             const showDate = Boolean(
               differenceInCalendarDays(
@@ -158,14 +147,15 @@ export const ScheduleOverlay: React.FC = () => {
                   <span>
                     {showDate &&
                       formatDateRelativeToNow(eventEndTime({ event }))}
-                  </span>{" "}
+                  </span>
+                  {STRING_SPACE}
                   <span>{formatTimeLocalised(eventEndTime({ event }))}</span>
                   <span> in {event.spaceId}</span>
                 </div>
                 <div>{event.description}</div>
                 <div
-                  className={styles.ScheduleOverlay__bookmark}
-                  onClick={(e) => bookmarkEvent(e, event)}
+                  className={CN.scheduleOverlayBookmark}
+                  onClick={(e) => handleEventBookmark(e, event)}
                 >
                   {event.isSaved
                     ? "Removed from bookmarked"
@@ -176,21 +166,21 @@ export const ScheduleOverlay: React.FC = () => {
           })}
         </div>
       )),
-    [weekdays, bookmarkEvent]
+    [weekdays, handleEventBookmark]
   );
 
   return (
-    <div className={styles.ScheduleOverlay__wrapper}>
-      <div className={styles.ScheduleOverlay__header}>
-        {space?.name ?? SPACE_TAXON.title} schedule
+    <div className={CN.scheduleOverlayWrapper}>
+      <div className={CN.scheduleOverlayHeader}>
+        {space?.name || SPACE_TAXON.title} schedule
       </div>
       <button
-        className={styles.ScheduleOverlay__button}
-        onClick={togglePersonalisedSchedule}
+        className={CN.scheduleOverlayButton}
+        onClick={togglebookmarkedEvents}
       >
-        {showPersonalisedSchedule ? "Show all" : "Only show bookmarked events"}
+        {showBookmarkedEvents ? "Show all" : "Only show bookmarked events"}
       </button>
-      <div className={styles.ScheduleOverlay__content}>{renderedEvents}</div>
+      <div className={CN.scheduleOverlayContent}>{renderedEvents}</div>
     </div>
   );
 };

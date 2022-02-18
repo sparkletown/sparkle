@@ -1,41 +1,42 @@
-@use "scss/attendee/mixins.scss" as *;
 @use "scss/attendee/variables.scss"as *;
 
-.ScheduleOverlay {
-  &__wrapper {
-    height: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    max-width: 800px;
-    min-height: 100vh;
-    margin: $whitespace * 10 auto 0 $whitespace * 5;
-    padding: $whitespace * 4 $whitespace * 3;
+.scheduleOverlayWrapper {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  max-width: 800px;
+  min-height: 100vh;
+  margin: $whitespace * 10 auto 0 $whitespace * 5;
+  padding: $whitespace * 4 $whitespace * 3;
 
-    @media (max-width: 768px) {
-      margin: 0;
-    }
+  @media (max-width: 768px) {
+    margin: 0;
   }
+}
 
-  &__header {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    min-height: $element-height-normal;
-    margin: $whitespace * 3 0;
-  }
+.scheduleOverlayHeader {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: $element-height-normal;
+  margin: $whitespace * 3 0;
+}
 
-  &__content {
-    height: 100%;
-    width: 100%;
-  }
+.scheduleOverlayContent {
+  height: 100%;
+  width: 100%;
+}
 
-  &__button {
-    display: flex;
-    justify-content: center;
-  }
+.scheduleOverlayButton {
+  display: flex;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
 
-  &__bookmark {
-    cursor: pointer;
-  }
+.scheduleOverlayBookmark {
+  cursor: pointer;
 }

@@ -35,8 +35,8 @@ export const AttendeeHeader = () => {
   };
 
   return (
-    <header className={styles.AttendeeHeader}>
-      <div className={styles.AttendeeHeader__container}>
+    <header className={styles.attendeeHeader}>
+      <div className={styles.attendeeHeaderContainer}>
         <div>
           <Button>{space?.name ?? `This ${SPACE_TAXON.title}`}</Button>
         </div>

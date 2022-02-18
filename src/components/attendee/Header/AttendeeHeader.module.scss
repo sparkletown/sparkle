@@ -1,7 +1,6 @@
-@use "scss/attendee/mixins.scss" as *;
 @use "scss/attendee/variables.scss"as *;
 
-.AttendeeHeader {
+.attendeeHeader {
   display: flex;
   position: fixed;
   z-index: 111;

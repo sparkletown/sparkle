@@ -31,7 +31,7 @@
   width: $button-height;
   display: flex;
   flex-direction: column;
-  justify-self: start;
+  justify-self: flex-start;
   border-left: 1px solid $sparkle-border;
 }
 

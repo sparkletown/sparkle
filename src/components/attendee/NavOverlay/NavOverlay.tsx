@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import cn from "classnames";
 
 import { SPACE_TAXON } from "settings";
 
@@ -8,9 +9,10 @@ import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { ScheduleOverlay } from "./ScheduleOverlay/ScheduleOverlay";
 import { SearchOverlay } from "./SearchOverlay/SearchOverlay";
 
-import styles from "./NavOverlay.module.scss";
+import CN from "./NavOverlay.module.scss";
 
 type navOverlayProps = {
+  isShown: boolean;
   onClose: () => void;
   type?: string;
 };
@@ -23,7 +25,7 @@ export enum NavOverlayTab {
   help = "help",
 }
 
-const navOverlayTypeMap: Readonly<Record<NavOverlayTab, String>> = {
+const navOverlayTypeMap: Readonly<Record<NavOverlayTab, string>> = {
   [NavOverlayTab.schedule]: "Schedule",
   [NavOverlayTab.search]: "Search",
   [NavOverlayTab.profile]: "Profile settings",
@@ -50,24 +52,27 @@ export const NavOverlay: React.FC<navOverlayProps> = ({ onClose, type }) => {
   };
 
   return (
-    <div className={styles.NavOverlay}>
-      <div className={styles.NavOverlay__close} onClick={onClose}>
+    <div className={CN.navOverlay}>
+      <div className={CN.navOverlayClose} onClick={onClose}>
         Close
-        <span className={styles.NavOverlay__close_icon} />
+        <span className={cn("NavOverlay__close-icon", CN.closeIcon)} />
       </div>
-      <div className={styles.NavOverlay__container}>
-        <div className={styles.NavOverlay__navigation}>
+      <div className={CN.navOverlayContainer}>
+        <div className={CN.navOverlayNavigation}>
           {Object.entries(navOverlayTypeList).map(([key, label]) => (
             <span
-              className={styles.NavOverlay__navigation_button}
+              className={cn(
+                "NavOverlay__navigation-button",
+                CN.navigationButton
+              )}
               key={key}
-              onClick={() => setNavOverlay(key)}
+              onClick={() => setNavOverlay(label)}
             >
               {label}
             </span>
           ))}
         </div>
-        <div className={styles.NavOverlay__content}>
+        <div className={CN.navOverlayContent}>
           {navOverlayType === NavOverlayTab.schedule && <ScheduleOverlay />}
           {navOverlayType === NavOverlayTab.search && (
             <SearchOverlay onClose={onClose} />
