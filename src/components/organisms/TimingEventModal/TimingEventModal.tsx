@@ -6,6 +6,7 @@ import { DAYJS_INPUT_DATE_FORMAT, DAYJS_INPUT_TIME_FORMAT } from "settings";
 
 import { createEvent, updateEvent, WorldScheduleEvent } from "api/admin";
 
+import { SpaceId, WorldId } from "types/id";
 import { WorldEvent } from "types/venues";
 
 import { MaybeWithId } from "utils/id";
@@ -25,10 +26,10 @@ export type TimingEventModalProps = {
   show: boolean;
   onHide: () => void;
   event?: WorldEvent;
-  spaceId?: string;
+  spaceId?: SpaceId | string;
   onDelete?: (event?: WorldEvent) => void;
   setShowDeleteEventModal: () => void;
-  worldId?: string;
+  worldId?: WorldId | string;
 };
 
 // Dispatch<SetStateAction<WithId<Experience> | undefined>>
@@ -215,7 +216,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
             </label>
             <div className="TimingEventModal__container">
               {/*
-                  These wrapper divs are here to unmuddle some precedance issues
+                  @debt These wrapper divs are here to unmuddle some precedance issues
                   in the CSS that causes the inputs to have 100% width. This
                   form is going to have some layout changes applied that should
                   resolve this..
@@ -246,7 +247,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
               </label>
               <div className="TimingEventModal__container">
                 {/*
-                  These wrapper divs are here to unmuddle some precedance issues
+                  @debt These wrapper divs are here to unmuddle some precedance issues
                   in the CSS that causes the inputs to have 100% width. This
                   form is going to have some layout changes applied that should
                   resolve this..

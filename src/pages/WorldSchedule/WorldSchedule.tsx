@@ -60,12 +60,12 @@ export const WorldSchedule = () => {
     const {
       inputFormattedDateSegment: startDate,
       inputFormattedTimeSegment: startTime,
-    } = convertDateFromUtcSeconds(world?.startTimeUnix ?? NaN);
+    } = convertDateFromUtcSeconds(world?.startTimeUnix ?? 0);
 
     const {
       inputFormattedDateSegment: endDate,
       inputFormattedTimeSegment: endTime,
-    } = convertDateFromUtcSeconds(world?.endTimeUnix ?? NaN);
+    } = convertDateFromUtcSeconds(world?.endTimeUnix ?? 0);
 
     return {
       startTime,
