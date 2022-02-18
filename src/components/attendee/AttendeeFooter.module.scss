@@ -1,16 +1,18 @@
-@use "scss/attendee/mixins.scss"as *;
 @use "scss/attendee/variables.scss"as *;
+@use "scss/attendee/space";
+@use "scss/attendee/effects/sparkle";
+@use "scss/attendee/effects/atom";
 
 .AttendeeFooter {
-  @include sparkle-panel;
+  @include sparkle.panel--normal;
   position: relative;
-  padding: $whitespace;
+  padding: space.empty(1);
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
 
   p {
-    padding: $whitespace;
+    padding: space.empty(1);
     opacity: $opacity;
   }
 
@@ -20,17 +22,17 @@
     justify-items: center;
     justify-content: center;
     width: 100%;
-    padding: $whitespace * 2 15%;
+    padding: space.empty(2) 15%;
 
     @media (min-width: 768px) {
       display: flex;
       flex-direction: row;
       flex-wrap: wrap;
-      padding: $whitespace * 2 0;
+      padding: space.empty(2) 0;
     }
 
     a {
-      @include atom-button;
+      @include atom.button;
       opacity: $opacity;
 
       &:hover,

@@ -16,7 +16,7 @@ import { ButtonNG } from "components/atoms/ButtonNG";
 import fIcon from "assets/icons/facebook-social-icon.svg";
 import gIcon from "assets/icons/google-social-icon.svg";
 
-import FORMS from "scss/attendee/forms.module.scss";
+import FORMS from "scss/attendee/form.module.scss";
 
 export interface LoginFormProps {
   displayRegisterForm: () => void;

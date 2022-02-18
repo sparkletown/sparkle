@@ -1,11 +1,12 @@
-@use "scss/attendee/mixins.scss"as *;
 @use "scss/attendee/variables.scss"as *;
+@use "scss/attendee/effects/sparkle";
+@use "scss/attendee/space";
 
 @font-face {
   font-family: "Sparkle";
   font-style: normal;
   font-weight: 400;
-  src: url("~assets/fonts/ABCArizonaPlusVariable-Trial.woff2") format("woff2");
+  src: url("/assets/fonts/ABCArizonaPlusVariable-Trial.woff2") format("woff2");
 }
 
 .html {
@@ -47,7 +48,7 @@
   bottom: 0;
   width: 100%;
   z-index: 40;
-  @include sparkle-panel;
+  @include sparkle.panel--normal;
 
   @media (max-width: 767px) {
     display: flex;
@@ -57,7 +58,7 @@
       height: 45vh;
 
       &.has-component-shoutout {
-        height: calc(45vh - #{$button-height + $whitespace});
+        height: calc(45vh - #{space.button(1) + space.empty(1)});
       }
     }
   }
@@ -65,8 +66,8 @@
   @media (min-width: 768px) {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    padding: 0 $whitespace;
-    grid-gap: $whitespace;
+    padding: 0 space.empty(1);
+    grid-gap: space.empty(1);
     background: transparent;
   }
 

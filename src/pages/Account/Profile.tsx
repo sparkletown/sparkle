@@ -27,7 +27,7 @@ import { updateUserProfile } from "./helpers";
 // @debt refactor the Profile related styles from Account.scss into Profile.scss
 import "./Account.scss";
 import "./Profile.scss";
-import FORMS from "scss/attendee/forms.module.scss";
+import FORMS from "scss/attendee/form.module.scss";
 
 export interface ProfileFormData {
   partyName: string;

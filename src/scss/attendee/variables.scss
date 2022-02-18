@@ -1,22 +1,4 @@
-// @debt move to scss/attendee/colors.scss and rename to $c-sparkle--theme
-$sparkle-theme: rgb(99, 42, 199);
-
-// @debt move to scss/attendee/colors.scss and rename to $c-light--(text|panel|canvas)
-$text-lightmode: rgb(0, 0, 0);
-$panel-lightmode: rgb(255, 255, 255);
-$canvas-lightmode: rgb(230, 230, 230);
-
-// @debt move to scss/attendee/colors.scss and rename to $c-dark--(text|panel|canvas)
-$text-darkmode: rgb(255, 255, 255);
-$panel-darkmode: rgb(0, 0, 0);
-$canvas-darkmode: rgb(50, 50, 50);
-
-// @debt move to scss/attendee/spacing.scss
-$whitespace: 12px;
-$button-gap: 2px;
-$button-height: $whitespace * 3.5;
-$blur: 5px;
-$icon-size: 1.3rem;
+@use "./space";
 
 $opacity: 0.5;
 
@@ -26,6 +8,3 @@ $portal-grid-column: 342px;
 
 $text-chat-height: 40vh;
 $video-chat-height: 160px;
-
-// @debt move to scss/attendee/colors.scss and rename to $c-sparkle--border
-$sparkle-border: rgba(130, 130, 130, 0.3);
