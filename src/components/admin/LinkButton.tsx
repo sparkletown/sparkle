@@ -3,20 +3,19 @@ import { Link } from "react-router-dom";
 import classNames from "classnames";
 
 interface LinkButtonProps {
-  children: React.ReactNode;
   style?: CSSProperties;
   href: string;
   disabled?: boolean;
   width?: string;
 }
 
-export const LinkButton = ({
+export const LinkButton: React.FC<LinkButtonProps> = ({
   children,
   style,
   href,
   disabled = false,
   width,
-}: LinkButtonProps) => (
+}) => (
   <Link
     to={disabled ? "#" : href}
     style={style}

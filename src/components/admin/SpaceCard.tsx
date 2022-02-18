@@ -8,6 +8,7 @@ import {
   ATTENDEE_INSIDE_URL,
   DEFAULT_SHOW_MORE_SETTINGS,
   DEFAULT_VENUE_LOGO,
+  SPACE_CARD_HEADER_BACKGROUND,
   SPACE_INFO_MAP,
 } from "settings";
 
@@ -22,8 +23,7 @@ import { useWorldEvents } from "hooks/events";
 import { LinkButton } from "./LinkButton";
 
 const cardHeaderStyles = {
-  background:
-    "url(https://images.unsplash.com/photo-1517369611053-aecb0ca6971e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80)",
+  background: `url(${SPACE_CARD_HEADER_BACKGROUND})`,
 };
 
 interface SpaceCardProps {
@@ -32,7 +32,11 @@ interface SpaceCardProps {
   isEditable?: boolean;
 }
 
-export const SpaceCard = ({ space, world, isEditable }: SpaceCardProps) => {
+export const SpaceCard: React.FC<SpaceCardProps> = ({
+  space,
+  world,
+  isEditable,
+}) => {
   const spaceDescription =
     space.config?.landingPageConfig?.description ||
     "Description can be changed in space settings";
