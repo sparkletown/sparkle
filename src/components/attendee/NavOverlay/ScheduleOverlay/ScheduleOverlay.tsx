@@ -154,7 +154,7 @@ export const ScheduleOverlay: React.FC = () => {
                 </div>
                 <div>{event.description}</div>
                 <div
-                  className={CN.scheduleOverlay__bookmark}
+                  className={CN.scheduleOverlayBookmark}
                   onClick={(e) => handleEventBookmark(e, event)}
                 >
                   {event.isSaved
@@ -170,17 +170,17 @@ export const ScheduleOverlay: React.FC = () => {
   );
 
   return (
-    <div className={CN.scheduleOverlay__wrapper}>
-      <div className={CN.scheduleOverlay__header}>
-        {space?.name ?? SPACE_TAXON.title} schedule
+    <div className={CN.scheduleOverlayWrapper}>
+      <div className={CN.scheduleOverlayHeader}>
+        {space?.name || SPACE_TAXON.title} schedule
       </div>
       <button
-        className={CN.scheduleOverlay__button}
+        className={CN.scheduleOverlayButton}
         onClick={togglebookmarkedEvents}
       >
         {showBookmarkedEvents ? "Show all" : "Only show bookmarked events"}
       </button>
-      <div className={CN.scheduleOverlay__content}>{renderedEvents}</div>
+      <div className={CN.scheduleOverlayContent}>{renderedEvents}</div>
     </div>
   );
 };
