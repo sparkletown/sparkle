@@ -3,6 +3,7 @@ import { FieldError, UseFormRegister } from "react-hook-form";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import classNames from "classnames";
 
+import { UserProfileModalFormData } from "types/profileModal";
 import { ContainerClassName } from "types/utility";
 
 import { InputField } from "components/atoms/InputField";
@@ -15,48 +16,38 @@ export interface ProfileModalInputProps
   error?: FieldError;
   notCondensed?: boolean;
   iconEnd?: IconProp | JSX.Element;
-  register: UseFormRegister<any>;
+  register: UseFormRegister<UserProfileModalFormData>;
   name: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   rules?: Record<string, any>;
 }
 
-export const ProfileModalInput = React.forwardRef<
-  HTMLInputElement,
-  ProfileModalInputProps
->(
-  (
-    {
-      error,
-      containerClassName,
-      notCondensed,
-      iconEnd,
-      register,
-      name,
-      rules = {},
-      ...rest
-    },
-    ref
-  ) => {
-    return (
-      <InputField
-        error={error}
-        containerClassName={containerClassName}
-        iconEnd={iconEnd}
-        inputClassName={classNames("ProfileModalInput__input", {
-          "ProfileModalInput__input--condensed": !notCondensed,
-        })}
-        errorTextClassName={classNames("ProfileModalInput__error-message", {
-          "ProfileModalInput__error-message--condensed": !notCondensed,
-        })}
-        iconEndClassName="ProfileModalInput__icon-end"
-        //eslint-disable-next-line @typescript-eslint/no-explicit-any
-        register={register}
-        name={name}
-        rules={rules}
-        {...rest}
-      />
-    );
-  }
-);
-
-ProfileModalInput.displayName = "ProfileModalInput";
+export const ProfileModalInput: React.FC<ProfileModalInputProps> = ({
+  error,
+  containerClassName,
+  notCondensed,
+  iconEnd,
+  register,
+  name,
+  rules = {},
+  ...rest
+}) => {
+  return (
+    <InputField
+      error={error}
+      containerClassName={containerClassName}
+      iconEnd={iconEnd}
+      inputClassName={classNames("ProfileModalInput__input", {
+        "ProfileModalInput__input--condensed": !notCondensed,
+      })}
+      errorTextClassName={classNames("ProfileModalInput__error-message", {
+        "ProfileModalInput__error-message--condensed": !notCondensed,
+      })}
+      iconEndClassName="ProfileModalInput__icon-end"
+      register={register}
+      name={name}
+      rules={rules}
+      {...rest}
+    />
+  );
+};

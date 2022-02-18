@@ -1,15 +1,14 @@
 import React from "react";
-import { FieldErrors, FieldValues, UseFormRegister } from "react-hook-form";
+import {
+  Control,
+  FieldErrors,
+  FieldValues,
+  UseFieldArrayRemove,
+  UseFormRegister,
+} from "react-hook-form";
 
 import { EntranceStepConfig } from "types/EntranceStep";
 import { WorldEntranceFormInput } from "types/world";
-
-import {
-  UseArrayAdd,
-  UseArrayClear,
-  UseArrayRemove,
-  UseArrayUpdate,
-} from "hooks/useArray";
 
 import { AdminSidebarSectionSubTitle } from "components/organisms/AdminVenueView/components/AdminSidebarSectionSubTitle";
 
@@ -26,10 +25,10 @@ export interface EntranceStepsBuilderProps {
   register: UseFormRegister<WorldEntranceFormInput>;
   title?: string;
   errors?: FieldErrors<FieldValues>;
-  onAdd: UseArrayAdd<EntranceStepConfig>;
-  onUpdate: UseArrayUpdate<EntranceStepConfig>;
-  onClear: UseArrayClear<EntranceStepConfig>;
-  onRemove: UseArrayRemove<EntranceStepConfig>;
+  onAdd: () => void;
+  onClear: () => void;
+  onRemove: UseFieldArrayRemove;
+  control: Control<WorldEntranceFormInput, object>;
 }
 
 export const EntranceStepsBuilder: React.FC<EntranceStepsBuilderProps> = ({
@@ -39,12 +38,13 @@ export const EntranceStepsBuilder: React.FC<EntranceStepsBuilderProps> = ({
   title,
   errors,
   onAdd,
-  onUpdate,
   onClear,
   onRemove,
+  control,
 }) => {
   const count = items?.length ?? 0;
   const handledErrors: string[] = [];
+
   return (
     <div className="EntranceStepsBuilder">
       {title && (
@@ -60,9 +60,9 @@ export const EntranceStepsBuilder: React.FC<EntranceStepsBuilderProps> = ({
             index={index}
             key={`${name}-${index}`}
             name={name}
-            onUpdate={onUpdate}
             onRemove={onRemove}
             register={register}
+            control={control}
           />
         );
       })}

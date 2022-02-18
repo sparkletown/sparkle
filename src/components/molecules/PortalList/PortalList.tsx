@@ -10,8 +10,6 @@ import { get } from "lodash";
 
 import { PortalInfoItem } from "settings";
 
-import { RoomSchemaShape } from "forms/spaceEditSchema";
-
 import { PortalAddEditModal } from "components/molecules/PortalAddEditModal";
 import { PortalListItem } from "components/molecules/PortalListItem";
 
@@ -25,6 +23,7 @@ interface PortalListProps {
   label?: ReactNode | string;
   name?: string;
   onClick?: (context: { item: PortalInfoItem; index: number }) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   register?: UseFormRegister<any>;
   selectedItem?: PortalInfoItem;
   variant: PortalListVariant;

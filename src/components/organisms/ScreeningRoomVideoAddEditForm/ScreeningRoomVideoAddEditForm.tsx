@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useForm, useFormState } from "react-hook-form";
 import { useParams } from "react-router";
 import { useAsyncFn } from "react-use";
@@ -84,12 +84,6 @@ export const ScreeningRoomVideoAddEditForm: React.FC<ScreeningRoomVideoAddEditFo
   const { errors } = useFormState({ control });
 
   useEffect(() => reset(defaultValues), [defaultValues, reset]);
-  const changeRoomImageUrl = useCallback(
-    (val: string) => {
-      // setValue("image_url", val, {shouldValidate: false});
-    },
-    [setValue]
-  );
 
   const [
     { loading: isLoading, error: submitError },
@@ -196,7 +190,6 @@ export const ScreeningRoomVideoAddEditForm: React.FC<ScreeningRoomVideoAddEditFo
       />
 
       <ImageInput
-        onChange={changeRoomImageUrl}
         name="thumbnailSrc"
         setValue={setValue}
         register={register}

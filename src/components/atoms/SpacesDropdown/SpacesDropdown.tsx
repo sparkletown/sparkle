@@ -1,10 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import {
-  FieldError,
-  useForm,
-  UseFormRegister,
-  UseFormSetValue,
-} from "react-hook-form";
+import { FieldError, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import { omit, omitBy } from "lodash";
 
 import { ALWAYS_EMPTY_ARRAY, PORTAL_INFO_ICON_MAPPING } from "settings";
@@ -13,8 +8,6 @@ import { AnyVenue, PortalTemplate } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
 
 import { WithId } from "utils/id";
-
-import { RoomSchemaShape } from "forms/roomSchema";
 
 import { Dropdown } from "components/atoms/Dropdown";
 
@@ -35,7 +28,9 @@ type SpacesDropdownPortal = {
 
 interface SpacesDropdownProps {
   parentSpace?: SpacesDropdownPortal;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setValue: UseFormSetValue<any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   register: UseFormRegister<any>;
   fieldName: string;
   error?: FieldError;

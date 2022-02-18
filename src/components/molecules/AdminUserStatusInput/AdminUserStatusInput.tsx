@@ -15,19 +15,20 @@ import { ButtonNG } from "components/atoms/ButtonNG";
 import "./AdminUserStatusInput.scss";
 
 export interface AdminUserStatusInputProps
-  extends Omit<AdminInputProps, "onChange"> {
+  extends Omit<AdminInputProps, "onChange" | "name"> {
   item?: UserStatus;
-  onChange?: (status: UserStatus) => void;
+  index: number;
+  onChange: (item: UserStatus) => void;
   onRemove?: () => void;
-  register: UseFormRegister<any>;
+  register: UseFormRegister<WorldAdvancedFormInput>;
 }
 
 export const AdminUserStatusInput: React.FC<AdminUserStatusInputProps> = ({
-  name,
   item,
   onChange,
   onRemove,
   register,
+  index,
   ...extraProps
 }) => {
   const {
@@ -36,17 +37,9 @@ export const AdminUserStatusInput: React.FC<AdminUserStatusInputProps> = ({
     toggle: toggleColorPicker,
   } = useShowHide();
 
-  const handleTextChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const status = event.currentTarget.value;
-      return onChange?.({ status, color: item?.color ?? "" });
-    },
-    [item, onChange]
-  );
-
   const handleColorChange = useCallback(
     ({ hex }: ColorResult) => {
-      onChange?.({ status: item?.status ?? "", color: hex });
+      onChange({ status: item?.status ?? "", color: hex });
       hideColorPicker();
     },
     [item, onChange, hideColorPicker]
@@ -54,9 +47,7 @@ export const AdminUserStatusInput: React.FC<AdminUserStatusInputProps> = ({
 
   // @debt try to make it work with useCss()
   const pickerStyles = { backgroundColor: item?.color };
-
-  const inputStatus = `${name}status`;
-  const inputColor = `${name}color`;
+  const inputStatus = `userStatuses.${index}.status`;
 
   return (
     <span className="AdminUserStatusInput">
@@ -66,12 +57,11 @@ export const AdminUserStatusInput: React.FC<AdminUserStatusInputProps> = ({
           className="AdminUserStatusInput__text"
           name={inputStatus}
           register={register}
-          onChange={handleTextChange}
         />
         <input
           className="AdminUserStatusInput__color"
           type="hidden"
-          {...register(inputColor)}
+          {...register(`userStatuses.${index}.color`)}
         />
         <ButtonNG
           style={pickerStyles}

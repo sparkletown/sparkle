@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo } from "react";
-import { useForm, useFormState } from "react-hook-form";
+import React, { useMemo } from "react";
+import { useFieldArray, useForm, useFormState } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -14,7 +14,6 @@ import { shouldScheduleBeShown } from "utils/schedule";
 
 import { emptyObjectSchema } from "forms/emptyObjectSchema";
 
-import { useArray } from "hooks/useArray";
 import { useUser } from "hooks/useUser";
 
 import { AdminSidebarButtons } from "components/organisms/AdminVenueView/components/AdminSidebarButtons";
@@ -43,15 +42,6 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
   const worldId = world.id;
   const { user } = useUser();
 
-  const {
-    items: userStatuses,
-    add: addStatus,
-    set: setStatus,
-    remove: removeStatus,
-    isDirty: isDirtyStatuses,
-    clearDirty: clearDirtyStatuses,
-  } = useArray<UserStatus>(world.userStatuses);
-
   const defaultValues = useMemo<WorldAdvancedFormInput>(
     () => ({
       attendeesTitle: world.attendeesTitle,
@@ -60,14 +50,13 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
       showRadio: world.showRadio,
       showSchedule: shouldScheduleBeShown(world),
       showUserStatus: world.showUserStatus,
-      userStatuses: userStatuses,
+      userStatuses: world.userStatuses,
       hasSocialLoginEnabled: world.hasSocialLoginEnabled,
     }),
-    [world, userStatuses]
+    [world]
   );
 
   const {
-    getValues,
     reset,
     watch,
     control,
@@ -79,65 +68,59 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
     resolver: yupResolver(emptyObjectSchema),
     defaultValues,
   });
+
+  const {
+    fields: userStatuses,
+    append: addStatus,
+    update: setStatus,
+    remove: removeStatus,
+  } = useFieldArray({ control, name: "userStatuses", shouldUnregister: true });
+
+  const handleAddStatus = () => {
+    addStatus({ status: "", color: "" });
+  };
+
   const { isDirty, isSubmitting, errors } = useFormState({ control });
 
   const values = watch();
 
-  const [{ error, loading: isSaving }, submit] = useAsyncFn(async () => {
-    if (!values || !user || !worldId) return;
+  const [{ error, loading: isSaving }, submit] = useAsyncFn(
+    async (input) => {
+      if (!values || !user || !worldId) return;
+      console.log(values.userStatuses, input);
+      const data = {
+        attendeesTitle: values.attendeesTitle,
+        radioStation: values.radioStation,
+        showBadges: values.showBadges,
+        showRadio: values.showRadio,
+        showSchedule: values.showSchedule,
+        showUserStatus: values.showUserStatus,
+        hasSocialLoginEnabled: values.hasSocialLoginEnabled,
+        userStatuses: values.userStatuses,
+      };
 
-    const data = {
-      attendeesTitle: values.attendeesTitle,
-      radioStation: values.radioStation,
-      showBadges: values.showBadges,
-      showRadio: values.showRadio,
-      showSchedule: values.showSchedule,
-      showUserStatus: values.showUserStatus,
-      hasSocialLoginEnabled: values.hasSocialLoginEnabled,
-      userStatuses,
-    };
+      await updateWorldAdvancedSettings(withId(data, worldId), user);
 
-    await updateWorldAdvancedSettings(withId(data, worldId), user);
-
-    reset(data);
-    clearDirtyStatuses();
-  }, [worldId, user, values, reset, userStatuses, clearDirtyStatuses]);
-
-  const isSaveLoading = isSubmitting || isSaving;
-  const isSaveDisabled = !(
-    isDirty ||
-    isSaving ||
-    isSubmitting ||
-    isDirtyStatuses
+      reset(data);
+    },
+    [worldId, user, values, reset]
   );
 
-  useEffect(() => {
-    const values: Partial<WorldAdvancedFormInput> = getValues();
-    reset({
-      attendeesTitle: values.attendeesTitle,
-      radioStation: values.radioStation,
-      showBadges: values.showBadges,
-      showRadio: values.showRadio,
-      showSchedule: values.showSchedule,
-      showUserStatus: values.showUserStatus,
-      hasSocialLoginEnabled: values.hasSocialLoginEnabled,
-      userStatuses,
-    });
-  }, [userStatuses, getValues, reset]);
+  const isSaveLoading = isSubmitting || isSaving;
+  const isSaveDisabled = !(isDirty || isSaving || isSubmitting);
 
   const renderedUserStatuses = useMemo(
     () =>
       userStatuses.map((userStatus, index) => {
         const key = `${userStatus}-${index}`;
-        const name = `userStatuses[${index}]`;
 
-        const handleChange = (item: UserStatus) => setStatus({ index, item });
-        const handleRemove = () => removeStatus({ index });
+        const handleChange = (item: UserStatus) => setStatus(index, item);
+        const handleRemove = () => removeStatus(index);
 
         return (
           <AdminUserStatusInput
             key={key}
-            name={name}
+            index={index}
             item={userStatuses[index]}
             register={register}
             onChange={handleChange}
@@ -221,7 +204,11 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
           {values.showUserStatus && (
             <>
               {renderedUserStatuses}
-              <ButtonNG variant="primary" iconName={faPlus} onClick={addStatus}>
+              <ButtonNG
+                variant="primary"
+                iconName={faPlus}
+                onClick={handleAddStatus}
+              >
                 Add a status
               </ButtonNG>
             </>

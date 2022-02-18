@@ -1,7 +1,6 @@
 import React, { useCallback } from "react";
 import {
   FieldError,
-  useForm,
   UseFormRegister,
   UseFormSetValue,
   UseFormWatch,
@@ -42,7 +41,11 @@ export const ProfileModalEditBasicInfo: React.FC<ProfileModalEditBasicInfoProps>
   const pictureUrl = watch?.("pictureUrl");
   const setPictureUrl = useCallback(
     (url: string) => {
-      if (setValue) setValue("pictureUrl", url, { shouldValidate: true });
+      if (setValue)
+        setValue("pictureUrl", url, {
+          shouldValidate: true,
+          shouldDirty: true,
+        });
     },
     [setValue]
   );

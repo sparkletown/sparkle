@@ -5,8 +5,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { get } from "lodash";
 
-import { WorldEntranceFormInput } from "types/world";
-
 import { CheckboxProps } from "components/atoms/Checkbox";
 
 import "./AdminCheckbox.scss";
@@ -20,6 +18,7 @@ export interface AdminCheckboxProps
   name: string;
   displayOn?: ReactNode | string;
   displayOff?: ReactNode | string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   register: UseFormRegister<any>;
   subtext?: ReactNode | string;
   variant?: "toggler" | "checkbox" | "flip-switch";
@@ -64,8 +63,7 @@ export const AdminCheckbox: React.FC<AdminCheckboxProps> = ({
           type="checkbox"
           hidden
           disabled={disabled}
-          name={name}
-          {...register}
+          {...register(name)}
         />
         <span className="AdminCheckbox__box">
           <FontAwesomeIcon

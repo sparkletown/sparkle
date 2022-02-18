@@ -1,10 +1,12 @@
-import React, { ChangeEventHandler, useCallback } from "react";
-import { FieldErrors, FieldValues, UseFormRegister } from "react-hook-form";
+import React, { useCallback } from "react";
+import {
+  FieldErrors,
+  FieldValues,
+  UseFieldArrayRemove,
+  UseFormRegister,
+} from "react-hook-form";
 
-import { EntranceStepButtonConfig } from "types/EntranceStep";
 import { WorldEntranceFormInput } from "types/world";
-
-import { UseArrayRemove, UseArrayUpdate } from "hooks/useArray";
 
 import { AdminCheckbox } from "components/molecules/AdminCheckbox";
 import { AdminInput } from "components/molecules/AdminInput";
@@ -17,56 +19,26 @@ export interface EntranceButtonsInputFieldSetProps {
   errors?: FieldErrors<FieldValues>;
   index: number;
   name: string;
-  onUpdate: UseArrayUpdate<EntranceStepButtonConfig>;
-  onRemove: UseArrayRemove<EntranceStepButtonConfig>;
-  register: UseFormRegister<any>;
+  onRemove: UseFieldArrayRemove;
+  register: UseFormRegister<WorldEntranceFormInput>;
 }
 
 export const EntranceButtonsInputFieldSet: React.FC<EntranceButtonsInputFieldSetProps> = ({
   errors,
   index,
   name,
-  onUpdate,
   onRemove,
   register,
 }) => {
   const fieldText = `text`;
   const fieldLink = `href`;
   const fieldProceed = `isProceed`;
-  const fieldset = `${name}[${index}]`;
-  const inputText = `${fieldset}${fieldText}`;
-  const inputLink = `${fieldset}${fieldLink}`;
-  const inputProceed = `${fieldset}${fieldProceed}`;
+  const fieldset = `${name}.${index}`;
+  const inputText = `${fieldset}.${fieldText}`;
+  const inputLink = `${fieldset}.${fieldLink}`;
+  const inputProceed = `${fieldset}.${fieldProceed}`;
 
-  const handleRemove = useCallback(() => onRemove({ index }), [
-    onRemove,
-    index,
-  ]);
-
-  const handleChange: ChangeEventHandler<HTMLInputElement> = useCallback(
-    ({ target }) => {
-      const { value, attributes, type, checked } = target;
-
-      // NOTE: there is possibly more complicated way of using handleChange as a curried function instead of relying on data-, but this works OK
-      const name = attributes.getNamedItem("data-field")?.value;
-      if (!name) {
-        return console.error(
-          EntranceButtonsInputFieldSet.name,
-          `data-field is missing on`,
-          target
-        );
-      }
-
-      onUpdate({
-        index,
-        callback: ({ item }) => ({
-          ...item,
-          [name]: type === "checkbox" ? checked : value,
-        }),
-      });
-    },
-    [onUpdate, index]
-  );
+  const handleRemove = useCallback(() => onRemove(index), [onRemove, index]);
 
   return (
     <fieldset className="EntranceButtonsInputFieldSet" name={fieldset}>
@@ -75,24 +47,18 @@ export const EntranceButtonsInputFieldSet: React.FC<EntranceButtonsInputFieldSet
         register={register}
         name={inputText}
         errors={errors}
-        data-field={fieldText}
-        onChange={handleChange}
       />
       <AdminInput
         label="Link"
         register={register}
         name={inputLink}
         errors={errors}
-        data-field={fieldLink}
-        onChange={handleChange}
       />
       <AdminCheckbox
         variant="toggler"
         register={register}
         name={inputProceed}
         label="To space"
-        data-field={fieldProceed}
-        onChange={handleChange}
       />
       <ButtonNG variant="secondary" onClick={handleRemove}>
         Remove button

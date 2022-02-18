@@ -14,6 +14,7 @@ export interface AdminInputProps
   subtext?: ReactNode | string;
   errors?: FieldErrors<FieldValues>;
   hidden?: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   register?: UseFormRegister<any>;
 }
 

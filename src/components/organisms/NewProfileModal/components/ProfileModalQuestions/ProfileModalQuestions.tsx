@@ -2,10 +2,8 @@ import React, { useMemo } from "react";
 import { UseFormRegister } from "react-hook-form";
 import classNames from "classnames";
 
-import { FormFieldProps } from "types/forms";
 import { UserProfileModalFormData } from "types/profileModal";
 import { Question } from "types/Question";
-import { ProfileLink } from "types/User";
 import { ContainerClassName } from "types/utility";
 
 import { ProfileModalInput } from "components/organisms/NewProfileModal/components/ProfileModalInput";
@@ -15,7 +13,7 @@ import "./ProfileModalQuestions.scss";
 
 export interface ProfileModalQuestionsProps extends ContainerClassName {
   editMode?: boolean;
-  register?: UseFormRegister<any>;
+  register?: UseFormRegister<UserProfileModalFormData>;
   questions: Question[];
   answers: string[];
 }

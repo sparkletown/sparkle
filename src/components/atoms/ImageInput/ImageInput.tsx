@@ -5,12 +5,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import {
-  FieldError,
-  FieldValues,
-  UseFormRegister,
-  UseFormSetValue,
-} from "react-hook-form";
+import { FieldError, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import { useCss } from "react-use";
 import classNames from "classnames";
 
@@ -37,8 +32,10 @@ export interface ImageInputProps {
   name: string;
   imgUrl?: string;
   error?: FieldError;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setValue: UseFormSetValue<any>;
   small?: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   register: UseFormRegister<any>;
   nameWithUnderscore?: boolean;
   text?: string;

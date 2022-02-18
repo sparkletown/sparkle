@@ -1,15 +1,12 @@
 import React, { useCallback } from "react";
 import {
   FieldErrors,
-  useForm,
   UseFormGetValues,
   UseFormRegister,
 } from "react-hook-form";
 
 import { UserProfileModalFormData } from "types/profileModal";
 import { ContainerClassName } from "types/utility";
-
-import { userProfileModalFormProp as formProp } from "utils/propName";
 
 import { ProfileModalInput } from "../ProfileModalInput";
 import { ProfileModalSectionHeader } from "../ProfileModalSectionHeader";

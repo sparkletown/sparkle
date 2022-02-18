@@ -43,7 +43,7 @@ export const ProfileQuestions: React.FC = () => {
     spaceSlug
   );
 
-  const { register, handleSubmit, formState } = useForm<QuestionsFormData>({
+  const { handleSubmit, formState } = useForm<QuestionsFormData>({
     mode: "onChange",
   });
 
@@ -126,7 +126,6 @@ export const ProfileQuestions: React.FC = () => {
                 <textarea
                   className="input-block input-centered"
                   placeholder={question.text}
-                  // TODO: Fix register here !!WARNING!!
                   // {...register(question.name)}
                 />
               </label>

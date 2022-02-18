@@ -6,7 +6,6 @@ import classNames from "classnames";
 
 import {
   ADMIN_IA_SPACE_BASE_PARAM_URL,
-  ALWAYS_NOOP_FUNCTION,
   BACKGROUND_IMG_TEMPLATES,
   DEFAULT_EMBED_URL,
   DEFAULT_REACTIONS_MUTED,
@@ -176,7 +175,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
         url: data.iframeUrl,
         autoPlay: space.autoPlay,
       });
-
+      console.log(data);
       await updateVenueNG(
         {
           id: space.id,

@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
-import { useForm, UseFormRegister } from "react-hook-form";
+import { UseFormRegister } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import classNames from "classnames";
 
@@ -10,7 +10,6 @@ import { User } from "types/User";
 import { ContainerClassName } from "types/utility";
 
 import { WithId } from "utils/id";
-import { userProfileModalFormProp as formProp } from "utils/propName";
 
 import { useUploadProfilePictureHandler } from "hooks/useUploadProfilePictureHandler";
 import { useUser } from "hooks/useUser";

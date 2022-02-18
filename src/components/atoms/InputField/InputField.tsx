@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import React from "react";
 import { FieldError, UseFormRegister } from "react-hook-form";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -50,7 +50,9 @@ interface InputFieldProps
   error?: FieldError;
   onIconStartClick?: () => void;
   onIconEndClick?: () => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   register?: UseFormRegister<any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   rules?: Record<string, any>;
   name?: string;
 }

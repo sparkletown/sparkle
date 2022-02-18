@@ -12,6 +12,7 @@ export interface AdminTextareaProps
   name: string;
   label?: ReactNode | string;
   subtext?: ReactNode | string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   register: UseFormRegister<any>;
   errors?: FieldErrors<FieldValues>;
 }
@@ -47,8 +48,7 @@ export const AdminTextarea: React.FC<AdminTextareaProps> = ({
       <textarea
         {...inputProps}
         className="AdminTextarea__input"
-        name={name}
-        {...register}
+        {...register(name)}
         id={id}
         disabled={disabled}
       />

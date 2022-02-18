@@ -22,7 +22,9 @@ interface PortalVisibilityProps {
   getValues: () => Record<string, unknown>;
   name: string;
   label?: ReactNode | string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   register: UseFormRegister<any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setValue: UseFormSetValue<any>;
 }
 
