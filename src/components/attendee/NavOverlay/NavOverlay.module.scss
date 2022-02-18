@@ -3,6 +3,7 @@
 @use "scss/attendee/font";
 @use "scss/attendee/layer";
 @use "scss/attendee/layout";
+@use "scss/attendee/breakpoint";
 @use "scss/attendee/effects/sparkle";
 
 // private, no need to bleed it out of this component
@@ -42,7 +43,7 @@ $-z-index-base: 1;
   height: 100%;
   font-size: font.$size--xl;
 
-  @media (max-width: 768px) {
+  @media (max-width: breakpoint.$md) {
     flex-wrap: wrap;
     overflow-y: auto;
   }
@@ -56,11 +57,11 @@ $-z-index-base: 1;
   padding: space.empty(4) space.empty(3);
   width: 100%;
 
-  @media (min-width: 768px) {
+  @media (min-width: breakpoint.$md) {
     width: layout.$w-sidebar;
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: breakpoint.$md) {
     margin: auto;
   }
 }

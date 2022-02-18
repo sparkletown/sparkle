@@ -2,6 +2,7 @@
 @use "scss/attendee/space";
 @use "scss/attendee/font";
 @use "scss/attendee/layout";
+@use "scss/attendee/breakpoint";
 
 @font-face {
   font-family: "Sparkle";
@@ -50,7 +51,7 @@
   z-index: 40;
   @include sparkle.panel--normal;
 
-  @media (max-width: 767px) {
+  @media (max-width: breakpoint.$md - 1) {
     display: flex;
     flex-direction: column;
 
@@ -63,7 +64,7 @@
     }
   }
 
-  @media (min-width: 768px) {
+  @media (min-width: breakpoint.$md) {
     display: grid;
     grid-template-columns: 1fr 1fr;
     padding: 0 space.empty(1);
@@ -71,7 +72,7 @@
     background: transparent;
   }
 
-  @media (min-width: 960px) {
+  @media (min-width: breakpoint.$lg) {
     grid-template-columns: 1fr layout.$w-sidebar;
     justify-items: center;
   }

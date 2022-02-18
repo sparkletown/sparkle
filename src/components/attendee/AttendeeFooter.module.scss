@@ -2,6 +2,7 @@
 @use "scss/attendee/opacity";
 @use "scss/attendee/effects/sparkle";
 @use "scss/attendee/effects/atom";
+@use "scss/attendee/breakpoint";
 
 .AttendeeFooter {
   @include sparkle.panel--normal;
@@ -24,7 +25,7 @@
     width: 100%;
     padding: space.empty(2) 15%;
 
-    @media (min-width: 768px) {
+    @media (min-width: breakpoint.$md) {
       display: flex;
       flex-direction: row;
       flex-wrap: wrap;

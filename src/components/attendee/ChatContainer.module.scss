@@ -3,6 +3,7 @@
 @use "scss/attendee/space";
 @use "scss/attendee/opacity";
 @use "scss/attendee/layout";
+@use "scss/attendee/breakpoint";
 @use "scss/attendee/effects/sparkle";
 @use "scss/attendee/effects/rounded";
 @use "scss/attendee/effects/atom";
@@ -122,7 +123,7 @@ $-h-text-chat: 40vh; // previously named $text-chat-height
 .ChatContainer {
   padding: 0 space.empty(1);
 
-  @media (min-width: 768px) {
+  @media (min-width: breakpoint.$md) {
     padding: 0;
     width: 100%;
     grid-column: 2 / 3;
@@ -131,7 +132,7 @@ $-h-text-chat: 40vh; // previously named $text-chat-height
   nav {
     display: flex;
 
-    @media (min-width: 768px) {
+    @media (min-width: breakpoint.$md) {
       @include sparkle.panel--normal;
       @include rounded.normal;
     }
@@ -207,7 +208,7 @@ $-h-text-chat: 40vh; // previously named $text-chat-height
     flex-direction: column;
     @include rounded.bottom;
 
-    @media (min-width: 768px) {
+    @media (min-width: breakpoint.$md) {
     }
 
     #chat-scrollbox-mask {
@@ -249,7 +250,7 @@ $-h-text-chat: 40vh; // previously named $text-chat-height
         background: theme.$dark--canvas;
       }
 
-      @media (min-width: 768px) {
+      @media (min-width: breakpoint.$md) {
         margin: 0 space.empty(1) space.empty(1);
       }
     }
@@ -267,7 +268,7 @@ $-h-text-chat: 40vh; // previously named $text-chat-height
       }
     }
 
-    @media (min-width: 768px) {
+    @media (min-width: breakpoint.$md) {
       height: calc(100vh - #{space.empty(2)});
       margin-top: calc(-100vh + #{space.empty(2)} + #{space.button(1)});
 
