@@ -16,12 +16,10 @@ import { useAdminRole } from "hooks/user/useAdminRole";
 import { useOwnWorlds } from "hooks/worlds/useOwnWorlds";
 import { useWorlds } from "hooks/worlds/useWorlds";
 
-import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
 import { AdminShowcaseTitle } from "components/organisms/AdminVenueView/components/AdminShowcaseTitle";
 
 import { AdminHeader } from "components/atoms/AdminHeader";
 import { AdminRestricted } from "components/atoms/AdminRestricted";
-import { ButtonNG } from "components/atoms/ButtonNG";
 
 import { WorldsTable } from "./WorldsTable";
 
@@ -90,14 +88,13 @@ export const WorldsDashboard: React.FC<WorldsDashboardProps> = ({ userId }) => {
             </FullWidthLayout>
           </>
         ) : (
-          <AdminShowcase>
+          <FullWidthLayout>
             <div className="WorldsDashboard__arrow-header">
-              <ButtonNG
-                variant="normal-gradient"
-                linkTo={ADMIN_IA_WORLD_CREATE_URL}
-              >
-                Create new world
-              </ButtonNG>
+              <HeaderButton
+                name="Create new world"
+                to={ADMIN_IA_WORLD_CREATE_URL}
+                variant="primary"
+              ></HeaderButton>
               <img
                 alt="arrow pointing towards the Create a world button"
                 className="WorldsDashboard__arrow"
@@ -105,7 +102,7 @@ export const WorldsDashboard: React.FC<WorldsDashboardProps> = ({ userId }) => {
               />
             </div>
             {renderedWelcomePage}
-          </AdminShowcase>
+          </FullWidthLayout>
         )}
       </AdminRestricted>
     </AdminLayout>

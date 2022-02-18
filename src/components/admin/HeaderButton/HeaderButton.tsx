@@ -10,7 +10,7 @@ import * as TW from "./HeaderButton.tailwind";
 
 type HeaderButtonVariant = "primary" | "secondary" | "multicolor";
 
-interface HeaderButtonProps {
+export interface HeaderButtonProps {
   name?: string;
   to?: string;
   icon?: (props: React.ComponentProps<"svg">) => JSX.Element;
