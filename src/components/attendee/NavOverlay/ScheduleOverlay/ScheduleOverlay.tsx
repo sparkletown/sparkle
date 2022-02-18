@@ -2,14 +2,13 @@ import { useCallback, useMemo } from "react";
 import {
   addDays,
   differenceInCalendarDays,
-  format,
   fromUnixTime,
   isToday,
   startOfDay,
   startOfToday,
 } from "date-fns";
 
-import { ALWAYS_EMPTY_ARRAY, SPACE_TAXON } from "settings";
+import { ALWAYS_EMPTY_ARRAY, SPACE_TAXON, STRING_SPACE } from "settings";
 
 import {
   addEventToPersonalizedSchedule,
@@ -26,7 +25,11 @@ import {
   isEventWithinDateAndNotFinished,
 } from "utils/event";
 import { range } from "utils/range";
-import { formatDateRelativeToNow, formatTimeLocalised } from "utils/time";
+import {
+  formatDateRelativeToNow,
+  formatDayLabel,
+  formatTimeLocalised,
+} from "utils/time";
 
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
@@ -34,7 +37,7 @@ import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 import useVenueScheduleEvents from "hooks/useVenueScheduleEvents";
 
-import styles from "./ScheduleOverlay.module.scss";
+import CN from "./ScheduleOverlay.module.scss";
 const emptyPersonalizedSchedule = {};
 
 export const ScheduleOverlay: React.FC = () => {
@@ -68,17 +71,6 @@ export const ScheduleOverlay: React.FC = () => {
   const isScheduleTimeshifted = !isToday(firstDayOfSchedule);
 
   const weekdays = useMemo(() => {
-    const formatDayLabel = (day: Date | number) => {
-      if (isScheduleTimeshifted) {
-        return format(day, "do");
-      } else {
-        return formatDateRelativeToNow(day, {
-          formatOtherDate: (dateOrTimestamp) => format(dateOrTimestamp, "do"),
-          formatTomorrow: (dateOrTimestamp) => format(dateOrTimestamp, "do"),
-        });
-      }
-    };
-
     if (dayDifference <= 0) return ALWAYS_EMPTY_ARRAY;
 
     return range(dayDifference)
@@ -96,7 +88,7 @@ export const ScheduleOverlay: React.FC = () => {
         const personalisedSchedule = eventsFilledWithPriority.filter(
           (event) => event.isSaved
         );
-        const formattedDay = formatDayLabel(day);
+        const formattedDay = formatDayLabel(day, isScheduleTimeshifted);
 
         return {
           scheduleDate: formattedDay,
@@ -120,9 +112,6 @@ export const ScheduleOverlay: React.FC = () => {
       event: ScheduledEvent
     ) => {
       if (!userWithId?.id) return;
-
-      // @debt get rid of stopPropagation() in the project allowing a valid event bubbling
-      e.stopPropagation();
 
       event.isSaved
         ? removeEventFromPersonalizedSchedule({ event, userId: userWithId.id })
@@ -158,13 +147,14 @@ export const ScheduleOverlay: React.FC = () => {
                   <span>
                     {showDate &&
                       formatDateRelativeToNow(eventEndTime({ event }))}
-                  </span>{" "}
+                  </span>
+                  {STRING_SPACE}
                   <span>{formatTimeLocalised(eventEndTime({ event }))}</span>
                   <span> in {event.spaceId}</span>
                 </div>
                 <div>{event.description}</div>
                 <div
-                  className={styles.ScheduleOverlay__bookmark}
+                  className={CN.scheduleOverlay__bookmark}
                   onClick={(e) => bookmarkEvent(e, event)}
                 >
                   {event.isSaved
@@ -180,17 +170,17 @@ export const ScheduleOverlay: React.FC = () => {
   );
 
   return (
-    <div className={styles.ScheduleOverlay__wrapper}>
-      <div className={styles.ScheduleOverlay__header}>
+    <div className={CN.scheduleOverlay__wrapper}>
+      <div className={CN.scheduleOverlay__header}>
         {space?.name ?? SPACE_TAXON.title} schedule
       </div>
       <button
-        className={styles.ScheduleOverlay__button}
+        className={CN.scheduleOverlay__button}
         onClick={togglePersonalisedSchedule}
       >
         {showPersonalisedSchedule ? "Show all" : "Only show bookmarked events"}
       </button>
-      <div className={styles.ScheduleOverlay__content}>{renderedEvents}</div>
+      <div className={CN.scheduleOverlay__content}>{renderedEvents}</div>
     </div>
   );
 };

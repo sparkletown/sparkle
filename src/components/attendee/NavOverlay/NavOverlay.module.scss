@@ -1,7 +1,7 @@
 @use "scss/attendee/mixins.scss"as *;
 @use "scss/attendee/variables.scss"as *;
 
-.NavOverlay {
+.navOverlay {
   @include sparkle-color-glass;
   position: fixed;
   z-index: $z-index-attendee-overlay;

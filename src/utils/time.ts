@@ -324,3 +324,17 @@ export const convertUtcSecondsFromInputDateAndTime: (input: {
   date: string;
   time: string;
 }) => number = ({ date, time }) => getUnixTime(new Date(`${date} ${time}`));
+
+export const formatDayLabel = (
+  day: Date | number,
+  isScheduleTimeshifted: boolean
+) => {
+  if (isScheduleTimeshifted) {
+    return format(day, "do");
+  }
+
+  return formatDateRelativeToNow(day, {
+    formatOtherDate: (dateOrTimestamp) => format(dateOrTimestamp, "do"),
+    formatTomorrow: (dateOrTimestamp) => format(dateOrTimestamp, "do"),
+  });
+};
