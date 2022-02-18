@@ -62,7 +62,7 @@ jobs:
     steps:
       - checkout
       - node/install:
-          node-version: '16.13'
+          node-version: "16.13"
       - run: node --version
       - run: npm install -g npm
       - run: npm -v
@@ -125,7 +125,7 @@ jobs:
             if [ $CIRCLE_BRANCH = "sparkle6" ]; then
               ENV=sparkle-6
             fi
-            if [ $CIRCLE_BRANCH = "new/upgrade-node" ]; then
+            if [ $CIRCLE_BRANCH = "redesign-2021" ]; then
               ENV=sparkle-7
             fi
             if [ $CIRCLE_BRANCH = "sparkle8" ]; then
@@ -270,7 +270,7 @@ jobs:
               TARGET=sparkle-6
               RELEASE_STAGE=sparkle6
             fi
-            if [ $CIRCLE_BRANCH = "new/upgrade-node" ]; then
+            if [ $CIRCLE_BRANCH = "redesign-2021" ]; then
               PREFIX=SPARKLE7_
               ENV=sparkle-7
               TARGET=sparkle-7
@@ -431,7 +431,7 @@ workflows:
                 - sparkle4
                 - sparkle5
                 - sparkle6
-                - new/upgrade-node
+                - redesign-2021
                 - sparkle8
                 - sparkle9
                 - sparkle10
@@ -465,7 +465,7 @@ workflows:
                 - sparkle4
                 - sparkle5
                 - sparkle6
-                - new/upgrade-node
+                - redesign-2021
                 - sparkle8
                 - sparkle9
                 - sparkle10
