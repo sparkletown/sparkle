@@ -132,7 +132,11 @@ export const SpaceCard: React.FC<SpaceCardProps> = ({
           </p>
         </div>
         <div className="flex justify-center align-center mt-4">
-          <LinkButton href={editSpaceUrl} disabled={!isEditable} width="6/12">
+          <LinkButton
+            href={editSpaceUrl}
+            disabled={!isEditable}
+            width="halfContainer"
+          >
             Edit
           </LinkButton>
         </div>
