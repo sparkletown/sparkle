@@ -10,13 +10,16 @@ import { withCurrentUserId } from "components/hocs/db/withCurrentUserId";
 import { withRequired } from "components/hocs/gate/withRequired";
 import { compose } from "lodash/fp";
 
-import { setProjectedVideoTrackId } from "api/venue";
+import { COLLECTION_EXPERIMENTS } from "settings";
+
+import { setProjectedVideoTrackId } from "api/experiments";
 
 import { UserId } from "types/id";
 import { ExperimentalVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
+import { useRefiDocument } from "hooks/fire/useRefiDocument";
 import { useProfileById } from "hooks/user/useProfileById";
 
 import { Dropdown } from "components/atoms/Dropdown";
@@ -69,6 +72,10 @@ const UserTrackname: React.FC<UserTracknameProps> = ({
   return null;
 };
 
+interface ProjectionData {
+  projectedVideoTrackId: string | null;
+}
+
 const _ExperimentalSpace: React.FC<ExperimentalSpaceProps> = ({
   venue,
   userId,
@@ -82,6 +89,15 @@ const _ExperimentalSpace: React.FC<ExperimentalSpaceProps> = ({
     remoteParticipants,
   } = useVideoHuddle();
 
+  const huddleId = useMemo(() => `playground-huddle-${venue.id}`, [venue.id]);
+
+  const queryPath = useMemo(
+    () => [COLLECTION_EXPERIMENTS, `projection-${huddleId}`],
+    [huddleId]
+  );
+
+  const { data: projectionData } = useRefiDocument<ProjectionData>(queryPath);
+
   useEffect(() => {
     return () => {
       leaveHuddle();
@@ -92,8 +108,8 @@ const _ExperimentalSpace: React.FC<ExperimentalSpaceProps> = ({
     leaveHuddle();
   }, [leaveHuddle]);
   const connectCallback = useCallback(() => {
-    joinHuddle(userId, "playground-huddle");
-  }, [userId, joinHuddle]);
+    joinHuddle(userId, `playground-huddle-${venue.id}`);
+  }, [joinHuddle, userId, venue.id]);
 
   const shareScreenCallback = useCallback(() => {
     shareScreen();
@@ -118,26 +134,28 @@ const _ExperimentalSpace: React.FC<ExperimentalSpaceProps> = ({
   }, [localParticipant, remoteParticipants]);
 
   const projectedVideoTrack = useMemo(() => {
-    const foundTrackParticipantPair = venue.projectedVideoTrackId
-      ? allTracks.find(({ track }) => track.id === venue.projectedVideoTrackId)
+    const foundTrackParticipantPair = projectionData?.projectedVideoTrackId
+      ? allTracks.find(
+          ({ track }) => track.id === projectionData?.projectedVideoTrackId
+        )
       : undefined;
     if (foundTrackParticipantPair) {
       return foundTrackParticipantPair.track;
     }
     return undefined;
-  }, [allTracks, venue.projectedVideoTrackId]);
+  }, [allTracks, projectionData?.projectedVideoTrackId]);
 
   const trackOptions = useMemo(() => {
     return (
       <>
-        <div onClick={() => setProjectedVideoTrackId(venue.id, null)}>
+        <div onClick={() => setProjectedVideoTrackId(huddleId, null)}>
           Nothing
         </div>
         {allTracks.map(({ track, participant }) => (
           <div
             key={track.id}
             onClick={() => {
-              setProjectedVideoTrackId(venue.id, track.id);
+              setProjectedVideoTrackId(huddleId, track.id);
             }}
           >
             <UserTrackname participant={participant} track={track} />
@@ -145,7 +163,7 @@ const _ExperimentalSpace: React.FC<ExperimentalSpaceProps> = ({
         ))}
       </>
     );
-  }, [allTracks, venue.id]);
+  }, [allTracks, huddleId]);
 
   const projectTitle = useMemo(
     () => <span>Choose a track to project</span>,

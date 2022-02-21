@@ -230,14 +230,3 @@ export const unsetTableSeat = async (
   userId: string,
   { venueId }: Pick<VenueTablePath, "venueId">
 ) => getUserSeatedTableRef(userId, venueId).delete();
-
-export const setProjectedVideoTrackId = async (
-  venueId: string,
-  trackId: string | null
-) => {
-  firebase
-    .firestore()
-    .collection("venues")
-    .doc(venueId)
-    .update({ projectedVideoTrackId: trackId });
-};

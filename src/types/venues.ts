@@ -212,7 +212,6 @@ export interface JazzbarVenue extends BaseVenue {
 
 export interface ExperimentalVenue extends BaseVenue {
   template: VenueTemplate.experiment;
-  projectedVideoTrackId: string;
 }
 
 export interface EmbeddableVenue extends BaseVenue {

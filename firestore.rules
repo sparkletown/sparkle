@@ -42,15 +42,12 @@ service cloud.firestore {
     match /experiences/{experienceId}/{restOfPath=**} {
       allow read, write: if request.auth.uid != null;
     }
+    // TODO This should not make it into production, it's an experiment
+    match /experiments/{experiment} {
+      allow read, write: if request.auth.uid != null;
+    }
     match /venues/{venue} {
       allow read: if true;
-
-      // =======================================================================
-      // TODO Do not merge this into production. This needs far more thought and
-      // is only here to support a prototype space.
-      // =======================================================================
-      allow update: if (request.resource.data.diff(resource.data).affectedKeys()
-        .hasOnly(['projectedVideoTrackId']));
 
       function venueData() {
         return get(/databases/$(database)/documents/venues/$(venue)).data;
