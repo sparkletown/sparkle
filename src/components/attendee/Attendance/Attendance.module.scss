@@ -1,14 +1,14 @@
 .Attendance {
   display: flex;
   align-items: center;
+  justify-content: center;
+  flex: 1;
 
   &__avatarsContainer {
     width: auto;
-    display: flex;
-    flex-grow: 1;
     overflow: hidden;
+    height: 30px;
     padding-left: 10px;
-    height: 42px;
   }
 
   &__userAvatar {

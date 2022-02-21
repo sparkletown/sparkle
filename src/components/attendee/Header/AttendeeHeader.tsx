@@ -24,7 +24,7 @@ export const AttendeeHeader = () => {
 
   if (!userWithId) return null;
 
-  const mockData: UserWithId[] = Array(30).fill(userWithId);
+  const mockData: UserWithId[] = Array(10).fill(userWithId);
 
   console.log(userWithId, mockData);
 
@@ -34,7 +34,7 @@ export const AttendeeHeader = () => {
         <div>
           <Button>{space?.name ?? `This ${SPACE_TAXON.title}`}</Button>
         </div>
-        <Attendance totalUsersCount={60} usersSample={mockData} />
+        <Attendance totalUsersCount={20} usersSample={mockData} />
         <div>
           <Button onClick={show}>Schedule</Button>
           <Button>Profile</Button>
