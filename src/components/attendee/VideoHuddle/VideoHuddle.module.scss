@@ -19,20 +19,14 @@
   }
 
   height: layout.$h-video-chat;
-  padding: space.gap(1);
   border-top: 1px solid theme.$sparkle--border;
   border-bottom: 1px solid theme.$sparkle--border;
-
-  @media (min-width: breakpoint.$md) {
-    border-top: none;
-  }
 }
 
 .VideoHuddleControls {
   @include sparkle.panel--normal;
   position: relative;
   margin-top: space.gap(-1);
-  width: space.empty(1);
   display: flex;
   flex-direction: column;
   justify-self: start;
