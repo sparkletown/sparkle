@@ -1,59 +1,31 @@
 {
-  "name": "@sparkletown/sparkle-functions",
+  "name": "functions",
   "description": "Cloud Functions for Firebase",
   "scripts": {
-    "eslint:check": "eslint --ext .js,.ts src/",
-    "eslint:fix": "eslint --fix --ext .js,.ts src/",
-    "prettier:write": "prettier --write \"./src/**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
-    "prettier:check": "prettier --check \"./src/**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
-    "lint": "npm run prettier:check && npm run eslint:check",
-    "reformat": "npm run eslint:fix && npm run prettier:write",
-    "ncu:check": "npx npm-check-updates",
-    "ncu:upgrade": "npx npm-check-updates --upgrade",
-    "npm:save-audit": "npm audit > npm-audit.result.txt",
-    "npm:generate-lockfile": "npm i --legacy-peer-deps --package-lock-only",
-    "npm:install": "npm install --legacy-peer-deps",
-    "npm:invalidate-cache": "npm cache clear --force",
-    "firebase": "npx --no-install -- firebase",
-    "firebase:emulate-all": "npm run build && firebase emulators:start",
-    "firebase:emulate-functions": "npm run build && firebase emulators:start --only functions",
-    "firebase:emulate-functions-hosting": "npm run build && firebase emulators:start --only functions,hosting",
-    "firebase:emulate-functions-hosting:debug": "npm run build && firebase emulators:start --only functions,hosting --inspect-functions",
-    "build": "tsc",
-    "serve": "npm run build && firebase emulators:start --only functions",
-    "shell": "npm run build && firebase functions:shell",
-    "start": "npm run shell",
-    "deploy": "firebase deploy --only functions",
-    "logs": "firebase functions:log"
+    "lint": "prettier --write \"./**/*.{js,jsx,ts,tsx,json,css,scss,md}\""
   },
   "engines": {
-    "node": "16"
+    "node": "10"
   },
-  "main": "lib/index.js",
   "dependencies": {
     "agora-access-token": "^2.0.4",
-    "date-fns": "^2.28.0",
-    "firebase-admin": "^10.0.2",
-    "firebase-functions": "^3.16.0",
+    "date-fns": "^2.24.0",
+    "firebase": "^9.6.7",
+    "firebase-admin": "^9.4.2",
+    "firebase-functions": "^3.13.1",
     "lodash": "^4.17.21",
-    "simple-oauth2": "^4.3.0",
-    "twilio": "^3.73.0",
-    "uuid": "^8.3.2",
-    "yup": "^0.32.11"
+    "node-fetch": "^2.6.1",
+    "simple-oauth2": "^3.4.0",
+    "twilio": "^3.63.0",
+    "uuidv4": "^6.2.6",
+    "yup": "^0.32.9"
   },
   "devDependencies": {
-    "@types/uuid": "^8.3.4",
-    "@typescript-eslint/eslint-plugin": "^5.10.1",
-    "@typescript-eslint/parser": "^5.10.1",
-    "eslint": "^8.7.0",
-    "eslint-config-react-app": "^7.0.0",
-    "eslint-plugin-promise": "^6.0.0",
-    "firebase-functions-test": "^0.3.3",
-    "firebase-tools": "^10.1.2",
-    "node-fetch": "^2.6.7",
-    "npm-check-updates": "^12.2.1",
-    "prettier": "^2.5.1",
-    "typescript": "^4.5.5"
+    "eslint": "^7.19.0",
+    "eslint-plugin-promise": "^5.1.0",
+    "firebase-functions-test": "^0.2.3",
+    "firebase-tools": "^9.2.2",
+    "prettier": "^2.2.1"
   },
   "private": true
 }
