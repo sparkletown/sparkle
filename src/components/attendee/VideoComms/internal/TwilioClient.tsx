@@ -283,6 +283,23 @@ export const TwilioClient = (onStateUpdateCallback: StateUpdateCallback) => {
     };
   };
 
+  const stopShareScreen = async () => {
+    if (!room) {
+      console.warn("stopShareScreen called from invalid state");
+      return;
+    }
+    for (const track of room.localParticipant.videoTracks.values()) {
+      if (track.trackName !== TRACK_NAME_SCREENSHARE) {
+        // Only disable screenshare tracks
+        continue;
+      }
+      track.track.disable();
+      track.track.stop();
+      room.localParticipant.unpublishTrack(track.track);
+    }
+    recalculateStatus();
+  };
+
   const recalculateStatus = () => {
     // This isn't particularly performant. However, we generally don't get
     // a lot of state changes happening during a call so this is probably ok.
@@ -350,7 +367,11 @@ export const TwilioClient = (onStateUpdateCallback: StateUpdateCallback) => {
       console.warn("startVideo called from invalid state");
       return;
     }
-    if (!room.localParticipant.videoTracks.size) {
+    const webcamTracks = Array.from(
+      room.localParticipant.videoTracks.values()
+    ).filter(({ trackName }) => trackName !== TRACK_NAME_SCREENSHARE);
+
+    if (!webcamTracks.length) {
       // This situation arises when the local participant joins a call without
       // video enabled at the start. Create the video stream now.
       isTransmittingVideo = true;
@@ -360,7 +381,7 @@ export const TwilioClient = (onStateUpdateCallback: StateUpdateCallback) => {
       await room.localParticipant.publishTrack(localVideoTrack);
       recalculateStatus();
     }
-    for (const track of room.localParticipant.videoTracks.values()) {
+    for (const track of webcamTracks) {
       track.track.enable();
     }
     isTransmittingVideo = true;
@@ -372,6 +393,10 @@ export const TwilioClient = (onStateUpdateCallback: StateUpdateCallback) => {
       return;
     }
     for (const track of room.localParticipant.videoTracks.values()) {
+      if (track.trackName === TRACK_NAME_SCREENSHARE) {
+        // Don't disable screenshare tracks, that is done via stopShareScreen
+        continue;
+      }
       track.track.disable();
     }
     isTransmittingVideo = false;
@@ -382,6 +407,7 @@ export const TwilioClient = (onStateUpdateCallback: StateUpdateCallback) => {
     joinChannel,
     disconnect,
     shareScreen,
+    stopShareScreen,
     startAudio,
     stopAudio,
     startVideo,

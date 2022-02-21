@@ -1,0 +1,9 @@
+@use "scss/attendee/effects/rounded.scss";
+
+.huddleParticipant {
+  display: flex;
+  justify-content: center;
+
+  @include rounded.normal;
+  overflow: hidden;
+}
