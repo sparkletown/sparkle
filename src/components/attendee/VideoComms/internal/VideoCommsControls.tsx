@@ -1,10 +1,13 @@
 import {
+  faBan,
   faVideo,
   faVideoSlash,
   faVolumeMute,
   faVolumeUp,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+import { VideoSource } from "../types";
 
 interface VideoCommsControlsProps {
   startAudio?: () => void;
@@ -13,6 +16,7 @@ interface VideoCommsControlsProps {
   stopVideo?: () => void;
   audioEnabled?: boolean;
   videoEnabled?: boolean;
+  sourceType: VideoSource;
 }
 
 export const VideoCommsControls: React.FC<VideoCommsControlsProps> = ({
@@ -22,6 +26,7 @@ export const VideoCommsControls: React.FC<VideoCommsControlsProps> = ({
   stopVideo,
   audioEnabled,
   videoEnabled,
+  sourceType,
 }) => {
   return (
     <>
@@ -35,16 +40,18 @@ export const VideoCommsControls: React.FC<VideoCommsControlsProps> = ({
             <FontAwesomeIcon icon={faVolumeMute} />
           </span>
         ))}
-      {startVideo &&
-        (videoEnabled ? (
-          <span onClick={stopVideo}>
-            <FontAwesomeIcon icon={faVideo} />
-          </span>
-        ) : (
-          <span onClick={startVideo}>
-            <FontAwesomeIcon icon={faVideoSlash} />
-          </span>
-        ))}
+      {stopVideo && videoEnabled && (
+        <span onClick={stopVideo}>
+          <FontAwesomeIcon
+            icon={sourceType === VideoSource.Webcam ? faVideo : faBan}
+          />
+        </span>
+      )}
+      {startVideo && !videoEnabled && (
+        <span onClick={startVideo}>
+          <FontAwesomeIcon icon={faVideoSlash} />
+        </span>
+      )}
     </>
   );
 };
