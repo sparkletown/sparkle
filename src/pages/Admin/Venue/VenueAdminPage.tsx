@@ -6,9 +6,9 @@ import { DEFAULT_MAP_BACKGROUND, IFRAME_TEMPLATES } from "settings";
 
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useValidImage } from "hooks/useCheckImage";
+import { useUserNG } from "hooks/user/useUserNG";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useShowHide } from "hooks/useShowHide";
-import { useUser } from "hooks/useUser";
 
 import { BannerAdmin } from "components/organisms/BannerAdmin";
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
@@ -22,11 +22,13 @@ import { AnnouncementOptions } from "./AnnouncementOptions";
 import "./VenueAdminPage.scss";
 
 export const VenueAdminPage: React.FC = () => {
-  const { profile, user, userId } = useUser();
+  const { profile, auth: user, userId } = useUserNG();
   const { space, spaceId, isLoaded } = useWorldAndSpaceByParams();
   const { currentVenue, parentVenue } = useRelatedVenues({
     currentVenueId: spaceId,
   });
+
+  console.log(VenueAdminPage.name, userId, user, profile);
 
   const isVenueOwner: boolean = !!(
     currentVenue &&
