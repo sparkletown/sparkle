@@ -263,6 +263,8 @@ export const TwilioClient = (onStateUpdateCallback: StateUpdateCallback) => {
       return;
     }
 
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     const stream = await navigator.mediaDevices.getDisplayMedia();
     // The name of the track is used to identify that this is a screenshare
     // rather than a webcam source. This can then be used when displaying

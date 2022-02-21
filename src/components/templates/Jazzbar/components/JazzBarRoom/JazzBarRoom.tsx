@@ -28,6 +28,7 @@ export const JazzBarRoom: React.FC<RoomProps> = ({
   roomName,
   venueId,
   setSeatedAtTable,
+  isReactionsMuted,
 }) => {
   const { userId, profile } = useUser();
 
@@ -72,7 +73,11 @@ export const JazzBarRoom: React.FC<RoomProps> = ({
           className="jazzbar-room__participant"
           key={localParticipant.sparkleId}
         >
-          <VideoCommsParticipant participant={localParticipant} isLocal />
+          <VideoCommsParticipant
+            participant={localParticipant}
+            isLocal
+            isAudioEffectDisabled={isReactionsMuted}
+          />
         </div>
       )}
       {sidedVideoParticipants.map((participant) => (
@@ -80,7 +85,11 @@ export const JazzBarRoom: React.FC<RoomProps> = ({
           key={participant.participant.sparkleId}
           className="jazzbar-room__participant"
         >
-          <VideoCommsParticipant participant={participant.participant} />
+          <VideoCommsParticipant
+            participant={participant.participant}
+            reactionPosition="left"
+            isAudioEffectDisabled={isReactionsMuted}
+          />
         </div>
       ))}
       <div className="jazzbar-room__participants">
@@ -89,7 +98,10 @@ export const JazzBarRoom: React.FC<RoomProps> = ({
             key={participant.participant.sparkleId}
             className="jazzbar-room__participant"
           >
-            <VideoCommsParticipant participant={participant.participant} />
+            <VideoCommsParticipant
+              participant={participant.participant}
+              isAudioEffectDisabled={isReactionsMuted}
+            />
           </div>
         ))}
       </div>

@@ -1,8 +1,8 @@
 import React, { ReactNode } from "react";
 
-import { UserId } from "types/id";
-
 import { useProfileById } from "hooks/user/useProfileById";
+
+import { UserReactions } from "components/molecules/UserReactions";
 
 import { UserAvatar } from "components/atoms/UserAvatar";
 
@@ -18,6 +18,9 @@ import styles from "./scss/VideoCommsParticipant.module.scss";
 interface VideoCommsParticipantProps {
   participant: Participant;
   isLocal?: boolean;
+  reactionPosition?: "left" | "right";
+  isAudioEffectDisabled?: boolean;
+
   /**
    * A function that will generate controls on a per-video-track basis. Useful for
    * adding things like "share" buttons or similar on each track. The Video
@@ -30,6 +33,8 @@ export const VideoCommsParticipant: React.FC<VideoCommsParticipantProps> = ({
   participant,
   isLocal,
   videoTrackControls,
+  reactionPosition = "right",
+  isAudioEffectDisabled = true,
 }) => {
   const {
     startAudio,
@@ -40,8 +45,8 @@ export const VideoCommsParticipant: React.FC<VideoCommsParticipantProps> = ({
     isTransmittingVideo,
   } = useVideoComms();
 
-  const { profile, isLoading } = useProfileById({
-    userId: participant.sparkleId as UserId,
+  const { profile, userId, isLoading } = useProfileById({
+    userId: participant.sparkleId,
   });
 
   const hasActiveVideoStream = participant.videoTracks.some(
@@ -73,10 +78,19 @@ export const VideoCommsParticipant: React.FC<VideoCommsParticipantProps> = ({
         ))}
 
       {!isLoading && (
-        <UserAvatar
-          containerClassName={styles.avatarContainer}
-          user={profile}
-        />
+        <>
+          <UserAvatar
+            containerClassName={styles.avatarContainer}
+            user={profile}
+          />
+          {userId && (
+            <UserReactions
+              userId={userId}
+              isMuted={isAudioEffectDisabled}
+              reactionPosition={reactionPosition}
+            />
+          )}
+        </>
       )}
       <div className={styles.videoCommsControlsContainer}>
         {isLocal ? (
