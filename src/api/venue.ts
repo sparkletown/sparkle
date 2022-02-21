@@ -233,7 +233,7 @@ export const unsetTableSeat = async (
 
 export const setProjectedVideoTrackId = async (
   venueId: string,
-  trackId: string
+  trackId: string | null
 ) => {
   firebase
     .firestore()
