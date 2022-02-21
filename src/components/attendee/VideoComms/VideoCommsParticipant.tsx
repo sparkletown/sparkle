@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useMemo } from "react";
 import classNames from "classnames";
 
 import { UserId } from "types/id";
@@ -39,15 +39,6 @@ export const VideoCommsParticipant: React.FC<VideoCommsParticipantProps> = ({
   const { profile, isLoading } = useProfileById({
     userId: participant.sparkleId as UserId,
   });
-
-  const determineControlsClassnames = useCallback(
-    (isEnabled) =>
-      classNames(styles.videoCommsControlsContainer, {
-        [styles.videoCommsControlsContainer__darkButtons]: !isEnabled,
-      }),
-    []
-  );
-
   // These muted controls are only for muting the playback of remote participants
   // Local participant audio is controlled via useVideoComms
   const { isMuted, mute, unmute } = useMute();
@@ -72,6 +63,10 @@ export const VideoCommsParticipant: React.FC<VideoCommsParticipantProps> = ({
   );
   const audioStream = participant.audioTracks[0];
 
+  const controlsClasses = classNames(styles.videoCommsControlsContainer, {
+    [styles.videoCommsControlsContainer__darkButtons]: !webcamTrack?.enabled,
+  });
+
   if (isLoading) {
     return <LoadingSpinner />;
   }
@@ -89,7 +84,7 @@ export const VideoCommsParticipant: React.FC<VideoCommsParticipantProps> = ({
             <span className={styles.userName}>{profile?.partyName}</span>
           </>
         )}
-        <div className={determineControlsClassnames(webcamTrack?.enabled)}>
+        <div className={controlsClasses}>
           {isLocal ? (
             <>
               <VideoCommsControls
@@ -116,7 +111,7 @@ export const VideoCommsParticipant: React.FC<VideoCommsParticipantProps> = ({
         <div className={styles.trackContainer}>
           <VideoTrackDisplay track={screenshareTrack} />
           {isLocal && (
-            <div className={determineControlsClassnames(true)}>
+            <div className={styles.videoCommsControlsContainer}>
               <VideoCommsControls
                 stopVideo={stopShareScreen}
                 videoEnabled={true}

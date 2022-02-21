@@ -5,6 +5,8 @@
 @use "scss/attendee/layout";
 @use "scss/attendee/breakpoint";
 
+$-control-size: 32px;
+
 .VideoHuddle {
   position: relative;
   overflow: hidden;
@@ -34,8 +36,8 @@
 
   span {
     border-bottom: 1px solid theme.$sparkle--border;
-    width: 32px;
-    height: 32px;
+    width: $-control-size;
+    height: $-control-size;
     opacity: 0.5;
     display: flex;
     align-items: center;

@@ -10,11 +10,7 @@ export const HuddleContext = React.createContext<HuddleContextType>({
   setInHuddle: () => {},
 });
 
-interface HuddleProviderProps {
-  children: React.ReactNode;
-}
-
-export const HuddleProvider: React.FC<HuddleProviderProps> = ({ children }) => {
+export const HuddleProvider: React.FC = ({ children }) => {
   const [inHuddle, setInHuddle] = useState(false);
 
   const contextState: HuddleContextType = {
