@@ -1,0 +1,90 @@
+@use "../theme";
+@use "../font";
+@use "../space";
+
+@use "./rounded";
+
+// private to this module on @use
+$-icon-size: 1.3rem;
+
+@mixin avatar {
+  position: relative;
+  overflow: visible;
+
+  .image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+    border-radius: 50%;
+    object-fit: cover;
+
+    img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+  }
+}
+
+@mixin badge {
+  position: relative;
+  @include font.small;
+  display: flex;
+  width: 1.4em;
+  height: 1.4em;
+  margin-left: space.gap(1);
+  bottom: space.gap(1);
+  justify-content: center;
+  align-items: center;
+  color: white;
+  background: red;
+  border-radius: 100%;
+}
+
+@mixin icon {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+  width: $-icon-size;
+  height: $-icon-size;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+@mixin button {
+  display: flex;
+  align-items: center;
+  padding: 0 space.empty(1);
+  height: space.button(1);
+  @include rounded.normal;
+}
+
+@mixin simple-form {
+  position: relative;
+  @include rounded.normal;
+
+  input {
+    @include button;
+    box-sizing: border-box;
+    padding-right: 4em;
+    width: 100%;
+    background-color: transparent;
+  }
+
+  button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    @include button;
+    border-radius: 0;
+    background-color: transparent;
+    height: space.button(1) - space.gap(8);
+    margin: space.gap(4) 0;
+    border-left: 1px solid theme.$sparkle--border;
+  }
+}

@@ -1,0 +1,35 @@
+$size--s2: 10px;
+$size--xs: 11px;
+$size--sm: 12px;
+$size--md: 14px;
+$size--lg: 16px;
+$size--xl: 23px; // previously named $font-size-large
+$size--l2: 32px;
+$size--l3: 48px;
+
+$weight--s2: 100; // Thin (Hairline)
+$weight--xs: 200; // Extra Light (Ultra Light)
+$weight--sm: 300; // Light
+$weight--md: 400; // Normal (Regular)
+$weight--lg: 500; // Medium
+$weight--xl: 600; // Semi Bold (Demi Bold)
+$weight--l2: 700; // Bold
+$weight--l3: 800; // Extra Bold (Ultra Bold)
+$weight--l4: 900; // Black (Heavy)
+
+// previously named font-core
+@mixin core {
+  font-size: $size--md;
+  line-height: 1.4;
+}
+
+// previously named font-small
+@mixin small {
+  font-size: $size--xs;
+  line-height: 1.4;
+}
+
+// previously named font-body
+@mixin body {
+  font-size: $size--xl;
+}
