@@ -25,9 +25,7 @@ export const useVideoHuddle = () => {
     shareScreen,
   } = useVideoComms();
 
-  const { inHuddle, setInHuddle, extraButtons, setExtraButtons } = useContext(
-    HuddleContext
-  );
+  const { inHuddle, setInHuddle } = useContext(HuddleContext);
 
   const joinHuddle = useMemo(() => {
     return (userId: string, huddleId: string) => {
@@ -61,7 +59,5 @@ export const useVideoHuddle = () => {
     localParticipant,
     remoteParticipants,
     shareScreen,
-    extraButtons,
-    setExtraButtons,
   };
 };

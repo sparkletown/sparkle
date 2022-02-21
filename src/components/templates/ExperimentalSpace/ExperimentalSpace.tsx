@@ -1,12 +1,10 @@
 import React, { useCallback, useEffect, useMemo } from "react";
-import { faArrowAltCircleUp } from "@fortawesome/free-solid-svg-icons";
 import {
   Participant,
   VideoSource,
   VideoTrack,
 } from "components/attendee/VideoComms/types";
 import { VideoTrackDisplay } from "components/attendee/VideoComms/VideoTrackDisplay";
-import { ButtonCallbackArgs } from "components/attendee/VideoHuddle/HuddleProvider";
 import { useVideoHuddle } from "components/attendee/VideoHuddle/useVideoHuddle";
 import { withCurrentUserId } from "components/hocs/db/withCurrentUserId";
 import { withRequired } from "components/hocs/gate/withRequired";
@@ -82,28 +80,13 @@ const _ExperimentalSpace: React.FC<ExperimentalSpaceProps> = ({
     leaveHuddle,
     localParticipant,
     remoteParticipants,
-    setExtraButtons,
   } = useVideoHuddle();
 
-  const projectTrack = useCallback(
-    ({ track }: ButtonCallbackArgs) => {
-      setProjectedVideoTrackId(venue.id, track.id);
-    },
-    [venue.id]
-  );
-
   useEffect(() => {
-    setExtraButtons([
-      {
-        icon: faArrowAltCircleUp,
-        callback: projectTrack,
-      },
-    ]);
     return () => {
-      setExtraButtons([]);
       leaveHuddle();
     };
-  }, [leaveHuddle, setExtraButtons, projectTrack]);
+  }, [leaveHuddle]);
 
   const disconnectCallback = useCallback(() => {
     leaveHuddle();

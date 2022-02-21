@@ -1,4 +1,4 @@
-import React, { ReactNode, useCallback, useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import classNames from "classnames";
 
 import { UserId } from "types/id";
@@ -12,7 +12,7 @@ import { AudioTrackPlayer } from "./internal/AudioTrackPlayer";
 import { useMute } from "./internal/useMute";
 import { VideoCommsControls } from "./internal/VideoCommsControls";
 import { useVideoComms } from "./hooks";
-import { Participant, VideoSource, VideoTrack } from "./types";
+import { Participant, VideoSource } from "./types";
 import { VideoTrackDisplay } from "./VideoTrackDisplay";
 
 import styles from "./scss/VideoCommsParticipant.module.scss";
@@ -20,18 +20,11 @@ import styles from "./scss/VideoCommsParticipant.module.scss";
 interface VideoCommsParticipantProps {
   participant: Participant;
   isLocal?: boolean;
-  /**
-   * A function that will generate controls on a per-video-track basis. Useful for
-   * adding things like "share" buttons or similar on each track. The Video
-   * Huddle components makes use of this.
-   */
-  videoTrackControls?: (track: VideoTrack) => ReactNode;
 }
 
 export const VideoCommsParticipant: React.FC<VideoCommsParticipantProps> = ({
   participant,
   isLocal,
-  videoTrackControls,
 }) => {
   const {
     startAudio,
@@ -96,9 +89,6 @@ export const VideoCommsParticipant: React.FC<VideoCommsParticipantProps> = ({
         <div className={determineControlsClassnames(webcamTrack?.enabled)}>
           {isLocal ? (
             <>
-              {webcamTrack?.enabled &&
-                videoTrackControls &&
-                videoTrackControls(webcamTrack)}
               <VideoCommsControls
                 startAudio={startAudio}
                 stopAudio={stopAudio}
@@ -124,7 +114,6 @@ export const VideoCommsParticipant: React.FC<VideoCommsParticipantProps> = ({
           <VideoTrackDisplay track={screenshareTrack} />
           {isLocal && (
             <div className={determineControlsClassnames(true)}>
-              {videoTrackControls && videoTrackControls(screenshareTrack)}
               <VideoCommsControls
                 stopVideo={stopShareScreen}
                 videoEnabled={true}
