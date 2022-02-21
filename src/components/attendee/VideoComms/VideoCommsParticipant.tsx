@@ -81,10 +81,13 @@ export const VideoCommsParticipant: React.FC<VideoCommsParticipantProps> = ({
         {webcamTrack?.enabled ? (
           <VideoTrackDisplay track={webcamTrack} isMirrored={isLocal} />
         ) : (
-          <UserAvatar
-            containerClassName={styles.avatarContainer}
-            user={profile}
-          />
+          <>
+            <UserAvatar
+              containerClassName={styles.avatarContainer}
+              user={profile}
+            />
+            <span className={styles.userName}>{profile?.partyName}</span>
+          </>
         )}
         <div className={determineControlsClassnames(webcamTrack?.enabled)}>
           {isLocal ? (
