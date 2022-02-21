@@ -6,11 +6,10 @@
   z-index: 111;
   width: 100vw;
   padding: space.empty(1);
+}
 
-  // @debt use camelCase
-  &__container {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-  }
+.attendeeHeaderContainer {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
 }

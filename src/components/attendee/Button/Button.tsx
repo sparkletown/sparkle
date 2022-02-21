@@ -11,18 +11,20 @@ enum ButtonVariant {
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   onClick?: () => void;
   variant?: "primary" | "alternative" | "alternativeBorder";
+  className?: string;
 }
 
 export const Button: React.FC<ButtonProps> = ({
   onClick,
   children,
   variant,
+  className,
   ...rest
 }) => {
-  const buttonClasses = classNames(CN.Button, {
-    [CN.ButtonPrimary]: variant === ButtonVariant.primary,
-    [CN.ButtonAlternative]: variant === ButtonVariant.alternative,
-    [CN.ButtonAlternativeBorder]: variant === ButtonVariant.alternativeBorder,
+  const buttonClasses = classNames(`${CN.button} ${className}`, {
+    [CN.buttonPrimary]: variant === ButtonVariant.primary,
+    [CN.buttonAlternative]: variant === ButtonVariant.alternative,
+    [CN.buttonAlternativeBorder]: variant === ButtonVariant.alternativeBorder,
   });
 
   return (

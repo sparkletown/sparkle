@@ -14,7 +14,7 @@
 }
 
 .buttonPrimary {
-  @include sparkle-color-glass;
+  @include sparkle.color--glass;
 }
 
 .buttonAlternative {

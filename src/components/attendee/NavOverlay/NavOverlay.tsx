@@ -67,13 +67,13 @@ export const NavOverlay: React.FC<navOverlayProps> = ({ onClose, type }) => {
       <div className={CN.navOverlayHeader}>
         {isTabletAndMenuHidden && (
           <div className={CN.navOverlayBack} onClick={() => setMenuShown(true)}>
-            <span className={CN.navOverlayBack_icon} />
+            <span className={CN.navOverlayBackIcon} />
             Back
           </div>
         )}
         <div className={CN.navOverlayClose} onClick={onClose}>
           Close
-          <span className={CN.navOverlayClose_icon} />
+          <span className={CN.closeIcon} />
         </div>
       </div>
       <div className={CN.navOverlayContainer}>
@@ -81,7 +81,7 @@ export const NavOverlay: React.FC<navOverlayProps> = ({ onClose, type }) => {
           <div className={CN.navOverlayNavigation}>
             {Object.entries(navOverlayTypeList).map(([key, label]) => (
               <span
-                className={CN.navOverlayNavigation_button}
+                className={CN.navigationButton}
                 key={key}
                 onClick={() => handleMenuItemSelect(key)}
               >

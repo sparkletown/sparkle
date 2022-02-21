@@ -29,15 +29,38 @@
   width: 100%;
 }
 
-.scheduleOverlayButton {
+.eventWrapper {
   display: flex;
-  justify-content: center;
-  background: transparent;
-  border: none;
-  color: white;
+  flex-direction: column;
+  font-size: 19px;
+  cursor: default;
+}
+
+.eventTitle {
+  display: flex;
+  font-size: 23px;
+  align-items: center;
+
+  span:first-child {
+    margin-right: 16px;
+  }
+}
+.scheduleDays {
+  width: 100%;
+  margin: 44px 0;
+
+  button:first-child {
+    padding-left: 0px;
+  }
+}
+.bookmarkIcon {
   cursor: pointer;
 }
 
-.scheduleOverlayBookmark {
-  cursor: pointer;
+.scheduleButtonActive {
+  font-weight: 600;
+}
+
+.scheduleButtonDisabled {
+  color: gray;
 }
