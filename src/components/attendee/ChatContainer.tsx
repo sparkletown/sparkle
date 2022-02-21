@@ -5,9 +5,9 @@ export const ChatContainer: React.FC = () => (
     <nav>
       <a href="#!">Chat</a>
       <a href="#!">
-        Messages <span className="badge">3</span>
+        Messages <span className={styles.messageCount}>3,021</span>
       </a>
-      <a href="#!" id="component-chat-open-button">
+      <a href="#!" className={styles.toggler}>
         Show
       </a>
     </nav>

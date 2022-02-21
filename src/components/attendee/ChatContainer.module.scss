@@ -10,20 +10,40 @@
 
 .ChatContainer {
   padding: 0 space.empty(1);
+  height: 42px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 
   @media (min-width: breakpoint.$md) {
     padding: 0;
     position: absolute;
     right: 0;
     bottom: 0;
+    width: layout.$w-sidebar;
+
+    @include sparkle.panel--normal;
+    @include rounded.topleft;
   }
 
   nav {
     display: flex;
-
-    @media (min-width: breakpoint.$md) {
-      @include sparkle.panel--normal;
-      @include rounded.topleft;
+    a {
+      padding: space.empty(0.5) space.empty(1);
+      text-decoration: none;
+      color: black;
     }
   }
+}
+
+.messageCount {
+  background: red;
+  @include rounded.normal;
+  color: white;
+  font-size: font.$size--sm;
+  padding: 4px;
+}
+
+.toggler {
+  margin-left: auto;
 }
