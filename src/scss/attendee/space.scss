@@ -1,0 +1,44 @@
+$s2: 2px;
+$xs: 4px;
+$sm: 8px;
+$md: 12px; // previously named $whitespace
+$lg: 16px;
+$xl: 24px;
+$l2: 32px;
+$l3: 42px;
+
+@function empty($scale) {
+  // NOTE: don't add default value in order to avoid typos like empty() returning wrong value
+  @return $md * $scale;
+}
+
+// previously named $button-gap
+@function gap($scale) {
+  // NOTE: don't add default value in order to avoid typos like gap() returning wrong value
+  @return $s2 * $scale;
+}
+
+// previously named $button-gap
+@function button($scale) {
+  // NOTE: don't add default value in order to avoid typos like button() returning wrong value
+  // this is effectively empty(3.5), but without the indirection
+  @return 3.5 * $md * $scale;
+}
+
+// previously named $element-height-normal
+@function item($scale) {
+  // NOTE: don't add default value in order to avoid typos like item() returning wrong value
+  @return $l3 * $scale;
+}
+
+@function font-size--parent($scale) {
+  @return $scale * 1em;
+}
+
+@function font-size--root($scale) {
+  @return $scale * 1rem;
+}
+
+@function font-size--width($scale) {
+  @return $scale * 1ch;
+}

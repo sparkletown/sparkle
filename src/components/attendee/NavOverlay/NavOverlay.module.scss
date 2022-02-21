@@ -1,0 +1,108 @@
+@use "scss/attendee/space";
+@use "scss/attendee/border";
+@use "scss/attendee/font";
+@use "scss/attendee/layer";
+@use "scss/attendee/layout";
+@use "scss/attendee/breakpoint";
+@use "scss/attendee/effects/sparkle";
+
+// private, no need to bleed it out of this component
+$-z-index-base: 1;
+
+.navOverlay {
+  @include sparkle.color--glass;
+  position: fixed;
+  z-index: layer.level($-z-index-base);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+}
+
+.navOverlayClose {
+  display: flex;
+  align-items: center;
+  padding: 0 space.empty(1);
+  height: space.item(1);
+  border-radius: border.$radius--xs;
+  position: fixed;
+  top: space.empty(1);
+  right: space.empty(1);
+  cursor: pointer;
+  z-index: layer.level($-z-index-base);
+}
+
+.navOverlayContainer {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  font-size: font.$size--xl;
+
+  @media (max-width: breakpoint.$md) {
+    flex-wrap: wrap;
+    overflow-y: auto;
+  }
+}
+
+.navOverlayNavigation {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: space.empty(4) space.empty(3);
+  width: 100%;
+
+  @media (min-width: breakpoint.$md) {
+    width: layout.$w-sidebar;
+  }
+
+  @media (max-width: breakpoint.$md) {
+    margin: auto;
+  }
+}
+
+.navOverlayContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  font-size: font.$size--xl;
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  mask: linear-gradient(
+    to bottom,
+    transparent 0,
+    rgba(0, 0, 0, 0.2) 40px,
+    rgba(0, 0, 0, 0.4) 60px,
+    #000000 80px
+  );
+}
+
+.closeIcon {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+  width: 1.3rem;
+  height: 1.3rem;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  margin-left: space.empty(0.5);
+  background-image: url(/assets/icons/icon-close-portal.svg);
+  filter: invert(1);
+}
+
+.navigationButton {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  height: space.item(1);
+  border-radius: border.$radius--xs;
+  padding: 0;
+  font-size: font.$size--xl;
+}

@@ -10,6 +10,7 @@ import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { NotLoggedInFallback } from "components/atoms/NotLoggedInFallback";
 
+import { AttendeeHeader } from "./Header/AttendeeHeader";
 import { VideoCommsProvider } from "./VideoComms/VideoCommsProvider";
 import { HuddleProvider } from "./VideoHuddle/HuddleProvider";
 import { VideoHuddle } from "./VideoHuddle/VideoHuddle";
@@ -34,7 +35,7 @@ const _AttendeeLayout: React.FC<_AttendeeLayoutProps> = ({ userId }) => {
   return (
     <VideoCommsProvider>
       <HuddleProvider>
-        <header></header>
+        <AttendeeHeader />
         <main>
           <section className={styles.Space}>
             <VenuePage />

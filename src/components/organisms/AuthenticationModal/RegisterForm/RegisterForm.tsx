@@ -38,7 +38,7 @@ import { ConfirmationModal } from "components/atoms/ConfirmationModal/Confirmati
 import fIcon from "assets/icons/facebook-social-icon.svg";
 import gIcon from "assets/icons/google-social-icon.svg";
 
-import formStyles from "scss/formStyles.module.scss";
+import FORMS from "scss/attendee/form.module.scss";
 
 const validateDateOfBirth = (stringDate: string) => {
   const yearsDifference = differenceInYears(new Date(), parseISO(stringDate));
@@ -273,7 +273,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
         <div className="input-group">
           <input
             name="email"
-            className={formStyles.input}
+            className={FORMS.input}
             placeholder="Your email address"
             ref={register({ required: true })}
           />
@@ -289,7 +289,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
         <div className="input-group">
           <input
             name="password"
-            className={formStyles.input}
+            className={FORMS.input}
             type="password"
             placeholder="Password"
             ref={register({
@@ -321,7 +321,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
           <div className="input-group">
             <input
               name="date_of_birth"
-              className={formStyles.input}
+              className={FORMS.input}
               type="date"
               ref={register({ required: true, validate: validateDateOfBirth })}
             />
@@ -415,7 +415,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
       <div className="secondary-action">
         Already have an account?
         <br />
-        <span className={formStyles.inlineLink} onClick={displayLoginForm}>
+        <span className={FORMS.inlineLink} onClick={displayLoginForm}>
           Login
         </span>
       </div>

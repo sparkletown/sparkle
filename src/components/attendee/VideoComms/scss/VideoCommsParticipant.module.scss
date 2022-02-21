@@ -1,4 +1,4 @@
-@use "scss/attendee/variables";
+@use "scss/attendee/layout";
 
 .videoCommsParticipant {
   display: flex;
@@ -21,6 +21,7 @@
   color: #f1f1f1;
   background: rgba(0, 0, 0, 0.5);
   border-top-left-radius: 4px;
+
   span {
     margin: 2px 7px;
   }
@@ -36,6 +37,7 @@
   border: 1px solid #dbdbdb;
   background: #f0f0f0;
   min-width: 186px;
+
   img {
     max-width: 64px;
     max-height: 64px;
