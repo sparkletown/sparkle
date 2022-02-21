@@ -54,7 +54,9 @@ export const Tool: React.FC<ToolOptions> = ({ tool, worldSlug }) => {
         <div key={argument.name} className="Tool__input">
           <span className="Tool__input-label">{argument.title}</span>
           <InputField
-            {...register(argument.name, { required: argument.isRequired })}
+            register={register}
+            rules={{ required: argument.isRequired }}
+            name={argument.name}
             error={errors[argument.name]}
           />
         </div>

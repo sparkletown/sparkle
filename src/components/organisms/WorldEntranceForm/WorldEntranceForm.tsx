@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useFieldArray, useForm, useFormState } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -78,7 +78,7 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
 
   const handleAddCodeQuestion = () =>
     addCodeQuestion({ name: "", text: "", link: "" });
-  const clearCodeQuestions = () => removeCodeQuestion();
+  const clearCodeQuestions = removeCodeQuestion;
 
   const {
     fields: profileQuestions,
@@ -86,9 +86,11 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
     remove: removeProfileQuestion,
   } = useFieldArray({ control, shouldUnregister: true, name: "profile" });
 
-  const handleAddProfileQuestion = () =>
-    addProfileQuestion({ name: "", text: "", link: "" });
-  const clearProfileQuestions = () => removeProfileQuestion();
+  const handleAddProfileQuestion = useCallback(
+    () => addProfileQuestion({ name: "", text: "", link: "" }),
+    [addProfileQuestion]
+  );
+  const clearProfileQuestions = removeProfileQuestion;
   const {
     fields: entranceSteps,
     append: addEntranceStep,
@@ -102,7 +104,7 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
       autoplay: false,
       welcomeText: "",
     });
-  const clearEntranceSteps = () => removeEntranceStep();
+  const clearEntranceSteps = removeEntranceStep;
 
   const { isDirty, isSubmitting, errors } = useFormState({ control });
 

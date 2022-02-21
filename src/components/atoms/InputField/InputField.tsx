@@ -4,6 +4,8 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
+import { ALWAYS_EMPTY_OBJECT } from "settings";
+
 import { ContainerClassName } from "types/utility";
 
 import { isDefined, isTruthy } from "utils/types";
@@ -51,7 +53,7 @@ interface InputFieldProps
   onIconStartClick?: () => void;
   onIconEndClick?: () => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  register?: UseFormRegister<any>;
+  register: UseFormRegister<any>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   rules?: Record<string, any>;
   name?: string;
@@ -68,8 +70,8 @@ export const InputField: React.FC<InputFieldProps> = ({
   iconEnd,
   onIconEndClick,
   error,
-  register = () => {},
-  rules = {},
+  register,
+  rules = ALWAYS_EMPTY_OBJECT,
   name = "",
   ...extraInputProps
 }) => {

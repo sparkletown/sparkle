@@ -118,7 +118,8 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({
             autoComplete="off"
             placeholder={`${SPACE_TAXON.capital} name`}
             errors={errors}
-            {...register("venueName")}
+            register={register}
+            name="venueName"
             disabled={isLoading}
           />
         </AdminSection>

@@ -24,7 +24,7 @@ export interface EntranceButtonsBuilderProps {
   title?: string;
   errors?: FieldErrors<FieldValues>;
   onAdd: () => void;
-  onClear: () => void;
+  onClear: UseFieldArrayRemove;
   onRemove: UseFieldArrayRemove;
 }
 

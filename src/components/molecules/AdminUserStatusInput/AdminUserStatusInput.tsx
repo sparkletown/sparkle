@@ -18,7 +18,7 @@ export interface AdminUserStatusInputProps
   extends Omit<AdminInputProps, "onChange" | "name"> {
   item?: UserStatus;
   index: number;
-  onChange: (item: UserStatus) => void;
+  onChange?: (item: UserStatus) => void;
   onRemove?: () => void;
   register: UseFormRegister<WorldAdvancedFormInput>;
 }
@@ -39,7 +39,7 @@ export const AdminUserStatusInput: React.FC<AdminUserStatusInputProps> = ({
 
   const handleColorChange = useCallback(
     ({ hex }: ColorResult) => {
-      onChange({ status: item?.status ?? "", color: hex });
+      onChange && onChange({ status: item?.status ?? "", color: hex });
       hideColorPicker();
     },
     [item, onChange, hideColorPicker]

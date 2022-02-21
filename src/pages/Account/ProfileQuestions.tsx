@@ -30,6 +30,7 @@ export interface QuestionsFormData {
   islandCompanion: string;
   gratefulFor: string;
   likeAboutParties: string;
+  [key: string]: string;
 }
 
 export const ProfileQuestions: React.FC = () => {
@@ -43,7 +44,7 @@ export const ProfileQuestions: React.FC = () => {
     spaceSlug
   );
 
-  const { handleSubmit, formState } = useForm<QuestionsFormData>({
+  const { handleSubmit, formState, register } = useForm<QuestionsFormData>({
     mode: "onChange",
   });
 
@@ -126,7 +127,7 @@ export const ProfileQuestions: React.FC = () => {
                 <textarea
                   className="input-block input-centered"
                   placeholder={question.text}
-                  // {...register(question.name)}
+                  {...register(question.name)}
                 />
               </label>
             </div>

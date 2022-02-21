@@ -51,7 +51,7 @@ export const EntranceStepsInputFieldSet: React.FC<EntranceStepsInputFieldSetProp
   // NOTE: buttons are part of the step, so each add/remove/update of them is also an update of the step
   const {
     fields: buttons,
-    append: addButton,
+    append: appendButton,
     remove: removeButton,
   } = useFieldArray({
     control,
@@ -59,14 +59,17 @@ export const EntranceStepsInputFieldSet: React.FC<EntranceStepsInputFieldSetProp
     shouldUnregister: true,
   });
 
-  const clearButtons = () => removeButton();
-  const handleAddButton = () =>
-    addButton({
-      isProceed: false,
-      text: "",
-      className: "",
-      href: "",
-    });
+  const clearButtons = useCallback(() => removeButton(), [removeButton]);
+  const handleAddButton = useCallback(
+    () =>
+      appendButton({
+        isProceed: false,
+        text: "",
+        className: "",
+        href: "",
+      }),
+    [appendButton]
+  );
 
   return (
     <fieldset className="EntranceStepsInputFieldSet" name={fieldset}>

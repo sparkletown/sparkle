@@ -50,7 +50,9 @@ export const PollBox: React.FC<PollBoxProps> = ({ onPollSubmit }) => {
       fields.map((field, index) => (
         <section className="PollBox__section" key={field.id}>
           <InputField
-            {...register(`questions.${index}.name`, { required: true })}
+            register={register}
+            name={`questions.${index}.name`}
+            rules={{ required: true }}
             containerClassName="PollBox__input"
             autoComplete="off"
             placeholder={`Choice ${index + 1}`}
@@ -69,7 +71,9 @@ export const PollBox: React.FC<PollBoxProps> = ({ onPollSubmit }) => {
     <form className="PollBox" onSubmit={handlePollSubmit}>
       <section className="PollBox__section">
         <InputField
-          {...register("topic", { required: true })}
+          register={register}
+          name="topic"
+          rules={{ required: true }}
           containerClassName="PollBox__input"
           placeholder="Your question..."
           autoComplete="off"

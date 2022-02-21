@@ -6,6 +6,7 @@ import classNames from "classnames";
 
 import {
   ADMIN_IA_SPACE_BASE_PARAM_URL,
+  ALWAYS_NOOP_FUNCTION,
   BACKGROUND_IMG_TEMPLATES,
   DEFAULT_EMBED_URL,
   DEFAULT_REACTIONS_MUTED,
@@ -175,7 +176,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
         url: data.iframeUrl,
         autoPlay: space.autoPlay,
       });
-      console.log(data);
+
       await updateVenueNG(
         {
           id: space.id,
@@ -254,6 +255,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                   value={SPACE_INFO_MAP[space.template].text}
                   disabled
                   name={STRING_EMPTY}
+                  register={ALWAYS_NOOP_FUNCTION}
                 />
               </div>
             </AdminSection>
@@ -280,7 +282,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
               <AdminInput
                 placeholder="Subtitle for your space"
                 register={register}
-                name={"subtitle"}
+                name="subtitle"
                 errors={errors}
               />
             </AdminSection>
@@ -382,14 +384,14 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                   <AdminInput
                     placeholder="Livestream URL"
                     register={register}
-                    name={"iframeUrl"}
+                    name="iframeUrl"
                     errors={errors}
                   />
                   <AdminCheckbox
                     label="Autoplay"
                     variant="toggler"
                     register={register}
-                    name={"autoPlay"}
+                    name="autoPlay"
                   />
                 </AdminSection>
               )}
@@ -416,7 +418,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                   label="Show grid layout"
                   variant="toggler"
                   register={register}
-                  name={"showGrid"}
+                  name="showGrid"
                 />
               )}
 
@@ -436,7 +438,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                     label="Show reactions"
                     variant="toggler"
                     register={register}
-                    name={"showReactions"}
+                    name="showReactions"
                   />
                   <AdminCheckbox
                     variant="flip-switch"
@@ -458,9 +460,8 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                     <h4 className="italic input-header">Number of columns</h4>
                     <input
                       defaultValue={1}
-                      name="columns"
                       type="number"
-                      {...register}
+                      {...register("columns")}
                       className="align-left"
                       placeholder={`Number of grid columns`}
                     />
@@ -492,9 +493,8 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                   <input
                     defaultValue={SECTION_DEFAULT_COLUMNS_COUNT}
                     min={5}
-                    name="auditoriumColumns"
                     type="number"
-                    {...register}
+                    {...register("auditoriumColumns")}
                     className="align-left"
                     placeholder="Number of seats columns"
                   />
@@ -508,9 +508,8 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                   <h4 className="italic input-header">Number of seats rows</h4>
                   <input
                     defaultValue={SECTION_DEFAULT_ROWS_COUNT}
-                    name="auditoriumRows"
                     type="number"
-                    {...register}
+                    {...register("auditoriumRows")}
                     className="align-left"
                     placeholder="Number of seats rows"
                     min={5}

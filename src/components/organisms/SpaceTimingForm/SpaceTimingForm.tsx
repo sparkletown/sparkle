@@ -164,8 +164,7 @@ export const SpaceTimingForm: React.FC<SpaceTimingFormProps> = ({ venue }) => {
 
   const isSaveLoading = isSubmitting || isSaving;
   const isSaveDisabled = !(
-    // Useful if form has mode: "onChange"
-    // Object.keys(errors).length ||
+    // @debt Object.keys(errors).length can be used if form has mode: "onChange"
     (isDirty || isSaving || isSubmitting)
   );
 

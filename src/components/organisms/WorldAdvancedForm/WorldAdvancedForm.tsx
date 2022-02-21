@@ -71,40 +71,26 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
 
   const {
     fields: userStatuses,
-    append: addStatus,
-    update: setStatus,
+    append: appendStatus,
+    update: updateStatus,
     remove: removeStatus,
   } = useFieldArray({ control, name: "userStatuses", shouldUnregister: true });
 
   const handleAddStatus = () => {
-    addStatus({ status: "", color: "" });
+    appendStatus({ status: "", color: "" });
   };
 
   const { isDirty, isSubmitting, errors } = useFormState({ control });
 
   const values = watch();
 
-  const [{ error, loading: isSaving }, submit] = useAsyncFn(
-    async (input) => {
-      if (!values || !user || !worldId) return;
-      console.log(values.userStatuses, input);
-      const data = {
-        attendeesTitle: values.attendeesTitle,
-        radioStation: values.radioStation,
-        showBadges: values.showBadges,
-        showRadio: values.showRadio,
-        showSchedule: values.showSchedule,
-        showUserStatus: values.showUserStatus,
-        hasSocialLoginEnabled: values.hasSocialLoginEnabled,
-        userStatuses: values.userStatuses,
-      };
+  const [{ error, loading: isSaving }, submit] = useAsyncFn(async () => {
+    if (!values || !user || !worldId) return;
 
-      await updateWorldAdvancedSettings(withId(data, worldId), user);
+    await updateWorldAdvancedSettings(withId(values, worldId), user);
 
-      reset(data);
-    },
-    [worldId, user, values, reset]
-  );
+    reset(values);
+  }, [worldId, user, values, reset]);
 
   const isSaveLoading = isSubmitting || isSaving;
   const isSaveDisabled = !(isDirty || isSaving || isSubmitting);
@@ -114,7 +100,7 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
       userStatuses.map((userStatus, index) => {
         const key = `${userStatus}-${index}`;
 
-        const handleChange = (item: UserStatus) => setStatus(index, item);
+        const handleChange = (item: UserStatus) => updateStatus(index, item);
         const handleRemove = () => removeStatus(index);
 
         return (
@@ -128,7 +114,7 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
           />
         );
       }),
-    [userStatuses, setStatus, removeStatus, register]
+    [userStatuses, updateStatus, removeStatus, register]
   );
 
   return (

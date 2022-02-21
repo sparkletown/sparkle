@@ -45,7 +45,7 @@ const HANDLED_ERRORS = [
 ];
 
 // NOTE: file objects are being mutated, so they aren't a good fit for redux store
-const UNWANTED_FIELDS = ["logoImageFile", "bannerImageFile"];
+const UNWANTED_FIELDS = ["logoImageFile", "bannerImageFile", "creating"];
 
 export interface WorldGeneralFormProps {
   world?: WithId<World>;
@@ -67,6 +67,7 @@ export const WorldGeneralForm: React.FC<WorldGeneralFormProps> = ({
       bannerImageUrl: world?.config?.landingPageConfig?.coverImageUrl ?? "",
       logoImageFile: undefined,
       logoImageUrl: world?.host?.icon ?? "",
+      creating: !world?.id,
     }),
     [world]
   );
@@ -83,9 +84,6 @@ export const WorldGeneralForm: React.FC<WorldGeneralFormProps> = ({
     mode: "onSubmit",
     reValidateMode: "onChange",
     resolver: yupResolver(worldStartSchema),
-    // validationContext: {
-    //   creating: !worldId,
-    // },
     defaultValues,
   });
 
@@ -118,7 +116,7 @@ export const WorldGeneralForm: React.FC<WorldGeneralFormProps> = ({
         history.push(ADMIN_IA_WORLD_BASE_URL);
       }
 
-      reset(input);
+      reset(omit(input, "creating"));
     },
     [worldId, user, values, reset, history]
   );
@@ -184,7 +182,7 @@ export const WorldGeneralForm: React.FC<WorldGeneralFormProps> = ({
             error={errors.bannerImageFile || errors.bannerImageUrl}
             isInputHidden={!values.bannerImageUrl}
             register={register}
-            name={"bannerImage"}
+            name="bannerImage"
             setValue={setValue}
             onChange={handleChange}
           />

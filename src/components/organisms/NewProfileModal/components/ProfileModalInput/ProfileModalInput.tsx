@@ -3,6 +3,8 @@ import { FieldError, UseFormRegister } from "react-hook-form";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import classNames from "classnames";
 
+import { ALWAYS_EMPTY_OBJECT } from "settings";
+
 import { UserProfileModalFormData } from "types/profileModal";
 import { ContainerClassName } from "types/utility";
 
@@ -29,7 +31,7 @@ export const ProfileModalInput: React.FC<ProfileModalInputProps> = ({
   iconEnd,
   register,
   name,
-  rules = {},
+  rules = ALWAYS_EMPTY_OBJECT,
   ...rest
 }) => {
   return (

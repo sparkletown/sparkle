@@ -34,20 +34,22 @@ export const ProfileModalEditLinks: React.FC<ProfileModalEditLinksProps> = ({
   const renderedLinks = useMemo(
     () =>
       register &&
-      links.map(({ ...link }, i) => {
-        const otherUrls = links.filter((l) => l !== links[i]).map((l) => l.url);
+      links.map(({ ...link }, index) => {
+        const otherUrls = links
+          .filter((l) => l !== links[index])
+          .map((l) => l.url);
 
         return (
           <ProfileModalEditLink
             containerClassName="ProfileModalEditLinks__link-group"
-            key={i}
-            index={i}
+            key={index}
+            index={index}
             register={register}
-            initialTitle={initialLinks?.[i]?.title}
+            initialTitle={initialLinks?.[index]?.title}
             link={link}
             otherUrls={otherUrls}
-            error={errors?.[i]}
-            onDelete={() => onDeleteLink(i)}
+            error={errors?.[index]}
+            onDelete={() => onDeleteLink(index)}
           />
         );
       }),
