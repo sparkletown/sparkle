@@ -561,10 +561,12 @@ export const DEFAULT_CONVERSATION_SPACE_TABLES_NUMBER = 10;
 
 export const JAZZBAR_TABLES: Table[] = generateTables({
   num: DEFAULT_JAZZBAR_TABLES_NUMBER,
+  generateTableReference: (title: string) => title,
 });
 
 export const CONVERSATION_TABLES: Table[] = generateTables({
   num: DEFAULT_CONVERSATION_SPACE_TABLES_NUMBER,
+  generateTableReference: (title: string) => title,
 });
 
 // These are really supposed to be constants and to avoid possible mutable shared state in the code elsewhere

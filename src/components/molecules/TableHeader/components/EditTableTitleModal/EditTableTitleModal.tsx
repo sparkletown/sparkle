@@ -135,7 +135,7 @@ export const EditTableTitleModal: React.FC<EditTableTitleModalProps> = ({
 
         <div className="EditTableTitleModal__footer-buttons">
           <ButtonNG onClick={onHide}>Cancel</ButtonNG>
-          <ButtonNG disabled={isUpdating} variant="primary">
+          <ButtonNG type="submit" disabled={isUpdating} variant="primary">
             Save
           </ButtonNG>
         </div>
