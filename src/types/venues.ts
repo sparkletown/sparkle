@@ -3,11 +3,9 @@ import { CSSProperties } from "react";
 import { HAS_ROOMS_TEMPLATES } from "settings";
 
 import { AuditoriumSectionPath } from "types/auditorium";
-import { SpaceSlug } from "types/id";
+import { SpaceSlug, UserWithId } from "types/id";
 import { RoomVisibility } from "types/RoomVisibility";
 import { VenueTemplate } from "types/VenueTemplate";
-
-import { WithId } from "utils/id";
 
 import { GameOptions } from "components/templates/AnimateMap/configs/GameConfig";
 
@@ -17,7 +15,7 @@ import { Quotation } from "./Quotation";
 import { Room } from "./rooms";
 import { Table } from "./Table";
 import { UpcomingEvent } from "./UpcomingEvent";
-import { User, UserStatus } from "./User";
+import { UserStatus } from "./User";
 import { VenueAccessMode } from "./VenueAcccess";
 import { VideoAspectRatio } from "./VideoAspectRatio";
 
@@ -150,7 +148,7 @@ export interface BaseVenue {
   showUserStatus?: boolean;
   createdAt?: number;
   recentUserCount?: number;
-  recentUsersSample?: WithId<User>[];
+  recentUsersSample?: UserWithId[];
   recentUsersSampleSize?: number;
   updatedAt?: number;
   worldId: string;
