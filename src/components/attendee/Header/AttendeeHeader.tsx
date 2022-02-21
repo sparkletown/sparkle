@@ -1,5 +1,7 @@
 import { useCallback } from "react";
 import { useHistory } from "react-router-dom";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { ATTENDEE_INSIDE_URL, SPACE_TAXON } from "settings";
 
@@ -47,7 +49,9 @@ export const AttendeeHeader: React.FC<AttendeeHeaderProps> = ({
       <div className={CN.attendeeHeader__container}>
         <div>
           {backButtonTargetSpace ? (
-            <Button onClick={goBack}>&lt;-- Leave</Button>
+            <Button onClick={goBack}>
+              <FontAwesomeIcon icon={faArrowLeft} /> Leave
+            </Button>
           ) : (
             <Button>{space?.name ?? `This ${SPACE_TAXON.title}`}</Button>
           )}
