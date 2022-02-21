@@ -1,12 +1,9 @@
 @use "scss/attendee/variables.scss"as *;
 @use "scss/attendee/space";
 @use "scss/attendee/border";
+@use "scss/attendee/theme";
 
-.InputField {
-  &__input {
-    border: none;
-  }
-
+.input {
   label::after {
     content: attr(data-label);
     position: absolute;
@@ -17,8 +14,12 @@
     height: 26px;
     color: rgba(0, 0, 0, 0.6);
     right: space.empty(0.8);
-    border-left: border.$radius--s3 solid $input-separator-color;
+    border-left: border.$radius--s3 solid theme.$sparkle--border;
     color: black;
     cursor: pointer;
   }
+}
+
+.inputField {
+  border: none;
 }

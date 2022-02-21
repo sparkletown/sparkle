@@ -1,5 +1,6 @@
 import { ChangeEvent, useCallback, useMemo, useState } from "react";
 import { Hit } from "@algolia/client-search";
+import { Input } from "components/attendee/Input";
 
 import {
   ALWAYS_EMPTY_ARRAY,
@@ -22,8 +23,6 @@ import { useDebounceSearch } from "hooks/useDebounceSearch";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { Loading } from "components/molecules/Loading";
-
-import { InputField } from "components/atoms/InputField";
 
 import { PortalItem } from "./PortalItem/PortalItem";
 
@@ -106,7 +105,7 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ onClose }) => {
         {`Search ${space?.name ?? SPACE_TAXON.title}`}
       </div>
       <div className={CN.searchOverlaySearch}>
-        <InputField
+        <Input
           value={searchValue}
           inputClassName={CN.searchOverlaySearchInput}
           onChange={onSearchInputChange}
