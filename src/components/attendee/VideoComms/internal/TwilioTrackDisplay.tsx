@@ -26,7 +26,6 @@ export const TwilioTrackDisplay: React.FC<TwilioTrackDisplayProps> = ({
   useEffect(() => {
     if (videoRef.current) {
       track.attach(videoRef.current);
-
       return () => void track.detach();
     }
   }, [track]);
