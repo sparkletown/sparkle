@@ -9,15 +9,12 @@ import { JazzbarVenue } from "types/venues";
 import { WithId } from "utils/id";
 
 import { useAnalytics } from "hooks/useAnalytics";
-import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useUser } from "hooks/useUser";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import { Loading } from "components/molecules/Loading";
 import { TableGrid } from "components/molecules/TableGrid";
-
-import { BackButton } from "components/atoms/BackButton";
 
 import styles from "./JazzBar.module.scss";
 
@@ -26,7 +23,6 @@ interface JazzProps {
 }
 
 export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
-  const { parentVenue } = useRelatedVenues({ currentVenueId: venue.id });
   const analytics = useAnalytics({ venue });
 
   useBackgroundGradient();
@@ -45,8 +41,6 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
 
   return (
     <>
-      {parentVenue && <BackButton variant="simple" space={parentVenue} />}
-
       {!venue.hideVideo && (
         <MediaPlayer url={venue.iframeUrl} autoPlay={venue.autoPlay || false} />
       )}
