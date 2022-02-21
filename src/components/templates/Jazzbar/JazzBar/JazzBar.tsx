@@ -86,10 +86,11 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
 
   const joinTable = useCallback(
     (table) => {
-      joinHuddle(`${venue.id}-${table}`);
+      // @debt TODO Fix this
+      joinHuddle(userId || "", `${venue.id}-${table}`);
       setSeatedAtTable(table);
     },
-    [joinHuddle, venue]
+    [joinHuddle, userId, venue.id]
   );
 
   const leaveTable = useCallback(async () => {

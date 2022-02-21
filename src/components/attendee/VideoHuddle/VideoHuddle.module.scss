@@ -5,6 +5,8 @@
 @use "scss/attendee/layout";
 @use "scss/attendee/breakpoint";
 
+$-control-size: 32px;
+
 .VideoHuddle {
   position: relative;
   overflow: hidden;
@@ -19,24 +21,35 @@
   }
 
   height: layout.$h-video-chat;
-  padding: space.gap(1);
   border-top: 1px solid theme.$sparkle--border;
   border-bottom: 1px solid theme.$sparkle--border;
-
-  @media (min-width: breakpoint.$md) {
-    border-top: none;
-  }
 }
 
 .VideoHuddleControls {
   @include sparkle.panel--normal;
   position: relative;
   margin-top: space.gap(-1);
-  width: space.empty(1);
   display: flex;
   flex-direction: column;
-  justify-self: flex-start;
+  justify-self: start;
   border-left: 1px solid theme.$sparkle--border;
+
+  span {
+    border-bottom: 1px solid theme.$sparkle--border;
+    width: $-control-size;
+    height: $-control-size;
+    opacity: 0.5;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    &:hover {
+      opacity: 1;
+    }
+
+    svg {
+      margin: auto;
+    }
+  }
 }
 
 .VideoHuddleVideos {
@@ -47,12 +60,4 @@
   display: flex;
   justify-content: center;
   gap: space.gap(1);
-}
-
-.VideoContainer {
-  display: flex;
-  justify-content: center;
-
-  @include rounded.normal;
-  overflow: hidden;
 }

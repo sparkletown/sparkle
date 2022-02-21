@@ -4,8 +4,6 @@ import { withFallback } from "components/hocs/gate/withFallback";
 import { withRequired } from "components/hocs/gate/withRequired";
 import { compose } from "lodash/fp";
 
-import { useUser } from "hooks/useUser";
-
 import { VenuePage } from "pages/VenuePage";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
@@ -13,16 +11,20 @@ import { LoadingPage } from "components/molecules/LoadingPage";
 import { NotLoggedInFallback } from "components/atoms/NotLoggedInFallback";
 
 import { AttendeeHeader } from "./Header/AttendeeHeader";
-import { VideoHuddle, VideoHuddleProvider } from "./VideoHuddle/VideoHuddle";
+import { VideoCommsProvider } from "./VideoComms/VideoCommsProvider";
+import { HuddleProvider } from "./VideoHuddle/HuddleProvider";
+import { VideoHuddle } from "./VideoHuddle/VideoHuddle";
 import { AttendeeFooter } from "./AttendeeFooter";
 import { ChatContainer } from "./ChatContainer";
 
 import "scss/attendee/initial.scss";
 import styles from "./AttendeeLayout.module.scss";
 
-const _AttendeeLayout: React.FC = () => {
-  const { userId } = useUser();
+interface _AttendeeLayoutProps {
+  userId: string;
+}
 
+const _AttendeeLayout: React.FC<_AttendeeLayoutProps> = ({ userId }) => {
   useEffect(() => {
     document.documentElement.classList.add(styles.html);
     return () => {
@@ -31,20 +33,22 @@ const _AttendeeLayout: React.FC = () => {
   }, []);
 
   return (
-    <VideoHuddleProvider>
-      <AttendeeHeader />
-      <main>
-        <section className={styles.Space}>
-          <VenuePage />
-        </section>
-        <div className={styles.LayerUi}>
-          <ChatContainer />
-          {userId && <VideoHuddle userId={userId} />}
-        </div>
-      </main>
+    <VideoCommsProvider>
+      <HuddleProvider>
+        <AttendeeHeader />
+        <main>
+          <section className={styles.Space}>
+            <VenuePage />
+          </section>
+          <div className={styles.LayerUi}>
+            <ChatContainer />
+            <VideoHuddle />
+          </div>
+        </main>
 
-      <AttendeeFooter />
-    </VideoHuddleProvider>
+        <AttendeeFooter />
+      </HuddleProvider>
+    </VideoCommsProvider>
   );
 };
 
