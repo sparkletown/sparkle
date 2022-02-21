@@ -1,6 +1,8 @@
 import { ChangeEvent, useCallback, useMemo, useState } from "react";
+import { Hit } from "@algolia/client-search";
 
 import {
+  ALWAYS_EMPTY_ARRAY,
   COVERT_ROOM_TYPES,
   DEFAULT_PARTY_NAME,
   PERSON_TAXON,
@@ -9,6 +11,7 @@ import {
 
 import { AlgoliaSearchIndex } from "types/algolia";
 import { Room } from "types/rooms";
+import { UserWithLocation } from "types/User";
 
 import { isDefined } from "utils/types";
 
@@ -66,48 +69,33 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ onClose }) => {
     [relatedVenues]
   );
 
-  const foundPortals = useMemo<JSX.Element[]>(() => {
-    if (!searchQuery) return [];
+  const foundPortals = useMemo<Room[]>(() => {
+    if (!searchQuery) return ALWAYS_EMPTY_ARRAY;
 
     /* @debt we really shouldn't be using the index as part of the key here, it's unstable.. but portals don't have a unique identifier */
     return (
-      enabledRelatedPortals
-        .filter((portal) => portal.title.toLowerCase().includes(searchQuery))
-        .map((portal, index) => {
-          return (
-            <div key={`portal-${portal.title}-${index}`}>
-              <PortalItem portal={portal} onClick={onClose} />
-            </div>
-          );
-        }) ?? []
+      enabledRelatedPortals.filter((portal) =>
+        portal.title.toLowerCase().includes(searchQuery)
+      ) ?? []
     );
-  }, [searchQuery, enabledRelatedPortals, onClose]);
+  }, [searchQuery, enabledRelatedPortals]);
 
   const algoliaSearchState = useAlgoliaSearch(searchQuery, {
     sovereignVenueId: worldId as string,
   });
 
-  const foundUsers = useMemo<JSX.Element[]>(() => {
+  const foundUsers = useMemo<
+    Hit<
+      Pick<
+        UserWithLocation,
+        "partyName" | "pictureUrl" | "anonMode" | "enteredVenueIds"
+      >
+    >[]
+  >(() => {
     const usersResults = algoliaSearchState?.value?.[AlgoliaSearchIndex.USERS];
     if (!usersResults) return [];
 
-    return usersResults.hits.map((hit) => {
-      // const userFields = {
-      //   ...hit,
-      //   id: hit.objectID,
-      // };
-
-      return (
-        <div key={`user-${hit.objectID}`}>
-          <div className={CN.searchOverlayResultHeader}>
-            <h3>
-              {hit?.partyName ?? DEFAULT_PARTY_NAME}
-              <span>{PERSON_TAXON.title}</span>
-            </h3>
-          </div>
-        </div>
-      );
-    });
+    return usersResults.hits;
   }, [algoliaSearchState.value]);
 
   const totalResultNumber = foundPortals.length + foundUsers.length;
@@ -128,7 +116,7 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ onClose }) => {
         />
       </div>
       {!!totalResultNumber && (
-        <div>
+        <div className={CN.searchOverlayCount}>
           {totalResultNumber} results for {`"${searchQuery}"`}
         </div>
       )}
@@ -137,8 +125,21 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ onClose }) => {
           <Loading />
         ) : (
           <div className={CN.searchOverlayBody}>
-            {foundPortals}
-            {foundUsers}
+            {foundPortals.map((portal, index) => (
+              <div key={`portal-${portal.title}-${index}`}>
+                <PortalItem portal={portal} onClick={onClose} />
+              </div>
+            ))}
+            {foundUsers.map((user) => (
+              <div key={`user-${user.objectID}`}>
+                <div className={CN.searchOverlayResultHeader}>
+                  <h3>
+                    {user?.partyName ?? DEFAULT_PARTY_NAME}
+                    <span>{PERSON_TAXON.title}</span>
+                  </h3>
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </div>

@@ -6,21 +6,17 @@ import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { useShowHide } from "hooks/useShowHide";
 
-import { Button } from "../Button/Button";
+import { Button } from "../Button";
 import { NavOverlay } from "../NavOverlay/NavOverlay";
 
-import styles from "./AttendeeHeader.module.scss";
+import CN from "./AttendeeHeader.module.scss";
 
-export enum HeaderTab {
-  schedule = "schedule",
-  search = "search",
-  profile = "profile",
-}
+type HeaderTab = "schedule" | "search" | "profile";
 
-const headerTypeMap: Readonly<Record<HeaderTab, String>> = {
-  [HeaderTab.schedule]: "Schedule",
-  [HeaderTab.search]: "Search",
-  [HeaderTab.profile]: "Profile",
+const tabCaptions: Readonly<Record<HeaderTab, String>> = {
+  schedule: "Schedule",
+  search: "Search",
+  profile: "Profile",
 };
 
 export const AttendeeHeader = () => {
@@ -35,13 +31,13 @@ export const AttendeeHeader = () => {
   };
 
   return (
-    <header className={styles.attendeeHeader}>
-      <div className={styles.attendeeHeaderContainer}>
+    <header className={CN.attendeeHeader}>
+      <div className={CN.attendeeHeaderContainer}>
         <div>
           <Button>{space?.name ?? `This ${SPACE_TAXON.title}`}</Button>
         </div>
         <div>
-          {Object.entries(headerTypeMap).map(([key, label]) => (
+          {Object.entries(tabCaptions).map(([key, label]) => (
             <Button onClick={() => handleOverlayOpen(key)} key={key}>
               {label}
             </Button>
