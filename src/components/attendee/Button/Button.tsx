@@ -1,7 +1,7 @@
 import { ButtonHTMLAttributes } from "react";
 import classNames from "classnames";
 
-import styles from "./Button.module.scss";
+import CN from "./Button.module.scss";
 
 enum ButtonVariant {
   primary = "primary",
@@ -19,11 +19,10 @@ export const Button: React.FC<ButtonProps> = ({
   variant,
   ...rest
 }) => {
-  const buttonClasses = classNames(styles.Button, {
-    [styles.Button__primary]: variant === ButtonVariant.primary,
-    [styles.Button__alternative]: variant === ButtonVariant.alternative,
-    [styles.Button__alternativeBorder]:
-      variant === ButtonVariant.alternativeBorder,
+  const buttonClasses = classNames(CN.Button, {
+    [CN.ButtonPrimary]: variant === ButtonVariant.primary,
+    [CN.ButtonAlternative]: variant === ButtonVariant.alternative,
+    [CN.ButtonAlternativeBorder]: variant === ButtonVariant.alternativeBorder,
   });
 
   return (

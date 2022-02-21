@@ -19,7 +19,6 @@ import { determineAvatar } from "utils/image";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useAdminRole } from "hooks/user/useAdminRole";
 import { useShowHide } from "hooks/useShowHide";
-import { useUser } from "hooks/useUser";
 
 import { Modal } from "components/molecules/Modal";
 
@@ -36,13 +35,13 @@ export const TableComponent: React.FunctionComponent<TableComponentPropsType> = 
   table,
   tableLocked,
   venue,
+  userId,
   template,
 }) => {
   const { openUserProfileModal } = useProfileModalControls();
   const locked = tableLocked(table.reference);
   const numberOfSeatsLeft = table.capacity && table.capacity - users.length;
   const full = numberOfSeatsLeft === 0;
-  const { userId } = useUser();
 
   const { isAdminUser, isLoading: isCheckingRole } = useAdminRole({ userId });
 

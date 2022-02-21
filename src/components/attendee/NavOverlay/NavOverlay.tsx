@@ -10,7 +10,7 @@ import { ScheduleOverlay } from "./ScheduleOverlay/ScheduleOverlay";
 import { SearchOverlay } from "./SearchOverlay/SearchOverlay";
 import { ProfileOverlay } from "./ProfileOverlay";
 
-import styles from "./NavOverlay.module.scss";
+import CN from "./NavOverlay.module.scss";
 
 type navOverlayProps = {
   onClose: () => void;
@@ -63,28 +63,25 @@ export const NavOverlay: React.FC<navOverlayProps> = ({ onClose, type }) => {
   const isTabletAndMenuHidden = isMenuPaged && !isMenuShown;
 
   return (
-    <div className={styles.NavOverlay}>
-      <div className={styles.NavOverlay__header}>
+    <div className={CN.navOverlay}>
+      <div className={CN.navOverlayHeader}>
         {isTabletAndMenuHidden && (
-          <div
-            className={styles.NavOverlay__back}
-            onClick={() => setMenuShown(true)}
-          >
-            <span className={styles.NavOverlay__back_icon} />
+          <div className={CN.navOverlayBack} onClick={() => setMenuShown(true)}>
+            <span className={CN.navOverlayBack_icon} />
             Back
           </div>
         )}
-        <div className={styles.NavOverlay__close} onClick={onClose}>
+        <div className={CN.navOverlayClose} onClick={onClose}>
           Close
-          <span className={styles.NavOverlay__close_icon} />
+          <span className={CN.navOverlayClose_icon} />
         </div>
       </div>
-      <div className={styles.NavOverlay__container}>
+      <div className={CN.navOverlayContainer}>
         {!isTabletAndMenuHidden && (
-          <div className={styles.NavOverlay__navigation}>
+          <div className={CN.navOverlayNavigation}>
             {Object.entries(navOverlayTypeList).map(([key, label]) => (
               <span
-                className={styles.NavOverlay__navigation_button}
+                className={CN.navOverlayNavigation_button}
                 key={key}
                 onClick={() => handleMenuItemSelect(key)}
               >
@@ -94,7 +91,7 @@ export const NavOverlay: React.FC<navOverlayProps> = ({ onClose, type }) => {
           </div>
         )}
         {!(isMenuPaged && isMenuShown) && (
-          <div className={styles.NavOverlay__content}>
+          <div className={CN.navOverlayContent}>
             {navOverlayType === NavOverlayTab.schedule && <ScheduleOverlay />}
             {navOverlayType === NavOverlayTab.search && (
               <SearchOverlay onClose={onClose} />

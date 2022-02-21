@@ -69,3 +69,16 @@ export const ADMIN_IA_SPACE_EDIT_PARAM_URL = `${ADMIN_IA_SPACE_BASE_PARAM_URL}/:
 export const ADMIN_IA_SPACE_CREATE_PARAM_URL = `${ADMIN_IA_WORLD_PARAM_URL}/create-space`; // e.g. /admin/w/world123/create-space
 // @debt this is in the wrong place completely
 export const ADMIN_IA_SPACE_ADMIN_PARAM_URL = `${ADMIN_IA_SPACE_BASE_PARAM_URL}/:spaceSlug/admin`; // e.g. /admin/w/world123/s/space456/admin
+
+export const ADMIN_IA_WORLD_SCHEDULE = `${ADMIN_IA_WORLD_PARAM_URL}/world-schedule`; // e.g. /admin/w/world123/world-schedule
+export const ADMIN_IA_WORLD_USERS = `${ADMIN_IA_WORLD_PARAM_URL}/users`; // e.g. /admin/w/world123/users
+export const ADMIN_IA_WORLD_REPORTS = `${ADMIN_IA_WORLD_PARAM_URL}/reports`; // e.g. /admin/w/world123/reports
+export const ADMIN_IA_WORLD_SETTINGS = `${ADMIN_IA_WORLD_PARAM_URL}/settings`; // e.g. /admin/w/world123/settings
+
+// @debt replace with real URLs
+export const ABOUT_URL = "#about";
+export const BLOG_URL = "#blog";
+export const JOBS_URL = "#jobs";
+export const PRESS_URL = "#press";
+export const ACCESSIBILITY_URL = "#accessibility";
+export const PARTNERS_URL = "#partners";

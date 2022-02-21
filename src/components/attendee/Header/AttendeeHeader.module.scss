@@ -1,13 +1,13 @@
-@use "scss/attendee/mixins.scss" as *;
-@use "scss/attendee/variables.scss"as *;
+@use "scss/attendee/space";
 
-.AttendeeHeader {
+.attendeeHeader {
   display: flex;
   position: fixed;
   z-index: 111;
   width: 100vw;
-  padding: $whitespace;
+  padding: space.empty(1);
 
+  // @debt use camelCase
   &__container {
     display: flex;
     justify-content: space-between;

@@ -9,7 +9,7 @@ import { useShowHide } from "hooks/useShowHide";
 import { Button } from "../Button/Button";
 import { NavOverlay } from "../NavOverlay/NavOverlay";
 
-import styles from "./AttendeeHeader.module.scss";
+import CN from "./AttendeeHeader.module.scss";
 
 export enum HeaderTab {
   schedule = "schedule",
@@ -35,8 +35,8 @@ export const AttendeeHeader = () => {
   };
 
   return (
-    <header className={styles.AttendeeHeader}>
-      <div className={styles.AttendeeHeader__container}>
+    <header className={CN.attendeeHeader}>
+      <div className={CN.attendeeHeaderContainer}>
         <div>
           <Button variant="primary">
             {space?.name ?? `This ${SPACE_TAXON.title}`}
