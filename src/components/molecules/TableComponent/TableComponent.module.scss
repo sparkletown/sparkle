@@ -1,5 +1,9 @@
-@use "scss/attendee/mixins.scss";
-@use "scss/attendee/variables.scss";
+@use "scss/attendee/space";
+@use "scss/attendee/effects/sparkle";
+@use "scss/attendee/effects/rounded";
+@use "scss/attendee/effects/atom";
+@use "scss/attendee/theme";
+@use "scss/attendee/breakpoint";
 
 .tableContainer {
   display: flex;
@@ -7,22 +11,22 @@
   align-items: center;
   flex-wrap: wrap;
 
-  margin: variables.$whitespace * 0.5 variables.$whitespace * 0.5;
+  margin: space.gap(3);
   flex-direction: column;
-  @include mixins.sparkle-panel-glass;
-  @include mixins.rounded;
-  border: 1px solid variables.$sparkle-border;
-  padding: variables.$whitespace;
+  @include sparkle.panel--glass;
+  @include rounded.normal;
+  border: 1px solid theme.$sparkle--border;
+  padding: space.empty(1);
   width: 100%;
 
-  @media (min-width: variables.$mobile-breakpoint) {
-    max-width: variables.$whitespace * 33;
+  @media (min-width: breakpoint.$md) {
+    max-width: space.empty(33);
   }
 
   h2 {
     flex-grow: 1;
     width: 100%;
-    padding: variables.$whitespace * 0.5 variables.$whitespace;
+    padding: space.empty(1);
   }
 }
 
@@ -45,32 +49,32 @@
 
 .joinButton {
   border-radius: 50%;
-  @include mixins.sparkle-panel;
-  margin: variables.$whitespace * 0.5;
-  border: 1px solid variables.$sparkle-border;
+  @include sparkle.panel--normal;
+  margin: space.empty(0.5);
+  border: 1px solid theme.$sparkle--border;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: variables.$whitespace * 4;
-  height: variables.$whitespace * 4;
+  width: space.empty(4);
+  height: space.empty(4);
   cursor: pointer;
 
-  @media (min-width: variables.$mobile-breakpoint) {
-    width: variables.$whitespace * 5;
-    height: variables.$whitespace * 5;
+  @media (min-width: breakpoint.$md) {
+    width: space.empty(5);
+    height: space.empty(5);
   }
 }
 
 .userAvatar {
-  @include mixins.atom-avatar;
-  margin: variables.$whitespace * 0.5;
-  width: variables.$whitespace * 4;
-  height: variables.$whitespace * 4;
+  @include atom.avatar;
+  margin: space.empty(0.5);
+  width: space.empty(4);
+  height: space.empty(4);
   border-radius: 100%;
   display: flex;
 
-  @media (min-width: variables.$mobile-breakpoint) {
-    width: variables.$whitespace * 5;
-    height: variables.$whitespace * 5;
+  @media (min-width: breakpoint.$md) {
+    width: space.empty(5);
+    height: space.empty(5);
   }
 }

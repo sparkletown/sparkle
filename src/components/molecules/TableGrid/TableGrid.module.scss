@@ -1,10 +1,13 @@
-@use "scss/attendee/variables.scss";
+@use "scss/attendee/space";
+@use "scss/attendee/breakpoint";
 
 .tableGrid {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: variables.$whitespace * 2 variables.$whitespace * 3.5
-    variables.$button-height * 2;
+  padding: space.empty(1);
+  @media (min-width: breakpoint.$md) {
+    padding: space.empty(2) space.empty(3.5) space.empty(2);
+  }
   flex-wrap: wrap;
 }

@@ -15,7 +15,6 @@ import { useUser } from "hooks/useUser";
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import { Loading } from "components/molecules/Loading";
-import { TableComponent } from "components/molecules/TableComponent";
 import { TableGrid } from "components/molecules/TableGrid";
 
 import { BackButton } from "components/atoms/BackButton";
@@ -52,7 +51,6 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
         <MediaPlayer url={venue.iframeUrl} autoPlay={venue.autoPlay || false} />
       )}
 
-      {/* TODO Does this want extracting out into its own component? */}
       <div className={styles.componentSpaceInfo}>
         {venue.name && <h1>{venue.name}</h1>}
       </div>
@@ -69,7 +67,6 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
 
       <TableGrid
         venueId={venue.id}
-        TableComponent={TableComponent}
         joinMessage={!venue.hideVideo ?? true}
         customTables={jazzbarTables}
         venue={venue}

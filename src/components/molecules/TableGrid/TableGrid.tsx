@@ -6,7 +6,7 @@ import { ALLOWED_EMPTY_TABLES_NUMBER } from "settings";
 
 import { setTableSeat, unsetTableSeat } from "api/venue";
 
-import { Table, TableComponentPropsType } from "types/Table";
+import { Table } from "types/Table";
 import { TableSeatedUser } from "types/User";
 import { AnyVenue } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
@@ -28,13 +28,14 @@ import { StartTable } from "components/molecules/StartTable";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 
+import { TableComponent } from "../TableComponent";
+
 import styles from "./TableGrid.module.scss";
 
 interface TableGridProps {
   customTables: Table[];
   defaultTables: Table[];
   showOnlyAvailableTables?: boolean;
-  TableComponent: React.FC<TableComponentPropsType>;
   joinMessage: boolean;
   leaveText?: string;
   venue: WithId<AnyVenue>;
@@ -47,7 +48,6 @@ export const TableGrid: React.FC<TableGridProps> = ({
   customTables,
   defaultTables,
   showOnlyAvailableTables = false,
-  TableComponent,
   joinMessage,
   venue,
   userId,
@@ -240,7 +240,6 @@ export const TableGrid: React.FC<TableGridProps> = ({
     tables,
     isFullTable,
     tableLocked,
-    TableComponent,
     usersSeatedAtTables,
     onJoinClicked,
     venue,

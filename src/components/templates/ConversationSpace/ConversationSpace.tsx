@@ -24,6 +24,7 @@ import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 import { Room } from "components/organisms/Room";
 
 import { InformationCard } from "components/molecules/InformationCard";
+import { TableGrid } from "components/molecules/TableGrid";
 import { TableHeader } from "components/molecules/TableHeader";
 import { TablesControlBar } from "components/molecules/TablesControlBar";
 import { UserList } from "components/molecules/UserList";
@@ -135,17 +136,13 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
           </div>
           {userWithId && (
             <TableGrid
-              setSeatedAtTable={setSeatedAtTable}
-              seatedAtTable={seatedAtTable}
               venueId={venue.id}
-              TableComponent={TableComponent}
               joinMessage={venue.hideVideo === false}
               customTables={tables}
               defaultTables={CONVERSATION_TABLES}
               showOnlyAvailableTables={showOnlyAvailableTables}
               venue={venue}
-              template={VenueTemplate.conversationspace}
-              user={userWithId}
+              userId={userWithId.id}
             />
           )}
 
