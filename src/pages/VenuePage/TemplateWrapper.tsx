@@ -1,4 +1,5 @@
 import React, { lazy, Suspense } from "react";
+import classNames from "classnames";
 
 import { AnyVenue } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
@@ -7,6 +8,7 @@ import { WithId } from "utils/id";
 import { tracePromise } from "utils/performance";
 import { isWebGl2Enabled } from "utils/webgl";
 
+import { useChatSidebarControls } from "hooks/chats/util/useChatSidebarControls";
 import { ReactionsProvider } from "hooks/reactions";
 
 import { AnimateMapErrorPrompt } from "components/templates/AnimateMap/components/AnimateMapErrorPrompt";
@@ -26,6 +28,8 @@ import { ViewingWindow } from "components/templates/ViewingWindow";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
+import styles from "./TemplateWrapper.module.scss";
+
 const AnimateMap = lazy(() =>
   tracePromise("TemplateWrapper::lazy-import::AnimateMap", () =>
     import("components/templates/AnimateMap").then(({ AnimateMap }) => ({
@@ -39,6 +43,8 @@ interface TemplateWrapperProps {
 }
 
 export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
+  const { isExpanded: isChatExpanded } = useChatSidebarControls();
+
   let template;
   switch (venue.template) {
     case VenueTemplate.jazzbar:
@@ -123,11 +129,18 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       template = <div>Unknown Template: ${(venue as AnyVenue).template}</div>;
   }
 
+  const venueShrinksForChat = venue.template !== VenueTemplate.partymap;
+
+  const containerClassnames = classNames(styles.templateContainer, {
+    [styles.templateContainer__shrinkForChat]:
+      isChatExpanded && venueShrinksForChat,
+  });
+
   return (
     <ReactionsProvider venueId={venue.id}>
       {/* TODO <AnnouncementMessage isAnnouncementUserView /> */}
 
-      {template}
+      <div className={containerClassnames}>{template}</div>
 
       {/* TODO {shouldShowChat && <ChatSidebar venue={venue} />} */}
     </ReactionsProvider>
