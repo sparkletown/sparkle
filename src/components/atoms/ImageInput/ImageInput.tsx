@@ -6,7 +6,6 @@ import React, {
   useState,
 } from "react";
 import { FieldError, UseFormRegister, UseFormSetValue } from "react-hook-form";
-import { useCss } from "react-use";
 import classNames from "classnames";
 
 import { ACCEPTED_IMAGE_TYPES } from "settings";
