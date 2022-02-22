@@ -42,7 +42,7 @@ const _AttendeeLayout: React.FC<_AttendeeLayoutProps> = ({ userId }) => {
         <AttendeeHeader backButtonSpace={backButtonSpace} />
         <main>
           <section className={styles.Space}>
-            <VenuePage setBackButtonTargetSpace={setBackButtonSpace} />
+            <VenuePage setBackButtonSpace={setBackButtonSpace} />
           </section>
           <div className={styles.LayerUi}>
             <ChatContainer />
