@@ -1,4 +1,5 @@
 // constants for the collections, just in case some get renamed (e.g. venues->spaces)
+export const COLLECTION_USERS = "users";
 export const COLLECTION_SPACES = "venues";
 export const COLLECTION_WORLDS = "worlds";
 export const COLLECTION_WORLD_EVENTS = "worldEvents";
