@@ -1,14 +1,3 @@
-import React from "react";
-
-/**
- * Type helper representing all types of T except undefined
- */
-export type Defined<T> = T & Exclude<T, undefined>;
-
-export type ExtractProps<T> = T extends React.FunctionComponent<infer U>
-  ? U
-  : never;
-
 export type Point = {
   x: number;
   y: number;
@@ -24,17 +13,13 @@ export type Position = {
   top: number;
 };
 
-export type Bounds = Point & Dimensions;
-
-export type Matrix<T> = T[][];
-
-export type ReactHook<T, U> = (props: T) => U;
-
-export type TFuncOrT<T> = (() => T) | T;
-
-/**
- * @deprecated use Partial<Record<K, T>> directly
- */
-export type PartialRecord<K extends keyof never, T> = Partial<Record<K, T>>;
-
+// @debt remove this, components shouldn't have containerClassName prop, and
+// in a rare need of injecting classes, className?: string is more close to how React deals with it
 export type ContainerClassName = { containerClassName?: string };
+
+// NOTE: use the following only in case of forms register type, define another like this one for other workarounds
+// @debt transitionary value, remove AnyForm once all its uses are replaced by more accurate types
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type AnyForm = any;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type AnyFormRule = any;

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useFormState } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import { FIREBASE } from "core/firebase";
 import { httpsCallable } from "firebase/functions";
@@ -23,7 +23,8 @@ type ToolOptions = {
 type ReturnedDataProps = { [key: string]: string };
 
 export const Tool: React.FC<ToolOptions> = ({ tool, worldSlug }) => {
-  const { register, handleSubmit, errors } = useForm();
+  const { register, handleSubmit, control } = useForm();
+  const { errors } = useFormState({ control });
 
   const [returnedData, setReturnedData] = useState<ReturnedDataProps>();
 
@@ -53,7 +54,8 @@ export const Tool: React.FC<ToolOptions> = ({ tool, worldSlug }) => {
         <div key={argument.name} className="Tool__input">
           <span className="Tool__input-label">{argument.title}</span>
           <InputField
-            ref={register({ required: argument.isRequired })}
+            register={register}
+            rules={{ required: argument.isRequired }}
             name={argument.name}
             error={errors[argument.name]}
           />

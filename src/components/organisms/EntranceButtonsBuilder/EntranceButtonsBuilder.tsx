@@ -1,14 +1,13 @@
 import React from "react";
-import { FieldErrors, FieldValues } from "react-hook-form";
+import {
+  FieldErrors,
+  FieldValues,
+  UseFieldArrayRemove,
+  UseFormRegister,
+} from "react-hook-form";
 
 import { EntranceStepButtonConfig } from "types/EntranceStep";
-
-import {
-  UseArrayAdd,
-  UseArrayClear,
-  UseArrayRemove,
-  UseArrayUpdate,
-} from "hooks/useArray";
+import { WorldEntranceFormInput } from "types/world";
 
 import { AdminSidebarSectionSubTitle } from "components/organisms/AdminVenueView/components/AdminSidebarSectionSubTitle";
 
@@ -21,13 +20,12 @@ import "./EntranceButtonsBuilder.scss";
 export interface EntranceButtonsBuilderProps {
   name: string;
   items?: EntranceStepButtonConfig[];
-  register: (Ref: unknown, RegisterOptions?: unknown) => void;
+  register: UseFormRegister<WorldEntranceFormInput>;
   title?: string;
   errors?: FieldErrors<FieldValues>;
-  onAdd: UseArrayAdd<EntranceStepButtonConfig>;
-  onClear: UseArrayClear<EntranceStepButtonConfig>;
-  onUpdate: UseArrayUpdate<EntranceStepButtonConfig>;
-  onRemove: UseArrayRemove<EntranceStepButtonConfig>;
+  onAdd: () => void;
+  onClear: () => void;
+  onRemove: UseFieldArrayRemove;
 }
 
 export const EntranceButtonsBuilder: React.FC<EntranceButtonsBuilderProps> = ({
@@ -38,7 +36,6 @@ export const EntranceButtonsBuilder: React.FC<EntranceButtonsBuilderProps> = ({
   errors,
   onAdd,
   onClear,
-  onUpdate,
   onRemove,
 }) => {
   const count = items?.length ?? 0;
@@ -56,7 +53,6 @@ export const EntranceButtonsBuilder: React.FC<EntranceButtonsBuilderProps> = ({
             key={`${name}-${index}`}
             name={name}
             onRemove={onRemove}
-            onUpdate={onUpdate}
             register={register}
           />
         );

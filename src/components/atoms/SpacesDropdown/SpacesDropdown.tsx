@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { FieldError, useForm } from "react-hook-form";
+import { FieldError, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import { omit, omitBy } from "lodash";
 
 import { ALWAYS_EMPTY_ARRAY, PORTAL_INFO_ICON_MAPPING } from "settings";
 
+import { AnyForm } from "types/utility";
 import { AnyVenue, PortalTemplate } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
 
@@ -28,8 +29,8 @@ type SpacesDropdownPortal = {
 
 interface SpacesDropdownProps {
   parentSpace?: SpacesDropdownPortal;
-  setValue: <T>(prop: string, value: T, validate: boolean) => void;
-  register: ReturnType<typeof useForm>["register"];
+  setValue: UseFormSetValue<AnyForm>;
+  register: UseFormRegister<AnyForm>;
   fieldName: string;
   error?: FieldError;
   spaces: Record<string, WithId<AnyVenue>>;
@@ -85,7 +86,7 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
             key={id}
             onClick={() => {
               setSelected({ name, template, id });
-              setValue(fieldName, id, true);
+              setValue(fieldName, id, { shouldValidate: true });
             }}
             className="SpacesDropdown__item"
             data-dropdown-value={name}
@@ -134,7 +135,7 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
     <>
       <div className="SpacesDropdown">
         <Dropdown title={renderedTitle}>{renderedOptions}</Dropdown>
-        <input type="hidden" ref={register} name={fieldName} />
+        <input type="hidden" {...register} name={fieldName} />
       </div>
       {error && <span className="input-error">{error.message}</span>}
     </>

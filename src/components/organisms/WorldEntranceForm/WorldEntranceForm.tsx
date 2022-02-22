@@ -1,18 +1,17 @@
-import React, { useEffect, useMemo } from "react";
-import { useForm } from "react-hook-form";
+import React, { useCallback, useMemo } from "react";
+import { useFieldArray, useForm, useFormState } from "react-hook-form";
 import { useAsyncFn } from "react-use";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 import { updateWorldEntranceSettings, World } from "api/world";
 
-import { EntranceStepConfig, EntranceStepTemplate } from "types/EntranceStep";
-import { Question } from "types/Question";
+import { EntranceStepTemplate } from "types/EntranceStep";
 import { WorldEntranceFormInput } from "types/world";
 
 import { WithId } from "utils/id";
 
 import { worldEntranceSchema } from "forms/worldEntranceSchema";
 
-import { useArray } from "hooks/useArray";
 import { useUser } from "hooks/useUser";
 
 import { AdminSidebarButtons } from "components/organisms/AdminVenueView/components/AdminSidebarButtons";
@@ -42,73 +41,72 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
   const worldId = world.id;
   const { user } = useUser();
 
-  // @debt sync useArray with the form changes or try useFieldArray
-  const {
-    items: codeQuestions,
-    add: addCodeQuestion,
-    update: updateCodeQuestion,
-    clear: clearCodeQuestions,
-    remove: removeCodeQuestion,
-    isDirty: isDirtyCode,
-    clearDirty: clearDirtyCode,
-  } = useArray<Question>(world.questions?.code);
-
-  const {
-    items: profileQuestions,
-    add: addProfileQuestion,
-    update: updateProfileQuestion,
-    clear: clearProfileQuestions,
-    remove: removeProfileQuestion,
-    isDirty: isDirtyProfile,
-    clearDirty: clearDirtyProfile,
-  } = useArray<Question>(world.questions?.profile);
-
-  const {
-    items: entranceSteps,
-    add: addEntranceStep,
-    update: updateEntranceStep,
-    clear: clearEntranceSteps,
-    remove: removeEntranceStep,
-    isDirty: isDirtyEntrance,
-    clearDirty: clearDirtyEntrance,
-  } = useArray<EntranceStepConfig>(world.entrance, {
-    create: () => ({ template: EntranceStepTemplate.WelcomeVideo }),
-    prepare: (item) => ({
-      ...item,
-      template: item.template || EntranceStepTemplate.WelcomeVideo,
-    }),
-  });
-
   const defaultValues = useMemo<WorldEntranceFormInput>(
     () => ({
-      code: codeQuestions,
-      profile: profileQuestions,
-      entrance: entranceSteps,
+      code: world.questions?.code ?? [],
+      profile: world.questions?.profile ?? [],
+      entrance: world.entrance,
       adultContent: world.adultContent ?? false,
       requiresDateOfBirth: world.requiresDateOfBirth ?? false,
     }),
     [
-      codeQuestions,
-      profileQuestions,
-      entranceSteps,
+      world.questions?.code,
+      world.questions?.profile,
+      world.entrance,
       world.adultContent,
       world.requiresDateOfBirth,
     ]
   );
 
   const {
-    getValues,
     reset,
     register,
-    formState: { dirty, isSubmitting },
-    errors,
     handleSubmit,
+    control,
   } = useForm<WorldEntranceFormInput>({
     mode: "onSubmit",
     reValidateMode: "onChange",
-    validationSchema: worldEntranceSchema,
+    resolver: yupResolver(worldEntranceSchema),
     defaultValues,
   });
+
+  const {
+    fields: codeQuestions,
+    append: addCodeQuestion,
+    remove: removeCodeQuestion,
+  } = useFieldArray({ control, shouldUnregister: true, name: "code" });
+
+  const handleAddCodeQuestion = () =>
+    addCodeQuestion({ name: "", text: "", link: "" });
+  const clearCodeQuestions = removeCodeQuestion;
+
+  const {
+    fields: profileQuestions,
+    append: addProfileQuestion,
+    remove: removeProfileQuestion,
+  } = useFieldArray({ control, shouldUnregister: true, name: "profile" });
+
+  const handleAddProfileQuestion = useCallback(
+    () => addProfileQuestion({ name: "", text: "", link: "" }),
+    [addProfileQuestion]
+  );
+  const clearProfileQuestions = removeProfileQuestion;
+  const {
+    fields: entranceSteps,
+    append: addEntranceStep,
+    remove: removeEntranceStep,
+  } = useFieldArray({ control, shouldUnregister: true, name: "entrance" });
+
+  const handleAddEntranceQuestion = () =>
+    addEntranceStep({
+      template: EntranceStepTemplate.WelcomeVideo,
+      videoUrl: "",
+      autoplay: false,
+      welcomeText: "",
+    });
+  const clearEntranceSteps = removeEntranceStep;
+
+  const { isDirty, isSubmitting, errors } = useFormState({ control });
 
   const [{ error, loading: isSaving }, submit] = useAsyncFn(
     async (input: WorldEntranceFormInput) => {
@@ -117,50 +115,16 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
       const data = {
         ...input,
         id: worldId,
-        code: codeQuestions,
-        profile: profileQuestions,
-        entrance: entranceSteps,
       };
       await updateWorldEntranceSettings(data, user);
 
       reset(data);
-      clearDirtyCode();
-      clearDirtyProfile();
-      clearDirtyEntrance();
     },
-    [
-      worldId,
-      user,
-      reset,
-      clearDirtyCode,
-      clearDirtyProfile,
-      clearDirtyEntrance,
-      codeQuestions,
-      profileQuestions,
-      entranceSteps,
-    ]
+    [worldId, user, reset]
   );
 
   const isSaveLoading = isSubmitting || isSaving;
-  const isSaveDisabled = !(
-    dirty ||
-    isSaving ||
-    isSubmitting ||
-    isDirtyCode ||
-    isDirtyProfile ||
-    isDirtyEntrance
-  );
-
-  useEffect(() => {
-    const values: Partial<WorldEntranceFormInput> = getValues();
-    reset({
-      code: codeQuestions,
-      profile: profileQuestions,
-      entrance: entranceSteps,
-      adultContent: values.adultContent ?? false,
-      requiresDateOfBirth: values.requiresDateOfBirth ?? false,
-    });
-  }, [codeQuestions, profileQuestions, entranceSteps, getValues, reset]);
+  const isSaveDisabled = !(isDirty || isSaving || isSubmitting);
 
   return (
     <div className="WorldEntranceForm">
@@ -169,13 +133,12 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
           <TesterRestricted>
             <AdminCheckbox
               variant="toggler"
-              name="adultContent"
               label="Restrict entry to adults aged 18+"
+              name="adultContent"
               register={register}
             />
           </TesterRestricted>
           <AdminCheckbox
-            name="requiresDateOfBirth"
             label={
               <>
                 Restrict registration to 18+
@@ -183,6 +146,7 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
                 (adds a date of birth picker)
               </>
             }
+            name="requiresDateOfBirth"
             register={register}
           />
         </AdminSection>
@@ -192,8 +156,7 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
             hasLink
             items={codeQuestions}
             name="code"
-            onAdd={addCodeQuestion}
-            onUpdate={updateCodeQuestion}
+            onAdd={handleAddCodeQuestion}
             onRemove={removeCodeQuestion}
             onClear={clearCodeQuestions}
             register={register}
@@ -204,8 +167,7 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
             errors={errors.profile}
             items={profileQuestions}
             name="profile"
-            onAdd={addProfileQuestion}
-            onUpdate={updateProfileQuestion}
+            onAdd={handleAddProfileQuestion}
             onRemove={removeProfileQuestion}
             onClear={clearProfileQuestions}
             register={register}
@@ -216,11 +178,11 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
             errors={errors.entrance}
             items={entranceSteps}
             name="entrance"
-            onAdd={addEntranceStep}
-            onUpdate={updateEntranceStep}
+            onAdd={handleAddEntranceQuestion}
             onRemove={removeEntranceStep}
             onClear={clearEntranceSteps}
             register={register}
+            control={control}
           />
         </AdminSection>
         <FormErrors errors={errors} omitted={HANDLED_ERRORS} />

@@ -13,10 +13,7 @@ export const withWorldAndSpace = <T extends SpaceSlugLocation>(
   Component: React.FC<WithSpaceInProps<T>>
 ) => {
   const WithWorldAndSpace = (props: WithSpaceInProps<T>) => {
-    const { space, world } = useWorldAndSpaceBySlug(
-      props.worldSlug,
-      props.spaceSlug
-    );
+    const { space, world } = useWorldAndSpaceBySlug(props);
     return React.createElement(Component, {
       ...props,
       space,

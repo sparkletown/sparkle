@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useFormState } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn } from "react-use";
 
@@ -8,8 +8,7 @@ import {
   generateAttendeeInsideUrl,
 } from "utils/url";
 
-import { useSpaceParams } from "hooks/spaces/useSpaceParams";
-import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
+import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useUser } from "hooks/useUser";
 
 import { Loading } from "components/molecules/Loading";
@@ -40,17 +39,21 @@ export const CodeOfConduct: React.FC = () => {
 
   const { user } = useUser();
 
-  const { worldSlug, spaceSlug } = useSpaceParams();
-  const { world, space, isLoaded } = useWorldAndSpaceBySlug(
+  const {
+    world,
+    space,
+    isLoaded,
     worldSlug,
-    spaceSlug
-  );
+    spaceSlug,
+  } = useWorldAndSpaceByParams();
 
-  const { register, handleSubmit, errors, formState, watch } = useForm<
+  const { register, handleSubmit, control, formState, watch } = useForm<
     CodeOfConductFormData & Record<string, boolean>
   >({
     mode: "onChange",
   });
+
+  const { errors } = useFormState({ control });
 
   const proceed = useCallback(() => {
     // @debt Should we throw an error here rather than defaulting to empty string?
@@ -121,9 +124,8 @@ export const CodeOfConduct: React.FC = () => {
 
                 <input
                   type="checkbox"
-                  name={question.name}
                   id={question.name}
-                  ref={register({
+                  {...register(question.name, {
                     required: true,
                   })}
                 />

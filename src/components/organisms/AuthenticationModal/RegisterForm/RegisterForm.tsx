@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useFormState } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { differenceInYears, parseISO } from "date-fns";
 import firebase from "firebase/compat/app";
@@ -95,10 +95,10 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
   const {
     register,
     handleSubmit,
-    errors,
+    control,
     formState,
     setError,
-    clearError,
+    clearErrors,
     watch,
     getValues,
   } = useForm<RegisterFormInput & Record<string, string>>({
@@ -106,8 +106,10 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
     reValidateMode: "onChange",
   });
 
+  const { errors } = useFormState({ control });
+
   const clearBackendErrors = () => {
-    clearError("backend");
+    clearErrors("backend");
   };
 
   const checkVenueAccessLevels = async (data: RegisterFormInput) => {
@@ -118,11 +120,11 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
       });
 
       if (!isEmailWhitelisted.data) {
-        setError(
-          "email",
-          "validation",
-          "We can't find you! Please use the email from your invitation."
-        );
+        setError("email", {
+          type: "validation",
+          message:
+            "We can't find you! Please use the email from your invitation.",
+        });
         return;
       }
     }
@@ -134,11 +136,11 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
       });
 
       if (!isCodeValid.data) {
-        setError(
-          "code",
-          "validation",
-          "We can't find you! Please use the code from your invitation."
-        );
+        setError("code", {
+          type: "validation",
+          message:
+            "We can't find you! Please use the code from your invitation.",
+        });
         return;
       }
     }
@@ -188,15 +190,17 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
         setShowLoginModal(true);
       }
       if (status === 404) {
-        setError(
-          "email",
-          "validation",
-          `Email ${data.email} does not have a ticket; get your ticket at ${space.ticketUrl}`
-        );
+        setError("email", {
+          type: "validation",
+          message: `Email ${data.email} does not have a ticket; get your ticket at ${space.ticketUrl}`,
+        });
       } else if (status >= 500) {
-        setError("email", "validation", `Error checking ticket: ${message}`);
+        setError("email", {
+          type: "validation",
+          message: `Error checking ticket: ${message}`,
+        });
       } else {
-        setError("backend", "firebase", message);
+        setError("backend", { type: "firebase", message });
       }
     }
   };
@@ -211,7 +215,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
       const auth = await signInWithGoogle();
       postRegisterCheck(auth, formValues);
     } catch (error) {
-      setError("backend", "firebase", "Error");
+      setError("backend", { type: "firebase", message: "Error" });
     }
   };
   const handleFacebookSignIn = async () => {
@@ -224,13 +228,13 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
       const auth = await signInWithFacebook();
 
       if (auth.message) {
-        setError("backend", "firebase", "Error");
+        setError("backend", { type: "firebase", message: "Error" });
         return;
       }
 
       postRegisterCheck(auth, formValues);
     } catch {
-      setError("backend", "firebase", "Error");
+      setError("backend", { type: "firebase", message: "Error" });
     }
   };
 
@@ -272,10 +276,9 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
       >
         <div className="input-group">
           <input
-            name="email"
             className={FORMS.input}
             placeholder="Your email address"
-            ref={register({ required: true })}
+            {...register("email", { required: true })}
           />
           {errors.email && errors.email.type === "required" && (
             <span className="input-error">Email is required</span>
@@ -288,11 +291,10 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
 
         <div className="input-group">
           <input
-            name="password"
             className={FORMS.input}
             type="password"
             placeholder="Password"
-            ref={register({
+            {...register("password", {
               required: true,
               pattern: /^(?=.*[0-9])(?=.*[a-zA-Z]).{6,}$/,
             })}
@@ -320,10 +322,12 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
         {isDobRequired && (
           <div className="input-group">
             <input
-              name="date_of_birth"
               className={FORMS.input}
               type="date"
-              ref={register({ required: true, validate: validateDateOfBirth })}
+              {...register("date_of_birth", {
+                required: true,
+                validate: validateDateOfBirth,
+              })}
             />
             <small className="input-info">
               You need to be 18 years old to attend this event. Please confirm
@@ -366,9 +370,8 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                 </label>
                 <input
                   type="checkbox"
-                  name={term.name}
                   id={term.name}
-                  ref={register({
+                  {...register(term.name, {
                     required: true,
                   })}
                 />

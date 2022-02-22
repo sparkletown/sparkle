@@ -19,7 +19,7 @@ jobs:
           git fetch origin master
 
           # git push origin master:sparkle1
-          git push origin master:sparkle2
+          # git push origin master:sparkle2
           # git push origin master:sparkle3
           # git push origin master:sparkle4
           # git push origin master:sparkle5

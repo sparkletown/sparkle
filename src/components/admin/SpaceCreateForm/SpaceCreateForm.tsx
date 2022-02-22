@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useFormState } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn } from "react-use";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { FormSection } from "components/admin/FormSection";
 import { Input } from "components/admin/Input";
 
@@ -57,15 +58,17 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({
   >();
   const { icon: logoImageUrl, template } = selectedItem ?? {};
 
-  const { register, getValues, handleSubmit, errors, reset, watch } = useForm({
+  const { register, getValues, handleSubmit, control, reset, watch } = useForm({
     mode: "onSubmit",
     reValidateMode: "onSubmit",
-    validationSchema: createSpaceSchema,
+    resolver: yupResolver(createSpaceSchema),
     defaultValues: {
       venueName: "",
       template,
     },
   });
+
+  const { errors } = useFormState({ control });
 
   const { venueName } = getValues();
 
@@ -126,13 +129,13 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({
           subtitle="max 50 characters"
         >
           <Input
-            name="venueName"
             type="text"
             autoComplete="off"
             value={venueName}
             placeholder={`${SPACE_TAXON.capital} name`}
             errors={errors}
             register={register}
+            name="venueName"
             disabled={isLoading}
           />
         </FormSection>

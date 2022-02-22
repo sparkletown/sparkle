@@ -48,7 +48,7 @@ export enum AdminVenueTab {
   run = "run",
 }
 
-export interface AdminVenueViewRouteParams {
+interface AdminVenueViewRouteParams {
   worldSlug?: WorldSlug;
   spaceSlug?: SpaceSlug;
   selectedTab?: AdminVenueTab;
