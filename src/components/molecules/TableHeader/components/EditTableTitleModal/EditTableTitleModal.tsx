@@ -8,8 +8,7 @@ import { updateVenueTable } from "api/table";
 
 import { Table } from "types/Table";
 
-import { useSpaceParams } from "hooks/spaces/useSpaceParams";
-import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
+import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 
 import { Modal } from "components/molecules/Modal";
 
@@ -43,8 +42,7 @@ export const EditTableTitleModal: React.FC<EditTableTitleModalProps> = ({
   capacity,
   onHide,
 }) => {
-  const { worldSlug, spaceSlug } = useSpaceParams();
-  const { spaceId } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
+  const { spaceId } = useWorldAndSpaceByParams();
 
   const { register, handleSubmit, control } = useForm<EditTableForm>({
     mode: "onBlur",

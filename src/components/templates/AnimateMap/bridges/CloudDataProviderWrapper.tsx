@@ -16,7 +16,7 @@ import { useUser } from "hooks/useUser";
 
 import { useFirebarrels } from "../hooks/useFirebarrels";
 import { useRecentLocationsUsers } from "../hooks/useRecentLocationsUsers";
-import { UseRelatedPartymapRoomsData } from "../hooks/useRelatedPartymapRooms";
+import { UseRelatedPartymapRoomsResult } from "../hooks/useRelatedPartymapRooms";
 
 import { CloudDataProvider } from "./DataProvider/CloudDataProvider";
 
@@ -29,7 +29,7 @@ const EMPTY_WORLD_USERS = {
 export interface CloudDataProviderWrapperProps {
   venue: WithId<AnimateMapVenue>;
   newDataProviderCreate: (dataProvider: CloudDataProvider) => void;
-  relatedRooms: UseRelatedPartymapRoomsData;
+  relatedRooms: UseRelatedPartymapRoomsResult;
   reInitOnError?: boolean;
 }
 

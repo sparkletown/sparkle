@@ -1,8 +1,13 @@
 ### Firebase Emulators
 
-Instead of running just the functions emulator, the full suite of emulators can be used. You can find out more at https://firebase.google.com/docs/emulator-suite
+Instead of running just the functions emulator, the full suite of emulators can
+be used. You can find out more at
+https://firebase.google.com/docs/emulator-suite
 
-**Note**: If your code accidentally invokes non-emulated (production) resources, there is a chance of data change, usage and billing. To prevent this, you might opt in to use a Firebase project name beginning with `demo-` (e.g. `demo-staging`) in which case no production resources will be used.
+**Note**: If your code accidentally invokes non-emulated (production) resources,
+there is a chance of data change, usage and billing. To prevent this, you might
+opt in to use a Firebase project name beginning with `demo-` (e.g.
+`demo-staging`) in which case no production resources will be used.
 
 This might entail some code changes as well, to enable the emulation, e.g.
 

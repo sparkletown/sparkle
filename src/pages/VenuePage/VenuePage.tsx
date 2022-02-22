@@ -16,6 +16,7 @@ import {
   SpaceId,
   SpaceSlugLocation,
   SpaceWithId,
+  UserId,
   WorldId,
   WorldWithId,
 } from "types/id";
@@ -72,6 +73,7 @@ type VenuePageProps = SpaceSlugLocation & {
   world: WorldWithId;
   worldId: WorldId;
   user?: RefiAuthUser;
+  userId?: UserId;
   profile?: Profile;
   userLocation?: UserLocation;
 };
@@ -84,6 +86,7 @@ export const VenuePage: React.FC<VenuePageProps> = ({
   space,
   spaceId,
   user,
+  userId,
   profile,
   userLocation,
 }) => {
@@ -113,7 +116,6 @@ export const VenuePage: React.FC<VenuePageProps> = ({
     isLoaded: eventRequestStatus,
   } = useConnectCurrentEvent({ worldId, spaceId });
 
-  const userId = user?.uid;
   const venueName = space?.name ?? "";
   const event = currentEvent?.[0];
 
@@ -186,13 +188,17 @@ export const VenuePage: React.FC<VenuePageProps> = ({
       window.removeEventListener("beforeunload", onBeforeUnloadHandler);
   }, [userId]);
 
+  const handleRejection = (e: unknown) => console.error(VenuePage.name, e);
+
   // @debt refactor how user location updates works here to encapsulate in a hook or similar?
   useEffect(() => {
     if (!spaceId || !userId || !profile || enteredVenueIds?.includes(spaceId)) {
       return;
     }
 
-    void updateProfileEnteredVenueIds(enteredVenueIds, userId, spaceId);
+    updateProfileEnteredVenueIds(enteredVenueIds, userId, spaceId).catch(
+      handleRejection
+    );
   }, [enteredVenueIds, userLocation, userId, spaceId, profile]);
 
   // @debt refactor how user location updates works here to encapsulate in a hook or similar?
@@ -201,7 +207,9 @@ export const VenuePage: React.FC<VenuePageProps> = ({
       return;
     }
 
-    updateProfileEnteredWorldIds(enteredWorldIds, userId, worldId);
+    updateProfileEnteredWorldIds(enteredWorldIds, userId, worldId).catch(
+      handleRejection
+    );
   }, [enteredWorldIds, userLocation, userId, worldId, profile]);
 
   // NOTE: User's timespent updates

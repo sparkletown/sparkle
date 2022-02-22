@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo } from "react";
 import { useForm, useFormState } from "react-hook-form";
-import { useParams } from "react-router";
 import { useAsyncFn } from "react-use";
 import { yupResolver } from "@hookform/resolvers/yup";
 import omit from "lodash/omit";
@@ -15,7 +14,7 @@ import { isTruthy } from "utils/types";
 
 import { screeningRoomVideoSchema } from "forms/screeningRoomVideoSchema";
 
-import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
+import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useUser } from "hooks/useUser";
 
 import { AdminInput } from "components/molecules/AdminInput";
@@ -23,8 +22,6 @@ import { SubmitError } from "components/molecules/SubmitError";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { ImageInput } from "components/atoms/ImageInput";
-
-import { AdminVenueViewRouteParams } from "../AdminVenueView/AdminVenueView";
 
 import "./ScreeningRoomVideoAddEditForm.scss";
 
@@ -38,11 +35,7 @@ export const ScreeningRoomVideoAddEditForm: React.FC<ScreeningRoomVideoAddEditFo
   onDone,
 }) => {
   const { user } = useUser();
-  const { worldSlug, spaceSlug } = useParams<AdminVenueViewRouteParams>();
-  const { spaceId: currentSpaceId } = useWorldAndSpaceBySlug(
-    worldSlug,
-    spaceSlug
-  );
+  const { spaceId: currentSpaceId } = useWorldAndSpaceByParams();
 
   const isEditMode = isTruthy(video);
   const title = isEditMode ? "Edit video" : "Add video";

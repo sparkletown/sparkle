@@ -21,6 +21,10 @@ export type SpaceSlugLocation = { worldSlug: WorldSlug; spaceSlug: SpaceSlug };
 export type SpacesSlugLocation = { spaceSlug: SpaceSlug };
 export type WorldIdLocation = { worldId: WorldId };
 export type MaybeWorldIdLocation = { worldId?: WorldId };
+export type MaybeWorldAndSpaceSlugLocation = {
+  worldSlug?: WorldSlug;
+  spaceSlug?: SpaceSlug;
+};
 export type WorldSlugLocation = { worldSlug: WorldSlug };
 export type WorldAndSpaceIdLocation = { worldId: WorldId; spaceId: SpaceId };
 export type WorldAndSpaceSlugLocation = {

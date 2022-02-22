@@ -18,7 +18,6 @@ import {
   VENUE_PAGE_LOADED_EVENT_NAME,
 } from "settings";
 
-import { ReactHook } from "types/utility";
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
@@ -66,7 +65,7 @@ export const identifyUser = ({ email, name = "N/A" }: IdentifyUserProps) => {
   }
 };
 
-export interface UseAnalyticsProps {
+interface UseAnalyticsOptions {
   venue?: WithId<AnyVenue>;
 }
 
@@ -89,9 +88,9 @@ export interface UseAnalyticsResult {
   trackEnterJazzBarEvent: () => void;
 }
 
-export const useAnalytics: ReactHook<UseAnalyticsProps, UseAnalyticsResult> = ({
-  venue: space,
-}) => {
+export const useAnalytics: (
+  options: UseAnalyticsOptions
+) => UseAnalyticsResult = ({ venue: space }) => {
   const { user } = useLoginCheck();
   const { world, isLoaded: isWorldLoaded } = useWorldById(space?.worldId);
   const email = user?.email;
