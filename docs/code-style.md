@@ -162,7 +162,7 @@ anywhere and if it's good to keep or delete it.
 Types vs Interfaces
 
 Usually types declared with `interface` were used to define a components
-props.However`type` s syntax allows for more robust definitions and should be
+props. However, `type`s syntax allows for more robust definitions and should be
 preferred in most cases and will allow for more uniformed looking code.
 
 ###
