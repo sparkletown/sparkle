@@ -9,8 +9,7 @@ import { Question } from "types/Question";
 
 import { generateUrl } from "utils/url";
 
-import { useSpaceParams } from "hooks/spaces/useSpaceParams";
-import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
+import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useUser } from "hooks/useUser";
 
 import { Loading } from "components/molecules/Loading";
@@ -31,15 +30,15 @@ export interface QuestionsFormData {
 }
 
 export const ProfileQuestions: React.FC = () => {
-  const history = useHistory();
-
-  const { user } = useUser();
-
-  const { worldSlug, spaceSlug } = useSpaceParams();
-  const { world, space, isLoaded } = useWorldAndSpaceBySlug(
+  const {
+    world,
+    space,
+    isLoaded,
     worldSlug,
-    spaceSlug
-  );
+    spaceSlug,
+  } = useWorldAndSpaceByParams();
+  const history = useHistory();
+  const { user } = useUser();
 
   const { register, handleSubmit, formState } = useForm<QuestionsFormData>({
     mode: "onChange",

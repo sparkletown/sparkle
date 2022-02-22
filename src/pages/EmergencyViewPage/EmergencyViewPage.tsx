@@ -13,8 +13,7 @@ import {
 import { range } from "utils/range";
 import { formatDateRelativeToNow } from "utils/time";
 
-import { useSpaceParams } from "hooks/spaces/useSpaceParams";
-import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
+import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useValidImage } from "hooks/useCheckImage";
 import { useUser } from "hooks/useUser";
 import useVenueScheduleEvents from "hooks/useVenueScheduleEvents";
@@ -39,13 +38,12 @@ const emptyPersonalizedSchedule = {};
 
 export const EmergencyViewPage: React.FC = () => {
   const [selectedTab, updateTab] = useState(0);
-  const { worldSlug, spaceSlug } = useSpaceParams();
 
   const {
     space,
     spaceId,
     isLoaded: isCurrentVenueLoaded,
-  } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
+  } = useWorldAndSpaceByParams();
 
   const { user, userWithId } = useUser();
   const userEventIds =

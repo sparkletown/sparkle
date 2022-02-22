@@ -6,16 +6,26 @@ import { COLLECTION_SPACES, COLLECTION_WORLDS } from "settings";
 
 import { World } from "api/world";
 
-import { SpaceId, SpaceSlug, WorldId, WorldSlug } from "types/id";
+import {
+  SpaceId,
+  SpaceSlug,
+  SpaceWithId,
+  WorldId,
+  WorldSlug,
+  WorldWithId,
+} from "types/id";
 import { AnyVenue } from "types/venues";
 
 import { withIdConverter } from "utils/converters";
 import { convertToFirestoreKey, WithId } from "utils/id";
 
-export type UseSpaceBySlugResult = {
-  world?: WithId<World>;
+type UseWorldAndSpaceBySlug = (options: {
+  worldSlug?: WorldSlug;
+  spaceSlug?: SpaceSlug;
+}) => {
+  world?: WorldWithId;
   worldId?: WorldId;
-  space?: WithId<AnyVenue>;
+  space?: SpaceWithId;
   spaceId?: SpaceId;
   isLoaded: boolean;
   error?: string;
@@ -24,14 +34,15 @@ export type UseSpaceBySlugResult = {
 /**
  * Hook which will return the space when the slug is provided.
  * The intention is to be used on the client side, when the space slug is provided in the url.
- * @param worldSlug
- * @param spaceSlug
- * @returns
  */
-export const useWorldAndSpaceBySlug = (
-  worldSlug?: WorldSlug,
-  spaceSlug?: SpaceSlug
-): UseSpaceBySlugResult => {
+export const useWorldAndSpaceBySlug: UseWorldAndSpaceBySlug = ({
+  worldSlug,
+  spaceSlug,
+}) => {
+  // @debt we don't properly deal with the slug being undefined.
+  // The query shouldn't happen if we don't have a world slug.
+  // This whole hook needs a bit of a rethink.
+  // It's used incorrectly by the NavBar.
   const firestore = useFirestore();
 
   // Note: Avoid using the option 'initialData' because it will make status always return 'success'
@@ -51,9 +62,6 @@ export const useWorldAndSpaceBySlug = (
     query(
       collection(firestore, COLLECTION_WORLDS),
       where("isHidden", "==", false),
-      // @debt we don't properly deal with the slug being undefined. This query
-      // shouldn't happen if we don't have a world slug. This whole hook needs
-      // a bit of a rethink. It's used incorrectly by the NavBar.
       where("slug", "==", convertToFirestoreKey(worldSlug))
     ).withConverter(withIdConverter<World>())
   );
@@ -128,8 +136,8 @@ export const useWorldAndSpaceBySlug = (
   }
 
   return {
-    world,
-    space,
+    world: world as WorldWithId | undefined,
+    space: space as SpaceWithId | undefined,
     worldId: world?.id as WorldId | undefined,
     spaceId: space?.id as SpaceId | undefined,
     isLoaded: true,

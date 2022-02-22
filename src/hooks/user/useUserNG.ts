@@ -3,18 +3,15 @@ import { useMemo } from "react";
 import { COLLECTION_USERS } from "settings";
 
 import { FireAuthUser, LoadStatus } from "types/fire";
-import { UserId, UserWithId } from "types/id";
-import { Profile, UserLocation, UserWithLocation } from "types/User";
+import { UserId } from "types/id";
+import { UserWithLocation } from "types/User";
 
 import { useFireDocument } from "hooks/fire/useFireDocument";
 import { useUserId } from "hooks/user/useUserId";
 
 type UseUserResult = LoadStatus & {
   auth?: FireAuthUser;
-  user?: FireAuthUser;
-  profile?: Profile;
-  userLocation?: UserLocation;
-  userWithId?: UserWithId;
+  profile?: UserWithLocation;
   userId?: UserId;
   isTester: boolean;
   authError?: Error;
@@ -30,18 +27,19 @@ export const useUserNG = (): UseUserResult => {
     error: authError,
   } = useUserId();
 
+  const path = useMemo(() => [COLLECTION_USERS, userId], [userId]);
+
   const {
     error: profileError,
     isLoading: profileLoading,
     isLoaded: profileLoaded,
     data: profile,
-  } = useFireDocument<UserWithLocation>(
-    useMemo(() => [COLLECTION_USERS, userId], [userId])
-  );
+  } = useFireDocument<UserWithLocation>(path);
 
   const isTester: boolean = !!profile?.tester;
   const isLoading: boolean = authLoading || profileLoading;
   const isLoaded: boolean = authLoaded && profileLoaded;
+  const error: Error | undefined = authError || profileError;
 
   return useMemo(
     () => ({
@@ -51,6 +49,7 @@ export const useUserNG = (): UseUserResult => {
       isTester,
       isLoading,
       isLoaded,
+      error,
       authError,
       profileError,
     }),
@@ -61,6 +60,7 @@ export const useUserNG = (): UseUserResult => {
       isTester,
       isLoading,
       isLoaded,
+      error,
       authError,
       profileError,
     ]
