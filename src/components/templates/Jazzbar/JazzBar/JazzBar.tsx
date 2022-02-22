@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { MediaPlayer } from "components/attendee/MediaPlayer";
+import { TableGrid } from "components/attendee/TableGrid";
 import { useBackgroundGradient } from "components/attendee/useBackgroundGradient";
 
 import { JAZZBAR_TABLES } from "settings";
@@ -14,7 +15,6 @@ import { useUserId } from "hooks/user/useUserId";
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import { Loading } from "components/molecules/Loading";
-import { TableGrid } from "components/molecules/TableGrid";
 
 import styles from "./JazzBar.module.scss";
 

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { TableGrid } from "components/attendee/TableGrid";
 
 import {
   ALWAYS_EMPTY_ARRAY,
@@ -24,7 +25,6 @@ import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 import { Room } from "components/organisms/Room";
 
 import { InformationCard } from "components/molecules/InformationCard";
-import { TableGrid } from "components/molecules/TableGrid";
 import { TableHeader } from "components/molecules/TableHeader";
 import { TablesControlBar } from "components/molecules/TablesControlBar";
 import { UserList } from "components/molecules/UserList";
