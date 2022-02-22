@@ -230,7 +230,7 @@ export const ScheduleOverlay: React.FC = () => {
         name="bookmarked-toggle"
         toggled={showPersonalisedSchedule}
         onChange={togglePersonalisedSchedule}
-        label="Only show bookmarked events"
+        title="Only show bookmarked events"
       />
       <div className={CN.scheduleDays}>{weekdays}</div>
       {isEventsLoading && (
@@ -239,7 +239,9 @@ export const ScheduleOverlay: React.FC = () => {
           label="Events are loading"
         />
       )}
-      <div className={CN.scheduleOverlayContent}>{renderedEvents}</div>
+      <div className={CN.scheduleOverlayContent}>
+        <div className={CN.contentWrapper}>{renderedEvents}</div>
+      </div>
     </div>
   );
 };

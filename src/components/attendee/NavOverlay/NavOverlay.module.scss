@@ -74,6 +74,7 @@ $-z-index-base: 1;
   width: 100%;
   overflow-y: auto;
   overflow-x: hidden;
+  padding: 0 0 space.empty(3) 0;
   mask: linear-gradient(
     to bottom,
     transparent 0,

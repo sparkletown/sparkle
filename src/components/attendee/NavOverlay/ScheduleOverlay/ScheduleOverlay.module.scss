@@ -34,6 +34,7 @@
   flex-direction: column;
   font-size: 19px;
   cursor: default;
+  padding: space.empty(1) 0;
 }
 
 .eventTitle {
@@ -63,4 +64,8 @@
 
 .scheduleButtonDisabled {
   color: gray;
+}
+
+.contentWrapper {
+  padding: 0 0 40px 0;
 }

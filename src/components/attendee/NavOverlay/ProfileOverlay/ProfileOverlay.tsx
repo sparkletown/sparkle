@@ -22,6 +22,8 @@ import { updateUserProfile } from "pages/Account/helpers";
 import { ProfileModalEditBasicInfo } from "./BasicInfo/ProfileModalEditBasicInfo";
 import { ProfileModalEditLinks } from "./Links/ProfileModalEditLinks";
 import { ProfileModalChangePassword } from "./Password/ProfileModalChangePassword";
+import { AudioSettings } from "./AudioSettings";
+import { VideoSettings } from "./VideoSettings";
 
 import styles from "./ProfileOverlay.module.scss";
 
@@ -193,6 +195,8 @@ export const ProfileOverlay: React.FC<ProfileOverlayProps> = ({ profile }) => {
             onDeleteLink={onDeleteLink}
             onAddLink={addLinkHandler}
           />
+          <VideoSettings register={register} />
+          <AudioSettings register={register} />
           <ProfileModalChangePassword
             register={register}
             getValues={getValues}

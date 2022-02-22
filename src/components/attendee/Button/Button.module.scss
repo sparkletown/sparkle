@@ -1,9 +1,11 @@
 @use "scss/attendee/space";
 @use "scss/attendee/border";
+@use "scss/attendee/font";
 @use "scss/attendee/effects/sparkle";
 
 .button {
   @include sparkle.color--glass;
+  @include font.core;
   padding: 0 space.empty(1);
   height: space.item(1);
   margin: space.gap(1);
