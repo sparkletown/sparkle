@@ -1,10 +1,12 @@
-import React, { forwardRef } from "react";
-import { FieldError } from "react-hook-form";
+import React from "react";
+import { FieldError, RegisterOptions, UseFormRegister } from "react-hook-form";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
-import { ContainerClassName } from "types/utility";
+import { ALWAYS_EMPTY_OBJECT } from "settings";
+
+import { AnyForm, ContainerClassName } from "types/utility";
 
 import { isDefined, isTruthy } from "utils/types";
 
@@ -50,27 +52,27 @@ interface InputFieldProps
   error?: FieldError;
   onIconStartClick?: () => void;
   onIconEndClick?: () => void;
+  register: UseFormRegister<AnyForm> | (() => void);
+  rules?: RegisterOptions;
+  name?: string;
 }
 
-export const _InputField: React.ForwardRefRenderFunction<
-  HTMLInputElement,
-  InputFieldProps
-> = (
-  {
-    containerClassName,
-    inputClassName,
-    iconStartClassName,
-    iconEndClassName,
-    errorTextClassName,
-    iconStart,
-    onIconStartClick,
-    iconEnd,
-    onIconEndClick,
-    error,
-    ...extraInputProps
-  },
-  ref
-) => {
+export const InputField: React.FC<InputFieldProps> = ({
+  containerClassName,
+  inputClassName,
+  iconStartClassName,
+  iconEndClassName,
+  errorTextClassName,
+  iconStart,
+  onIconStartClick,
+  iconEnd,
+  onIconEndClick,
+  error,
+  register,
+  rules = ALWAYS_EMPTY_OBJECT,
+  name = "",
+  ...extraInputProps
+}) => {
   const containerClassNames = classNames(
     "InputField",
     {
@@ -86,7 +88,11 @@ export const _InputField: React.ForwardRefRenderFunction<
   return (
     <div className={containerClassNames}>
       <div className="InputField__wrapper">
-        <input ref={ref} className={inputClassNames} {...extraInputProps} />
+        <input
+          className={inputClassNames}
+          {...register(name, rules)}
+          {...extraInputProps}
+        />
 
         {iconStart &&
           renderIcon(
@@ -109,5 +115,3 @@ export const _InputField: React.ForwardRefRenderFunction<
     </div>
   );
 };
-
-export const InputField = forwardRef(_InputField);

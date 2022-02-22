@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useFormState } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import classNames from "classnames";
 
@@ -31,14 +31,16 @@ export const BannerAdmin: React.FC<BannerAdminProps> = ({
   const {
     register,
     handleSubmit,
-    errors,
     reset,
     watch,
     setValue,
+    control,
   } = useForm<Banner>({
     mode: "onChange",
     reValidateMode: "onChange",
   });
+
+  const { errors } = useFormState({ control });
   const isUrlButtonActive = watch(
     "isActionButton",
     venue?.banner?.isActionButton
@@ -86,8 +88,7 @@ export const BannerAdmin: React.FC<BannerAdminProps> = ({
       <form onSubmit={handleSubmit(saveBanner)}>
         <div className="form-group">
           <textarea
-            ref={register({ required: true })}
-            name="content"
+            {...register("content", { required: true })}
             defaultValue={venue?.banner?.content}
             className="BannerAdmin__input-text"
             placeholder="Please type your announcement"
@@ -103,13 +104,13 @@ export const BannerAdmin: React.FC<BannerAdminProps> = ({
           name="isActionButton"
           label="Call to Action Button"
           toggler
-          forwardRef={register}
+          {...register}
           defaultChecked={venue?.banner?.isActionButton}
         />
 
         <div className="BannerAdmin__action-container">
           <InputField
-            ref={register}
+            register={register}
             name="buttonUrl"
             placeholder="Button URL"
             defaultValue={venue?.banner?.buttonUrl}
@@ -119,7 +120,7 @@ export const BannerAdmin: React.FC<BannerAdminProps> = ({
             autoComplete="off"
           />
           <InputField
-            ref={register}
+            register={register}
             name="buttonDisplayText"
             placeholder="Button display text"
             defaultValue={venue?.banner?.buttonDisplayText}
@@ -130,7 +131,7 @@ export const BannerAdmin: React.FC<BannerAdminProps> = ({
           />
         </div>
         <Checkbox
-          forwardRef={register}
+          {...register}
           containerClassName="BannerAdmin__checkbox"
           labelClassName="BannerAdmin__checkbox__label"
           name="isFullScreen"
@@ -140,7 +141,7 @@ export const BannerAdmin: React.FC<BannerAdminProps> = ({
         />
 
         <Checkbox
-          forwardRef={register}
+          {...register}
           containerClassName="BannerAdmin__checkbox"
           labelClassName={forceFunnelLabelClasses}
           name="isForceFunnel"

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useFormState } from "react-hook-form";
 import firebase from "firebase/compat/app";
 
 import { errorMessage } from "utils/error";
@@ -20,12 +20,14 @@ export const PasswordResetForm: React.FunctionComponent<PropsType> = ({
   const {
     register,
     handleSubmit,
-    errors,
+    control,
     formState,
     setError,
   } = useForm<PasswordResetFormData>({
     mode: "onChange",
   });
+
+  const { errors } = useFormState({ control });
 
   const [emailSentTo, setEmailSentTo] = useState("");
 
@@ -40,7 +42,7 @@ export const PasswordResetForm: React.FunctionComponent<PropsType> = ({
       await sendPasswordReset(data);
       setEmailSentTo(data.email);
     } catch (e) {
-      setError("email", "firebase", errorMessage(e));
+      setError("email", { type: "firebase", message: errorMessage(e) });
     }
   };
 
@@ -62,10 +64,9 @@ export const PasswordResetForm: React.FunctionComponent<PropsType> = ({
         <form onSubmit={handleSubmit(onSubmit)} className="form">
           <div className="input-group">
             <input
-              name="email"
               className="input-block input-centered"
               placeholder="Your email"
-              ref={register({ required: true })}
+              {...register("email", { required: true })}
             />
             {errors.email && errors.email.type === "required" && (
               <span className="input-error">Email is required</span>

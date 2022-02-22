@@ -21,3 +21,5 @@ export type ContainerClassName = { containerClassName?: string };
 // @debt transitionary value, remove AnyForm once all its uses are replaced by more accurate types
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type AnyForm = any;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type AnyFormRule = any;

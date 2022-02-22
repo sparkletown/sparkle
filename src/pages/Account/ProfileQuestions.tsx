@@ -27,6 +27,7 @@ export interface QuestionsFormData {
   islandCompanion: string;
   gratefulFor: string;
   likeAboutParties: string;
+  [key: string]: string;
 }
 
 export const ProfileQuestions: React.FC = () => {
@@ -40,7 +41,7 @@ export const ProfileQuestions: React.FC = () => {
   const history = useHistory();
   const { user } = useUser();
 
-  const { register, handleSubmit, formState } = useForm<QuestionsFormData>({
+  const { handleSubmit, formState, register } = useForm<QuestionsFormData>({
     mode: "onChange",
   });
 
@@ -106,7 +107,7 @@ export const ProfileQuestions: React.FC = () => {
         </p>
 
         <form onSubmit={handleSubmit(onSubmit)} className="form">
-          {profileQuestions?.map((question: Question) => (
+          {profileQuestions?.map((question: Question, i) => (
             <div
               key={question.name}
               className="ProfileQuestions__question form-group"
@@ -115,9 +116,8 @@ export const ProfileQuestions: React.FC = () => {
                 <strong>{question.text}</strong>
                 <textarea
                   className="input-block input-centered"
-                  name={question.name}
                   placeholder={question.text}
-                  ref={register()}
+                  {...register(question.name)}
                 />
               </label>
             </div>

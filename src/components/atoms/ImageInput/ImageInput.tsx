@@ -5,10 +5,13 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { FieldError, useForm } from "react-hook-form";
+import { FieldError, UseFormRegister, UseFormSetValue } from "react-hook-form";
+import { useCss } from "react-use";
 import classNames from "classnames";
 
 import { ACCEPTED_IMAGE_TYPES } from "settings";
+
+import { AnyForm } from "types/utility";
 
 import { useImageInputCompression } from "hooks/useImageInputCompression";
 
@@ -31,9 +34,9 @@ export interface ImageInputProps {
   name: string;
   imgUrl?: string;
   error?: FieldError;
-  setValue: <T>(prop: string, value: T, validate: boolean) => void;
+  setValue: UseFormSetValue<AnyForm>;
   small?: boolean;
-  register: ReturnType<typeof useForm>["register"];
+  register: UseFormRegister<AnyForm>;
   nameWithUnderscore?: boolean;
   text?: string;
   subtext?: string;
@@ -78,8 +81,8 @@ export const ImageInput: React.FC<ImageInputProps> = ({
       if (!compressedFile || !url) return;
 
       setImageUrl(url);
-      setValue(fileName, [compressedFile], false);
-      setValue(fileUrl, url, false);
+      setValue(fileName, [compressedFile], { shouldValidate: false });
+      setValue(fileUrl, url, { shouldValidate: false });
 
       onChange?.(url, {
         nameUrl: fileUrl,
@@ -121,7 +124,7 @@ export const ImageInput: React.FC<ImageInputProps> = ({
           Upload
         </span>
       </label>
-      <input type="hidden" name={fileUrl} ref={register} readOnly />
+      <input type="hidden" name={fileUrl} {...register} readOnly />
       <div className="ImageInput__wrapper">
         <ButtonNG onClick={onButtonClick}>{text}</ButtonNG>
         <div className="ImageInput__subtext">{subtext}</div>

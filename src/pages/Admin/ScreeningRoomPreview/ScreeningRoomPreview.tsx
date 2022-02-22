@@ -1,6 +1,8 @@
 import React, { useMemo } from "react";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
+import { ALWAYS_NOOP_FUNCTION } from "settings";
+
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
@@ -97,6 +99,7 @@ export const ScreeningRoomPreview: React.FC<ScreeningRoomPreviewProps> = ({
           containerClassName="ScreeningRoomPreview__search-field"
           placeholder="Search for a talk..."
           iconStart={faSearch}
+          register={ALWAYS_NOOP_FUNCTION}
         />
 
         {renderedCategoryOptions}

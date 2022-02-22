@@ -134,8 +134,9 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
       >
         <InputField
           inputClassName="Chatbox__input"
-          ref={register({ required: true })}
+          register={register}
           name="message"
+          rules={{ required: true }}
           placeholder={placeholder}
           autoComplete="off"
           iconEnd={

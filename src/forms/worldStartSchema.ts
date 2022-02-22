@@ -5,16 +5,10 @@ import { testWorldBySlugExists } from "utils/validation";
 import { createNameSchema } from "forms/factory/createNameSchema";
 
 export const worldStartSchema = Yup.object().shape({
-  name: createNameSchema({ name: "Name" }).when(
-    "$creating",
-    (creating: boolean, schema: Yup.StringSchema) =>
-      creating
-        ? schema.test(
-            "name",
-            "This world slug is already taken",
-            testWorldBySlugExists
-          )
-        : schema
+  name: createNameSchema({ name: "Name" }).test(
+    "name",
+    "This world slug is already taken",
+    testWorldBySlugExists
   ),
   description: Yup.string().notRequired(),
   subtitle: Yup.string().notRequired(),

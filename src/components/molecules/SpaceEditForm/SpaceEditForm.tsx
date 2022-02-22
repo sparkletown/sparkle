@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useFormState } from "react-hook-form";
 import { useAsyncFn } from "react-use";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 import {
   ADMIN_IA_SPACE_BASE_PARAM_URL,
@@ -146,16 +147,15 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
     getValues,
     setValue,
     watch,
+    control,
     reset,
-    errors,
   } = useForm({
     reValidateMode: "onChange",
-    validationSchema: spaceEditSchema,
+    resolver: yupResolver(spaceEditSchema),
     defaultValues,
-    validationContext: {
-      template: space.template,
-    },
   });
+
+  const { errors } = useFormState({ control });
 
   const {
     assets: mapBackgrounds,
@@ -222,14 +222,14 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
 
   const changePortalImageUrl = useCallback(
     (val: string) => {
-      setValue("logoImageUrl", val, false);
+      setValue("logoImageUrl", val, { shouldValidate: false });
     },
     [setValue]
   );
 
   const changeBackgroundImageUrl = useCallback(
     (val: string) => {
-      setValue("bannerImageUrl", val, false);
+      setValue("bannerImageUrl", val, { shouldValidate: false });
     },
     [setValue]
   );
@@ -258,9 +258,9 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
             </AdminSection>
             <AdminSection title="Rename your space" withLabel>
               <AdminInput
-                name="name"
                 placeholder="Space Name"
                 register={register}
+                name="name"
                 errors={errors}
                 required
               />
@@ -277,17 +277,17 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
             </AdminSection>
             <AdminSection title="Subtitle" withLabel>
               <AdminInput
-                name="subtitle"
                 placeholder="Subtitle for your space"
                 register={register}
+                name="subtitle"
                 errors={errors}
               />
             </AdminSection>
             <AdminSection title="Description" withLabel>
               <AdminTextarea
-                name="description"
                 placeholder={`Let your guests know what they’ll find when they join your space. Keep it short & sweet, around 2-3 sentences maximum. Be sure to indicate any expectations for their participation.`}
                 register={register}
+                name={"description"}
                 errors={errors}
               />
             </AdminSection>
@@ -379,16 +379,16 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
               IFRAME_TEMPLATES.includes(space.template as VenueTemplate) && (
                 <AdminSection title="Livestream URL" withLabel>
                   <AdminInput
-                    name="iframeUrl"
                     placeholder="Livestream URL"
                     register={register}
+                    name="iframeUrl"
                     errors={errors}
                   />
                   <AdminCheckbox
-                    name="autoPlay"
                     label="Autoplay"
                     variant="toggler"
                     register={register}
+                    name="autoPlay"
                   />
                 </AdminSection>
               )}
@@ -398,10 +398,10 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
               ZOOM_URL_TEMPLATES.includes(space.template as VenueTemplate) && (
                 <AdminSection title="URL" withLabel>
                   <AdminInput
-                    name="zoomUrl"
                     type="text"
                     placeholder="URL"
                     register={register}
+                    name="zoomUrl"
                     errors={errors}
                     autoComplete="off"
                   />
@@ -412,10 +412,10 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
               // @debt use a single structure of type Record<VenueTemplate,TemplateInfo> to compile all these .includes() arrays' flags
               HAS_GRID_TEMPLATES.includes(space.template as VenueTemplate) && (
                 <AdminCheckbox
-                  name="showGrid"
                   label="Show grid layout"
                   variant="toggler"
                   register={register}
+                  name="showGrid"
                 />
               )}
 
@@ -426,21 +426,21 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
               ) && (
                 <AdminSection>
                   <AdminCheckbox
-                    name="showShoutouts"
                     label="Show shoutouts"
                     variant="toggler"
                     register={register}
+                    name="showShoutouts"
                   />
                   <AdminCheckbox
-                    name="showReactions"
                     label="Show reactions"
                     variant="toggler"
                     register={register}
+                    name="showReactions"
                   />
                   <AdminCheckbox
                     variant="flip-switch"
-                    name="isReactionsMuted"
                     register={register}
+                    name={"isReactionsMuted"}
                     disabled={isReactionsMutedDisabled}
                     displayOn="Muted"
                     displayOff="Audible"
@@ -457,9 +457,8 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                     <h4 className="italic input-header">Number of columns</h4>
                     <input
                       defaultValue={1}
-                      name="columns"
                       type="number"
-                      ref={register}
+                      {...register("columns")}
                       className="align-left"
                       placeholder={`Number of grid columns`}
                     />
@@ -491,9 +490,8 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                   <input
                     defaultValue={SECTION_DEFAULT_COLUMNS_COUNT}
                     min={5}
-                    name="auditoriumColumns"
                     type="number"
-                    ref={register}
+                    {...register("auditoriumColumns")}
                     className="align-left"
                     placeholder="Number of seats columns"
                   />
@@ -507,9 +505,8 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                   <h4 className="italic input-header">Number of seats rows</h4>
                   <input
                     defaultValue={SECTION_DEFAULT_ROWS_COUNT}
-                    name="auditoriumRows"
                     type="number"
-                    ref={register}
+                    {...register("auditoriumRows")}
                     className="align-left"
                     placeholder="Number of seats rows"
                     min={5}
@@ -529,7 +526,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                   <div>Max seats</div>
 
                   <InputField
-                    ref={register}
+                    register={register}
                     name="numberOfSections"
                     type="number"
                     min={MIN_SECTIONS_AMOUNT}

@@ -1,5 +1,10 @@
 import React, { ReactNode, useEffect, useMemo, useState } from "react";
-import { FieldErrors, FieldValues } from "react-hook-form";
+import {
+  FieldErrors,
+  FieldValues,
+  UseFormRegister,
+  UseFormSetValue,
+} from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { get } from "lodash";
@@ -7,6 +12,7 @@ import { get } from "lodash";
 import { LABEL_VISIBILITY_OPTIONS } from "settings";
 
 import { RoomVisibility } from "types/RoomVisibility";
+import { AnyForm } from "types/utility";
 
 import { isDefined } from "utils/types";
 
@@ -17,8 +23,8 @@ interface PortalVisibilityProps {
   getValues: () => Record<string, unknown>;
   name: string;
   label?: ReactNode | string;
-  register: (Ref: unknown, RegisterOptions?: unknown) => void;
-  setValue: <T>(prop: string, value: T, validate: boolean) => void;
+  register: UseFormRegister<AnyForm>;
+  setValue: UseFormSetValue<AnyForm>;
 }
 
 export const PortalVisibility: React.FC<PortalVisibilityProps> = ({
@@ -48,7 +54,7 @@ export const PortalVisibility: React.FC<PortalVisibilityProps> = ({
               onClick={(e) => {
                 e.preventDefault();
                 setSelected(value);
-                setValue(name, value, true);
+                setValue(name, value, { shouldValidate: true });
               }}
               className={itemClasses}
             >
@@ -83,7 +89,7 @@ export const PortalVisibility: React.FC<PortalVisibilityProps> = ({
         className="PortalVisibility__input"
         type="hidden"
         name={name}
-        ref={register}
+        {...register}
       />
     ),
     [name, register]
