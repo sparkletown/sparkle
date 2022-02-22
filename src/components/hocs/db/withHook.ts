@@ -2,13 +2,12 @@ import React from "react";
 import { omit } from "lodash/fp";
 
 import { LoadStatus } from "types/fire";
-import { ReactHook } from "types/utility";
 
 import { hoistHocStatics } from "utils/hoc";
 
 export const withHook = <R extends LoadStatus, T = {}>(
   tag: string,
-  useHook: ReactHook<T, R>
+  useHook: (options: T) => R
 ) => (Component: React.FC<T>) => {
   const WithHook = (props: T) => {
     const result = useHook(props);
