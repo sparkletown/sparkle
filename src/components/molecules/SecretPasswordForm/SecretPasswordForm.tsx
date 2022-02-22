@@ -10,15 +10,13 @@ import { setLocalStorageToken } from "utils/localStorage";
 import { isDefined, isTruthy } from "utils/types";
 import { generateUrl } from "utils/url";
 
-import { useSpaceParams } from "hooks/spaces/useSpaceParams";
-import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
+import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 
 import "./SecretPasswordForm.scss";
 
 export const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
   const history = useHistory();
-  const { worldSlug, spaceSlug } = useSpaceParams();
-  const { spaceId } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
+  const { spaceId, worldSlug, spaceSlug } = useWorldAndSpaceByParams();
 
   const [error, setError] = useState(false);
   const [password, setPassword] = useState<string>();
