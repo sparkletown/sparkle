@@ -12,6 +12,11 @@ type UseLoginCheck = () => {
   error: RefiError;
 };
 
+/**
+ * @deprecated uses Reactfire and that library has bugs related to caching and users being logged out
+ *
+ * @see useUserId hook as a replacement
+ */
 export const useLoginCheck: UseLoginCheck = () => {
   const { status, data, error } = useSigninCheck();
 

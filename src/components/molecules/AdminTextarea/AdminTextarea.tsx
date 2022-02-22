@@ -1,7 +1,9 @@
 import React, { ReactNode, useMemo } from "react";
-import { FieldErrors, FieldValues } from "react-hook-form";
+import { FieldErrors, FieldValues, UseFormRegister } from "react-hook-form";
 import classNames from "classnames";
 import { get } from "lodash";
+
+import { AnyForm } from "types/utility";
 
 import { generateId } from "utils/string";
 
@@ -12,7 +14,7 @@ export interface AdminTextareaProps
   name: string;
   label?: ReactNode | string;
   subtext?: ReactNode | string;
-  register: (Ref: unknown, RegisterOptions?: unknown) => void;
+  register: UseFormRegister<AnyForm>;
   errors?: FieldErrors<FieldValues>;
 }
 
@@ -47,8 +49,7 @@ export const AdminTextarea: React.FC<AdminTextareaProps> = ({
       <textarea
         {...inputProps}
         className="AdminTextarea__input"
-        name={name}
-        ref={register}
+        {...register(name)}
         id={id}
         disabled={disabled}
       />

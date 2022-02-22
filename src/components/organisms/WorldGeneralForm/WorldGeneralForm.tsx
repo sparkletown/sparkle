@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useFormState } from "react-hook-form";
 import { useHistory } from "react-router";
 import { useAsyncFn } from "react-use";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { omit } from "lodash";
 
 import { ADMIN_IA_WORLD_BASE_URL, COMMON_NAME_MAX_CHAR_COUNT } from "settings";
@@ -44,7 +45,7 @@ const HANDLED_ERRORS = [
 ];
 
 // NOTE: file objects are being mutated, so they aren't a good fit for redux store
-const UNWANTED_FIELDS = ["logoImageFile", "bannerImageFile"];
+const UNWANTED_FIELDS = ["logoImageFile", "bannerImageFile", "creating"];
 
 export interface WorldGeneralFormProps {
   world?: WithId<World>;
@@ -75,19 +76,17 @@ export const WorldGeneralForm: React.FC<WorldGeneralFormProps> = ({
     setValue,
     reset,
     watch,
-    formState: { dirty, isSubmitting },
     register,
-    errors,
+    control,
     handleSubmit,
   } = useForm<WorldGeneralFormInput>({
     mode: "onSubmit",
     reValidateMode: "onChange",
-    validationSchema: worldStartSchema,
-    validationContext: {
-      creating: !worldId,
-    },
+    resolver: yupResolver(worldStartSchema),
     defaultValues,
   });
+
+  const { errors, isDirty, isSubmitting } = useFormState({ control });
 
   const values = watch();
 
@@ -116,7 +115,7 @@ export const WorldGeneralForm: React.FC<WorldGeneralFormProps> = ({
         history.push(ADMIN_IA_WORLD_BASE_URL);
       }
 
-      reset(input);
+      reset(omit(input, "creating"));
     },
     [worldId, user, values, reset, history]
   );
@@ -124,10 +123,10 @@ export const WorldGeneralForm: React.FC<WorldGeneralFormProps> = ({
   const saveButtonProps: ButtonProps = useMemo(
     () => ({
       type: "submit",
-      disabled: !dirty && !isSaving && !isSubmitting,
+      disabled: !isDirty && !isSaving && !isSubmitting,
       loading: isSubmitting || isSaving,
     }),
-    [dirty, isSaving, isSubmitting]
+    [isDirty, isSaving, isSubmitting]
   );
 
   const dispatch = useDispatch();
@@ -156,9 +155,9 @@ export const WorldGeneralForm: React.FC<WorldGeneralFormProps> = ({
       <form onSubmit={handleSubmit(submit)} onChange={handleChange}>
         <AdminSection title="Name your world" withLabel>
           <AdminInput
-            name="name"
             subtext="If you are hosting an event, use the event name."
             placeholder="World or Event Name"
+            name="name"
             register={register}
             errors={errors}
             max={COMMON_NAME_MAX_CHAR_COUNT}
@@ -178,11 +177,11 @@ export const WorldGeneralForm: React.FC<WorldGeneralFormProps> = ({
           withLabel
         >
           <ImageInput
-            name="bannerImage"
             imgUrl={values.bannerImageUrl}
             error={errors.bannerImageFile || errors.bannerImageUrl}
             isInputHidden={!values.bannerImageUrl}
             register={register}
+            name="bannerImage"
             setValue={setValue}
             onChange={handleChange}
           />

@@ -1,7 +1,9 @@
 import React, { ReactNode, useMemo } from "react";
-import { FieldErrors, FieldValues } from "react-hook-form";
+import { FieldErrors, FieldValues, UseFormRegister } from "react-hook-form";
 import classNames from "classnames";
 import { get } from "lodash";
+
+import { AnyForm } from "types/utility";
 
 import { generateId } from "utils/string";
 
@@ -14,7 +16,7 @@ export interface InputProps
   name: string;
   label?: ReactNode | string;
   subtext?: ReactNode | string;
-  register: (Ref: unknown, RegisterOptions?: unknown) => void;
+  register: UseFormRegister<AnyForm>;
   errors?: FieldErrors<FieldValues>;
   hidden?: boolean;
 }
@@ -46,8 +48,7 @@ export const Input: React.FC<InputProps> = ({
     <input
       {...inputProps}
       className={hiddenClasses}
-      name={name}
-      ref={register}
+      {...register(name)}
       id={id}
       disabled={disabled}
       type="hidden"
@@ -58,8 +59,7 @@ export const Input: React.FC<InputProps> = ({
       <input
         {...inputProps}
         className={inputClasses}
-        name={name}
-        ref={register}
+        {...register(name)}
         id={id}
         disabled={disabled}
       />

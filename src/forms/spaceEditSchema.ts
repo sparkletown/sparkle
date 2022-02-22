@@ -54,4 +54,5 @@ export const spaceEditSchema = Yup.object().shape({
         ? schema.required()
         : schema.notRequired()
   ),
+  template: Yup.mixed<VenueTemplate>().oneOf(Object.values(VenueTemplate)),
 });

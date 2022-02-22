@@ -16,8 +16,7 @@ import { shouldScheduleBeShown } from "utils/schedule";
 import { isExternalPortal, openUrl } from "utils/url";
 
 import { useCustomSound } from "hooks/sounds";
-import { useSpaceParams } from "hooks/spaces/useSpaceParams";
-import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
+import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useAnalytics } from "hooks/useAnalytics";
 import { useDispatch } from "hooks/useDispatch";
 import { usePortal } from "hooks/usePortal";
@@ -44,11 +43,7 @@ export const PortalModalContent: React.FC<PortalModalContentProps> = ({
   venueEvents,
   onHide,
 }) => {
-  const { worldSlug, spaceSlug } = useSpaceParams();
-  const { world, space, spaceId } = useWorldAndSpaceBySlug(
-    worldSlug,
-    spaceSlug
-  );
+  const { world, space, spaceId } = useWorldAndSpaceByParams();
 
   const dispatch = useDispatch();
 

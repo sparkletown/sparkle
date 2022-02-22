@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useState } from "react";
-import { useForm } from "react-hook-form";
+import { FieldErrors, UseFormRegister, UseFormSetValue } from "react-hook-form";
 
 import { ACCEPTED_IMAGE_TYPES } from "settings";
 
@@ -10,16 +10,18 @@ import { determineAvatar } from "utils/image";
 import { useLoginCheck } from "hooks/user/useLoginCheck";
 import { useUploadProfilePictureHandler } from "hooks/useUploadProfilePictureHandler";
 
+import { ProfileFormData } from "pages/Account/Profile";
+
 import { DefaultAvatars } from "components/molecules/DefaultAvatars/DefaultAvatars";
 
 import styles from "./ProfilePictureInput.module.scss";
 
 export interface ProfilePictureInputProps {
-  setValue: (inputName: string, value: string, rerender: boolean) => void;
+  setValue: UseFormSetValue<ProfileFormData>;
   userId: UserId;
-  errors: ReturnType<typeof useForm>["errors"];
+  errors: FieldErrors<ProfileFormData>;
   pictureUrl: string;
-  register: ReturnType<typeof useForm>["register"];
+  register: UseFormRegister<ProfileFormData>;
 }
 
 export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputProps> = ({
@@ -45,7 +47,7 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
       try {
         const pictureUrlRef = await uploadProfilePictureHandler(e);
         if (pictureUrlRef) {
-          setValue("pictureUrl", pictureUrlRef, true);
+          setValue("pictureUrl", pictureUrlRef, { shouldValidate: true });
         }
       } finally {
         setIsPictureUploading(false);
@@ -61,7 +63,7 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
 
   const setPictureUrl = useCallback(
     (url: string) => {
-      setValue("pictureUrl", url, true);
+      setValue("pictureUrl", url, { shouldValidate: true });
     },
     [setValue]
   );
@@ -112,9 +114,8 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
         isLoadingExternal={hasError}
       />
       <input
-        name="pictureUrl"
         className={styles.hiddenInput}
-        ref={register({
+        {...register("pictureUrl", {
           required: true,
         })}
       />

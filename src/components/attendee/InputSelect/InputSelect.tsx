@@ -1,8 +1,8 @@
-import React, { ChangeEvent } from "react";
-import { FieldError } from "react-hook-form";
+import React from "react";
+import { FieldError, RegisterOptions, UseFormRegister } from "react-hook-form";
 import classNames from "classnames";
 
-import { ContainerClassName } from "types/utility";
+import { AnyForm, ContainerClassName } from "types/utility";
 
 import { isDefined } from "utils/types";
 
@@ -25,10 +25,9 @@ interface InputSelectProps
   selectName: string;
   inputPlaceholder?: string;
   selectPlaceholder?: string;
-  inputOnChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  selectOnChange: (e: ChangeEvent<HTMLSelectElement>) => void;
-  selectRef: React.ForwardedRef<HTMLSelectElement>;
-  inputRef: React.ForwardedRef<HTMLInputElement>;
+  register: UseFormRegister<AnyForm>;
+  inputRules: RegisterOptions;
+  selectRules: RegisterOptions;
 }
 
 export const InputSelect: React.FC<InputSelectProps> = ({
@@ -41,10 +40,9 @@ export const InputSelect: React.FC<InputSelectProps> = ({
   selectName,
   inputPlaceholder,
   selectPlaceholder,
-  inputOnChange,
-  selectOnChange,
-  selectRef,
-  inputRef,
+  register,
+  inputRules,
+  selectRules,
 }) => {
   const containerClassNames = classNames(
     styles.InputSelect,
@@ -71,18 +69,14 @@ export const InputSelect: React.FC<InputSelectProps> = ({
     <div className={containerClassNames}>
       <div className={styles.InputSelect__wrapper}>
         <input
-          ref={inputRef}
           className={inputClassNames}
-          onChange={inputOnChange}
-          name={inputName}
           placeholder={inputPlaceholder}
+          {...register(inputName, inputRules)}
         />
         <select
           className={selectClassNames}
-          ref={selectRef}
           defaultValue={selectPlaceholder}
-          onChange={selectOnChange}
-          name={selectName}
+          {...register(selectName, selectRules)}
         >
           <option value={selectPlaceholder} hidden disabled>
             {selectPlaceholder}

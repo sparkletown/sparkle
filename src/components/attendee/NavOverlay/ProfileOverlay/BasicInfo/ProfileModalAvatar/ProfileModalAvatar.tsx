@@ -1,15 +1,15 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
-import { useForm } from "react-hook-form";
+import { UseFormRegister } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import classNames from "classnames";
 
 import { ACCEPTED_IMAGE_TYPES } from "settings";
 
+import { UserProfileModalFormData } from "types/profileModal";
 import { User } from "types/User";
 import { ContainerClassName } from "types/utility";
 
 import { WithId } from "utils/id";
-import { userProfileModalFormProp as formProp } from "utils/propName";
 
 import { useUploadProfilePictureHandler } from "hooks/useUploadProfilePictureHandler";
 import { useUser } from "hooks/useUser";
@@ -26,7 +26,7 @@ export interface ProfileModalAvatarProps extends ContainerClassName {
   editMode?: boolean;
   setPictureUrl?: (url: string) => void;
   pictureUrl?: string;
-  register?: ReturnType<typeof useForm>["register"];
+  register?: UseFormRegister<UserProfileModalFormData>;
 }
 
 export const ProfileModalAvatar: React.FC<ProfileModalAvatarProps> = ({
@@ -95,9 +95,8 @@ export const ProfileModalAvatar: React.FC<ProfileModalAvatarProps> = ({
       />
       {register && (
         <input
-          name={formProp("pictureUrl")}
           className={styles.ProfileModalAvatar__input}
-          ref={register()}
+          {...register("pictureUrl")}
         />
       )}
       {error && <div>{error}</div>}

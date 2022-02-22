@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo } from "react";
-import { useForm } from "react-hook-form";
-import { useParams } from "react-router";
+import { useForm, useFormState } from "react-hook-form";
 import { useAsyncFn, useToggle } from "react-use";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 import {
   DEFAULT_PORTAL_INPUT,
@@ -23,7 +23,7 @@ import { isTruthy } from "utils/types";
 
 import { roomSchema } from "forms/roomSchema";
 
-import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
+import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useUser } from "hooks/useUser";
 
@@ -37,8 +37,6 @@ import { Checkbox } from "components/atoms/Checkbox";
 import { ImageInput } from "components/atoms/ImageInput";
 import { PortalVisibility } from "components/atoms/PortalVisibility";
 import { SpacesDropdown } from "components/atoms/SpacesDropdown";
-
-import { AdminVenueViewRouteParams } from "../AdminVenueView/AdminVenueView";
 
 import "./PortalAddEditForm.scss";
 
@@ -58,11 +56,7 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
   portalIndex,
 }) => {
   const { user } = useUser();
-  const { worldSlug, spaceSlug } = useParams<AdminVenueViewRouteParams>();
-  const { spaceId: currentSpaceId, world, space } = useWorldAndSpaceBySlug(
-    worldSlug,
-    spaceSlug
-  );
+  const { spaceId: currentSpaceId, world, space } = useWorldAndSpaceByParams();
 
   const { icon } = item ?? {};
   const spaceLogoImage =
@@ -96,21 +90,22 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
     register,
     getValues,
     handleSubmit,
-    errors,
     setValue,
     reset,
+    control,
   } = useForm({
     reValidateMode: "onChange",
-
-    validationSchema: roomSchema,
+    resolver: yupResolver(roomSchema),
     defaultValues,
   });
+
+  const { errors } = useFormState({ control });
 
   useEffect(() => reset(defaultValues), [defaultValues, reset]);
 
   const changeRoomImageUrl = useCallback(
     (val: string) => {
-      setValue("image_url", val, false);
+      setValue("image_url", val, { shouldValidate: false });
     },
     [setValue]
   );
@@ -215,12 +210,12 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
     >
       <div className="PortalAddEditForm__title">{title}</div>
       <AdminInput
-        name="title"
         type="text"
         autoComplete="off"
         placeholder={`${SPACE_TAXON.capital} name`}
         label="Name (required)"
         errors={errors}
+        name="title"
         register={register}
         disabled={isLoading}
       />
@@ -279,8 +274,8 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
 
       {isOverrideAppearanceEnabled && (
         <AdminCheckbox
-          name="isEnabled"
           register={register}
+          name="isEnabled"
           variant="toggler"
           label="Portal is visible"
         />

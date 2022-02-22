@@ -2,7 +2,11 @@ import React, { useCallback, useMemo, useState } from "react";
 import { faSearch, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { IFRAME_ALLOW, SCREENING_ROOM_TAXON } from "settings";
+import {
+  ALWAYS_NOOP_FUNCTION,
+  IFRAME_ALLOW,
+  SCREENING_ROOM_TAXON,
+} from "settings";
 
 import { ScreeningRoomVideo } from "types/screeningRoom";
 import { GenericVenue } from "types/venues";
@@ -145,6 +149,7 @@ export const ScreeningRoom: React.FC<ScreeningRoomProps> = ({ venue }) => {
         placeholder="Search for a talk..."
         value={searchInputValue}
         onChange={onInputFieldChange}
+        register={ALWAYS_NOOP_FUNCTION}
       />
       {renderedCategoryOptions}
       {renderedSubCategoryOptions}

@@ -8,11 +8,10 @@ export const TicketCodeField: React.FC<FormFieldProps> = ({
 }) => (
   <div className="input-group">
     <input
-      name="code"
       className="input-block input-centered"
       type="code"
       placeholder="Ticket Code From Your Email"
-      ref={register({
+      {...register("code", {
         required: true,
       })}
     />

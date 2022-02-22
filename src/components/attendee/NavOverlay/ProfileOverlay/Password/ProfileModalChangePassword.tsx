@@ -1,22 +1,24 @@
 import React, { useCallback } from "react";
-import { FieldErrors, useForm } from "react-hook-form";
+import {
+  FieldErrors,
+  UseFormGetValues,
+  UseFormRegister,
+} from "react-hook-form";
 
 import { UserProfileModalFormData } from "types/profileModal";
 import { ContainerClassName } from "types/utility";
-
-import { userProfileModalFormProp as formProp } from "utils/propName";
 
 import { InputField } from "components/atoms/InputField";
 
 import styles from "./ProfileModalChangePassword.module.scss";
 
-export interface ProfileModalChangePasswordProps
-  extends ContainerClassName,
-    Pick<ReturnType<typeof useForm>, "register" | "getValues"> {
+export interface ProfileModalChangePasswordProps extends ContainerClassName {
   errors?: Pick<
     FieldErrors<UserProfileModalFormData>,
     "oldPassword" | "newPassword" | "confirmNewPassword"
   >;
+  getValues: UseFormGetValues<UserProfileModalFormData>;
+  register: UseFormRegister<UserProfileModalFormData>;
 }
 
 export const ProfileModalChangePassword: React.FC<ProfileModalChangePasswordProps> = ({
@@ -27,7 +29,7 @@ export const ProfileModalChangePassword: React.FC<ProfileModalChangePasswordProp
 }) => {
   const newPasswordValidation = useCallback(
     (newPassword: string) => {
-      const oldPassword = getValues(formProp("oldPassword"));
+      const oldPassword = getValues("oldPassword");
       if (oldPassword && !newPassword) return "New Password cannot by empty";
 
       if (!oldPassword && !newPassword) return;
@@ -43,7 +45,7 @@ export const ProfileModalChangePassword: React.FC<ProfileModalChangePasswordProp
 
   const confirmNewPasswordValidation = useCallback(
     (confirmNewPassword: string) => {
-      const newPassword = getValues(formProp("newPassword"));
+      const newPassword = getValues("newPassword");
       return newPassword
         ? confirmNewPassword === newPassword || "The passwords do not match"
         : undefined;
@@ -59,12 +61,12 @@ export const ProfileModalChangePassword: React.FC<ProfileModalChangePasswordProp
           Old Password
         </span>
         <InputField
-          name={formProp("oldPassword")}
           placeholder={"••••••••••"}
+          name="oldPassword"
+          register={register}
           inputClassName={styles.ProfileModalChangePassword__field}
           error={errors?.oldPassword}
           type="password"
-          ref={register()}
         />
       </div>
       <div className={styles.ProfileModalChangePassword__input}>
@@ -72,11 +74,12 @@ export const ProfileModalChangePassword: React.FC<ProfileModalChangePasswordProp
           New Password
         </span>
         <InputField
-          name={formProp("newPassword")}
+          name="newPassword"
           inputClassName={styles.ProfileModalChangePassword__field}
           error={errors?.newPassword}
           type="password"
-          ref={register({ validate: newPasswordValidation })}
+          register={register}
+          rules={{ validate: newPasswordValidation }}
         />
       </div>
       <div className={styles.ProfileModalChangePassword__input}>
@@ -84,11 +87,12 @@ export const ProfileModalChangePassword: React.FC<ProfileModalChangePasswordProp
           Confirm New Password
         </span>
         <InputField
-          name={formProp("confirmNewPassword")}
+          name="confirmNewPassword"
           inputClassName={styles.ProfileModalChangePassword__field}
           error={errors?.confirmNewPassword}
           type="password"
-          ref={register({ validate: confirmNewPasswordValidation })}
+          register={register}
+          rules={{ validate: confirmNewPasswordValidation }}
         />
       </div>
     </div>

@@ -1,5 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
-import { FieldErrors, useFieldArray, useForm } from "react-hook-form";
+import {
+  FieldErrors,
+  useFieldArray,
+  useForm,
+  useFormState,
+} from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import { Button } from "components/attendee/Button/Button";
 import firebase from "firebase/compat/app";
@@ -9,10 +14,9 @@ import {
   UserProfileModalFormData,
   UserProfileModalFormDataPasswords,
 } from "types/profileModal";
-import { ProfileLink, User } from "types/User";
+import { User } from "types/User";
 
 import { WithId } from "utils/id";
-import { propName, userProfileModalFormProp as formProp } from "utils/propName";
 
 import { useCheckOldPassword } from "hooks/useCheckOldPassword";
 import { useProfileModalFormDefaultValues } from "hooks/useProfileModalFormDefaultValues";
@@ -46,38 +50,29 @@ export const ProfileOverlay: React.FC<ProfileOverlayProps> = ({ profile }) => {
 
   const {
     register,
-    errors,
     setError,
-    clearError,
+    clearErrors,
     watch,
     handleSubmit,
     getValues,
     setValue,
-    formState,
     control,
-    reset,
   } = useForm<UserProfileModalFormData>({
     mode: "onBlur",
     reValidateMode: "onChange",
-    validateCriteriaMode: "all",
     defaultValues,
+    shouldUnregister: true,
   });
-  const values = getValues();
 
-  const {
-    fields: links,
-    append: addLink,
-    remove: removeLink,
-  } = useFieldArray<ProfileLink>({
+  const { errors, dirtyFields } = useFormState<UserProfileModalFormData>({
     control,
-    name: formProp("profileLinks"),
   });
 
-  useEffect(() => {
-    if (defaultValues.partyName && !values.partyName) {
-      reset(defaultValues);
-    }
-  }, [defaultValues, reset, values]);
+  const { fields: links, append: addLink, remove: removeLink } = useFieldArray({
+    control,
+    name: "profileLinks",
+    shouldUnregister: true,
+  });
 
   const onDeleteLink = useCallback(
     (i: number) => {
@@ -89,28 +84,6 @@ export const ProfileOverlay: React.FC<ProfileOverlayProps> = ({ profile }) => {
   const addLinkHandler = useCallback(() => {
     addLink({ url: "", title: "" });
   }, [addLink]);
-
-  const setLinkTitle = useCallback(
-    (index: number, title: string) => {
-      setValue(
-        `${formProp("profileLinks")}[${index}].${propName<ProfileLink>(
-          "title"
-        )}`,
-        title
-      );
-    },
-    [setValue]
-  );
-
-  const setLinkUrl = useCallback(
-    (index: number, url: string) => {
-      setValue(
-        `${formProp("profileLinks")}[${index}].${propName<ProfileLink>("url")}`,
-        url
-      );
-    },
-    [setValue]
-  );
 
   useEffect(() => {
     if (isSuccess) {
@@ -133,43 +106,38 @@ export const ProfileOverlay: React.FC<ProfileOverlayProps> = ({ profile }) => {
       );
       if (passwordsNotEmpty) {
         if (!(await checkOldPassword(data.oldPassword))) {
-          setError(formProp("oldPassword"), "validate", "Incorrect password");
+          setError("oldPassword", {
+            type: "validate",
+            message: "Incorrect password",
+          });
           return;
         } else {
-          clearError(formProp("oldPassword"));
+          clearErrors("oldPassword");
           await firebaseUser.updatePassword(data.confirmNewPassword);
         }
       }
 
       const changedFields = uniq(
-        Array.from(formState.dirtyFields)
+        Array.from(Object.keys(dirtyFields))
           .filter(
             (k) =>
               !PASSWORD_FIELDS.includes(
                 k as keyof UserProfileModalFormDataPasswords
               )
           )
-          // formState.dirtyFields expressed nested fields like this: "profileLinks[0].url", "profileLinks[0].title"
+          // dirtyFields expressed nested fields like this: "profileLinks[0].url", "profileLinks[0].title"
           // so we need to transform them
-          .map((k) =>
-            k.startsWith(formProp("profileLinks")) ? "profileLinks" : k
-          )
+          .map((k) => (k.startsWith("pofileLinks") ? "profileLinks" : k))
       ) as (keyof UserProfileModalFormData)[];
 
       if (changedFields.length > 0) {
         await updateUserProfile(
           firebaseUser.uid,
           pick(dataWithProfileLinks, changedFields)
-        ).then(() => setSuccess(true));
+        );
       }
     },
-    [
-      firebaseUser,
-      formState.dirtyFields,
-      checkOldPassword,
-      setError,
-      clearError,
-    ]
+    [firebaseUser, dirtyFields, checkOldPassword, setError, clearErrors]
   );
 
   return (
@@ -180,8 +148,9 @@ export const ProfileOverlay: React.FC<ProfileOverlayProps> = ({ profile }) => {
         <ProfileModalEditBasicInfo
           user={profile}
           register={register}
-          setValue={setValue}
           watch={watch}
+          setValue={setValue}
+          partyNameError={errors?.partyName}
         />
 
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -189,8 +158,6 @@ export const ProfileOverlay: React.FC<ProfileOverlayProps> = ({ profile }) => {
             register={register}
             initialLinks={defaultValues.profileLinks ?? []}
             links={links}
-            setLinkTitle={setLinkTitle}
-            setLinkUrl={setLinkUrl}
             errors={errors?.profileLinks}
             onDeleteLink={onDeleteLink}
             onAddLink={addLinkHandler}

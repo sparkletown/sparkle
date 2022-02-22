@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useFormState } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 import dayjs from "dayjs";
 
 import { DAYJS_INPUT_DATE_FORMAT, DAYJS_INPUT_TIME_FORMAT } from "settings";
@@ -44,14 +45,16 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
   const {
     register,
     handleSubmit,
-    errors,
+    control,
     formState,
     reset,
   } = useForm<EventInput>({
     mode: "onSubmit",
     reValidateMode: "onChange",
-    validationSchema: eventEditSchema,
+    resolver: yupResolver(eventEditSchema),
   });
+
+  const { errors } = useFormState({ control });
 
   // When we're creating a new event it will default to
   // being on the space that triggered this modal.
@@ -129,7 +132,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
               name="name"
               className="TimingEventModal__input-group__modal-input"
               placeholder="Name"
-              ref={register}
+              {...register}
             />
             {errors.name && (
               <span className="input-error">{errors.name.message}</span>
@@ -142,7 +145,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
               name="description"
               className="TimingEventModal__input-group__modal-input"
               placeholder="Description"
-              ref={register}
+              {...register}
             />
             {errors.description && (
               <span className="input-error">{errors.description.message}</span>
@@ -156,7 +159,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
               name="host"
               className="TimingEventModal__input-group__modal-input"
               placeholder="Dottie Longstockings"
-              ref={register}
+              {...register}
             />
             {errors.host && (
               <span className="input-error">{errors.host.message}</span>
@@ -181,7 +184,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                   min={dayjs().format(DAYJS_INPUT_DATE_FORMAT)}
                   name="start_date"
                   className="TimingEventModal__input-group__modal-input"
-                  ref={register}
+                  {...register}
                 />
               </div>
               <div>
@@ -189,7 +192,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                   type="time"
                   name="start_time"
                   className="TimingEventModal__input-group__modal-input"
-                  ref={register}
+                  {...register}
                 />
               </div>
             </div>
@@ -211,7 +214,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                 name="duration_hours"
                 className="TimingEventModal__input-group__modal-input--indent"
                 placeholder="hours"
-                ref={register}
+                {...register}
                 size={8}
               />
               <label htmlFor="duration_hours">hour(s)</label>
@@ -219,7 +222,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                 name="duration_minutes"
                 className="TimingEventModal__input-group__modal-input--indent"
                 placeholder="minutes"
-                ref={register}
+                {...register}
                 size={8}
               />
               <label htmlFor="duration_minutes">minutes</label>

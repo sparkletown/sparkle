@@ -1,6 +1,7 @@
 import { ChangeEvent, useCallback, useMemo, useState } from "react";
 
 import {
+  ALWAYS_NOOP_FUNCTION,
   COVERT_ROOM_TYPES,
   DEFAULT_PARTY_NAME,
   PERSON_TAXON,
@@ -31,7 +32,7 @@ type SearchOverlayProps = {
 };
 export const SearchOverlay: React.FC<SearchOverlayProps> = ({ onClose }) => {
   const { worldSlug, spaceSlug } = useSpaceParams();
-  const { space, worldId } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
+  const { space, worldId } = useWorldAndSpaceBySlug({ worldSlug, spaceSlug });
   const [searchValue, setSearchValue] = useState("");
 
   const { searchQuery, setSearchInputValue } = useDebounceSearch();
@@ -125,6 +126,7 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ onClose }) => {
           onLabelClick={initiateSearch}
           label="Search"
           autoComplete="off"
+          register={ALWAYS_NOOP_FUNCTION}
         />
       </div>
       <div className={styles.SearchOverlay__content}>
