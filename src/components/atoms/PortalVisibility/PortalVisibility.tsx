@@ -12,6 +12,7 @@ import { get } from "lodash";
 import { LABEL_VISIBILITY_OPTIONS } from "settings";
 
 import { RoomVisibility } from "types/RoomVisibility";
+import { AnyForm } from "types/utility";
 
 import { isDefined } from "utils/types";
 
@@ -22,10 +23,8 @@ interface PortalVisibilityProps {
   getValues: () => Record<string, unknown>;
   name: string;
   label?: ReactNode | string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  register: UseFormRegister<any>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  setValue: UseFormSetValue<any>;
+  register: UseFormRegister<AnyForm>;
+  setValue: UseFormSetValue<AnyForm>;
 }
 
 export const PortalVisibility: React.FC<PortalVisibilityProps> = ({

@@ -1,7 +1,8 @@
 import { FieldError, UseFormRegister } from "react-hook-form";
 
+import { AnyForm } from "./utility";
+
 export type FormFieldProps = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  register: UseFormRegister<any>;
+  register: UseFormRegister<AnyForm>;
   error: FieldError | undefined;
 };

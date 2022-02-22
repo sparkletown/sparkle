@@ -1,5 +1,5 @@
 import React from "react";
-import { FieldError, UseFormRegister } from "react-hook-form";
+import { FieldError, FieldValues, UseFormRegister } from "react-hook-form";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import classNames from "classnames";
 
@@ -20,8 +20,7 @@ export interface ProfileModalInputProps
   iconEnd?: IconProp | JSX.Element;
   register: UseFormRegister<UserProfileModalFormData>;
   name: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  rules?: Record<string, any>;
+  rules?: FieldValues;
 }
 
 export const ProfileModalInput: React.FC<ProfileModalInputProps> = ({

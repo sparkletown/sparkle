@@ -11,6 +11,8 @@ import classNames from "classnames";
 
 import { ACCEPTED_IMAGE_TYPES } from "settings";
 
+import { AnyForm } from "types/utility";
+
 import { useImageInputCompression } from "hooks/useImageInputCompression";
 
 import { ImageOverlay } from "components/atoms/ImageOverlay";
@@ -32,11 +34,9 @@ export interface ImageInputProps {
   name: string;
   imgUrl?: string;
   error?: FieldError;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  setValue: UseFormSetValue<any>;
+  setValue: UseFormSetValue<AnyForm>;
   small?: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  register: UseFormRegister<any>;
+  register: UseFormRegister<AnyForm>;
   nameWithUnderscore?: boolean;
   text?: string;
   subtext?: string;

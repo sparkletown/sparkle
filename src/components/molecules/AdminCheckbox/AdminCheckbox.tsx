@@ -5,6 +5,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { get } from "lodash";
 
+import { AnyForm } from "types/utility";
+
 import { CheckboxProps } from "components/atoms/Checkbox";
 
 import "./AdminCheckbox.scss";
@@ -18,8 +20,7 @@ export interface AdminCheckboxProps
   name: string;
   displayOn?: ReactNode | string;
   displayOff?: ReactNode | string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  register: UseFormRegister<any>;
+  register: UseFormRegister<AnyForm>;
   subtext?: ReactNode | string;
   variant?: "toggler" | "checkbox" | "flip-switch";
 }

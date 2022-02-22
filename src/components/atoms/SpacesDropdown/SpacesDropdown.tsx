@@ -4,6 +4,7 @@ import { omit, omitBy } from "lodash";
 
 import { ALWAYS_EMPTY_ARRAY, PORTAL_INFO_ICON_MAPPING } from "settings";
 
+import { AnyForm } from "types/utility";
 import { AnyVenue, PortalTemplate } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
 
@@ -28,10 +29,8 @@ type SpacesDropdownPortal = {
 
 interface SpacesDropdownProps {
   parentSpace?: SpacesDropdownPortal;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  setValue: UseFormSetValue<any>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  register: UseFormRegister<any>;
+  setValue: UseFormSetValue<AnyForm>;
+  register: UseFormRegister<AnyForm>;
   fieldName: string;
   error?: FieldError;
   spaces: Record<string, WithId<AnyVenue>>;

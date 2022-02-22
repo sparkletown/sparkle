@@ -39,7 +39,7 @@ export const AdminUserStatusInput: React.FC<AdminUserStatusInputProps> = ({
 
   const handleColorChange = useCallback(
     ({ hex }: ColorResult) => {
-      onChange && onChange({ status: item?.status ?? "", color: hex });
+      onChange?.({ status: item?.status ?? "", color: hex });
       hideColorPicker();
     },
     [item, onChange, hideColorPicker]

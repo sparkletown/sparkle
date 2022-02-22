@@ -1,12 +1,12 @@
 import React from "react";
-import { FieldError, UseFormRegister } from "react-hook-form";
+import { FieldError, FieldValues, UseFormRegister } from "react-hook-form";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
 import { ALWAYS_EMPTY_OBJECT } from "settings";
 
-import { ContainerClassName } from "types/utility";
+import { AnyForm, ContainerClassName } from "types/utility";
 
 import { isDefined, isTruthy } from "utils/types";
 
@@ -52,10 +52,8 @@ interface InputFieldProps
   error?: FieldError;
   onIconStartClick?: () => void;
   onIconEndClick?: () => void;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  register: UseFormRegister<any> | (() => void);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  rules?: Record<string, any>;
+  register: UseFormRegister<AnyForm> | (() => void);
+  rules?: FieldValues;
   name?: string;
 }
 

@@ -67,7 +67,6 @@ export const WorldGeneralForm: React.FC<WorldGeneralFormProps> = ({
       bannerImageUrl: world?.config?.landingPageConfig?.coverImageUrl ?? "",
       logoImageFile: undefined,
       logoImageUrl: world?.host?.icon ?? "",
-      creating: !world?.id,
     }),
     [world]
   );

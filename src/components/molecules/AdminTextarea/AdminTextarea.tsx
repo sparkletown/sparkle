@@ -3,6 +3,8 @@ import { FieldErrors, FieldValues, UseFormRegister } from "react-hook-form";
 import classNames from "classnames";
 import { get } from "lodash";
 
+import { AnyForm } from "types/utility";
+
 import { generateId } from "utils/string";
 
 import "./AdminTextarea.scss";
@@ -12,8 +14,7 @@ export interface AdminTextareaProps
   name: string;
   label?: ReactNode | string;
   subtext?: ReactNode | string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  register: UseFormRegister<any>;
+  register: UseFormRegister<AnyForm>;
   errors?: FieldErrors<FieldValues>;
 }
 

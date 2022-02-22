@@ -3,6 +3,8 @@ import { FieldErrors, FieldValues, UseFormRegister } from "react-hook-form";
 import classNames from "classnames";
 import { get } from "lodash";
 
+import { AnyForm } from "types/utility";
+
 import { generateId } from "utils/string";
 
 import "./AdminInput.scss";
@@ -14,8 +16,7 @@ export interface AdminInputProps
   subtext?: ReactNode | string;
   errors?: FieldErrors<FieldValues>;
   hidden?: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  register: UseFormRegister<any> | (() => void);
+  register: UseFormRegister<AnyForm> | (() => void);
 }
 
 export const AdminInput: React.FC<AdminInputProps> = ({
