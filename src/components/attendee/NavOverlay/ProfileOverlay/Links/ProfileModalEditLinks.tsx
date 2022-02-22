@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { FieldErrors, UseFormRegister } from "react-hook-form";
 import classNames from "classnames";
 import { Button } from "components/attendee/Button/Button";
@@ -34,22 +34,26 @@ export const ProfileModalEditLinks: React.FC<ProfileModalEditLinksProps> = ({
     }
   }, [links, onAddLink]);
 
-  const renderedLinks = links.map((link, i) => {
-    const otherUrls = links.filter((l) => l !== links[i]).map((l) => l.url);
+  const renderedLinks = useMemo(
+    () =>
+      links.map((link, i) => {
+        const otherUrls = links.filter((l) => l !== links[i]).map((l) => l.url);
 
-    return (
-      <ProfileModalEditLink
-        key={i}
-        index={i}
-        register={register}
-        initialTitle={initialLinks?.[i]?.title}
-        link={link}
-        otherUrls={otherUrls}
-        error={errors?.[i]}
-        onDelete={() => onDeleteLink(i)}
-      />
-    );
-  });
+        return (
+          <ProfileModalEditLink
+            key={i}
+            index={i}
+            register={register}
+            initialTitle={initialLinks?.[i]?.title}
+            link={link}
+            otherUrls={otherUrls}
+            error={errors?.[i]}
+            onDelete={() => onDeleteLink(i)}
+          />
+        );
+      }),
+    [errors, initialLinks, links, onDeleteLink, register]
+  );
 
   return (
     <div
