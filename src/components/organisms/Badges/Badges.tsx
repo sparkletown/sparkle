@@ -12,7 +12,6 @@ import {
 
 import { getUserRef } from "api/profile";
 
-import { UserVisit } from "types/Firestore";
 import { AnyVenue, isVenueWithRooms } from "types/venues";
 
 import { WithId } from "utils/id";
@@ -23,6 +22,10 @@ import { useWorldById } from "hooks/worlds/useWorldById";
 import { BadgeImage } from "./BadgeImage";
 
 import "./Badges.scss";
+
+interface UserVisit {
+  timeSpent: number;
+}
 
 const findVenueAndRoomByName = (
   nameOrRoomTitle: string,

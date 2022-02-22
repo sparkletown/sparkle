@@ -18,7 +18,7 @@ import {
   WorldSlug,
   WorldWithId,
 } from "types/id";
-import { VenueAccessMode } from "types/VenueAcccess";
+import { VenueAccessMode } from "types/VenueAccessMode";
 
 import { errorCode, errorMessage, errorStatus } from "utils/error";
 import { isTruthy } from "utils/types";

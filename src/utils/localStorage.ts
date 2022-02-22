@@ -1,4 +1,4 @@
-export const accessTokenKey = (venueId: string) => `token-${venueId}`;
+const accessTokenKey = (venueId: string) => `token-${venueId}`;
 
 export const setLocalStorageToken = (venueId: string, token: string) =>
   localStorage.setItem(accessTokenKey(venueId), token);

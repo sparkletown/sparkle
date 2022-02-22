@@ -1,7 +1,5 @@
 // @debt rename this file to be user rather than User
 
-import * as Yup from "yup";
-
 import { GridPosition } from "types/grid";
 import { VenueTablePath } from "types/venues";
 
@@ -72,10 +70,3 @@ export interface UserLocation {
 }
 
 export type UserWithLocation = Profile & UserLocation;
-
-export const VideoStateSchema: Yup.ObjectSchema<VideoState> = Yup.object()
-  .shape({
-    inRoomOwnedBy: Yup.string(),
-    removedParticipantUids: Yup.array().of(Yup.string().required()),
-  })
-  .required();

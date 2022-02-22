@@ -1,6 +1,7 @@
 export type ObjectEntry = [string, unknown];
 
-export const isPlainObject: (object: unknown) => boolean = (object) => {
+/** @deprecated Lodash already has isPlainObject that can be reused  */
+const isPlainObject: (object: unknown) => boolean = (object) => {
   const isObject = object !== null && typeof object == "object";
 
   if (!isObject) {

@@ -21,7 +21,7 @@ import { SpaceSlug } from "types/id";
 import { PortalInput, Room, RoomInput } from "types/rooms";
 import { ScreeningRoomVideo } from "types/screeningRoom";
 import { Table } from "types/Table";
-import { VenueAdvancedConfig, VenuePlacement, WorldEvent } from "types/venues";
+import { VenueAdvancedConfig, WorldEvent } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
 
 import { WithId, WithoutId, WithWorldId } from "utils/id";
@@ -88,26 +88,10 @@ type FirestoreRoomInput_v2 = Omit<PortalInput, RoomImageFileKeys> &
     url?: string;
   };
 
-export type PlacementInput = {
-  addressText?: string;
-  notes?: string;
-  placement?: Omit<VenuePlacement, "state">;
-  width: number;
-  height: number;
-};
-
 export const createSlug = (name: string | unknown) =>
   String(name ?? "")
     .replace(INVALID_SLUG_CHARS_REGEX, "")
     .toLowerCase();
-
-export const getVenueOwners = async (venueId: string): Promise<string[]> => {
-  const owners = (
-    await firebase.firestore().collection("venues").doc(venueId).get()
-  ).data()?.owners;
-
-  return owners;
-};
 
 /**
  * This method creates the payload for an API call for creating/updating venues.

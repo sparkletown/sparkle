@@ -5,6 +5,7 @@ import { HAS_ROOMS_TEMPLATES } from "settings";
 import { AuditoriumSectionPath } from "types/auditorium";
 import { SpaceSlug } from "types/id";
 import { RoomVisibility } from "types/RoomVisibility";
+import { VenueAccessMode } from "types/VenueAccessMode";
 import { VenueTemplate } from "types/VenueTemplate";
 
 import { WithId } from "utils/id";
@@ -18,13 +19,12 @@ import { Room } from "./rooms";
 import { Table } from "./Table";
 import { UpcomingEvent } from "./UpcomingEvent";
 import { User, UserStatus } from "./User";
-import { VenueAccessMode } from "./VenueAcccess";
 import { VideoAspectRatio } from "./VideoAspectRatio";
 
 export type PortalTemplate = VenueTemplate | "external";
 
 // This type should have entries to exclude anything that has it's own specific type entry in AnyVenue below
-export type GenericVenueTemplates = Exclude<
+type GenericVenueTemplates = Exclude<
   VenueTemplate,
   | VenueTemplate.embeddable
   | VenueTemplate.jazzbar
@@ -50,7 +50,7 @@ export type AnyVenue =
 // --- VENUE V2
 export interface Venue_v2 extends Venue_v2_Base, VenueAdvancedConfig {}
 
-export interface Venue_v2_Base {
+interface Venue_v2_Base {
   name: string;
   slug: string;
   config: {
@@ -89,7 +89,7 @@ export interface VenueAdvancedConfig {
 // @debt refactor this into separated logical chunks? (eg. if certain params are only expected to be set for certain venue types)
 // @debt The following keys are marked as required on this type, but i'm not sure they should be:
 //   termsAndConditions, width, height
-export interface BaseVenue {
+interface BaseVenue {
   template: VenueTemplate;
   parentId?: string;
   name: string;
@@ -251,7 +251,7 @@ interface TermOfService {
   link?: string;
 }
 
-export interface VenueConfig {
+interface VenueConfig {
   theme: {
     primaryColor: string;
     backgroundColor?: string;
@@ -266,7 +266,7 @@ export interface VenueConfig {
 
 // @debt The following keys are marked as required on this type, but i'm not sure they should be:
 //   presentation, checkList
-export interface VenueLandingPageConfig {
+interface VenueLandingPageConfig {
   coverImageUrl: string;
   subtitle?: string;
   description?: string;
@@ -285,13 +285,13 @@ export interface VenuePlacement {
   state?: VenuePlacementState;
 }
 
-export enum VenuePlacementState {
+enum VenuePlacementState {
   SelfPlaced = "SELF_PLACED",
   AdminPlaced = "ADMIN_PLACED",
   Hidden = "HIDDEN",
 }
 
-export interface PlayaIcon {
+interface PlayaIcon {
   x: number;
   y: number;
   fire: boolean;
@@ -352,13 +352,3 @@ export const isPartyMapVenue = (venue: AnyVenue): venue is PartyMapVenue =>
 
 export const isNotPartyMapVenue = (venue: AnyVenue) =>
   venue.template !== VenueTemplate.partymap;
-
-export const urlFromImage = (
-  defaultValue: string,
-  filesOrUrl?: FileList | string
-) => {
-  if (typeof filesOrUrl === "string") return filesOrUrl;
-  return filesOrUrl && filesOrUrl.length > 0
-    ? URL.createObjectURL(filesOrUrl[0])
-    : defaultValue;
-};

@@ -5,7 +5,7 @@ import { httpsCallable } from "firebase/functions";
 
 import { Banner } from "types/banner";
 
-export interface UpdateBannerProps {
+interface UpdateBannerProps {
   venueId: string;
   banner?: Banner;
   onError?: (errorMsg: string) => void;
