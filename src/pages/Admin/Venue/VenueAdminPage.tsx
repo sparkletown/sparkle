@@ -26,8 +26,6 @@ export const VenueAdminPage: React.FC = () => {
     currentVenueId: spaceId,
   });
 
-  console.log(VenueAdminPage.name, userId, user, profile);
-
   const isVenueOwner: boolean = !!(
     currentVenue &&
     userId &&

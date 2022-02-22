@@ -287,7 +287,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
               <AdminTextarea
                 placeholder={`Let your guests know what they’ll find when they join your space. Keep it short & sweet, around 2-3 sentences maximum. Be sure to indicate any expectations for their participation.`}
                 register={register}
-                name={"description"}
+                name="description"
                 errors={errors}
               />
             </AdminSection>
@@ -440,7 +440,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                   <AdminCheckbox
                     variant="flip-switch"
                     register={register}
-                    name={"isReactionsMuted"}
+                    name="isReactionsMuted"
                     disabled={isReactionsMutedDisabled}
                     displayOn="Muted"
                     displayOff="Audible"
