@@ -69,6 +69,9 @@ type VenuePageProps = SpaceSlugLocation & {
   user?: RefiAuthUser;
   profile?: Profile;
   userLocation?: UserLocation;
+  setBackButtonSpace: React.Dispatch<
+    React.SetStateAction<SpaceWithId | undefined>
+  >;
 };
 
 export const VenuePage: React.FC<VenuePageProps> = ({
@@ -81,6 +84,7 @@ export const VenuePage: React.FC<VenuePageProps> = ({
   user,
   profile,
   userLocation,
+  setBackButtonSpace,
 }) => {
   const analytics = useAnalytics({ venue: space });
 
@@ -128,7 +132,18 @@ export const VenuePage: React.FC<VenuePageProps> = ({
     });
   }, LOC_UPDATE_FREQ_MS);
 
-  const { sovereignVenueId, sovereignVenueDescendantIds } = useRelatedVenues();
+  const {
+    sovereignVenueId,
+    sovereignVenueDescendantIds,
+    parentVenue,
+  } = useRelatedVenues({ currentVenueId: space.id });
+
+  useEffect(() => {
+    setBackButtonSpace(parentVenue);
+    return () => {
+      setBackButtonSpace(undefined);
+    };
+  });
 
   // @debt refactor how user location updates works here to encapsulate in a hook or similar?
   useEffect(() => {

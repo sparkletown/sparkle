@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { TableGrid } from "components/attendee/TableGrid";
 
 import {
   ALWAYS_EMPTY_ARRAY,
@@ -24,10 +25,8 @@ import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 import { Room } from "components/organisms/Room";
 
 import { InformationCard } from "components/molecules/InformationCard";
-import { TableComponent } from "components/molecules/TableComponent";
 import { TableHeader } from "components/molecules/TableHeader";
 import { TablesControlBar } from "components/molecules/TablesControlBar";
-import { TablesUserList } from "components/molecules/TablesUserList";
 import { UserList } from "components/molecules/UserList";
 
 import { BackButton } from "components/atoms/BackButton";
@@ -135,23 +134,18 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
               )}
             </div>
           </div>
-          <div className="seated-area">
-            {userWithId && (
-              <TablesUserList
-                setSeatedAtTable={setSeatedAtTable}
-                seatedAtTable={seatedAtTable}
-                venueId={venue.id}
-                TableComponent={TableComponent}
-                joinMessage={venue.hideVideo === false}
-                customTables={tables}
-                defaultTables={CONVERSATION_TABLES}
-                showOnlyAvailableTables={showOnlyAvailableTables}
-                venue={venue}
-                template={VenueTemplate.conversationspace}
-                user={userWithId}
-              />
-            )}
-          </div>
+          {userWithId && (
+            <TableGrid
+              venueId={venue.id}
+              joinMessage={venue.hideVideo === false}
+              customTables={tables}
+              defaultTables={CONVERSATION_TABLES}
+              showOnlyAvailableTables={showOnlyAvailableTables}
+              venue={venue}
+              userId={userWithId.id}
+            />
+          )}
+
           <UserList
             usersSample={venue.recentUsersSample ?? ALWAYS_EMPTY_ARRAY}
             userCount={venue.recentUserCount ?? 0}
