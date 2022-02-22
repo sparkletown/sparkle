@@ -17,7 +17,7 @@ meant to be rigid and static, but a suggestion. Thus, rule of thumb:
 ## Comments (general)
 
 There usually isn't a formal way of writing comments. Most common are simple
-line comments, not block ones. However, few tags, due to familiarity with JSDoc,
+line comments, not block ones. However, a few tags, due to familiarity with JSDoc,
 can be found outside these `/** */` blocks:
 
 - `@debt` is usually some future issue or pull request to repay with better code
