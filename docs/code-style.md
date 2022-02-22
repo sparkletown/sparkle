@@ -151,7 +151,7 @@ directory under `. /src` with just typing its name. Example: instead of
 Exports
 
 Should try to not export types and interfaces that aren 't used elsewhere
-outside that single file.There is a tool(`npm run prune`) that can generate a
+outside that single file.There is a tool (`npm run prune`) that can generate a
 list of all unused exports.This tool might be used alongside the linters that
 execute before each commit.As for components, if they're only imported by a
 sibling `index.ts` file, then there should be a check if that component is used
