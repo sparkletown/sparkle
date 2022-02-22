@@ -1,12 +1,13 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useVideoHuddle } from "components/attendee/VideoHuddle/useVideoHuddle";
 import { groupBy } from "lodash";
 
 import { ALLOWED_EMPTY_TABLES_NUMBER } from "settings";
 
-import { setTableSeat } from "api/venue";
+import { setTableSeat, unsetTableSeat } from "api/venue";
 
-import { Table, TableComponentPropsType } from "types/Table";
-import { TableSeatedUser, User } from "types/User";
+import { Table } from "types/Table";
+import { TableSeatedUser } from "types/User";
 import { AnyVenue } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
 
@@ -14,9 +15,12 @@ import { WithId } from "utils/id";
 import { generateTable } from "utils/table";
 import { arrayIncludes, isTruthy } from "utils/types";
 
+import { useAnalytics } from "hooks/useAnalytics";
 import { useExperience } from "hooks/useExperience";
 import { useSeatedTableUsers } from "hooks/useSeatedTableUsers";
 import { useShowHide } from "hooks/useShowHide";
+import { useUpdateTableRecentSeatedUsers } from "hooks/useUpdateRecentSeatedUsers";
+import { useUser } from "hooks/useUser";
 
 import { Loading } from "components/molecules/Loading";
 import { Modal } from "components/molecules/Modal";
@@ -24,36 +28,71 @@ import { StartTable } from "components/molecules/StartTable";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 
-import "./TablesUserList.scss";
+import { TableComponent } from "../TableComponent";
 
-export interface TablesUserListProps {
-  setSeatedAtTable: (value: string) => void;
-  seatedAtTable: string | undefined;
+import styles from "./TableGrid.module.scss";
+
+interface TableGridProps {
   customTables: Table[];
   defaultTables: Table[];
   showOnlyAvailableTables?: boolean;
-  TableComponent: React.FC<TableComponentPropsType>;
   joinMessage: boolean;
   leaveText?: string;
   venue: WithId<AnyVenue>;
   venueId: string;
-  template: VenueTemplate;
-  user: WithId<User>;
+  userId: string;
 }
 
-export const TablesUserList: React.FC<TablesUserListProps> = ({
+export const TableGrid: React.FC<TableGridProps> = ({
   venueId,
-  setSeatedAtTable,
-  seatedAtTable,
   customTables,
   defaultTables,
   showOnlyAvailableTables = false,
-  TableComponent,
   joinMessage,
   venue,
-  template,
-  user,
+  userId,
 }) => {
+  const analytics = useAnalytics({ venue });
+  const [seatedAtTable, setSeatedAtTable] = useState<string>();
+
+  useUpdateTableRecentSeatedUsers(
+    VenueTemplate.jazzbar,
+    seatedAtTable && venue?.id
+  );
+
+  useEffect(() => {
+    seatedAtTable && analytics.trackSelectTableEvent();
+  }, [analytics, seatedAtTable]);
+
+  const { joinHuddle, leaveHuddle, inHuddle } = useVideoHuddle();
+
+  const wasPrevAtTable = !!seatedAtTable;
+  const joinTable = useCallback(
+    (table) => {
+      // If the user is already in a huddle and was previously at another
+      // table then make sure to leave the huddle first. This covers the
+      // scenario where a user clicks "join" when already at a different
+      // table
+      if (wasPrevAtTable && table) {
+        leaveHuddle();
+      }
+      joinHuddle(userId, `${venue.id}-${table}`);
+      setSeatedAtTable(table);
+    },
+    [wasPrevAtTable, joinHuddle, userId, venue.id, leaveHuddle]
+  );
+
+  const leaveTable = useCallback(async () => {
+    await unsetTableSeat(userId, { venueId: venue.id });
+    setSeatedAtTable(undefined);
+  }, [userId, venue.id]);
+
+  useEffect(() => {
+    if (!inHuddle && seatedAtTable) {
+      leaveTable();
+    }
+  }, [inHuddle, leaveTable, seatedAtTable]);
+
   // NOTE: custom tables can already contain default tables and this check here is to only doubleconfrim the data coming from the above
   const tables: Table[] = customTables || defaultTables;
 
@@ -71,33 +110,40 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
 
   const [joiningTable, setJoiningTable] = useState("");
 
+  const { userWithId } = useUser();
   const { data: experience } = useExperience();
 
-  const isCurrentUserAdmin = arrayIncludes(venue.owners, user.id);
+  const isCurrentUserAdmin = arrayIncludes(venue.owners, userId);
 
   const [seatedTableUsers, isSeatedTableUsersLoaded] = useSeatedTableUsers(
     venueId
   );
 
-  const userTableReference = seatedTableUsers.find((u) => u.id === user.id)
-    ?.path?.tableReference;
+  const userTableReference = useMemo(
+    () =>
+      seatedTableUsers.find((u) => u.id === userWithId?.id)?.path
+        ?.tableReference,
+    [seatedTableUsers, userWithId?.id]
+  );
 
   useEffect(() => {
-    if (userTableReference) {
-      setSeatedAtTable(userTableReference);
+    if (userTableReference && userTableReference !== seatedAtTable) {
+      joinTable(userTableReference);
     }
-  }, [setSeatedAtTable, userTableReference]);
+  }, [joinTable, userTableReference, seatedAtTable]);
 
   const isSeatedAtTable = !!seatedAtTable;
 
   const takeSeat = useCallback(
     async (table: string) => {
-      await setTableSeat(user, {
+      if (!userWithId) return;
+
+      await setTableSeat(userWithId, {
         venueId,
         tableReference: table,
       });
     },
-    [user, venueId]
+    [userWithId, venueId]
   );
 
   const usersSeatedAtTables: Record<
@@ -186,8 +232,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
         tableLocked={tableLocked}
         onJoinClicked={onJoinClicked}
         venue={venue}
-        template={template}
-        userId={user.id}
+        userId={userId}
       />
     ));
   }, [
@@ -195,19 +240,17 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
     tables,
     isFullTable,
     tableLocked,
-    TableComponent,
     usersSeatedAtTables,
     onJoinClicked,
     venue,
-    template,
-    user.id,
+    userId,
   ]);
 
   if (!isSeatedTableUsersLoaded) return <Loading />;
 
   return (
     <>
-      {renderedTables}
+      <div className={styles.tableGrid}>{renderedTables}</div>
       {allowCreateEditTable && (
         <StartTable
           defaultTables={defaultTables}
@@ -218,7 +261,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
         />
       )}
       <Modal show={isLockedMessageVisible} onHide={hideLockedMessage}>
-        <div className="TableUserList__modal modal-container modal-container_message">
+        <div>
           <p>{`Can't join this table because it's been locked.`}</p>
 
           <p>Perhaps ask in the chat?</p>
@@ -238,7 +281,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
         onHide={hideJoinMessage}
         autoHide={false}
       >
-        <div className="TableUserList__modal modal-container modal-container_message">
+        <div>
           <p>
             You are now entering a video chat space. Please ALLOW camera &
             microphone access. You will be able to turn them back off again once

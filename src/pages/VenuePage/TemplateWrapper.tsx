@@ -14,6 +14,7 @@ import { ArtPiece } from "components/templates/ArtPiece";
 import { Auditorium } from "components/templates/Auditorium";
 import { ConversationSpace } from "components/templates/ConversationSpace";
 import { Embeddable } from "components/templates/Embeddable";
+import { ExperimentalSpace } from "components/templates/ExperimentalSpace";
 import { ExternalRoom } from "components/templates/ExternalRoom";
 import { FireBarrel } from "components/templates/FireBarrel";
 import { JazzBar } from "components/templates/Jazzbar/JazzBar";
@@ -39,7 +40,6 @@ interface TemplateWrapperProps {
 
 export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   let template;
-  // @debt remove backButton from Navbar
   switch (venue.template) {
     case VenueTemplate.jazzbar:
       template = <JazzBar venue={venue} />;
@@ -73,12 +73,10 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
 
     case VenueTemplate.auditorium:
       template = <Auditorium venue={venue} />;
-      // NOTE: Remove the back button, because we need to implement it differently in Section
       break;
 
     case VenueTemplate.conversationspace:
       template = <ConversationSpace venue={venue} />;
-      // Remove the back button, because we don't need it in Table view
       break;
 
     case VenueTemplate.embeddable:
@@ -99,6 +97,10 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
 
     case VenueTemplate.screeningroom:
       template = <ScreeningRoom venue={venue} />;
+      break;
+
+    case VenueTemplate.experiment:
+      template = <ExperimentalSpace venue={venue} />;
       break;
 
     case VenueTemplate.friendship:

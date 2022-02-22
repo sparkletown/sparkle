@@ -1,24 +1,63 @@
-import { useContext } from "react";
+import { useContext, useMemo } from "react";
 
-import { VideoHuddleContext } from "./VideoHuddle";
+import { useVideoComms } from "../VideoComms/hooks";
 
+import { HuddleContext } from "./HuddleProvider";
+
+/**
+ * Allows a developer to interact with the "huddle" component that persists
+ * across space navigations.
+ *
+ * Extra buttons can be added to the huddle by spaces that want to add
+ * extra behaviour on a per-video-track basis. This is done in a restrictive way
+ * to ensure that the look-and-feel of the huddle component is consistent and
+ * not a free for all (as would happen if arbitrary children could be added).
+ *
+ * For the most part, joinHuddle and leaveHuddle will be all that anyone
+ * needs to use.
+ */
 export const useVideoHuddle = () => {
-  const { setChannelId, channelId } = useContext(VideoHuddleContext);
+  const {
+    localParticipant,
+    joinChannel,
+    disconnect,
+    remoteParticipants,
+    shareScreen,
+  } = useVideoComms();
 
-  // TODO Docs
-  const joinHuddle = (huddleId: string) => {
-    setChannelId(huddleId);
-  };
+  const { inHuddle, setInHuddle } = useContext(HuddleContext);
 
-  // TODO Docs
-  const leaveHuddle = () => {
-    setChannelId(undefined);
-    console.log("leaving huddle");
-  };
+  const joinHuddle = useMemo(() => {
+    return (userId: string, huddleId: string) => {
+      joinChannel({
+        userId,
+        channelId: huddleId,
+        enableAudio: false,
+        enableVideo: false,
+      });
+      setInHuddle(() => true);
+    };
+  }, [joinChannel, setInHuddle]);
+
+  const leaveHuddle = useMemo(() => {
+    return () => {
+      // Use the callback version of state setting so that the state is not
+      // used to determine the memo wrapping this.
+      setInHuddle((prevInHuddle) => {
+        if (prevInHuddle) {
+          disconnect();
+        }
+        return false;
+      });
+    };
+  }, [disconnect, setInHuddle]);
 
   return {
     joinHuddle,
     leaveHuddle,
-    inHuddle: channelId !== undefined,
+    inHuddle,
+    localParticipant,
+    remoteParticipants,
+    shareScreen,
   };
 };
