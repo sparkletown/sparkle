@@ -18,7 +18,6 @@ import {
   VENUE_PAGE_LOADED_EVENT_NAME,
 } from "settings";
 
-import { ReactHook } from "types/utility";
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
@@ -66,7 +65,7 @@ export const identifyUser = ({ email, name = "N/A" }: IdentifyUserProps) => {
   }
 };
 
-export interface UseAnalyticsProps {
+interface UseAnalyticsOptions {
   venue?: WithId<AnyVenue>;
 }
 

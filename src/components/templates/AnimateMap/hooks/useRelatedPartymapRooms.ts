@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 
 import { Room } from "types/rooms";
-import { ReactHook } from "types/utility";
 import { AnimateMapVenue } from "types/venues";
 
 import { WithId } from "utils/id";
@@ -11,18 +10,17 @@ import { WithVenue, withVenue } from "utils/venue";
 
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 
-export interface UseRelatedPartymapRoomsProps {
+interface UseRelatedPartymapRoomsOptions {
   venue: WithId<AnimateMapVenue>;
 }
 
-export type UseRelatedPartymapRoomsData =
+export type UseRelatedPartymapRoomsResult =
   | (WithVenue<Room> | Room)[]
   | undefined;
 
-export const useRelatedPartymapRooms: ReactHook<
-  UseRelatedPartymapRoomsProps,
-  UseRelatedPartymapRoomsData
-> = ({ venue }) => {
+export const useRelatedPartymapRooms: (
+  options: UseRelatedPartymapRoomsOptions
+) => UseRelatedPartymapRoomsResult = ({ venue }) => {
   const {
     currentVenue: relatedPartymap,
     findVenueInRelatedVenues,
