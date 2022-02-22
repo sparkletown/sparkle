@@ -19,7 +19,6 @@ import {
   WorldWithId,
 } from "types/id";
 import { Profile, UserLocation } from "types/User";
-import { BaseVenue } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
 
 import { hasEventFinished, isEventStartingSoon } from "utils/event";
@@ -70,8 +69,8 @@ type VenuePageProps = SpaceSlugLocation & {
   user?: RefiAuthUser;
   profile?: Profile;
   userLocation?: UserLocation;
-  setBackButtonTargetSpace: React.Dispatch<
-    React.SetStateAction<BaseVenue | undefined>
+  setBackButtonSpace: React.Dispatch<
+    React.SetStateAction<SpaceWithId | undefined>
   >;
 };
 
@@ -85,7 +84,7 @@ export const VenuePage: React.FC<VenuePageProps> = ({
   user,
   profile,
   userLocation,
-  setBackButtonTargetSpace,
+  setBackButtonSpace,
 }) => {
   const analytics = useAnalytics({ venue: space });
 
@@ -140,9 +139,9 @@ export const VenuePage: React.FC<VenuePageProps> = ({
   } = useRelatedVenues({ currentVenueId: space.id });
 
   useEffect(() => {
-    setBackButtonTargetSpace(parentVenue);
+    setBackButtonSpace(parentVenue);
     return () => {
-      setBackButtonTargetSpace(undefined);
+      setBackButtonSpace(undefined);
     };
   });
 

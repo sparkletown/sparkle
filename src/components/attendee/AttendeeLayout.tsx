@@ -4,7 +4,7 @@ import { withFallback } from "components/hocs/gate/withFallback";
 import { withRequired } from "components/hocs/gate/withRequired";
 import { compose } from "lodash/fp";
 
-import { BaseVenue } from "types/venues";
+import { SpaceWithId } from "types/id";
 
 import { VenuePage } from "pages/VenuePage";
 
@@ -27,10 +27,7 @@ interface _AttendeeLayoutProps {
 }
 
 const _AttendeeLayout: React.FC<_AttendeeLayoutProps> = ({ userId }) => {
-  const [
-    backButtonTargetSpace,
-    setBackButtonTargetSpace,
-  ] = useState<BaseVenue>();
+  const [backButtonSpace, setBackButtonSpace] = useState<SpaceWithId>();
 
   useEffect(() => {
     document.documentElement.classList.add(styles.html);
@@ -42,10 +39,10 @@ const _AttendeeLayout: React.FC<_AttendeeLayoutProps> = ({ userId }) => {
   return (
     <VideoCommsProvider>
       <HuddleProvider>
-        <AttendeeHeader backButtonTargetSpace={backButtonTargetSpace} />
+        <AttendeeHeader backButtonSpace={backButtonSpace} />
         <main>
           <section className={styles.Space}>
-            <VenuePage setBackButtonTargetSpace={setBackButtonTargetSpace} />
+            <VenuePage setBackButtonTargetSpace={setBackButtonSpace} />
           </section>
           <div className={styles.LayerUi}>
             <ChatContainer />

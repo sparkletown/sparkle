@@ -9,7 +9,7 @@ import { JazzbarVenue } from "types/venues";
 import { WithId } from "utils/id";
 
 import { useAnalytics } from "hooks/useAnalytics";
-import { useUser } from "hooks/useUser";
+import { useUserId } from "hooks/user/useUserId";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
@@ -29,7 +29,7 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
 
   const jazzbarTables = venue.config?.tables ?? JAZZBAR_TABLES;
 
-  const { userId } = useUser();
+  const { userId } = useUserId();
 
   useEffect(() => {
     analytics.trackEnterJazzBarEvent();

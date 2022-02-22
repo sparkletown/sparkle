@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useAsyncFn } from "react-use";
 
 import { CONVERSATION_TABLES, JAZZBAR_TABLES, STRING_SPACE } from "settings";
@@ -71,6 +71,11 @@ export const TableComponent: React.FunctionComponent<TableComponentPropsType> = 
     [users]
   );
 
+  const joinClickedCallback = useCallback(
+    () => onJoinClicked(table.reference, locked),
+    [onJoinClicked, table.reference, locked]
+  );
+
   return (
     <div className={styles.tableContainer}>
       <div className={styles.tableHeader}>
@@ -92,12 +97,7 @@ export const TableComponent: React.FunctionComponent<TableComponentPropsType> = 
         {renderedUserPictures}
 
         {users && table.capacity && table.capacity - users.length >= 0 && (
-          <span
-            key={"join-button"}
-            onClick={() => onJoinClicked(table.reference, locked)}
-            id={`join-table-${venue?.name}-${table.reference}`}
-            className={styles.joinButton}
-          >
+          <span onClick={joinClickedCallback} className={styles.joinButton}>
             Join
           </span>
         )}

@@ -37,7 +37,6 @@ export const MediaPlayer: React.FC<MediaPlayerProps> = ({ url, autoPlay }) => {
       <div className={videoClassnames}>
         {embedIframeUrl ? (
           <iframe
-            key="main-event"
             title="main event"
             className={styles.iframe}
             src={embedIframeUrl}

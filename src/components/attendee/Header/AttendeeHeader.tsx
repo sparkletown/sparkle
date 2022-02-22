@@ -19,11 +19,11 @@ import { NavOverlay } from "../NavOverlay/NavOverlay";
 import CN from "./AttendeeHeader.module.scss";
 
 interface AttendeeHeaderProps {
-  backButtonTargetSpace?: BaseVenue;
+  backButtonSpace?: BaseVenue;
 }
 
 export const AttendeeHeader: React.FC<AttendeeHeaderProps> = ({
-  backButtonTargetSpace,
+  backButtonSpace,
 }) => {
   const { isShown: isScheduleShown, hide, show } = useShowHide(false);
   const { worldSlug, spaceSlug } = useSpaceParams();
@@ -31,24 +31,24 @@ export const AttendeeHeader: React.FC<AttendeeHeaderProps> = ({
   const history = useHistory();
 
   const goBack = useCallback(() => {
-    if (backButtonTargetSpace) {
+    if (backButtonSpace) {
       const url = generateUrl({
         route: ATTENDEE_INSIDE_URL,
         required: ["worldSlug", "spaceSlug"],
         params: {
           worldSlug,
-          spaceSlug: backButtonTargetSpace.slug,
+          spaceSlug: backButtonSpace.slug,
         },
       });
       history.push(url);
     }
-  }, [backButtonTargetSpace, history, worldSlug]);
+  }, [backButtonSpace, history, worldSlug]);
 
   return (
     <header className={CN.attendeeHeader}>
       <div className={CN.attendeeHeader__container}>
         <div>
-          {backButtonTargetSpace ? (
+          {backButtonSpace ? (
             <Button onClick={goBack}>
               <FontAwesomeIcon icon={faArrowLeft} /> Leave
             </Button>

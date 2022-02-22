@@ -28,6 +28,7 @@
   }
 
   // This is needed to force the video to size correctly and so display
+  // @debt explore latest `aspect-ratio` solutions, @see https://web.dev/aspect-ratio/
   &:before {
     content: " ";
     position: relative;
@@ -37,7 +38,7 @@
   }
 
   &__expanded {
-    max-width: 960px;
+    max-width: breakpoint.$lg;
   }
 }
 
