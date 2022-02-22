@@ -53,7 +53,7 @@ interface InputFieldProps
   onIconStartClick?: () => void;
   onIconEndClick?: () => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  register: UseFormRegister<any>;
+  register: UseFormRegister<any> | (() => void);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   rules?: Record<string, any>;
   name?: string;

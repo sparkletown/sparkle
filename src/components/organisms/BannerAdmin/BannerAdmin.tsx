@@ -110,7 +110,7 @@ export const BannerAdmin: React.FC<BannerAdminProps> = ({
 
         <div className="BannerAdmin__action-container">
           <InputField
-            {...register}
+            register={register}
             name="buttonUrl"
             placeholder="Button URL"
             defaultValue={venue?.banner?.buttonUrl}
@@ -120,7 +120,7 @@ export const BannerAdmin: React.FC<BannerAdminProps> = ({
             autoComplete="off"
           />
           <InputField
-            {...register}
+            register={register}
             name="buttonDisplayText"
             placeholder="Button display text"
             defaultValue={venue?.banner?.buttonDisplayText}
