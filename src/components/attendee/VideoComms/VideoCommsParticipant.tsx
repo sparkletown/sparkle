@@ -1,16 +1,18 @@
-import React, { ReactNode } from "react";
+import React, { useMemo } from "react";
+import classNames from "classnames";
 
 import { UserId } from "types/id";
 
 import { useProfileById } from "hooks/user/useProfileById";
 
+import { LoadingSpinner } from "components/atoms/LoadingSpinner";
 import { UserAvatar } from "components/atoms/UserAvatar";
 
 import { AudioTrackPlayer } from "./internal/AudioTrackPlayer";
 import { useMute } from "./internal/useMute";
 import { VideoCommsControls } from "./internal/VideoCommsControls";
 import { useVideoComms } from "./hooks";
-import { Participant, VideoSource, VideoTrack } from "./types";
+import { Participant, VideoSource } from "./types";
 import { VideoTrackDisplay } from "./VideoTrackDisplay";
 
 import styles from "./scss/VideoCommsParticipant.module.scss";
@@ -18,18 +20,11 @@ import styles from "./scss/VideoCommsParticipant.module.scss";
 interface VideoCommsParticipantProps {
   participant: Participant;
   isLocal?: boolean;
-  /**
-   * A function that will generate controls on a per-video-track basis. Useful for
-   * adding things like "share" buttons or similar on each track. The Video
-   * Huddle components makes use of this.
-   */
-  videoTrackControls?: (track: VideoTrack) => ReactNode;
 }
 
 export const VideoCommsParticipant: React.FC<VideoCommsParticipantProps> = ({
   participant,
   isLocal,
-  videoTrackControls,
 }) => {
   const {
     startAudio,
@@ -38,64 +33,96 @@ export const VideoCommsParticipant: React.FC<VideoCommsParticipantProps> = ({
     stopVideo,
     isTransmittingAudio,
     isTransmittingVideo,
+    stopShareScreen,
   } = useVideoComms();
 
   const { profile, isLoading } = useProfileById({
     userId: participant.sparkleId as UserId,
   });
-
-  const hasActiveVideoStream = participant.videoTracks.some(
-    ({ sourceType, enabled }) => sourceType === VideoSource.Webcam && enabled
-  );
-
   // These muted controls are only for muting the playback of remote participants
   // Local participant audio is controlled via useVideoComms
   const { isMuted, mute, unmute } = useMute();
 
+  // We currently only allow one audio track and two video tracks (webcam
+  // and screenshare). The controls available on each are different. Rather than
+  // building a complex loop with lots of logic, the tracks are picked out and
+  // the logic simplified.
+  const webcamTrack = useMemo(
+    () =>
+      participant.videoTracks.find(
+        ({ sourceType }) => sourceType === VideoSource.Webcam
+      ),
+    [participant.videoTracks]
+  );
+  const screenshareTrack = useMemo(
+    () =>
+      participant.videoTracks.find(
+        ({ sourceType }) => sourceType === VideoSource.Screenshare
+      ),
+    [participant.videoTracks]
+  );
+  const audioStream = participant.audioTracks[0];
+
+  const controlsClasses = classNames(styles.videoCommsControlsContainer, {
+    [styles.videoCommsControlsContainer__darkButtons]: !webcamTrack?.enabled,
+  });
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
   return (
     <div className={styles.videoCommsParticipant}>
-      {hasActiveVideoStream &&
-        participant.videoTracks.map((track) => (
-          <div key={track.id} className={styles.trackContainer}>
-            <VideoTrackDisplay
-              key={track.id}
-              track={track}
-              isMirrored={isLocal && track.sourceType === VideoSource.Webcam}
-            />
-            <div className={styles.videoCommsControlsContainer}>
-              {videoTrackControls && videoTrackControls(track)}
-            </div>
-          </div>
-        ))}
-      {!isLocal &&
-        participant.audioTracks.map((track) => (
-          <AudioTrackPlayer key={track.id} track={track} isMuted={isMuted} />
-        ))}
-
-      {!isLoading && (
-        <UserAvatar
-          containerClassName={styles.avatarContainer}
-          user={profile}
-        />
-      )}
-      <div className={styles.videoCommsControlsContainer}>
-        {isLocal ? (
-          <VideoCommsControls
-            startAudio={startAudio}
-            stopAudio={stopAudio}
-            startVideo={startVideo}
-            stopVideo={stopVideo}
-            audioEnabled={isTransmittingAudio}
-            videoEnabled={isTransmittingVideo}
-          />
+      <div className={styles.trackContainer}>
+        {webcamTrack?.enabled ? (
+          <VideoTrackDisplay track={webcamTrack} isMirrored={isLocal} />
         ) : (
-          <VideoCommsControls
-            startAudio={unmute}
-            stopAudio={mute}
-            audioEnabled={!isMuted}
-          />
+          <>
+            <UserAvatar
+              containerClassName={styles.avatarContainer}
+              user={profile}
+            />
+            <span className={styles.userName}>{profile?.partyName}</span>
+          </>
         )}
+        <div className={controlsClasses}>
+          {isLocal ? (
+            <>
+              <VideoCommsControls
+                startAudio={startAudio}
+                stopAudio={stopAudio}
+                startVideo={startVideo}
+                stopVideo={stopVideo}
+                audioEnabled={isTransmittingAudio}
+                videoEnabled={isTransmittingVideo}
+                sourceType={VideoSource.Webcam}
+              />
+            </>
+          ) : (
+            <VideoCommsControls
+              startAudio={unmute}
+              stopAudio={mute}
+              audioEnabled={!isMuted}
+              sourceType={VideoSource.Webcam}
+            />
+          )}
+        </div>
       </div>
+      {screenshareTrack?.enabled && (
+        <div className={styles.trackContainer}>
+          <VideoTrackDisplay track={screenshareTrack} />
+          {isLocal && (
+            <div className={styles.videoCommsControlsContainer}>
+              <VideoCommsControls
+                stopVideo={stopShareScreen}
+                videoEnabled={true}
+                sourceType={VideoSource.Screenshare}
+              />
+            </div>
+          )}
+        </div>
+      )}
+
+      {!isLocal && <AudioTrackPlayer track={audioStream} isMuted={isMuted} />}
     </div>
   );
 };

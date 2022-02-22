@@ -4,25 +4,11 @@
   display: flex;
   flex-direction: row;
   position: relative;
-  height: 100%;
-  max-width: layout.$h-video-chat;
-  min-width: layout.$h-video-chat;
-  max-height: layout.$h-video-chat;
-  width: 100%;
-  background: #3d3a3f;
-  border-radius: 4px;
-  overflow: hidden;
 }
 
 .trackContainer {
   display: flex;
   position: relative;
-  width: 100%;
-
-  video {
-    object-fit: cover;
-    width: 100%;
-  }
 }
 
 .videoCommsControlsContainer {
@@ -38,21 +24,28 @@
 
   span {
     margin: 2px 7px;
+  }
+  &__darkButtons {
+    color: #000000;
+    background: none;
     cursor: pointer;
   }
 }
 
 .avatarContainer {
-  border-radius: 4px;
-  width: 64px;
-  height: 64px;
-  position: absolute;
-  left: 8px;
-  bottom: 8px;
+  display: flex;
+  border: 1px solid #dbdbdb;
+  background: #f0f0f0;
+  min-width: 186px;
 
   img {
     max-width: 64px;
     max-height: 64px;
     margin: auto;
   }
+}
+
+.userName {
+  position: absolute;
+  bottom: 0;
 }
