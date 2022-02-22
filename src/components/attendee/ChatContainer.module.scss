@@ -10,7 +10,7 @@
 
 .ChatContainer {
   padding: 0 space.empty(1);
-  height: 42px;
+  height: layout.$h-chat-controls;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -46,4 +46,14 @@
 
 .toggler {
   margin-left: auto;
+}
+
+.chatSidebar {
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.4);
+  top: -100vh;
+  right: 0;
+  height: calc(100vh - layout.$h-chat-controls);
+  width: layout.$w-sidebar;
+  backdrop-filter: blur(5px);
 }

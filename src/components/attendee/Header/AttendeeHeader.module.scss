@@ -1,3 +1,4 @@
+@use "scss/attendee/layout";
 @use "scss/attendee/space";
 
 .attendeeHeader {
@@ -12,5 +13,10 @@
     display: flex;
     justify-content: space-between;
     width: 100%;
+  }
+
+  &__chatExpanded {
+    width: calc(100vw - layout.$w-sidebar - space.empty(1));
+    padding-right: space.empty(1);
   }
 }
