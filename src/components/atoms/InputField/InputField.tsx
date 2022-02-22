@@ -1,5 +1,5 @@
 import React from "react";
-import { FieldError, FieldValues, UseFormRegister } from "react-hook-form";
+import { FieldError, RegisterOptions, UseFormRegister } from "react-hook-form";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
@@ -53,7 +53,7 @@ interface InputFieldProps
   onIconStartClick?: () => void;
   onIconEndClick?: () => void;
   register: UseFormRegister<AnyForm> | (() => void);
-  rules?: FieldValues;
+  rules?: RegisterOptions;
   name?: string;
 }
 
