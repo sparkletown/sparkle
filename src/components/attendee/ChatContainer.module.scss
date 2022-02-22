@@ -28,10 +28,11 @@
 
   nav {
     display: flex;
-    a {
+    span {
       padding: space.empty(0.5) space.empty(1);
       text-decoration: none;
       color: black;
+      cursor: pointer;
     }
   }
 }

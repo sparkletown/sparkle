@@ -10,20 +10,13 @@ import classNames from "classnames";
 import { isEqual } from "lodash";
 
 import { ChatTypes } from "types/chat";
-import { AnyVenue } from "types/venues";
-
-import { WithId } from "utils/id";
 
 import { useChatSidebarControls } from "hooks/chats/util/useChatSidebarControls";
 import { useChatSidebarInfo } from "hooks/chats/util/useChatSidebarInfo";
 
 import { PrivateChats, VenueChat } from "./components";
 
-export interface ChatSidebarProps {
-  venue: WithId<AnyVenue>;
-}
-
-export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
+export const _ChatSidebar: React.FC = () => {
   const {
     isExpanded,
     toggleSidebar,
@@ -34,7 +27,7 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
     selectPrivateChat,
   } = useChatSidebarControls();
 
-  const { privateChatTabTitle } = useChatSidebarInfo(venue);
+  const { privateChatTabTitle } = useChatSidebarInfo();
 
   const isVenueChat = chatSettings.openedChatType === ChatTypes.VENUE_CHAT;
   const isPrivateChat = chatSettings.openedChatType === ChatTypes.PRIVATE_CHAT;
@@ -99,7 +92,7 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
             </div>
           </div>
           <div role="tabpanel" className="chat-sidebar__tab-content">
-            {isVenueChat && <VenueChat space={venue} />}
+            {isVenueChat && <VenueChat />}
             {isPrivateChat && <PrivateChats recipient={recipient} />}
           </div>
         </>
