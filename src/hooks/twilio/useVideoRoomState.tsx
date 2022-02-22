@@ -100,7 +100,7 @@ export const useVideoRoomState = (
           );
         } else setVideoError(message);
       } else {
-        throw error;
+        setVideoError(`${error}`);
       }
     }
   }, [userId, roomName, dismissVideoError, joinChannel]);
