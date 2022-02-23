@@ -9,8 +9,7 @@ import { BaseVenue } from "types/venues";
 
 import { generateUrl } from "utils/url";
 
-import { useSpaceParams } from "hooks/spaces/useSpaceParams";
-import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
+import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useShowHide } from "hooks/useShowHide";
 
 import { Button } from "../Button";
@@ -26,8 +25,7 @@ export const AttendeeHeader: React.FC<AttendeeHeaderProps> = ({
   backButtonSpace,
 }) => {
   const { isShown: isScheduleShown, hide, show } = useShowHide(false);
-  const { worldSlug, spaceSlug } = useSpaceParams();
-  const { space } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
+  const { space, worldSlug } = useWorldAndSpaceByParams();
   const history = useHistory();
 
   const goBack = useCallback(() => {
