@@ -1,9 +1,10 @@
+import { UseFormRegister } from "react-hook-form";
 import { Select } from "components/attendee/Select";
 
-import { FormFieldProps } from "types/forms";
+import { UserProfileModalFormData } from "types/profileModal";
 
 type VideoSettingsProps = {
-  register: FormFieldProps["register"];
+  register: UseFormRegister<UserProfileModalFormData>;
 };
 export const VideoSettings: React.FC<VideoSettingsProps> = ({ register }) => {
   return (
@@ -11,7 +12,7 @@ export const VideoSettings: React.FC<VideoSettingsProps> = ({ register }) => {
       <div>Video Settings</div>
       <div>
         Camera
-        <Select name="videoSource" ref={register()} />
+        <Select name="videoSource" register={register} />
       </div>
     </div>
   );

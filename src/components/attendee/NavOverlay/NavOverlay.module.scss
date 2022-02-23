@@ -88,14 +88,13 @@ $-z-index-base: 1;
   position: relative;
   overflow: hidden;
   display: inline-block;
-  width: 1.3rem;
-  height: 1.3rem;
+  width: 17px;
+  height: 17px;
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
   margin-left: space.empty(0.5);
-  background-image: url(/assets/icons/icon-close-portal.svg);
-  filter: invert(1);
+  background-image: url(/assets/icons/overlay-close-icon.svg);
 }
 
 .navigationButton {

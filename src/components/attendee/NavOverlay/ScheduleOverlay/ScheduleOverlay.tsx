@@ -33,8 +33,7 @@ import {
 import { range } from "utils/range";
 import { formatDateRelativeToNow, formatTimeLocalised } from "utils/time";
 
-import { useSpaceParams } from "hooks/spaces/useSpaceParams";
-import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
+import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 import useVenueScheduleEvents from "hooks/useVenueScheduleEvents";
@@ -51,8 +50,7 @@ interface ScheduleDay {
 }
 
 export const ScheduleOverlay: React.FC = () => {
-  const { worldSlug, spaceSlug } = useSpaceParams();
-  const { space } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
+  const { space } = useWorldAndSpaceByParams();
   const { userWithId } = useUser();
   const userEventIds =
     userWithId?.myPersonalizedSchedule ?? ALWAYS_EMPTY_OBJECT;
@@ -227,7 +225,6 @@ export const ScheduleOverlay: React.FC = () => {
       </div>
       <Toggler
         containerClassName={CN.scheduleOverlayButton}
-        name="bookmarked-toggle"
         toggled={showPersonalisedSchedule}
         onChange={togglePersonalisedSchedule}
         title="Only show bookmarked events"

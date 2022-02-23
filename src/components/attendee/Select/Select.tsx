@@ -1,7 +1,8 @@
-import React, { ChangeEvent } from "react";
-import { FieldError } from "react-hook-form";
+import React from "react";
+import { FieldError, UseFormRegister } from "react-hook-form";
 import classNames from "classnames";
 
+import { UserProfileModalFormData } from "types/profileModal";
 import { ContainerClassName } from "types/utility";
 
 import { isDefined } from "utils/types";
@@ -20,10 +21,9 @@ interface SelectProps
     ContainerClassName {
   errorTextClassName?: string;
   error?: FieldError;
-  name: string;
+  name: "videoSource" | "speakerSource" | "micSource";
   placeholder?: string;
-  onChange?: (e: ChangeEvent<HTMLSelectElement>) => void;
-  ref: React.ForwardedRef<HTMLSelectElement>;
+  register: UseFormRegister<UserProfileModalFormData>;
 }
 
 export const Select: React.FC<SelectProps> = ({
@@ -33,8 +33,7 @@ export const Select: React.FC<SelectProps> = ({
   label,
   name,
   placeholder,
-  onChange,
-  ref,
+  register,
 }) => {
   const containerClassNames = classNames(
     styles.Select,
@@ -62,9 +61,8 @@ export const Select: React.FC<SelectProps> = ({
         {label && <label>{label}</label>}
         <select
           className={selectClassNames}
-          ref={ref}
+          {...register(name)}
           defaultValue={placeholder}
-          name={name}
         >
           <option value={placeholder} hidden disabled>
             {placeholder}

@@ -11,11 +11,11 @@ export const AudioSettings: React.FC<AudioSettingsProps> = ({ register }) => {
       <div>Audio Settings</div>
       <div>
         Speaker
-        <Select name="speakerSource" ref={register()} />
+        <Select name="speakerSource" register={register} />
       </div>
       <div>
         Microphone
-        <Select name="micSource" ref={register()} />
+        <Select name="micSource" register={register} />
       </div>
     </div>
   );

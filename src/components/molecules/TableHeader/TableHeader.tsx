@@ -168,10 +168,9 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
           {isCurrentTableLocked ? "Table Locked" : "Lock Table"}
         </div>
         {/* @debt pass the header into Toggler's 'label' prop instead of being external like this */}
-        {/* @debt should this use 'toggled' instead of 'defaultToggled' to make it a controlled component? */}
         <Toggler
           containerClassName="TableHeader__lock-toggle"
-          defaultToggled={isCurrentTableLocked}
+          toggled={isCurrentTableLocked}
           onChange={toggleIsCurrentTableLocked}
         />
       </div>

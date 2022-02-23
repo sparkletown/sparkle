@@ -1,28 +1,38 @@
 import React from "react";
+import classNames from "classnames";
 
-import { Checkbox, CheckboxProps } from "components/atoms/Checkbox";
+import "./Toggler.scss";
 
-export interface TogglerProps
-  extends Omit<CheckboxProps, "toggler" | "checked" | "defaultChecked"> {
+export interface TogglerProps {
   toggled?: boolean;
   title?: string;
-  defaultToggled?: boolean;
+  onChange?: () => void;
+  containerClassName?: string;
+  name?: string;
 }
 
 export const Toggler: React.FC<TogglerProps> = ({
   toggled,
   title,
-  defaultToggled,
+  onChange,
+  containerClassName,
+  name,
   ...extraProps
-}) => (
-  <>
-    {title && <label>{title}</label>}
-    <Checkbox
-      {...extraProps}
-      toggler
-      defaultChecked={defaultToggled}
-      checked={toggled}
-      containerClassName="Toggler"
-    />
-  </>
-);
+}) => {
+  const containerClasses = classNames("Toggler", containerClassName);
+  return (
+    <div className={containerClasses}>
+      <label className="switch">
+        <input
+          type="checkbox"
+          checked={toggled}
+          name={name}
+          onClick={onChange}
+          {...extraProps}
+        />
+        <span className="slider round"></span>
+      </label>
+      {title && <label>{title}</label>}
+    </div>
+  );
+};

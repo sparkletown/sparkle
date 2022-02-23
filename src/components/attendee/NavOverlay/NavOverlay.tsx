@@ -2,8 +2,7 @@ import { useEffect, useState } from "react";
 
 import { SPACE_TAXON } from "settings";
 
-import { useSpaceParams } from "hooks/spaces/useSpaceParams";
-import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
+import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useMediaQuery } from "hooks/viewport/useMediaQuery";
 
 import { ScheduleOverlay } from "./ScheduleOverlay/ScheduleOverlay";
@@ -36,9 +35,8 @@ const navOverlayTypeMap: Readonly<Record<NavOverlayTab, String>> = {
 export const NavOverlay: React.FC<navOverlayProps> = ({ onClose, type }) => {
   const [navOverlayType, setNavOverlay] = useState(type);
   const [isMenuShown, setMenuShown] = useState(true);
-  const { worldSlug, spaceSlug } = useSpaceParams();
   const { isTablet, isMobile } = useMediaQuery();
-  const { space } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
+  const { space } = useWorldAndSpaceByParams();
 
   const isMenuPaged = isTablet || isMobile;
 

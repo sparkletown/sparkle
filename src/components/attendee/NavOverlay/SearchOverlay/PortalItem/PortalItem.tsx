@@ -7,8 +7,7 @@ import { Room } from "types/rooms";
 import { isExternalPortal, openUrl } from "utils/url";
 
 import { useCustomSound } from "hooks/sounds";
-import { useSpaceParams } from "hooks/spaces/useSpaceParams";
-import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
+import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useAnalytics } from "hooks/useAnalytics";
 import { usePortal } from "hooks/usePortal";
 
@@ -18,8 +17,7 @@ type PortalItemProps = {
   onClick: () => void;
 };
 export const PortalItem: React.FC<PortalItemProps> = ({ portal, onClick }) => {
-  const { worldSlug, spaceSlug } = useSpaceParams();
-  const { space } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
+  const { space } = useWorldAndSpaceByParams();
 
   const { enterPortal } = usePortal({
     portal,

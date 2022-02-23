@@ -275,7 +275,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
           name="bookmarked-toggle"
           toggled={showPersonalisedSchedule}
           onChange={togglePersonalisedSchedule}
-          label="Bookmarked events"
+          title="Bookmarked events"
         />
         <Schedule
           showPersonalisedSchedule={showPersonalisedSchedule}
