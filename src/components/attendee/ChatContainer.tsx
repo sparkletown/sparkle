@@ -7,7 +7,12 @@ import styles from "./ChatContainer.module.scss";
 
 export const ChatContainer: React.FC = () => {
   const numberOfUnreadMessages = useNumberOfUnreadChats();
-  const { toggleSidebar, isExpanded } = useChatSidebarControls();
+  const {
+    selectPrivateChat,
+    selectVenueChat,
+    toggleSidebar,
+    isExpanded,
+  } = useChatSidebarControls();
 
   return (
     <>
@@ -18,9 +23,9 @@ export const ChatContainer: React.FC = () => {
       )}
       <div className={styles.ChatContainer}>
         <nav>
-          <span>Chat</span>
-          <span>
-            Messages{" "}
+          <span onClick={selectVenueChat}>Chat</span>
+          <span onClick={selectPrivateChat}>
+            Messages
             {numberOfUnreadMessages > 0 && (
               <span className={styles.messageCount}>
                 {numberOfUnreadMessages}

@@ -1,10 +1,8 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
-import classNames from "classnames";
 import { isEqual } from "lodash";
 
 import {
-  ChatOptionType,
   InfiniteScrollProps,
   MessageToDisplay,
   SendChatMessage,
@@ -14,8 +12,6 @@ import { ContainerClassName } from "types/utility";
 
 import { WithId } from "utils/id";
 
-import { useVenuePoll } from "hooks/useVenuePoll";
-
 import { ChatboxMessage } from "components/molecules/Chatbox/components/ChatboxMessage";
 import {
   useChatboxSendThreadMessage,
@@ -24,118 +20,67 @@ import {
 } from "components/molecules/Chatbox/components/context/ChatboxContext";
 import { ChatMessageBox } from "components/molecules/ChatMessageBox";
 import { Loading } from "components/molecules/Loading";
-import { PollBox } from "components/molecules/PollBox";
 
-import { ChatboxOptionsControls } from "./components/ChatboxOptionsControls";
 import { ChatboxThreadControls } from "./components/ChatboxThreadControls";
 import { useTriggerScrollFix } from "./useTriggerScrollFix";
 
-import "./Chatbox.scss";
+import styles from "./Chatbox.module.scss";
 
 export interface ChatboxProps extends ContainerClassName, InfiniteScrollProps {
   messages: WithId<MessageToDisplay>[];
   displayPollOption?: boolean;
 }
 
-const _ChatBox: React.FC<ChatboxProps> = ({
-  messages,
-  displayPollOption,
-  containerClassName,
-  hasMore,
-  loadMore,
-}) => {
+const _ChatBox: React.FC<ChatboxProps> = ({ messages, hasMore, loadMore }) => {
   const scrollableComponentRef = useTriggerScrollFix(messages);
 
-  const { createPoll, voteInPoll } = useVenuePoll();
-
   const closeThread = useClearSelectedReplyThread();
-
-  const [activeOption, setActiveOption] = useState<ChatOptionType>();
-
-  const unselectOption = useCallback(() => {
-    setActiveOption(undefined);
-    closeThread();
-  }, [closeThread]);
-
-  const onPollSubmit = useCallback(
-    async (data) => {
-      await createPoll(data);
-      unselectOption();
-    },
-    [createPoll, unselectOption]
-  );
-
-  const isQuestionOptions = ChatOptionType.question === activeOption;
 
   const sendThreadMessage = useChatboxSendThreadMessage();
 
   const sendThreadMessageWrapper: SendChatMessage<SendThreadMessageProps> = useCallback(
     async ({ text, threadId }) => {
       await sendThreadMessage({ text, threadId });
-      unselectOption();
+      closeThread();
     },
-    [unselectOption, sendThreadMessage]
+    [closeThread, sendThreadMessage]
   );
 
   const hasSelectedThread = useHasSelectedReplyThread();
 
   return (
-    <div className={classNames("Chatbox", containerClassName)}>
+    <div className={styles.chatboxContainer}>
       <div
-        className="Chatbox__messages"
+        className={styles.chatboxMessages}
         ref={scrollableComponentRef}
         id={"Chatbox_scrollable_div"}
       >
         <InfiniteScroll
+          className={styles.messageScroller}
           dataLength={messages.length}
-          className={"Chatbox__messages-infinite-scroll"}
           next={loadMore}
           inverse
           hasMore={hasMore}
           scrollableTarget="Chatbox_scrollable_div"
-          loader={
-            <Loading containerClassName="Chatbox__messages-infinite-scroll-loading" />
-          }
+          loader={<Loading />}
         >
           {messages.map((message, i) => (
             <ChatboxMessage
               key={message.id}
               message={message}
               nextMessage={messages?.[i + 1]}
-              voteInPoll={voteInPoll}
             />
           ))}
         </InfiniteScroll>
       </div>
-      <div className="Chatbox__form-box">
-        {/* @debt sort these out. Preferably using some kind of enum */}
+      <div>
         {hasSelectedThread && (
-          <ChatboxThreadControls
-            text="Replying to"
-            closeThread={unselectOption}
-          />
+          <ChatboxThreadControls text="Replying to" closeThread={closeThread} />
         )}
-        {isQuestionOptions && !hasSelectedThread && (
-          <ChatboxThreadControls
-            text="asking a question"
-            closeThread={unselectOption}
-          />
-        )}
-        {displayPollOption && !isQuestionOptions && !hasSelectedThread && (
-          <ChatboxOptionsControls
-            activeOption={activeOption}
-            setActiveOption={setActiveOption}
-          />
-        )}
-        {activeOption === ChatOptionType.poll ? (
-          <PollBox onPollSubmit={onPollSubmit} />
-        ) : (
-          <ChatMessageBox
-            sendThreadMessageWrapper={sendThreadMessageWrapper}
-            unselectOption={unselectOption}
-            isQuestion={isQuestionOptions}
-          />
-        )}
+        <ChatMessageBox
+          sendThreadMessageWrapper={sendThreadMessageWrapper}
+          unselectOption={closeThread}
+        />
       </div>
     </div>
   );

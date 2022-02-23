@@ -21,8 +21,6 @@ import { InputField } from "components/atoms/InputField";
 
 import SendIcon from "assets/icons/send.svg";
 
-import "./ChatMessageBox.scss";
-
 const determineChatPlaceholder = (
   isPrivate: boolean,
   isQuestion: boolean,

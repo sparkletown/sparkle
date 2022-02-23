@@ -1,0 +1,15 @@
+.chatboxContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.chatboxMessages {
+  flex-grow: 1;
+  overflow-y: scroll;
+}
+
+.messageScroller {
+  display: flex;
+  flex-direction: column-reverse;
+}

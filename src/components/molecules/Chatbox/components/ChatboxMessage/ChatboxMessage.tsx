@@ -7,25 +7,16 @@ import { checkIfPollMessage } from "utils/chat";
 import { WithId } from "utils/id";
 import { formatDateRelativeToNow } from "utils/time";
 
-import { useVenuePoll } from "hooks/useVenuePoll";
-
-import { ChatPoll } from "components/molecules/ChatPoll";
-
 import { ChatMessage as ChatMessageComponent } from "components/atoms/ChatMessage";
-
-import "./ChatboxMessage.scss";
 
 export interface ChatboxMessageProps {
   message: WithId<MessageToDisplay>;
   nextMessage?: WithId<MessageToDisplay>;
-
-  voteInPoll: ReturnType<typeof useVenuePoll>["voteInPoll"];
 }
 
 export const ChatboxMessage: React.FC<ChatboxMessageProps> = ({
   message,
   nextMessage,
-  voteInPoll,
 }) => {
   const messageStartOfDay = startOfDay(message.timestamp.toDate());
 
@@ -34,8 +25,9 @@ export const ChatboxMessage: React.FC<ChatboxMessageProps> = ({
     ? startOfDay(nextMessageDate)
     : undefined;
 
+  // @debt We don't render polls at all. Maybe we should.
   const renderedMessage = checkIfPollMessage(message) ? (
-    <ChatPoll key={message.id} pollMessage={message} voteInPoll={voteInPoll} />
+    <></>
   ) : (
     <ChatMessageComponent key={message.id} message={message} />
   );
@@ -53,9 +45,7 @@ export const ChatboxMessage: React.FC<ChatboxMessageProps> = ({
           But because the outer `Chatbox.tsx` reverses the components it renders
           we need `dateLabel` to be after `renderedMessage`.
       */}
-      {dateLabel && (
-        <div className="ChatboxMessage__date-label">{dateLabel}</div>
-      )}
+      {dateLabel && <div>{dateLabel}</div>}
     </>
   );
 };
