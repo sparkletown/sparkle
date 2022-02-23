@@ -6,17 +6,22 @@ import { WorldScheduleEvent } from "api/admin";
 
 export interface SpaceType {
   id?: string;
-  slug?: string;
+  name?: string;
 }
 
 export const eventEditSchema = Yup.object().shape<WorldScheduleEvent>({
-  spaceId: Yup.string().when(
-    "$eventSpaceId",
-    (eventSpaceId: string, schema: Yup.StringSchema) =>
-      eventSpaceId
-        ? schema.notRequired()
-        : schema.test("space", "Space id required", (space) => !!space)
-  ),
+  space: Yup.object()
+    .shape<SpaceType>({
+      id: Yup.string().notRequired(),
+      name: Yup.string().notRequired(),
+    })
+    .when(
+      "$eventSpaceId",
+      (eventSpaceId: string, schema: Yup.ObjectSchema<SpaceType>) =>
+        eventSpaceId
+          ? schema.notRequired()
+          : schema.test("space", "Space id required", (space) => !!space?.id)
+    ),
   name: Yup.string().required("Name required"),
   description: Yup.string().required("Description required"),
   startDate: Yup.string()

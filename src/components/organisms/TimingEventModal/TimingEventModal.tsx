@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import dayjs from "dayjs";
 
@@ -11,9 +11,10 @@ import { WorldEvent } from "types/venues";
 
 import { MaybeWithId } from "utils/id";
 
-import { eventEditSchema } from "forms/eventEditSchema";
+import { eventEditSchema, SpaceType } from "forms/eventEditSchema";
 
-import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { useOwnedVenues } from "hooks/useOwnedVenues";
+import { useUser } from "hooks/useUser";
 
 import { Modal } from "components/molecules/Modal";
 
@@ -51,7 +52,6 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
     formState,
     reset,
     watch,
-    setValue,
   } = useForm<WorldScheduleEvent>({
     mode: "onSubmit",
     reValidateMode: "onChange",
@@ -65,10 +65,16 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
 
   // When we're creating a new event it will default to
   // being on the space that triggered this modal.
-  const { findVenueInRelatedVenues, relatedVenues } = useRelatedVenues();
-  const eventSpace = findVenueInRelatedVenues({ spaceId: eventSpaceId });
+  const { userId } = useUser();
+  const { ownedVenues, isLoading: isSpacesLoading } = useOwnedVenues({
+    worldId,
+    userId,
+  });
+  const [selectedSpace, setSelectedSpace] = useState<SpaceType>();
 
-  const spacesMap = relatedVenues.map((venue) => ({
+  const eventSpace = ownedVenues.find(({ id }) => id === eventSpaceId);
+
+  const spacesMap: SpaceType[] = ownedVenues.map((venue) => ({
     id: venue.id,
     name: venue.name,
   }));
@@ -89,11 +95,11 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
         host: event.host,
       });
     }
-  }, [event, reset, eventSpaceId]);
+  }, [event, reset, eventSpaceId, values.space]);
 
   const onUpdateEvent = useCallback(
     async (data: WorldScheduleEvent) => {
-      const spaceId = data.spaceId ?? eventSpaceId;
+      const spaceId = selectedSpace?.id ?? eventSpaceId;
       const eventWorldId = eventSpace?.worldId ?? worldId;
 
       if (!spaceId || !eventWorldId) {
@@ -123,7 +129,14 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
       }
       onHide();
     },
-    [eventSpaceId, eventSpace?.worldId, worldId, onHide, event?.id]
+    [
+      selectedSpace?.id,
+      eventSpaceId,
+      eventSpace?.worldId,
+      worldId,
+      onHide,
+      event.id,
+    ]
   );
 
   const showDeleteButton = event?.id;
@@ -139,16 +152,19 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
         return (
           <div
             key={space.id}
-            ref={register}
-            onClick={() => setValue("space", space)}
             className="SpacesDropdown__item"
+            onClick={() => setSelectedSpace(space)}
           >
             {space.name}
           </div>
         );
       }) ?? [],
-    [register, setValue, spacesMap]
+    [spacesMap]
   );
+
+  if (isSpacesLoading) {
+    return null;
+  }
 
   return (
     <Modal show={show} onHide={onHide} centered autoHide>
@@ -156,14 +172,13 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
         <h2>Add experience</h2>
         <form className="form" onSubmit={handleSubmit(onUpdateEvent)}>
           <p>Your experience is in {eventSpace?.name}</p>
-
           {!eventSpace?.name && (
             <div className="TimingEventModal__input-group">
-              <Dropdown title={values.spaceName ?? "None"}>
+              <Dropdown title={selectedSpace?.name ?? "None"}>
                 {renderedSpaceIds}
               </Dropdown>
-              {errors.spaceId && (
-                <span className="input-error">{errors.spaceId.message}</span>
+              {errors.space && (
+                <span className="input-error">{errors.space.message}</span>
               )}
             </div>
           )}
@@ -225,7 +240,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                 <input
                   type="date"
                   min={dayjs().format(DAYJS_INPUT_DATE_FORMAT)}
-                  name="start_date"
+                  name="startDate"
                   className="TimingEventModal__input-group__modal-input"
                   ref={register}
                 />
@@ -233,44 +248,11 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
               <div>
                 <input
                   type="time"
-                  name="start_time"
+                  name="startTime"
                   className="TimingEventModal__input-group__modal-input"
                   ref={register}
                 />
               </div>
-            </div>
-
-            <div className="TimingEventModal__input-group">
-              <label htmlFor="date">
-                Start date and time (use your own time zone; it will be
-                automatically localized)
-              </label>
-              <div className="TimingEventModal__container">
-                {/*
-                  @debt These wrapper divs are here to unmuddle some precedance issues
-                  in the CSS that causes the inputs to have 100% width. This
-                  form is going to have some layout changes applied that should
-                  resolve this..
-                  */}
-                <div>
-                  <input
-                    type="date"
-                    min={dayjs().format(DAYJS_INPUT_DATE_FORMAT)}
-                    name="startDate"
-                    className="TimingEventModal__input-group__modal-input"
-                    ref={register}
-                  />
-                </div>
-                <div>
-                  <input
-                    type="time"
-                    name="startTime"
-                    className="TimingEventModal__input-group__modal-input"
-                    ref={register}
-                  />
-                </div>
-              </div>
-
               <div className="TimingEventModal__container">
                 {errors.startDate && (
                   <span className="input-error">
