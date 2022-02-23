@@ -138,10 +138,9 @@ export const ReactionsBar: React.FC<ReactionsBarProps> = ({
         <div className="ReactionsBar__shout-container">
           <form onSubmit={handleSubmit(onSubmit)} className="shout-form">
             <input
-              name="text"
               className="text"
               placeholder="Shout out to the crowd"
-              ref={register({ required: true })}
+              {...register("text", { required: true })}
               disabled={isShoutSent}
               autoComplete="off"
             />

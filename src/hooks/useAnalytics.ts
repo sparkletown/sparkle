@@ -100,9 +100,9 @@ const warnOnce = (() => {
   };
 })();
 
-export const useAnalytics: (
-  options: UseAnalyticsOptions
-) => UseAnalyticsResult = ({ venue: space }) => {
+export const useAnalytics = ({
+  venue: space,
+}: UseAnalyticsOptions): UseAnalyticsResult => {
   const { user } = useLoginCheck();
   const { world, isLoaded: isWorldLoaded } = useWorldById(space?.worldId);
   const email = user?.email;

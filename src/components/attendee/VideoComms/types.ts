@@ -70,6 +70,7 @@ export interface JoinChannelOptions {
 type JoinChannel = (options: JoinChannelOptions) => void;
 type Disconnect = () => void;
 type ShareScreen = () => void;
+type StopShareScreen = () => void;
 
 export interface VideoCommsContextType {
   channelId?: ChannelId;
@@ -77,6 +78,7 @@ export interface VideoCommsContextType {
   joinChannel: JoinChannel;
   disconnect: Disconnect;
   shareScreen: ShareScreen;
+  stopShareScreen: StopShareScreen;
 
   localParticipant?: Participant;
   remoteParticipants: Participant[];

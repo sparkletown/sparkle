@@ -1,7 +1,8 @@
-import React, { useEffect, useMemo } from "react";
-import { useForm } from "react-hook-form";
+import React, { useMemo } from "react";
+import { useFieldArray, useForm, useFormState } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 import { updateWorldAdvancedSettings, World } from "api/world";
 
@@ -13,7 +14,6 @@ import { shouldScheduleBeShown } from "utils/schedule";
 
 import { emptyObjectSchema } from "forms/emptyObjectSchema";
 
-import { useArray } from "hooks/useArray";
 import { useUser } from "hooks/useUser";
 
 import { AdminSidebarButtons } from "components/organisms/AdminVenueView/components/AdminSidebarButtons";
@@ -42,15 +42,6 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
   const worldId = world.id;
   const { user } = useUser();
 
-  const {
-    items: userStatuses,
-    add: addStatus,
-    set: setStatus,
-    remove: removeStatus,
-    isDirty: isDirtyStatuses,
-    clearDirty: clearDirtyStatuses,
-  } = useArray<UserStatus>(world.userStatuses);
-
   const defaultValues = useMemo<WorldAdvancedFormInput>(
     () => ({
       attendeesTitle: world.attendeesTitle,
@@ -59,84 +50,63 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
       showRadio: world.showRadio,
       showSchedule: shouldScheduleBeShown(world),
       showUserStatus: world.showUserStatus,
-      userStatuses: userStatuses,
+      userStatuses: world.userStatuses,
       hasSocialLoginEnabled: world.hasSocialLoginEnabled,
     }),
-    [world, userStatuses]
+    [world]
   );
 
   const {
-    getValues,
     reset,
     watch,
-    formState: { dirty, isSubmitting },
-    errors,
+    control,
     handleSubmit,
     register,
   } = useForm<WorldAdvancedFormInput>({
     mode: "onSubmit",
     reValidateMode: "onChange",
-    validationSchema: emptyObjectSchema,
+    resolver: yupResolver(emptyObjectSchema),
     defaultValues,
   });
+
+  const {
+    fields: userStatuses,
+    append: appendStatus,
+    update: updateStatus,
+    remove: removeStatus,
+  } = useFieldArray({ control, name: "userStatuses", shouldUnregister: true });
+
+  const handleAddStatus = () => {
+    appendStatus({ status: "", color: "" });
+  };
+
+  const { isDirty, isSubmitting, errors } = useFormState({ control });
 
   const values = watch();
 
   const [{ error, loading: isSaving }, submit] = useAsyncFn(async () => {
     if (!values || !user || !worldId) return;
 
-    const data = {
-      attendeesTitle: values.attendeesTitle,
-      radioStation: values.radioStation,
-      showBadges: values.showBadges,
-      showRadio: values.showRadio,
-      showSchedule: values.showSchedule,
-      showUserStatus: values.showUserStatus,
-      hasSocialLoginEnabled: values.hasSocialLoginEnabled,
-      userStatuses,
-    };
+    await updateWorldAdvancedSettings(withId(values, worldId), user);
 
-    await updateWorldAdvancedSettings(withId(data, worldId), user);
-
-    reset(data);
-    clearDirtyStatuses();
-  }, [worldId, user, values, reset, userStatuses, clearDirtyStatuses]);
+    reset(values);
+  }, [worldId, user, values, reset]);
 
   const isSaveLoading = isSubmitting || isSaving;
-  const isSaveDisabled = !(
-    dirty ||
-    isSaving ||
-    isSubmitting ||
-    isDirtyStatuses
-  );
-
-  useEffect(() => {
-    const values: Partial<WorldAdvancedFormInput> = getValues();
-    reset({
-      attendeesTitle: values.attendeesTitle,
-      radioStation: values.radioStation,
-      showBadges: values.showBadges,
-      showRadio: values.showRadio,
-      showSchedule: values.showSchedule,
-      showUserStatus: values.showUserStatus,
-      hasSocialLoginEnabled: values.hasSocialLoginEnabled,
-      userStatuses,
-    });
-  }, [userStatuses, getValues, reset]);
+  const isSaveDisabled = !(isDirty || isSaving || isSubmitting);
 
   const renderedUserStatuses = useMemo(
     () =>
       userStatuses.map((userStatus, index) => {
         const key = `${userStatus}-${index}`;
-        const name = `userStatuses[${index}]`;
 
-        const handleChange = (item: UserStatus) => setStatus({ index, item });
-        const handleRemove = () => removeStatus({ index });
+        const handleChange = (item: UserStatus) => updateStatus(index, item);
+        const handleRemove = () => removeStatus(index);
 
         return (
           <AdminUserStatusInput
             key={key}
-            name={name}
+            index={index}
             item={userStatuses[index]}
             register={register}
             onChange={handleChange}
@@ -144,7 +114,7 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
           />
         );
       }),
-    [userStatuses, setStatus, removeStatus, register]
+    [userStatuses, updateStatus, removeStatus, register]
   );
 
   return (
@@ -156,34 +126,34 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
           withLabel
         >
           <AdminInput
-            name="attendeesTitle"
             autoComplete="off"
             placeholder="Attendees title"
             errors={errors}
+            name="attendeesTitle"
             register={register}
           />
         </AdminSection>
 
         <AdminSection>
           <AdminCheckbox
-            name="showBadges"
             label="Show badges"
             variant="toggler"
+            name="showBadges"
             register={register}
           />
         </AdminSection>
 
         <AdminSection>
           <AdminCheckbox
-            name="showRadio"
             label="Enable space radio"
             variant="toggler"
             errors={errors}
+            name="showRadio"
             register={register}
           />
           <AdminInput
-            name="radioStation"
             errors={errors}
+            name="radioStation"
             register={register}
             label="Radio station stream URL:"
             hidden={!values.showRadio}
@@ -192,35 +162,39 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
 
         <AdminSection>
           <AdminCheckbox
-            name="hasSocialLoginEnabled"
             label="Social Login"
             subtext="Users can login using Google/Facebook/Okta social networks"
             variant="toggler"
             errors={errors}
+            name="hasSocialLoginEnabled"
             register={register}
           />
         </AdminSection>
 
         <AdminSection>
           <AdminCheckbox
-            name="showSchedule"
             label="Show schedule"
             variant="toggler"
+            name="showSchedule"
             register={register}
           />
         </AdminSection>
 
         <AdminSection>
           <AdminCheckbox
-            name="showUserStatus"
             label="Show user status"
             variant="toggler"
+            name="showUserStatus"
             register={register}
           />
           {values.showUserStatus && (
             <>
               {renderedUserStatuses}
-              <ButtonNG variant="primary" iconName={faPlus} onClick={addStatus}>
+              <ButtonNG
+                variant="primary"
+                iconName={faPlus}
+                onClick={handleAddStatus}
+              >
                 Add a status
               </ButtonNG>
             </>

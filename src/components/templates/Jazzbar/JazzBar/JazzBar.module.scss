@@ -1,0 +1,15 @@
+@use "scss/attendee/font";
+@use "scss/attendee/layout";
+@use "scss/attendee/space";
+
+.componentSpaceInfo {
+  text-align: center;
+  padding: 0 space.empty(1);
+  margin: 0 auto;
+  width: 100%;
+  max-width: layout.$w-space-info;
+  h1 {
+    font-size: font.$size--xl;
+    font-weight: font.$weight--md;
+  }
+}

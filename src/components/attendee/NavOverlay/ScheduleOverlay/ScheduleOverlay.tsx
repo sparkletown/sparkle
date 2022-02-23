@@ -31,8 +31,7 @@ import {
   formatTimeLocalised,
 } from "utils/time";
 
-import { useSpaceParams } from "hooks/spaces/useSpaceParams";
-import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
+import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 import useVenueScheduleEvents from "hooks/useVenueScheduleEvents";
@@ -44,8 +43,7 @@ export const ScheduleOverlay: React.FC = () => {
   const { userWithId } = useUser();
   const userEventIds =
     userWithId?.myPersonalizedSchedule ?? emptyPersonalizedSchedule;
-  const { worldSlug, spaceSlug } = useSpaceParams();
-  const { space } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
+  const { space } = useWorldAndSpaceByParams();
 
   const {
     isShown: showBookmarkedEvents,

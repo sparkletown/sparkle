@@ -1,5 +1,5 @@
 import React from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useFormState } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn } from "react-use";
 import { useBackgroundGradient } from "components/attendee/useBackgroundGradient";
@@ -45,7 +45,7 @@ export const Profile: React.FC = () => {
   const {
     register,
     handleSubmit,
-    errors,
+    control,
     formState,
     setValue,
     watch,
@@ -56,6 +56,8 @@ export const Profile: React.FC = () => {
       pictureUrl: userWithId?.pictureUrl,
     },
   });
+
+  const { errors } = useFormState({ control });
 
   const [{ loading: isUpdating, error: httpError }, onSubmit] = useAsyncFn(
     async (data: ProfileFormData) => {
@@ -92,10 +94,9 @@ export const Profile: React.FC = () => {
           <div className="input-group profile-form">
             {/* @debt refactor this to use InputField */}
             <input
-              name="partyName"
               className={FORMS.input}
               placeholder="Your display name"
-              ref={register({
+              {...register("partyName", {
                 required: true,
                 maxLength: DISPLAY_NAME_MAX_CHAR_COUNT,
               })}

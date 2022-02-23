@@ -1,6 +1,7 @@
 export const KEY_INVALID_PREFIX = "INVALID-FIRESTORE-KEY-";
 
 // constants for the collections, just in case some get renamed (e.g. venues->spaces)
+export const COLLECTION_EXPERIMENTS = "experiments";
 export const COLLECTION_ROLES = "roles";
 export const COLLECTION_SECTIONS = "sections";
 export const COLLECTION_SETTINGS = "settings";

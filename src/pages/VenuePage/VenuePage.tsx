@@ -1,7 +1,6 @@
 import React, { lazy, Suspense, useEffect, useMemo } from "react";
 import { Redirect } from "react-router-dom";
 import { useTitle } from "react-use";
-import { VideoCommsProvider } from "components/attendee/VideoComms/VideoCommsProvider";
 
 import {
   ACCOUNT_PROFILE_VENUE_PARAM_URL,
@@ -72,6 +71,9 @@ type VenuePageProps = SpaceSlugLocation & {
   userId?: UserId;
   profile?: Profile;
   userLocation?: UserLocation;
+  setBackButtonSpace: React.Dispatch<
+    React.SetStateAction<SpaceWithId | undefined>
+  >;
 };
 
 export const VenuePage: React.FC<VenuePageProps> = ({
@@ -85,6 +87,7 @@ export const VenuePage: React.FC<VenuePageProps> = ({
   userId,
   profile,
   userLocation,
+  setBackButtonSpace,
 }) => {
   const analytics = useAnalytics({ venue: space });
 
@@ -131,7 +134,18 @@ export const VenuePage: React.FC<VenuePageProps> = ({
     });
   }, LOC_UPDATE_FREQ_MS);
 
-  const { sovereignVenueId, sovereignVenueDescendantIds } = useRelatedVenues();
+  const {
+    sovereignVenueId,
+    sovereignVenueDescendantIds,
+    parentVenue,
+  } = useRelatedVenues({ currentVenueId: space.id });
+
+  useEffect(() => {
+    setBackButtonSpace(parentVenue);
+    return () => {
+      setBackButtonSpace(undefined);
+    };
+  });
 
   // @debt refactor how user location updates works here to encapsulate in a hook or similar?
   useEffect(() => {
@@ -267,9 +281,7 @@ export const VenuePage: React.FC<VenuePageProps> = ({
 
   return (
     <Suspense fallback={<LoadingPage />}>
-      <VideoCommsProvider>
-        <TemplateWrapper venue={space} />
-      </VideoCommsProvider>
+      <TemplateWrapper venue={space} />
     </Suspense>
   );
 };

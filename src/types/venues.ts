@@ -34,6 +34,7 @@ type GenericVenueTemplates = Exclude<
   | VenueTemplate.themecamp
   | VenueTemplate.auditorium
   | VenueTemplate.viewingwindow
+  | VenueTemplate.experiment
 >;
 
 // We shouldn't include 'Venue' here, that is what 'GenericVenue' is for (which correctly narrows the types; these should remain alphabetically sorted, except with GenericVenue at the top)
@@ -45,7 +46,8 @@ export type AnyVenue =
   | JazzbarVenue
   | PartyMapVenue
   | PosterPageVenue
-  | ViewingWindowVenue;
+  | ViewingWindowVenue
+  | ExperimentalVenue;
 
 // --- VENUE V2
 export interface Venue_v2 extends Venue_v2_Base, VenueAdvancedConfig {}
@@ -206,6 +208,10 @@ export interface JazzbarVenue extends BaseVenue {
     icon: string;
   };
   enableJukebox?: boolean;
+}
+
+export interface ExperimentalVenue extends BaseVenue {
+  template: VenueTemplate.experiment;
 }
 
 export interface EmbeddableVenue extends BaseVenue {

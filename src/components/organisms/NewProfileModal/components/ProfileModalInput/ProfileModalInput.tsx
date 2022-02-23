@@ -1,8 +1,11 @@
 import React from "react";
-import { FieldError } from "react-hook-form";
+import { FieldError, RegisterOptions, UseFormRegister } from "react-hook-form";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import classNames from "classnames";
 
+import { ALWAYS_EMPTY_OBJECT } from "settings";
+
+import { UserProfileModalFormData } from "types/profileModal";
 import { ContainerClassName } from "types/utility";
 
 import { InputField } from "components/atoms/InputField";
@@ -15,12 +18,21 @@ export interface ProfileModalInputProps
   error?: FieldError;
   notCondensed?: boolean;
   iconEnd?: IconProp | JSX.Element;
+  register: UseFormRegister<UserProfileModalFormData>;
+  name: string;
+  rules?: RegisterOptions;
 }
 
-export const ProfileModalInput = React.forwardRef<
-  HTMLInputElement,
-  ProfileModalInputProps
->(({ error, containerClassName, notCondensed, iconEnd, ...rest }, ref) => {
+export const ProfileModalInput: React.FC<ProfileModalInputProps> = ({
+  error,
+  containerClassName,
+  notCondensed,
+  iconEnd,
+  register,
+  name,
+  rules = ALWAYS_EMPTY_OBJECT,
+  ...rest
+}) => {
   return (
     <InputField
       error={error}
@@ -33,11 +45,10 @@ export const ProfileModalInput = React.forwardRef<
         "ProfileModalInput__error-message--condensed": !notCondensed,
       })}
       iconEndClassName="ProfileModalInput__icon-end"
-      //eslint-disable-next-line @typescript-eslint/no-explicit-any
-      ref={ref as any}
+      register={register}
+      name={name}
+      rules={rules}
       {...rest}
     />
   );
-});
-
-ProfileModalInput.displayName = "ProfileModalInput";
+};

@@ -1,6 +1,8 @@
 import React, { useCallback } from "react";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
+import { ALWAYS_NOOP_FUNCTION } from "settings";
+
 import { InputField } from "components/atoms/InputField";
 
 import "./PosterHallSearch.scss";
@@ -30,6 +32,7 @@ export const PosterHallSearch: React.FC<PosterHallSearchProps> = ({
         placeholder="Search Posters/Demos"
         value={searchInputValue}
         onChange={onInputFieldChange}
+        register={ALWAYS_NOOP_FUNCTION}
       />
     </div>
   );

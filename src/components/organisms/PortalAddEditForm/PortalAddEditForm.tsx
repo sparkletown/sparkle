@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useFormState } from "react-hook-form";
 import { useAsyncFn, useToggle } from "react-use";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 import {
   DEFAULT_PORTAL_INPUT,
@@ -89,21 +90,22 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
     register,
     getValues,
     handleSubmit,
-    errors,
     setValue,
     reset,
+    control,
   } = useForm({
     reValidateMode: "onChange",
-
-    validationSchema: roomSchema,
+    resolver: yupResolver(roomSchema),
     defaultValues,
   });
+
+  const { errors } = useFormState({ control });
 
   useEffect(() => reset(defaultValues), [defaultValues, reset]);
 
   const changeRoomImageUrl = useCallback(
     (val: string) => {
-      setValue("image_url", val, false);
+      setValue("image_url", val, { shouldValidate: false });
     },
     [setValue]
   );
@@ -208,12 +210,12 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
     >
       <div className="PortalAddEditForm__title">{title}</div>
       <AdminInput
-        name="title"
         type="text"
         autoComplete="off"
         placeholder={`${SPACE_TAXON.capital} name`}
         label="Name (required)"
         errors={errors}
+        name="title"
         register={register}
         disabled={isLoading}
       />
@@ -272,8 +274,8 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
 
       {isOverrideAppearanceEnabled && (
         <AdminCheckbox
-          name="isEnabled"
           register={register}
+          name="isEnabled"
           variant="toggler"
           label="Portal is visible"
         />
