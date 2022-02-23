@@ -5,12 +5,7 @@ import { httpsCallable, HttpsCallableResult } from "firebase/functions";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
 import { AuditoriumSeatedUser, AuditoriumSectionPath } from "types/auditorium";
-import {
-  CompatCollectionReference,
-  CompatDocumentData,
-  CompatFirestoreDataConverter,
-  CompatQueryDocumentSnapshot,
-} from "types/Firestore";
+import { CompatCollectionReference, CompatDocumentData } from "types/Firestore";
 import { GridPosition } from "types/grid";
 import { UserId } from "types/id";
 import { DisplayUser, TableSeatedUser } from "types/User";
@@ -18,7 +13,7 @@ import { AnyVenue, VenueTablePath } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
 
 import { pickDisplayUserFromUser } from "utils/chat";
-import { WithId, withId } from "utils/id";
+import { WithId } from "utils/id";
 
 export const getVenueCollectionRef: () => CompatCollectionReference<CompatDocumentData> = () =>
   firebase.firestore().collection("venues");
@@ -66,29 +61,6 @@ export const setVenueLiveStatus = async ({
     .finally(onFinish);
 };
 
-/**
- * Convert Venue objects between the app/firestore formats (@debt:, including validation).
- */
-export const anyVenueWithIdConverter: CompatFirestoreDataConverter<
-  WithId<AnyVenue>
-> = {
-  toFirestore: (anyVenue: WithId<AnyVenue>): CompatDocumentData => {
-    // @debt Properly check/validate this data
-    //   return AnyVenueSchema.validateSync(anyVenue);
-
-    return anyVenue;
-  },
-
-  fromFirestore: (
-    snapshot: CompatQueryDocumentSnapshot<AnyVenue>
-  ): WithId<AnyVenue> => {
-    // @debt Properly check/validate this data rather than using 'as'
-    //   return withId(AnyVenueSchema.validateSync(snapshot.data(), snapshot.id);
-
-    return withId(snapshot.data() as AnyVenue, snapshot.id);
-  },
-};
-
 export const updateIframeUrl = async (iframeUrl: string, venueId?: string) => {
   if (!venueId) return;
 
@@ -117,8 +89,7 @@ export const updateVenueNG = async (venue: VenueInputForm, userId: UserId) => {
       `users/${userId}/venues/${venue.id}/bannerImage.${fileExtension}`
     );
     await uploadBytes(uploadFileRef, bannerFile);
-    const downloadUrl = await getDownloadURL(uploadFileRef);
-    venue.bannerImageUrl = downloadUrl;
+    venue.bannerImageUrl = await getDownloadURL(uploadFileRef);
   }
 
   if (logoFile) {
@@ -128,8 +99,7 @@ export const updateVenueNG = async (venue: VenueInputForm, userId: UserId) => {
       `users/${userId}/venues/${venue.id}/logoImage.${fileExtension}`
     );
     await uploadBytes(uploadFileRef, logoFile);
-    const downloadUrl = await getDownloadURL(uploadFileRef);
-    venue.logoImageUrl = downloadUrl;
+    venue.logoImageUrl = await getDownloadURL(uploadFileRef);
   }
 
   const updateResponse = await httpsCallable(

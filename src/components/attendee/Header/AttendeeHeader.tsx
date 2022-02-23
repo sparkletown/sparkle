@@ -1,11 +1,11 @@
-import { useCallback } from "react";
+import React, { useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { ATTENDEE_INSIDE_URL, SPACE_TAXON } from "settings";
 
-import { BaseVenue } from "types/venues";
+import { SpaceWithId } from "types/id";
 
 import { generateUrl } from "utils/url";
 
@@ -18,7 +18,7 @@ import { NavOverlay } from "../NavOverlay/NavOverlay";
 import CN from "./AttendeeHeader.module.scss";
 
 interface AttendeeHeaderProps {
-  backButtonSpace?: BaseVenue;
+  backButtonSpace?: SpaceWithId;
 }
 
 export const AttendeeHeader: React.FC<AttendeeHeaderProps> = ({

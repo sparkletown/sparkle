@@ -21,7 +21,7 @@ import {
   WorldAndSpaceSlugLocation,
   WorldWithId,
 } from "types/id";
-import { VenueAccessMode } from "types/VenueAcccess";
+import { VenueAccessMode } from "types/VenueAccessMode";
 
 import { eventEndTime, eventStartTime, hasEventFinished } from "utils/event";
 import { formatTimeLocalised, getTimeBeforeParty } from "utils/time";

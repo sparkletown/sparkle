@@ -27,6 +27,7 @@ export interface QuestionsFormData {
   islandCompanion: string;
   gratefulFor: string;
   likeAboutParties: string;
+
   [key: string]: string;
 }
 

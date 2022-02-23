@@ -3,7 +3,7 @@ import { useForm, useFormState } from "react-hook-form";
 import firebase from "firebase/compat/app";
 
 import { SpaceWithId, WorldWithId } from "types/id";
-import { VenueAccessMode } from "types/VenueAcccess";
+import { VenueAccessMode } from "types/VenueAccessMode";
 
 import { errorMessage, errorStatus } from "utils/error";
 

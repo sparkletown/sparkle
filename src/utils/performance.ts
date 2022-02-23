@@ -1,10 +1,7 @@
 import { FIREBASE } from "core/firebase";
 import { getPerformance, trace } from "firebase/performance";
 
-export {
-  unstable_trace as traceReactScheduler,
-  unstable_wrap as wrapReactScheduler,
-} from "scheduler/tracing";
+export { unstable_trace as traceReactScheduler } from "scheduler/tracing";
 
 /**
  * A centralised location to track all custom code trace names used within the app.
@@ -17,11 +14,11 @@ export {
  * @see createPerformanceTrace
  * @see https://firebase.google.com/docs/perf-mon/custom-code-traces?platform=web#add-custom-code-traces
  */
-export enum PerformanceTrace {
+enum PerformanceTrace {
   initStripeLoad = "INIT_STRIPE_LOAD",
 }
 
-export type CreatePerformanceTraceOptions = {
+type CreatePerformanceTraceOptions = {
   /**
    * Whether the trace should be started as soon as its created.
    */
@@ -81,7 +78,7 @@ export type CreatePerformanceTraceOptions = {
  * @see https://firebase.google.com/docs/reference/js/firebase.performance.Performance#trace
  * @see https://firebase.google.com/docs/reference/js/firebase.performance.Trace
  */
-export const createPerformanceTrace = (
+const createPerformanceTrace = (
   traceName: PerformanceTrace | string,
   options?: CreatePerformanceTraceOptions
 ) => {
@@ -113,7 +110,7 @@ export const createPerformanceTrace = (
   return tracer;
 };
 
-export interface TracePromiseOptions extends CreatePerformanceTraceOptions {
+interface TracePromiseOptions extends CreatePerformanceTraceOptions {
   withDebugLog?: boolean;
   debugLogFunc?: (...args: unknown[]) => void;
 }

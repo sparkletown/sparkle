@@ -5,9 +5,9 @@ import { resolve } from "path";
 
 import admin from "firebase-admin";
 
-import "firebase/compat/firestore";
+import { VenueAccessMode } from "types/VenueAccessMode";
 
-import { VenueAccessMode } from "../src/types/VenueAcccess";
+import "firebase/compat/firestore";
 
 import { initFirebaseAdminApp, makeScriptUsage } from "./lib/helpers";
 

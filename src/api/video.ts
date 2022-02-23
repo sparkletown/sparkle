@@ -6,12 +6,12 @@ export interface GetTwilioVideoTokenProps {
   userId: string;
   roomName: string;
 }
+
 export interface TwilioRequestVideoTokenProps {
   identity: string;
   room: string;
 }
 
-export type VideoToken = string;
 type TwilioResponseProps = {
   token: string;
 };

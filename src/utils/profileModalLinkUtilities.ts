@@ -61,7 +61,7 @@ enum ProfileModalLinkType {
   Mail = "Mail",
 }
 
-export const profileModalGenericLinkIcon = faLink;
+const profileModalGenericLinkIcon = faLink;
 const profileModalLinkTypesIcons: Record<
   ProfileModalLinkType,
   IconDefinition
@@ -110,10 +110,7 @@ const profileModalLinkTypesRegexes: Record<ProfileModalLinkType, RegExp> = {
   [ProfileModalLinkType.Reddit]: buildMatchingRegex("reddit.com", "redd.it"),
 };
 
-export const profileModalProfileNameRegex: Record<
-  ProfileModalLinkType,
-  RegExp
-> = {
+const profileModalProfileNameRegex: Record<ProfileModalLinkType, RegExp> = {
   [ProfileModalLinkType.Mail]:
     profileModalLinkTypesRegexes[ProfileModalLinkType.Mail],
   [ProfileModalLinkType.Instagram]: /(?:https?:)?\/\/(?:www\.)?(?:instagram\.com|instagr\.am)\/([A-Za-z0-9_](?:(?:[A-Za-z0-9_]|\.(?!\.)){0,28}[A-Za-z0-9_])?)/,

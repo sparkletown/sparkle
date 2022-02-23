@@ -1,11 +1,8 @@
 import firebase from "firebase/compat/app";
 import {
   DocumentData,
-  FirestoreDataConverter,
-  Query,
   QueryDocumentSnapshot,
   SnapshotOptions,
-  WriteBatch,
 } from "firebase/firestore";
 
 import { Settings } from "./settings";
@@ -46,31 +43,18 @@ export type InterimDocumentData = CompatDocumentData | DocumentData;
 export type CompatFirestoreDataConverter<
   T
 > = firebase.firestore.FirestoreDataConverter<T>;
-export type InterimFirestoreDataConverter<T> =
-  | CompatFirestoreDataConverter<T>
-  | FirestoreDataConverter<T>;
 
 export type CompatQueryDocumentSnapshot<
   T
 > = firebase.firestore.QueryDocumentSnapshot<T>;
+
 export type InterimQueryDocumentSnapshot<T> =
   | CompatQueryDocumentSnapshot<T>
   | QueryDocumentSnapshot<T>;
 
-export type CompatQuery<T> = firebase.firestore.Query<T>;
-export type InterimQuery<T> = CompatQuery<T> | Query<T>;
-
-export type CompatCreated = firebase.firestore.SnapshotOptions;
-export type InterimSnapshotOptions = CompatCreated | SnapshotOptions;
-
-export type CompatWriteBatch = firebase.firestore.WriteBatch;
-export type InterimWriteBatch = CompatWriteBatch | WriteBatch;
-
-export type CompatDocumentReference<
-  T
-> = firebase.firestore.DocumentReference<T>;
-export type CompatDocumentSnapshot<T> = firebase.firestore.DocumentSnapshot<T>;
-export type CompatTimestamp = firebase.firestore.Timestamp;
+export type InterimSnapshotOptions =
+  | firebase.firestore.SnapshotOptions
+  | SnapshotOptions;
 
 // RE-EXPORT END
 
@@ -79,11 +63,7 @@ export interface Experience {
   tables: Record<string, Record<string, Table>>;
 }
 
-export interface UserVisit {
-  timeSpent: number;
-}
-
-export type ValidFirestoreKeys = keyof FirestoreData | keyof FirestoreOrdered;
+type ValidFirestoreKeys = keyof FirestoreData | keyof FirestoreOrdered;
 
 export interface Firestore {
   data: FirestoreData;
@@ -91,14 +71,14 @@ export interface Firestore {
   status: FirestoreStatus;
 }
 
-export interface FirestoreStatus {
+interface FirestoreStatus {
   requesting: Record<ValidFirestoreKeys, boolean>;
   requested: Record<ValidFirestoreKeys, boolean>;
   timestamps: Record<ValidFirestoreKeys, number>;
 }
 
 // note: these entries should be sorted alphabetically
-export interface FirestoreData {
+interface FirestoreData {
   adminRole?: AdminRole;
   allowAllRoles?: Record<string, Role>;
   currentVenue?: AnyVenue;
@@ -126,7 +106,7 @@ export interface FirestoreData {
 }
 
 // note: these entries should be sorted alphabetically
-export interface FirestoreOrdered {
+interface FirestoreOrdered {
   currentVenue?: WithId<AnyVenue>[];
   currentVenueEventsNG?: WorldEvent[];
   currentVenueNG?: WithId<AnyVenue>[];
