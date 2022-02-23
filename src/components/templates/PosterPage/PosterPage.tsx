@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 import { faStop, faTv } from "@fortawesome/free-solid-svg-icons";
+import { VideoCommsParticipant } from "components/attendee/VideoComms/VideoCommsParticipant";
 
 import { IFRAME_ALLOW, POSTERPAGE_MAX_VIDEO_PARTICIPANTS } from "settings";
 
@@ -8,8 +9,6 @@ import { PosterPageVenue } from "types/venues";
 import { WithId } from "utils/id";
 
 import { useShowHide } from "hooks/useShowHide";
-
-import { VideoParticipant } from "components/organisms/Video";
 
 import { UserList } from "components/molecules/UserList";
 
@@ -53,19 +52,19 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
 
     becomePassiveParticipant,
     becomeActiveParticipant,
+    localParticipant,
   } = usePosterVideo(venueId);
 
   const videoParticipants = useMemo(
     () =>
       activeParticipants.map(({ participant, user }, index) => (
-        <VideoParticipant
-          key={participant.identity ?? `participant-${index}`}
+        <VideoCommsParticipant
+          key={participant.sparkleId ?? `participant-${index}`}
           participant={participant}
-          participantUser={user}
-          containerClassName="PosterPage__video-participant"
+          isLocal={participant.twilioId === localParticipant?.twilioId}
         />
       )),
-    [activeParticipants]
+    [activeParticipants, localParticipant?.twilioId]
   );
 
   const renderedCategories = useMemo(

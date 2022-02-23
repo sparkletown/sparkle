@@ -1,1 +1,0 @@
-export { VideoParticipant } from "./VideoParticipant";

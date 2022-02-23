@@ -1,4 +1,4 @@
-import Video from "twilio-video";
+import { Participant } from "components/attendee/VideoComms/types";
 
 import { DisplayUser } from "types/User";
 
@@ -35,9 +35,7 @@ export interface Room extends PortalBox {
   spaceId?: string;
 }
 
-export type ParticipantWithUser<
-  T extends Video.Participant = Video.Participant
-> = {
+export type ParticipantWithUser<T extends Participant = Participant> = {
   participant: T;
   user: WithId<DisplayUser>;
 };
