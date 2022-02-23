@@ -1,32 +1,32 @@
 import { useMemo } from "react";
+import { useFirestore, useFirestoreDocData } from "reactfire";
 
 import { COLLECTION_USERS } from "settings";
 
-import { LoadStatus } from "types/fire";
-import { UserId, UserWithId } from "types/id";
+import { User } from "types/User";
 
-import { convertToFirestoreKey } from "utils/id";
-
-import { useRefiDocument } from "hooks/fire/useRefiDocument";
+import { WithId } from "utils/id";
 
 type UseProfileById = (options: {
-  userId: UserId;
-}) => LoadStatus & {
-  profile?: UserWithId;
-  userId?: UserId;
+  userId: string;
+}) => {
+  isLoading: boolean;
+  isLoaded: boolean;
+  status: "success" | "loading" | "error";
+  error: Error | undefined;
+  profile?: WithId<User>;
+  userId?: string;
+  isTester: boolean;
 };
 
 export const useProfileById: UseProfileById = ({ userId }) => {
-  const {
-    status,
-    data: profile,
-    error,
-    isLoading,
-    isLoaded,
-  } = useRefiDocument<UserWithId>([
-    COLLECTION_USERS,
-    convertToFirestoreKey(userId),
-  ]);
+  const firestore = useFirestore();
+
+  const userRef = firestore.collection(COLLECTION_USERS).doc(userId);
+
+  const { data: profile, status, error } = useFirestoreDocData<WithId<User>>(
+    userRef
+  );
 
   const isTester = useMemo(() => !!profile?.tester, [profile?.tester]);
 
@@ -35,11 +35,11 @@ export const useProfileById: UseProfileById = ({ userId }) => {
       profile,
       userId,
       isTester,
-      isLoading,
-      isLoaded,
+      isLoading: status === "loading",
+      isLoaded: status === "success",
       status,
       error,
     }),
-    [profile, userId, isTester, isLoading, isLoaded, status, error]
+    [profile, userId, isTester, status, error]
   );
 };

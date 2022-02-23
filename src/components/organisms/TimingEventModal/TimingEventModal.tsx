@@ -135,7 +135,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
       eventSpace?.worldId,
       worldId,
       onHide,
-      event.id,
+      event?.id,
     ]
   );
 

@@ -123,6 +123,14 @@ $spacing: calc(1 * min(var(--section-seat-size), var(--section-seat-size-min)));
     user-select: none;
   }
 
+  &__user-avatar {
+    position: relative;
+    .UserReactions {
+      left: 75%;
+      top: -50%;
+    }
+  }
+
   &__seat {
     background-color: opaque-white(0.2);
 

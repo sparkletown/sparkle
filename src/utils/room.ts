@@ -19,7 +19,7 @@ export const logIfCannotFindExistingParticipant = (
 ) => {
   if (
     !existingParticipant.find(
-      (p) => p.participant.identity === participant.identity
+      (p) => p.participant.sparkleId === participant.identity
     )
   ) {
     // @debt Remove when root issue found and fixed

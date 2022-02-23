@@ -1,6 +1,7 @@
 import React, { lazy, Suspense, useEffect, useMemo } from "react";
 import { Redirect } from "react-router-dom";
 import { useTitle } from "react-use";
+import { VideoCommsProvider } from "components/attendee/VideoComms/VideoCommsProvider";
 
 import {
   ACCOUNT_PROFILE_VENUE_PARAM_URL,
@@ -269,7 +270,9 @@ export const VenuePage: React.FC<VenuePageProps> = ({
 
   return (
     <Suspense fallback={<LoadingPage />}>
-      <TemplateWrapper venue={space} />
+      <VideoCommsProvider>
+        <TemplateWrapper venue={space} />
+      </VideoCommsProvider>
     </Suspense>
   );
 };
