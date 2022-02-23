@@ -25,7 +25,7 @@ jobs:
           # git push origin master:sparkle5
 
           # git push origin master:sparkle6
-          git push origin master:sparkle7
+          # git push origin master:sparkle7
           git push origin master:sparkle8
           # git push origin master:sparkle9
           # git push origin master:sparkle10
