@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from "react";
 import { useAsync } from "react-use";
+import { useBackgroundGradient } from "components/attendee/useBackgroundGradient";
 
 import { fetchCustomAuthConfig } from "api/auth";
 
@@ -22,9 +23,7 @@ import { LoadingPage } from "components/molecules/LoadingPage";
 
 import SAMLLoginIcon from "assets/icons/saml-login-icon.png";
 
-// @debt move all styles into `Login.scss`;
-import "../Account.scss";
-import "./Login.scss";
+import styles from "./scss/Login.module.scss";
 
 export interface LoginProps {
   formType?: "initial" | "login" | "register" | "passwordReset";
@@ -46,6 +45,8 @@ export const Login: React.FC<LoginProps> = ({
   const { signInWithSAML, hasSamlAuthProviderId } = useSAMLSignIn(
     sovereignSpace?.samlAuthProviderId
   );
+
+  useBackgroundGradient();
 
   const {
     loading: isCustomAuthConfigLoading,
@@ -90,59 +91,61 @@ export const Login: React.FC<LoginProps> = ({
   if (isCustomAuthConfigLoading) return <LoadingPage />;
 
   return (
-    <div className="auth-container">
-      <div className="logo-container">
-        <img src="/sparkle-header.png" alt="" width="100%" />
-      </div>
-      <div className="auth-form-container">
-        {hasAlternativeLogins && (
-          <div className="Login__login-box">
-            <span>Quick log in with</span>
+    <div className={styles.container}>
+      <div className={styles.login}>
+        <div className={styles.logoContainer}>
+          <img src="/sparkle-header.png" alt="" width="100%" />
+        </div>
+        <div className="auth-form-container">
+          {hasAlternativeLogins && (
+            <div className="Login__login-box">
+              <span>Quick log in with</span>
 
-            <button className="Login__alternative-logins">
-              {hasCustomAuthConnect && (
-                <img
-                  className="Login__quick-login-icon"
-                  src={SAMLLoginIcon}
-                  onClick={signInWithCustomAuth}
-                  title={customAuthName}
-                  alt={customAuthName}
-                />
-              )}
-              {hasSamlAuthProviderId && (
-                <img
-                  className="Login__quick-login-icon"
-                  src={SAMLLoginIcon}
-                  onClick={signInWithSAML}
-                  title="SAML SSO login"
-                  alt="SAML SSO login"
-                />
-              )}
-            </button>
-          </div>
-        )}
-        {formToDisplay === "initial" && (
-          <InitialForm
-            displayLoginForm={displayLoginForm}
-            displayRegisterForm={displayRegisterForm}
-          />
-        )}
-        {formToDisplay === "register" && (
-          <RegisterForm
-            displayLoginForm={displayLoginForm}
-            displayPasswordResetForm={displayPasswordResetForm}
-          />
-        )}
-        {formToDisplay === "login" && (
-          <LoginForm
-            displayRegisterForm={displayRegisterForm}
-            displayPasswordResetForm={displayPasswordResetForm}
-            afterUserIsLoggedIn={afterUserIsLoggedIn}
-          />
-        )}
-        {formToDisplay === "passwordReset" && (
-          <PasswordResetForm displayLoginForm={displayLoginForm} />
-        )}
+              <button className="Login__alternative-logins">
+                {hasCustomAuthConnect && (
+                  <img
+                    className="Login__quick-login-icon"
+                    src={SAMLLoginIcon}
+                    onClick={signInWithCustomAuth}
+                    title={customAuthName}
+                    alt={customAuthName}
+                  />
+                )}
+                {hasSamlAuthProviderId && (
+                  <img
+                    className="Login__quick-login-icon"
+                    src={SAMLLoginIcon}
+                    onClick={signInWithSAML}
+                    title="SAML SSO login"
+                    alt="SAML SSO login"
+                  />
+                )}
+              </button>
+            </div>
+          )}
+          {formToDisplay === "initial" && (
+            <InitialForm
+              displayLoginForm={displayLoginForm}
+              displayRegisterForm={displayRegisterForm}
+            />
+          )}
+          {formToDisplay === "register" && (
+            <RegisterForm
+              displayLoginForm={displayLoginForm}
+              displayPasswordResetForm={displayPasswordResetForm}
+            />
+          )}
+          {formToDisplay === "login" && (
+            <LoginForm
+              displayRegisterForm={displayRegisterForm}
+              displayPasswordResetForm={displayPasswordResetForm}
+              afterUserIsLoggedIn={afterUserIsLoggedIn}
+            />
+          )}
+          {formToDisplay === "passwordReset" && (
+            <PasswordResetForm displayLoginForm={displayLoginForm} />
+          )}
+        </div>
       </div>
     </div>
   );

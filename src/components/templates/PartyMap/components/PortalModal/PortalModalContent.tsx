@@ -1,7 +1,11 @@
 import React, { useCallback, useEffect, useRef } from "react";
 import ShowMoreText from "react-show-more-text";
 
-import { ALWAYS_EMPTY_ARRAY, SPACE_TAXON } from "settings";
+import {
+  ALWAYS_EMPTY_ARRAY,
+  DEFAULT_SHOW_MORE_SETTINGS,
+  SPACE_TAXON,
+} from "settings";
 
 import { retainAttendance } from "store/actions/Attendance";
 
@@ -111,11 +115,8 @@ export const PortalModalContent: React.FC<PortalModalContentProps> = ({
           {portalSubtitle && (
             <ShowMoreText
               lines={2}
-              more="Show more"
-              less="Show less"
               className="PortalModal__subtitle"
-              expanded={false}
-              truncatedEndingComponent={"... "}
+              {...DEFAULT_SHOW_MORE_SETTINGS}
             >
               {portalSubtitle}
             </ShowMoreText>
@@ -134,11 +135,8 @@ export const PortalModalContent: React.FC<PortalModalContentProps> = ({
       {portalDescription && (
         <ShowMoreText
           lines={3}
-          more="Show more"
-          less="Show less"
           className="PortalModal__description"
-          expanded={false}
-          truncatedEndingComponent={"... "}
+          {...DEFAULT_SHOW_MORE_SETTINGS}
         >
           <RenderMarkdown text={portalDescription} />
         </ShowMoreText>

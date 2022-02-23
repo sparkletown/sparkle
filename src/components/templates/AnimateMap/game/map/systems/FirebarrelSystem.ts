@@ -40,7 +40,9 @@ export class FirebarrelSystem extends System {
     this._unsubscribeFirebarrelEnter = subscribeActionAfter(
       AnimateMapActionTypes.ENTER_FIREBARREL,
       () => {
-        clearTimeout(this.waitingEnterFirebarrelId);
+        if (this.waitingEnterFirebarrelId) {
+          clearTimeout(this.waitingEnterFirebarrelId);
+        }
         // this.creator.enterFirebarrel(barrelId);
       }
     );

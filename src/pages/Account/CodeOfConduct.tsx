@@ -11,8 +11,6 @@ import {
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useUser } from "hooks/useUser";
 
-import { updateTheme } from "pages/VenuePage/helpers";
-
 import { Loading } from "components/molecules/Loading";
 import { LoadingPage } from "components/molecules/LoadingPage";
 
@@ -80,13 +78,6 @@ export const CodeOfConduct: React.FC = () => {
     },
     [proceed, user]
   );
-
-  useEffect(() => {
-    if (!space) return;
-
-    // @debt replace this with useCss?
-    updateTheme(space);
-  }, [space]);
 
   // @debt Maybe add something more pretty for UX here, in the vein of NotFound (with custom message)
   if (!spaceSlug) {

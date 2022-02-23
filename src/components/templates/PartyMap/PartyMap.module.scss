@@ -1,0 +1,7 @@
+.PartyMap {
+  position: relative;
+  margin-top: 0 !important;
+  @media (min-width: 768px) {
+    position: initial;
+  }
+}

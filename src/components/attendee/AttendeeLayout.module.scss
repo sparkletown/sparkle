@@ -1,0 +1,79 @@
+@use "scss/attendee/effects/sparkle";
+@use "scss/attendee/space";
+@use "scss/attendee/font";
+@use "scss/attendee/layout";
+@use "scss/attendee/breakpoint";
+
+@font-face {
+  font-family: "Sparkle";
+  font-style: normal;
+  font-weight: 400;
+  src: url("/assets/fonts/ABCArizonaPlusVariable-Trial.woff2") format("woff2");
+}
+
+.html {
+  overflow-y: scroll;
+  font-family: Sparkle, serif;
+  font-variation-settings: "wght" 350, "ital" 0, "SRFF" 20;
+  @include font.core;
+}
+
+.Space {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  transition: padding-right 0.2s ease;
+  padding-right: 0;
+  /*
+  TODO
+  & > *:first-child {
+    margin-top: $button-height*2 + $whitespace;
+  }
+  &.component-chat-open {
+    @media (max-width: 767px) {
+      justify-content: flex-start;
+    }
+    @media (min-width: 768px) {
+      padding-right: 50%;
+    }
+    @media (min-width: 960px) {
+      padding-right: $sidebar-width + $whitespace;
+    }
+  }
+  */
+}
+
+.LayerUi {
+  position: sticky;
+  bottom: 0;
+  width: 100%;
+  z-index: 40;
+  @include sparkle.panel--normal;
+
+  @media (max-width: breakpoint.$md - 1) {
+    display: flex;
+    flex-direction: column;
+
+    &[open] {
+      height: 45vh;
+
+      &.has-component-shoutout {
+        height: calc(45vh - #{space.button(1) + space.empty(1)});
+      }
+    }
+  }
+
+  @media (min-width: breakpoint.$md) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 0 space.empty(1);
+    grid-gap: space.empty(1);
+    background: transparent;
+  }
+
+  @media (min-width: breakpoint.$lg) {
+    grid-template-columns: 1fr layout.$w-sidebar;
+    justify-items: center;
+  }
+}

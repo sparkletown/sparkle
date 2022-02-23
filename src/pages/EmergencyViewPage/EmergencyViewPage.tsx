@@ -1,5 +1,4 @@
 import React, { Suspense, useEffect, useMemo, useState } from "react";
-import { useCss } from "react-use";
 import classNames from "classnames";
 import { addDays } from "date-fns";
 import dayjs from "dayjs";
@@ -20,7 +19,6 @@ import { useUser } from "hooks/useUser";
 import useVenueScheduleEvents from "hooks/useVenueScheduleEvents";
 
 import { Login } from "pages/Account/Login";
-import { updateTheme } from "pages/VenuePage/helpers";
 
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
@@ -69,13 +67,6 @@ export const EmergencyViewPage: React.FC = () => {
     }
   }, [hostname, redirectUrl]);
 
-  useEffect(() => {
-    if (!space) return;
-
-    // @debt replace this with useCss?
-    updateTheme(space);
-  }, [space]);
-
   const weekdays = useMemo(() => {
     return range(dayDifference)
       .map((dayIndex) => {
@@ -105,16 +96,14 @@ export const EmergencyViewPage: React.FC = () => {
       .filter((day) => !!day);
   }, [dayDifference, liveAndFutureEvents, firstScheduleDate]);
 
+  // TODO-redesign use it or delete it
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [validBannerImageUrl] = useValidImage(
     space?.config?.landingPageConfig.bannerImageUrl,
     DEFAULT_VENUE_BANNER_COLOR
   );
 
-  const containerVars = useCss({
-    "background-image": `url("${validBannerImageUrl}")`,
-  });
-
-  const containerClasses = classNames("EmergencyView", containerVars);
+  const containerClasses = classNames("EmergencyView");
 
   if (!spaceId || (isCurrentVenueLoaded && !space)) {
     return (

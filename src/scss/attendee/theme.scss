@@ -1,0 +1,14 @@
+// Global color constants should be added here
+// Please make sure their names have semantic meaning
+// i.e. instead of $white it would be $c-button--fg or $c-input--bg
+
+$sparkle--bg: rgb(99, 42, 199); // previously named $sparkle-theme
+$sparkle--border: rgba(130, 130, 130, 0.3); // previously named $sparkle-border
+
+$light--text: rgb(0, 0, 0); // previously named $text-lightmode
+$light--panel: rgb(255, 255, 255); // previously named $panel-lightmode
+$light--canvas: rgb(230, 230, 230); // previously named $canvas-lightmode
+
+$dark--text: rgb(255, 255, 255); // previously named $text-darkmode
+$dark--panel: rgb(0, 0, 0); // previously named $panel-darkmode
+$dark--canvas: rgb(50, 50, 50); // previously named $canvas-darkmode

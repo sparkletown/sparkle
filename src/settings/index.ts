@@ -5,6 +5,7 @@ import { VenueTemplate } from "types/VenueTemplate";
 import { generateTables } from "utils/table";
 import { FIVE_MINUTES_MS } from "utils/time";
 
+import { STRING_COPYRIGHT } from "./interpolationSettings";
 import {
   ROOM_TAXON,
   ROOMS_TAXON,
@@ -604,3 +605,17 @@ export const VENUE_CHAT_MESSAGES_COUNTER_SHARDS_COUNT = 10;
 export const NON_EXISTENT_FIRESTORE_ID = "NON_EXISTENT_FIRESTORE_ID";
 
 export const INVALID_SLUG_CHARS_REGEX = /[^a-zA-Z0-9]/g;
+
+export const DEFAULT_SHOW_MORE_SETTINGS = {
+  more: "Show more",
+  less: "Show less",
+  expanded: false,
+  truncatedEndingComponent: "... ",
+};
+export const DEFAULT_MISSING_PLACEHOLDER = "Placeholder";
+
+export const CURRENT_YEAR = new Date().getFullYear();
+export const COPYRIGHT_TEXT = `${STRING_COPYRIGHT} Copyright SparkleVerse Inc & Contributors 2020 to ${CURRENT_YEAR}.`;
+
+export const SPACE_CARD_HEADER_BACKGROUND =
+  "https://images.unsplash.com/photo-1517369611053-aecb0ca6971e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80";

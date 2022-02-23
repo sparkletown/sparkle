@@ -17,6 +17,7 @@ import { useExperience } from "hooks/useExperience";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useShowHide } from "hooks/useShowHide";
 import { useUpdateTableRecentSeatedUsers } from "hooks/useUpdateRecentSeatedUsers";
+import { useUser } from "hooks/useUser";
 
 import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
@@ -66,6 +67,8 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
   // @debt what does it do anyway? probably copy from the same in JazzBar.tsx
   useExperience(venue?.name);
 
+  const { userWithId } = useUser();
+
   const generatedTables = venue?.config?.tables;
 
   const infoIcon =
@@ -78,10 +81,10 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
       <InformationLeftColumn iconNameOrPath={infoIcon}>
         <InformationCard title="About the venue">
           <p className="title-sidebar">{venue.name}</p>
-          <p className="short-description-sidebar" style={{ fontSize: 18 }}>
+          <p className="short-description-sidebar">
             {venue.config?.landingPageConfig.subtitle}
           </p>
-          <div style={{ fontSize: 13 }}>
+          <div>
             <RenderMarkdown
               text={venue.config?.landingPageConfig.description}
             />
@@ -133,18 +136,21 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
             </div>
           </div>
           <div className="seated-area">
-            <TablesUserList
-              setSeatedAtTable={setSeatedAtTable}
-              seatedAtTable={seatedAtTable}
-              venueId={venue.id}
-              TableComponent={TableComponent}
-              joinMessage={venue.hideVideo === false}
-              customTables={tables}
-              defaultTables={CONVERSATION_TABLES}
-              showOnlyAvailableTables={showOnlyAvailableTables}
-              venue={venue}
-              template={VenueTemplate.conversationspace}
-            />
+            {userWithId && (
+              <TablesUserList
+                setSeatedAtTable={setSeatedAtTable}
+                seatedAtTable={seatedAtTable}
+                venueId={venue.id}
+                TableComponent={TableComponent}
+                joinMessage={venue.hideVideo === false}
+                customTables={tables}
+                defaultTables={CONVERSATION_TABLES}
+                showOnlyAvailableTables={showOnlyAvailableTables}
+                venue={venue}
+                template={VenueTemplate.conversationspace}
+                user={userWithId}
+              />
+            )}
           </div>
           <UserList
             usersSample={venue.recentUsersSample ?? ALWAYS_EMPTY_ARRAY}

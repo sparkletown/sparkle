@@ -1,0 +1,66 @@
+@use "scss/attendee/space";
+
+.MapBackground {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-position: center;
+  background-size: cover;
+  background-attachment: fixed;
+
+  @media (min-width: 768px) {
+    bottom: 0 - space.button(1) - space.empty(1);
+    background-attachment: scroll;
+
+    @media (orientation: portrait) {
+      background-size: auto 100%;
+    }
+
+    @media (orientation: landscape) {
+      background-size: 100% auto;
+    }
+  }
+}
+
+.MapTitle {
+  position: relative;
+  width: 100%;
+  height: 66vh;
+  box-sizing: border-box;
+  padding-top: space.button(1) + space.empty(1);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 34vw;
+  letter-spacing: -0.07em;
+  line-height: 0.8;
+  color: white;
+  overflow: hidden;
+
+  @media (min-width: 768px) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 20;
+    font-size: 26vw;
+    letter-spacing: -0.08em;
+    line-height: 0.75;
+  }
+}
+
+.Portals {
+  display: block;
+
+  @media (min-width: 768px) {
+    position: absolute;
+    top: 10%;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+}

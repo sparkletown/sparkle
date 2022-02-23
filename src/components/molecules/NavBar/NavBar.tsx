@@ -37,7 +37,6 @@ import { UserAvatar } from "components/atoms/UserAvatar";
 import { NavBarLogin } from "./components/NavBarLogin";
 import { SoundCloudRadio } from "./components/SoundCloudRadio";
 
-import "./NavBar.scss";
 import "./playa.scss";
 
 const TicketsPopover: React.FC<{ futureUpcoming: UpcomingEvent[] }> = ({

@@ -18,8 +18,6 @@ import { IntroVideoPreviewModal } from "./components/IntroVideoPreviewModal";
 import { PosterPageControl } from "./components/PosterPageControl";
 import { usePosterVideo } from "./usePosterVideo";
 
-import "./PosterPage.scss";
-
 export interface PosterPageProps {
   venue: WithId<PosterPageVenue>;
 }

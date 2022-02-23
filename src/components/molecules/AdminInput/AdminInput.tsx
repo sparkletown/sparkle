@@ -17,6 +17,10 @@ export interface AdminInputProps
   hidden?: boolean;
 }
 
+/**
+ * @deprecated Use Input component instead.
+ * @see src/components/admin/Input/
+ */
 export const AdminInput: React.FC<AdminInputProps> = ({
   name,
   label,

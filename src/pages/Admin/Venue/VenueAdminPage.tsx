@@ -1,6 +1,4 @@
 import React from "react";
-import { useCss } from "react-use";
-import classNames from "classnames";
 
 import { DEFAULT_MAP_BACKGROUND, IFRAME_TEMPLATES } from "settings";
 
@@ -45,14 +43,12 @@ export const VenueAdminPage: React.FC = () => {
   const isLoggedIn = profile && user;
   const isVenueLoading = !isLoaded;
 
+  // TODO-redesign - Use this or delete it
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [mapBackground] = useValidImage(
     space?.mapBackgroundImageUrl,
     DEFAULT_MAP_BACKGROUND
   );
-
-  const announcementContainerVars = useCss({
-    background: `url("${mapBackground}")`,
-  });
 
   if (isVenueLoading) {
     return <LoadingPage />;
@@ -74,18 +70,13 @@ export const VenueAdminPage: React.FC = () => {
 
   const isIframeVenue = IFRAME_TEMPLATES.includes(space.template);
 
-  const announcementWrapperClasses = classNames(
-    "VenueAdminPage__announcement-wrapper",
-    announcementContainerVars
-  );
-
   return (
     <WithNavigationBar>
       <div className="VenueAdminPage">
         <h4 className="VenueAdminPage__title">
           Current Announcement in {space?.name}
         </h4>
-        <div className={announcementWrapperClasses}>
+        <div>
           <AnnouncementMessage />
         </div>
       </div>

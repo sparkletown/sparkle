@@ -1,0 +1,43 @@
+@use "../theme";
+
+$-blur: 5px;
+
+// previously named sparkle-panel
+@mixin panel--normal {
+  color: theme.$light--text;
+  background: theme.$light--panel;
+
+  @media (prefers-color-scheme: dark) {
+    color: theme.$dark--text;
+    background: theme.$dark--panel;
+  }
+}
+
+// previously named sparkle-panel-glass
+@mixin panel--glass {
+  color: theme.$light--text;
+  background: rgba(theme.$light--panel, 0.4);
+  -webkit-backdrop-filter: blur($-blur);
+  backdrop-filter: blur($-blur);
+
+  @media (prefers-color-scheme: dark) {
+    color: theme.$dark--text;
+    background: rgba(theme.$dark--panel, 0.4);
+  }
+}
+
+// previously named sparkle-color
+@mixin color--normal {
+  color: theme.$dark--text;
+  -webkit-font-smoothing: antialiased;
+  background-color: rgba(theme.$sparkle--bg, 1);
+}
+
+// previously named sparkle-color-glass
+@mixin color--glass {
+  color: white;
+  -webkit-font-smoothing: antialiased;
+  background-color: rgba(theme.$sparkle--bg, 0.7);
+  -webkit-backdrop-filter: blur($-blur);
+  backdrop-filter: blur($-blur);
+}

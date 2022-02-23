@@ -2,6 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn } from "react-use";
+import { useBackgroundGradient } from "components/attendee/useBackgroundGradient";
 
 import {
   ACCOUNT_PROFILE_QUESTIONS_URL,
@@ -26,6 +27,7 @@ import { updateUserProfile } from "./helpers";
 // @debt refactor the Profile related styles from Account.scss into Profile.scss
 import "./Account.scss";
 import "./Profile.scss";
+import FORMS from "scss/attendee/form.module.scss";
 
 export interface ProfileFormData {
   partyName: string;
@@ -37,6 +39,8 @@ export const Profile: React.FC = () => {
   const { userId, userWithId } = useUser();
 
   const { worldSlug, spaceSlug = DEFAULT_SPACE_SLUG } = useSpaceParams();
+
+  useBackgroundGradient();
 
   const {
     register,
@@ -89,7 +93,7 @@ export const Profile: React.FC = () => {
             {/* @debt refactor this to use InputField */}
             <input
               name="partyName"
-              className="input-block input-centered"
+              className={FORMS.input}
               placeholder="Your display name"
               ref={register({
                 required: true,
@@ -126,7 +130,7 @@ export const Profile: React.FC = () => {
             <ButtonNG
               type="submit"
               className="create-account__button"
-              variant="login-gradient"
+              variant="primary"
               disabled={!formState.isValid || isUpdating}
             >
               Create my profile

@@ -11,7 +11,7 @@ import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import "firebase/storage";
 
-import "./DefaultAvatars.scss";
+import styles from "./DefaultAvatars.module.scss";
 
 export interface DefaultAvatarsProps extends ContainerClassName {
   onAvatarClick: (url: string) => void;
@@ -91,8 +91,6 @@ export const DefaultAvatars: React.FC<DefaultAvatarsProps> = ({
     (customAvatars !== undefined || isLoadingExternal !== undefined);
 
   return (
-    <div className={classNames("DefaultAvatars", containerClassName)}>
-      {!isLoading && avatarImages}
-    </div>
+    <div className={styles.defaultAvatars}>{!isLoading && avatarImages}</div>
   );
 };

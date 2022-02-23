@@ -1,0 +1,58 @@
+@use "scss/attendee/theme";
+@use "scss/attendee/space";
+@use "scss/attendee/effects/sparkle";
+@use "scss/attendee/effects/rounded";
+@use "scss/attendee/layout";
+@use "scss/attendee/breakpoint";
+
+.VideoHuddle {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: row-reverse;
+
+  @media (min-width: breakpoint.$md) {
+    @include sparkle.panel--normal;
+    grid-column: 1 / 3;
+    margin: 0 space.empty(-1);
+    width: calc(100% + #{space.empty(2)});
+  }
+
+  height: layout.$h-video-chat;
+  padding: space.gap(1);
+  border-top: 1px solid theme.$sparkle--border;
+  border-bottom: 1px solid theme.$sparkle--border;
+
+  @media (min-width: breakpoint.$md) {
+    border-top: none;
+  }
+}
+
+.VideoHuddleControls {
+  @include sparkle.panel--normal;
+  position: relative;
+  margin-top: space.gap(-1);
+  width: space.empty(1);
+  display: flex;
+  flex-direction: column;
+  justify-self: flex-start;
+  border-left: 1px solid theme.$sparkle--border;
+}
+
+.VideoHuddleVideos {
+  flex-grow: 1;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  min-width: (layout.$h-video-chat * 1.7 + 2) * 3;
+  display: flex;
+  justify-content: center;
+  gap: space.gap(1);
+}
+
+.VideoContainer {
+  display: flex;
+  justify-content: center;
+
+  @include rounded.normal;
+  overflow: hidden;
+}

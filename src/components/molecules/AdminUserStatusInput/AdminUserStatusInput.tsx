@@ -49,7 +49,6 @@ export const AdminUserStatusInput: React.FC<AdminUserStatusInputProps> = ({
     [item, onChange, hideColorPicker]
   );
 
-  // @debt try to make it work with useCss()
   const pickerStyles = { backgroundColor: item?.color };
 
   const inputStatus = `${name}status`;

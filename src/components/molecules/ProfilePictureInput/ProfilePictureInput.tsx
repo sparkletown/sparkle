@@ -12,7 +12,7 @@ import { useUploadProfilePictureHandler } from "hooks/useUploadProfilePictureHan
 
 import { DefaultAvatars } from "components/molecules/DefaultAvatars/DefaultAvatars";
 
-import "./ProfilePictureInput.scss";
+import styles from "./ProfilePictureInput.module.scss";
 
 export interface ProfilePictureInputProps {
   setValue: (inputName: string, value: string, rerender: boolean) => void;
@@ -74,9 +74,9 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
   });
 
   return (
-    <div className="ProfilePictureUploadForm">
+    <div className={styles.profilePictureUploadForm}>
       <div
-        className="ProfilePicturePreviewContainer"
+        className={styles.profilePicturePreviewContainer}
         onClick={() => uploadRef.current?.click()}
       >
         <img
@@ -113,7 +113,7 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
       />
       <input
         name="pictureUrl"
-        className="ProfilePictureUploadForm__input"
+        className={styles.hiddenInput}
         ref={register({
           required: true,
         })}

@@ -1,5 +1,6 @@
 import React from "react";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { AdminLayout } from "components/layouts/AdminLayout";
 
 import { ADMIN_IA_WORLD_BASE_URL } from "settings";
 
@@ -49,19 +50,21 @@ export const WorldEditor: React.FC = () => {
   const WorldEditorPanel = PANEL_MAP[selectedTab] ?? <></>;
 
   return (
-    <div className="WorldEditor">
-      <WithNavigationBar title={worldName}>
-        <AdminRestricted>
-          <AdminTitleBar variant="two-rows">
-            <ButtonNG linkTo={ADMIN_IA_WORLD_BASE_URL} iconName={faArrowLeft}>
-              Back to Dashboard
-            </ButtonNG>
-            <AdminTitle>{adminTitle}</AdminTitle>
-          </AdminTitleBar>
-          {editMode && <WorldNav />}
-          <WorldEditorPanel worldSlug={worldSlug} />
-        </AdminRestricted>
-      </WithNavigationBar>
-    </div>
+    <AdminLayout>
+      <div className="WorldEditor">
+        <WithNavigationBar title={worldName}>
+          <AdminRestricted>
+            <AdminTitleBar variant="two-rows">
+              <ButtonNG linkTo={ADMIN_IA_WORLD_BASE_URL} iconName={faArrowLeft}>
+                Back to Dashboard
+              </ButtonNG>
+              <AdminTitle>{adminTitle}</AdminTitle>
+            </AdminTitleBar>
+            {editMode && <WorldNav />}
+            <WorldEditorPanel worldSlug={worldSlug} />
+          </AdminRestricted>
+        </WithNavigationBar>
+      </div>
+    </AdminLayout>
   );
 };

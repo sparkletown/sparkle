@@ -16,7 +16,7 @@ import { useUser } from "hooks/useUser";
 import { Map } from "components/templates/PartyMap/components/Map";
 import { PortalModal } from "components/templates/PartyMap/components/PortalModal";
 
-import "./PartyMap.scss";
+import styles from "./PartyMap.module.scss";
 
 export interface PartyMapProps {
   venue: PartyMapVenue;
@@ -65,7 +65,7 @@ export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
   if (!user || !profile) return <>Loading..</>;
 
   return (
-    <div className="party-venue-container">
+    <div className={styles.PartyMap}>
       <Map user={user} venue={venue} selectRoom={selectRoom} />
 
       <PortalModal

@@ -75,10 +75,10 @@ const VenueEntrancePage = lazy(() =>
   )
 );
 
-const VenuePage = lazy(() =>
-  tracePromise("AppRouter::lazy-import::VenuePage", () =>
-    import("pages/VenuePage").then(({ VenuePage }) => ({
-      default: VenuePage,
+const AttendeeLayout = lazy(() =>
+  tracePromise("AppRouter::lazy-import::AttendeeLayout", () =>
+    import("components/attendee/AttendeeLayout").then(({ AttendeeLayout }) => ({
+      default: AttendeeLayout,
     }))
   )
 );
@@ -202,7 +202,7 @@ export const AppRouter: React.FC = () => {
           <Route path={ATTENDEE_INSIDE_URL}>
             <Provided withRelatedVenues>
               <AnalyticsCheck>
-                <VenuePage />
+                <AttendeeLayout />
               </AnalyticsCheck>
             </Provided>
           </Route>

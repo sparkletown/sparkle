@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect } from "react";
-import { useCss } from "react-use";
 import classNames from "classnames";
 
 import { ALWAYS_EMPTY_ARRAY, ENABLE_POPUPS_URL } from "settings";
@@ -17,8 +16,6 @@ import { ButtonNG } from "components/atoms/ButtonNG";
 import { SparkleLogoIcon } from "components/atoms/SparkleLogoIcon";
 import { VenueWithOverlay } from "components/atoms/VenueWithOverlay/VenueWithOverlay";
 
-import IconExternalLink from "assets/icons/icon-room-externallink.svg";
-
 import "./ExternalRoom.scss";
 
 export interface ExternalRoomProps {
@@ -28,14 +25,7 @@ export interface ExternalRoomProps {
 export const ExternalRoom: React.FC<ExternalRoomProps> = ({ venue }) => {
   const redirectUrl = venue.zoomUrl ?? "";
 
-  const venueLogoVars = useCss({
-    "background-image": `url(${venue.host?.icon || IconExternalLink})`,
-  });
-
-  const venueLogoClasses = classNames(
-    "ExternalRoom__venue-logo",
-    venueLogoVars
-  );
+  const venueLogoClasses = classNames("ExternalRoom__venue-logo");
 
   useEffect(() => {
     if (!redirectUrl) return;

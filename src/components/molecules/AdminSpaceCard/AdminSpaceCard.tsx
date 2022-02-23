@@ -1,14 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useCss } from "react-use";
 import { faExternalLinkAlt, faUsers } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import classNames from "classnames";
 
 import {
   ATTENDEE_INSIDE_URL,
   DEFAULT_VENUE_BANNER_COLOR,
-  DEFAULT_VENUE_LOGO,
   PORTAL_INFO_ICON_MAPPING,
   SPACE_TAXON,
 } from "settings";
@@ -17,7 +14,7 @@ import { WorldSlug } from "types/id";
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
-import { adminNGVenueUrl, generateUrl, isValidUrl } from "utils/url";
+import { adminNGVenueUrl, generateUrl } from "utils/url";
 
 import { useValidImage } from "hooks/useCheckImage";
 
@@ -38,28 +35,17 @@ export const AdminSpaceCard: React.FC<AdminSpaceCardProps> = ({
   worldSlug,
   isEditable,
 }) => {
-  const [imageUrl] = useValidImage(
+  // TODO-redesign either use this variable or delete it
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [validBannerImageUrl] = useValidImage(
     venue?.config?.landingPageConfig.coverImageUrl ||
       venue?.config?.landingPageConfig.bannerImageUrl,
     DEFAULT_VENUE_BANNER_COLOR
   );
 
-  const backgroundStyle = useCss({
-    // @debt There should be a way to move the rgba() functions to SCSS and use $color-constant instead of literals
-    background: isValidUrl(imageUrl)
-      ? `linear-gradient(
-        rgba(25, 24, 26, 0.8),
-        rgba(25, 24, 26, 0.8)
-      ), url(${imageUrl})`
-      : imageUrl,
-  });
-  const backgroundClasses = classNames("AdminSpaceCard__bg", backgroundStyle);
-  const logoStyle = useCss({
-    "background-image": `url(${venue.host?.icon || DEFAULT_VENUE_LOGO})`,
-  });
-
-  const logoClasses = classNames("AdminSpaceCard__logo", logoStyle);
-
+  // TODO-redesign these images will likely need embedding:
+  //  - validBannerImageUrl
+  //  - venue.host?.icon || DEFAULT_VENUE_LOGO
   const spaceIcon = PORTAL_INFO_ICON_MAPPING[venue.template];
 
   const spaceDescriptionText =
@@ -68,7 +54,7 @@ export const AdminSpaceCard: React.FC<AdminSpaceCardProps> = ({
 
   return (
     <div className="AdminSpaceCard">
-      <div className={backgroundClasses}>
+      <div>
         <div className="AdminSpaceCard__bg-container">
           <Link
             className="AdminSpaceCard__link"
@@ -87,7 +73,7 @@ export const AdminSpaceCard: React.FC<AdminSpaceCardProps> = ({
             />
           </Link>
           <div className="AdminSpaceCard__body">
-            <div className={logoClasses} />
+            <div />
             <div className="AdminSpaceCard__body-info">
               <AdminCardTitle>{venue.name}</AdminCardTitle>
               <span className="AdminSpaceCard__text">

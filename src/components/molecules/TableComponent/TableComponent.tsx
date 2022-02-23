@@ -1,6 +1,5 @@
 import React, { useMemo } from "react";
-import { useAsyncFn, useCss } from "react-use";
-import classNames from "classnames";
+import { useAsyncFn } from "react-use";
 
 import {
   CONVERSATION_TABLES,
@@ -31,12 +30,12 @@ import "./TableComponent.scss";
 
 export const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
   users,
-  userId,
   onJoinClicked,
   imageSize = 50,
   table,
   tableLocked,
   venue,
+  userId,
   template,
 }) => {
   const { openUserProfileModal } = useProfileModalControls();
@@ -69,18 +68,6 @@ export const TableComponent: React.FunctionComponent<TableComponentPropsType> = 
     toggleModal();
   }, [table.reference, venue.id, venue.template, toggleModal]);
 
-  const isJazzBar = template === VenueTemplate.jazzbar;
-
-  const itemStyles = useCss(
-    isJazzBar
-      ? {}
-      : {
-          width: `${table.columns && (table.columns + 1) * 55}px`,
-        }
-  );
-
-  const itemClasses = classNames("TableComponent__item", itemStyles);
-
   const renderedUserPictures = useMemo(
     () =>
       users &&
@@ -109,7 +96,7 @@ export const TableComponent: React.FunctionComponent<TableComponentPropsType> = 
 
   return (
     <div className="TableComponent">
-      <div className={itemClasses}>
+      <div>
         <div className="TableComponent__occupancy-warning">
           {locked && "locked"}
           {!locked && full && "full"}

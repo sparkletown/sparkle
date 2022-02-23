@@ -1,0 +1,27 @@
+@mixin normal {
+  border-radius: 4px;
+}
+
+@mixin top {
+  @include normal;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+@mixin left {
+  @include normal;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+@mixin right {
+  @include normal;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+@mixin bottom {
+  @include normal;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}

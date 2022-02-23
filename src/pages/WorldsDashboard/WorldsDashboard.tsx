@@ -1,4 +1,10 @@
 import React, { useMemo } from "react";
+import { HeaderButton } from "components/admin/HeaderButton";
+import { Section } from "components/admin/Section";
+import { SectionHeading } from "components/admin/SectionHeading";
+import { SectionTitle } from "components/admin/SectionTitle";
+import { AdminLayout } from "components/layouts/AdminLayout";
+import { FullWidthLayout } from "components/layouts/FullWidthLayout";
 import { uniq } from "lodash/fp";
 
 import { ADMIN_IA_WORLD_CREATE_URL } from "settings";
@@ -10,15 +16,12 @@ import { useAdminRole } from "hooks/user/useAdminRole";
 import { useOwnWorlds } from "hooks/worlds/useOwnWorlds";
 import { useWorlds } from "hooks/worlds/useWorlds";
 
-import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
-import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
 import { AdminShowcaseTitle } from "components/organisms/AdminVenueView/components/AdminShowcaseTitle";
-import { WithAdminNavBar } from "components/organisms/WithAdminNavBar";
 
-import { WorldCard } from "components/molecules/WorldCard";
-
+import { AdminHeader } from "components/atoms/AdminHeader";
 import { AdminRestricted } from "components/atoms/AdminRestricted";
-import { ButtonNG } from "components/atoms/ButtonNG";
+
+import { WorldsTable } from "./WorldsTable";
 
 import ARROW from "assets/images/admin/dashboard-arrow.svg";
 
@@ -62,63 +65,46 @@ export const WorldsDashboard: React.FC<WorldsDashboardProps> = ({ userId }) => {
     []
   );
 
-  const renderedWorldsList = useMemo(
-    () => (
-      <div className="WorldsDashboard__worlds-list">
-        {visibleWorlds.map((world) => (
-          <WorldCard key={world.id} world={world} />
-        ))}
-      </div>
-    ),
-    [visibleWorlds]
-  );
-
   return (
-    <div className="WorldsDashboard">
-      <WithAdminNavBar>
-        <AdminRestricted>
-          <AdminPanel variant="unbound">
-            {hasWorlds ? (
-              <AdminShowcase>
-                {/* @debt: possibly add <AdminTitleBar to wrap header content */}
-                <AdminShowcaseTitle>Switch World</AdminShowcaseTitle>
-                <div className="WorldsDashboard__header">
-                  <span className="WorldsDashboard__header-text">
-                    My worlds
-                  </span>
+    <AdminLayout>
+      <AdminRestricted>
+        {hasWorlds ? (
+          <>
+            <AdminHeader title="Switch World" />
+            <FullWidthLayout>
+              <Section>
+                <SectionHeading>
+                  <SectionTitle>My worlds</SectionTitle>
                   {isSuperAdmin && (
-                    <ButtonNG
-                      variant="normal-gradient"
-                      linkTo={ADMIN_IA_WORLD_CREATE_URL}
-                      className="WorldsDashboard__header-button"
-                    >
-                      Create new world
-                    </ButtonNG>
+                    <HeaderButton
+                      to={ADMIN_IA_WORLD_CREATE_URL}
+                      name="Create new world"
+                      variant="primary"
+                    />
                   )}
-                </div>
-                {renderedWorldsList}
-              </AdminShowcase>
-            ) : (
-              <AdminShowcase>
-                <div className="WorldsDashboard__arrow-header">
-                  <ButtonNG
-                    variant="normal-gradient"
-                    linkTo={ADMIN_IA_WORLD_CREATE_URL}
-                  >
-                    Create new world
-                  </ButtonNG>
-                  <img
-                    alt="arrow pointing towards the Create a world button"
-                    className="WorldsDashboard__arrow"
-                    src={ARROW}
-                  />
-                </div>
-                {renderedWelcomePage}
-              </AdminShowcase>
-            )}
-          </AdminPanel>
-        </AdminRestricted>
-      </WithAdminNavBar>
-    </div>
+                </SectionHeading>
+                <WorldsTable worlds={visibleWorlds} />
+              </Section>
+            </FullWidthLayout>
+          </>
+        ) : (
+          <FullWidthLayout>
+            <div className="WorldsDashboard__arrow-header">
+              <HeaderButton
+                name="Create new world"
+                to={ADMIN_IA_WORLD_CREATE_URL}
+                variant="primary"
+              ></HeaderButton>
+              <img
+                alt="arrow pointing towards the Create a world button"
+                className="WorldsDashboard__arrow"
+                src={ARROW}
+              />
+            </div>
+            {renderedWelcomePage}
+          </FullWidthLayout>
+        )}
+      </AdminRestricted>
+    </AdminLayout>
   );
 };

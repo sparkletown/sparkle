@@ -16,6 +16,8 @@ import { ButtonNG } from "components/atoms/ButtonNG";
 import fIcon from "assets/icons/facebook-social-icon.svg";
 import gIcon from "assets/icons/google-social-icon.svg";
 
+import FORMS from "scss/attendee/form.module.scss";
+
 export interface LoginFormProps {
   displayRegisterForm: () => void;
   displayPasswordResetForm: () => void;
@@ -129,7 +131,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
       <div className="secondary-action">
         {`Don't have an account yet?`}
         <br />
-        <span className="link" onClick={displayRegisterForm}>
+        <span className={FORMS.inlineLink} onClick={displayRegisterForm}>
           Register instead!
         </span>
       </div>
@@ -151,7 +153,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
         <div className="input-group">
           <input
             name="email"
-            className="input-block input-centered auth-input"
+            className={FORMS.input}
             placeholder="Your email address"
             ref={register({ required: true })}
           />
@@ -167,7 +169,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
         <div className="input-group">
           <input
             name="password"
-            className="input-block input-centered auth-input"
+            className={FORMS.input}
             type="password"
             placeholder="Password"
             ref={register({
@@ -222,7 +224,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
       <div className="secondary-action">
         {`Forgot your password?`}
         <br />
-        <span className="link" onClick={displayPasswordResetForm}>
+        <span className={FORMS.inlineLink} onClick={displayPasswordResetForm}>
           Reset your password
         </span>
       </div>

@@ -6,7 +6,7 @@ import { ALLOWED_EMPTY_TABLES_NUMBER } from "settings";
 import { setTableSeat } from "api/venue";
 
 import { Table, TableComponentPropsType } from "types/Table";
-import { TableSeatedUser } from "types/User";
+import { TableSeatedUser, User } from "types/User";
 import { AnyVenue } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
 
@@ -17,7 +17,6 @@ import { arrayIncludes, isTruthy } from "utils/types";
 import { useExperience } from "hooks/useExperience";
 import { useSeatedTableUsers } from "hooks/useSeatedTableUsers";
 import { useShowHide } from "hooks/useShowHide";
-import { useUser } from "hooks/useUser";
 
 import { Loading } from "components/molecules/Loading";
 import { Modal } from "components/molecules/Modal";
@@ -39,6 +38,7 @@ export interface TablesUserListProps {
   venue: WithId<AnyVenue>;
   venueId: string;
   template: VenueTemplate;
+  user: WithId<User>;
 }
 
 export const TablesUserList: React.FC<TablesUserListProps> = ({
@@ -52,6 +52,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
   joinMessage,
   venue,
   template,
+  user,
 }) => {
   // NOTE: custom tables can already contain default tables and this check here is to only doubleconfrim the data coming from the above
   const tables: Table[] = customTables || defaultTables;
@@ -70,37 +71,33 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
 
   const [joiningTable, setJoiningTable] = useState("");
 
-  const { userWithId, userId } = useUser();
   const { data: experience } = useExperience();
 
-  const isCurrentUserAdmin = arrayIncludes(venue.owners, userWithId?.id);
+  const isCurrentUserAdmin = arrayIncludes(venue.owners, user.id);
 
   const [seatedTableUsers, isSeatedTableUsersLoaded] = useSeatedTableUsers(
     venueId
   );
 
-  const userTableReference = seatedTableUsers.find(
-    (u) => u.id === userWithId?.id
-  )?.path?.tableReference;
+  const userTableReference = seatedTableUsers.find((u) => u.id === user.id)
+    ?.path?.tableReference;
 
   useEffect(() => {
-    userTableReference
-      ? setSeatedAtTable(userTableReference)
-      : setSeatedAtTable("");
+    if (userTableReference) {
+      setSeatedAtTable(userTableReference);
+    }
   }, [setSeatedAtTable, userTableReference]);
 
   const isSeatedAtTable = !!seatedAtTable;
 
   const takeSeat = useCallback(
     async (table: string) => {
-      if (!userWithId) return;
-
-      await setTableSeat(userWithId, {
+      await setTableSeat(user, {
         venueId,
         tableReference: table,
       });
     },
-    [userWithId, venueId]
+    [user, venueId]
   );
 
   const usersSeatedAtTables: Record<
@@ -174,8 +171,6 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
     (isCurrentUserAdmin || emptyTables.length <= ALLOWED_EMPTY_TABLES_NUMBER);
 
   const renderedTables = useMemo(() => {
-    if (isSeatedAtTable || !userId) return;
-
     const tablesToShow = showOnlyAvailableTables
       ? tables.filter(
           (table) => !(isFullTable(table) || tableLocked(table.reference))
@@ -188,18 +183,16 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
         // @debt provide usersAtTables instead of (experienceName + users) for better perfomance
         users={usersSeatedAtTables?.[table.reference] ?? []}
         table={table}
-        userId={userId}
         tableLocked={tableLocked}
         onJoinClicked={onJoinClicked}
         venue={venue}
         template={template}
+        userId={user.id}
       />
     ));
   }, [
-    isSeatedAtTable,
     showOnlyAvailableTables,
     tables,
-    userId,
     isFullTable,
     tableLocked,
     TableComponent,
@@ -207,6 +200,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
     onJoinClicked,
     venue,
     template,
+    user.id,
   ]);
 
   if (!isSeatedTableUsersLoaded) return <Loading />;
