@@ -46,7 +46,7 @@
   }
 
   @media (min-width: breakpoint.$md) {
-    position: relative;
+    position: fixed;
     padding: 0 space.empty(1);
     background: transparent;
   }

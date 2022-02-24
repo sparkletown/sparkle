@@ -1,3 +1,4 @@
+@use "scss/attendee/breakpoint";
 @use "scss/attendee/layout";
 @use "scss/attendee/space";
 
@@ -16,7 +17,9 @@
   }
 
   &__chatExpanded {
-    width: calc(100% - layout.$w-sidebar);
-    padding-right: space.empty(1);
+    @media (min-width: breakpoint.$md) {
+      width: calc(100% - layout.$w-sidebar);
+      padding-right: space.empty(1);
+    }
   }
 }

@@ -1,8 +1,11 @@
 @use "scss/attendee/layout";
+@use "scss/attendee/breakpoint";
 
 .templateContainer {
   width: 100%;
   &__shrinkForChat {
-    width: calc(100% - layout.$w-sidebar);
+    @media (min-width: breakpoint.$md) {
+      width: calc(100% - layout.$w-sidebar);
+    }
   }
 }
