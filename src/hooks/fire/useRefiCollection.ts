@@ -23,6 +23,11 @@ type UseRefiCollectionOptions =
 export type UseRefiCollectionResult<T extends object> = LoadStatus &
   ObservableStatus<WithId<T>[]>;
 
+/**
+ * @deprecated uses Reactfire and that library has bugs related to caching and users being logged out
+ *
+ * @see useLiveCollection or useLiveQuery hooks as a replacement
+ */
 export const useRefiCollection = <T extends object>(
   options: UseRefiCollectionOptions
 ): UseRefiCollectionResult<T> => {
