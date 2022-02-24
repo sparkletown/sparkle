@@ -1,4 +1,6 @@
+@use "scss/attendee/border";
 @use "scss/attendee/space";
+@use "scss/attendee/theme";
 
 .chatMessageBoxForm {
   padding: space.empty(1.5);
@@ -13,24 +15,25 @@
     padding: space.empty(1);
     // Additional space for the emoji picker
     padding-right: space.empty(3.5);
-    background-color: #e6e6e6;
+    background-color: theme.$chat--input--background;
     border: none;
-    border-top-left-radius: 4px;
-    border-bottom-left-radius: 4px;
+    border-top-left-radius: border.$radius--xs;
+    border-bottom-left-radius: border.$radius--xs;
     width: 100%;
     &:focus {
       outline: none;
     }
   }
   svg {
+    color: theme.$light--aux-text;
     padding-right: space.empty(1);
   }
 
   button {
     border: none;
-    border-top-right-radius: 4px;
-    border-bottom-right-radius: 4px;
-    background-color: #e6e6e6;
+    border-top-right-radius: border.$radius--xs;
+    border-bottom-right-radius: border.$radius--xs;
+    background-color: theme.$chat--input--background;
     padding: 0 space.empty(1);
     cursor: pointer;
   }
@@ -38,7 +41,7 @@
 
 .separator {
   width: 1px;
-  background: #acacac;
-  border-top: solid space.empty(0.5) #e6e6e6;
-  border-bottom: solid space.empty(0.5) #e6e6e6;
+  background: theme.$light--aux-text;
+  border-top: solid space.empty(0.5) theme.$chat--input--background;
+  border-bottom: solid space.empty(0.5) theme.$chat--input--background;
 }
