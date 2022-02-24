@@ -1,3 +1,5 @@
+@use "scss/attendee/space";
+
 .chatboxContainer {
   display: flex;
   flex-direction: column;
@@ -7,9 +9,13 @@
 .chatboxMessages {
   flex-grow: 1;
   overflow-y: scroll;
+  padding: space.empty(1.5);
 }
 
 .messageScroller {
   display: flex;
   flex-direction: column-reverse;
+  // Required to prevent inline styles from the infinite scroller creating
+  // a horizontal scrollbar
+  overflow-x: hidden !important;
 }

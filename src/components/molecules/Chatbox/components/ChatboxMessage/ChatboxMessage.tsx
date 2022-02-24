@@ -9,6 +9,8 @@ import { formatDateRelativeToNow } from "utils/time";
 
 import { ChatMessage as ChatMessageComponent } from "components/atoms/ChatMessage";
 
+import styles from "./ChatboxMessage.module.scss";
+
 export interface ChatboxMessageProps {
   message: WithId<MessageToDisplay>;
   nextMessage?: WithId<MessageToDisplay>;
@@ -45,7 +47,7 @@ export const ChatboxMessage: React.FC<ChatboxMessageProps> = ({
           But because the outer `Chatbox.tsx` reverses the components it renders
           we need `dateLabel` to be after `renderedMessage`.
       */}
-      {dateLabel && <div>{dateLabel}</div>}
+      {dateLabel && <div className={styles.dateLabel}>{dateLabel}</div>}
     </>
   );
 };

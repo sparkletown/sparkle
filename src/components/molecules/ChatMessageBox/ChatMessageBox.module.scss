@@ -1,0 +1,44 @@
+@use "scss/attendee/space";
+
+.chatMessageBoxForm {
+  padding: space.empty(1.5);
+  display: flex;
+  flex-direction: row;
+
+  > div:first-child {
+    flex-grow: 1;
+  }
+
+  input {
+    padding: space.empty(1);
+    // Additional space for the emoji picker
+    padding-right: space.empty(3.5);
+    background-color: #e6e6e6;
+    border: none;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+    width: 100%;
+    &:focus {
+      outline: none;
+    }
+  }
+  svg {
+    padding-right: space.empty(1);
+  }
+
+  button {
+    border: none;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+    background-color: #e6e6e6;
+    padding: 0 space.empty(1);
+    cursor: pointer;
+  }
+}
+
+.separator {
+  width: 1px;
+  background: #acacac;
+  border-top: solid space.empty(0.5) #e6e6e6;
+  border-bottom: solid space.empty(0.5) #e6e6e6;
+}

@@ -1,0 +1,22 @@
+@use "scss/attendee/space";
+
+.chatMessageInfo {
+  display: flex;
+  &__isMine {
+    justify-content: right;
+    .authorName {
+      display: none;
+    }
+  }
+
+  svg {
+    color: #888888;
+    // Slight alignment tweak
+    margin-top: 3px;
+    margin-left: space.empty(0.5);
+  }
+}
+
+.messageTime {
+  color: #888888;
+}
