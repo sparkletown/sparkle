@@ -42,8 +42,8 @@ import { generateUrl } from "utils/url";
 import { spaceEditSchema } from "forms/spaceEditSchema";
 
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
-import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useFetchAssets } from "hooks/useFetchAssets";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useUser } from "hooks/useUser";
 
 import { BackgroundSelect } from "pages/Admin/BackgroundSelect";
@@ -194,26 +194,26 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
 
   const isReactionsMutedDisabled = !values?.showReactions;
 
-  const { ownedVenues } = useOwnedVenues({});
+  const { relatedVenues } = useRelatedVenues({});
 
   const backButtonOptionList = useMemo(
     () =>
       Object.fromEntries(
-        ownedVenues
+        relatedVenues
           .filter(
             ({ id, worldId }) => !(space.worldId !== worldId || id === space.id)
           )
           .map((venue) => [venue.id, venue])
       ),
-    [ownedVenues, space.worldId, space.id]
+    [relatedVenues, space.worldId, space.id]
   );
 
   const parentSpace = useMemo(
     () =>
       space.parentId
-        ? ownedVenues.find(({ id }) => id === space.parentId)
+        ? relatedVenues.find(({ id }) => id === space.parentId)
         : { name: "" },
-    [ownedVenues, space.parentId]
+    [relatedVenues, space.parentId]
   );
 
   const { name: watchedName } = watch();
@@ -293,7 +293,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
               />
             </AdminSection>
             <AdminSection
-              title="Select the parent space for the “back” button"
+              title="Select the space for the “back” button"
               withLabel
             >
               <SpacesDropdown
@@ -353,26 +353,26 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
           {BACKGROUND_IMG_TEMPLATES.includes(
             space.template as VenueTemplate
           ) && (
-            <AdminSidebarAccordion title="Map background">
-              <BackgroundSelect
-                isLoadingBackgrounds={isLoadingBackgrounds}
-                mapBackgrounds={mapBackgrounds}
-                venueName={space.name}
-                spaceSlug={space.slug}
-                worldId={space.worldId}
-                venueId={space.id}
-              />
-              {errorFetchBackgrounds && (
-                <>
-                  <div>
-                    The preset map backgrounds could not be fetched. Please,
-                    refresh the page or upload a custom map background.
-                  </div>
-                  <div>Error: {errorFetchBackgrounds.message}</div>
-                </>
-              )}
-            </AdminSidebarAccordion>
-          )}
+              <AdminSidebarAccordion title="Map background">
+                <BackgroundSelect
+                  isLoadingBackgrounds={isLoadingBackgrounds}
+                  mapBackgrounds={mapBackgrounds}
+                  venueName={space.name}
+                  spaceSlug={space.slug}
+                  worldId={space.worldId}
+                  venueId={space.id}
+                />
+                {errorFetchBackgrounds && (
+                  <>
+                    <div>
+                      The preset map backgrounds could not be fetched. Please,
+                      refresh the page or upload a custom map background.
+                    </div>
+                    <div>Error: {errorFetchBackgrounds.message}</div>
+                  </>
+                )}
+              </AdminSidebarAccordion>
+            )}
 
           <AdminSidebarAccordion title="Embedable content" open>
             {space.template &&
