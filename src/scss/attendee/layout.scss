@@ -6,7 +6,14 @@ $h-video-chat: 160px; // previously named $video-chat-height
 $w-space-info: 420px;
 $h-chat-controls: 42px;
 
-$chat-avatar-size: 42px;
-
 // Button height plus padding
 $top-nav-height: 42px + 2 * space.empty(1);
+
+// TODO Only medium has had its size set. The other sizes need configuring
+// which is why they're odd values.
+$avatarSizes: (
+  small: 1px,
+  medium: 42px,
+  large: 504px,
+  xlarge: 1000px,
+);

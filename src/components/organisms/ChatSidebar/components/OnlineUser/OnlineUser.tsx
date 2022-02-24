@@ -16,7 +16,7 @@ export interface OnlineUserProps {
 export const OnlineUser: React.FC<OnlineUserProps> = ({ user, onClick }) => {
   return (
     <div className={styles.onlineUserContainer} onClick={onClick}>
-      <UserAvatar containerClassName={styles.avatarContainer} user={user} />
+      <UserAvatar user={user} size="medium" />
       <div>{user.partyName}</div>
     </div>
   );

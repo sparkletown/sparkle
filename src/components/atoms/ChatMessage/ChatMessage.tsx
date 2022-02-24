@@ -29,7 +29,11 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
   return (
     <div className={rowClassnames}>
       <div className={styles.avatarSpacer} />
-      <UserAvatar containerClassName={styles.avatarContainer} user={fromUser} />
+      <UserAvatar
+        containerClassName={styles.avatarContainer}
+        user={fromUser}
+        size="medium"
+      />
 
       <div className={styles.chatMessageBody}>
         <ChatMessageInfo message={message} />

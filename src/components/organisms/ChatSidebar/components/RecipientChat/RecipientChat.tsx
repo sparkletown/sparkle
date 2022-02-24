@@ -56,11 +56,7 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({ recipient }) => {
           className={styles.backIcon}
           size="sm"
         />
-        <UserAvatar
-          containerClassName={styles.avatarContainer}
-          user={recipient}
-          showStatus
-        />
+        <UserAvatar size="medium" user={recipient} />
         <div className="recipient-chat__nickname">{recipient.partyName}</div>
       </div>
       <ChatboxContextProvider preloadedThreads={replies} {...actions}>

@@ -16,7 +16,7 @@ import {
 
 import { useVenueUserStatuses } from "hooks/useVenueUserStatuses";
 
-import "./UserAvatar.scss";
+import styles from "./UserAvatar.module.scss";
 
 export type UserAvatarSize = "small" | "medium" | "large" | "xlarge" | "full";
 
@@ -32,10 +32,10 @@ export interface UserAvatarProps extends ContainerClassName {
   size?: UserAvatarSize;
 }
 
-// @debt The avatar sizes are a duplicate of $avatar-sizes-map inside UserAvatar.scss
+// @debt The avatar sizes are a duplicate of $avatar-sizes-map inside UserAvatar.module.scss
 const AVATAR_SIZE_MAP: { [key in UserAvatarSize]: number | null } = {
   small: 25,
-  medium: 40,
+  medium: 42,
   large: 54,
   xlarge: 100,
   full: null,
@@ -76,10 +76,15 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
 
   const userDisplayName: string = user?.partyName ?? DEFAULT_PARTY_NAME;
 
-  const containerClasses = classNames("UserAvatar", containerClassName, {
-    "UserAvatar--clickable": onClick !== undefined,
-    [`UserAvatar--${size}`]: size,
-  });
+  const sizeStyleName = `avatarContainer__${size}`;
+
+  const containerClasses = classNames(
+    styles.avatarContainer,
+    size && styles[sizeStyleName],
+    containerClassName
+  );
+
+  console.log("containers", containerClasses, sizeStyleName, size, styles);
 
   const status = user?.status;
 

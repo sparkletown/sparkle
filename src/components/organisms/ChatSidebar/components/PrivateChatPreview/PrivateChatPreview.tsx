@@ -34,6 +34,7 @@ export const PrivateChatPreview: React.FC<PrivateChatPreviewProps> = ({
       <UserAvatar
         containerClassName={styles.avatarContainer}
         user={counterPartyUser}
+        size="medium"
       />
       <div className={styles.chatBodyContainer}>
         <div className={styles.chatPreviewInfo}>
