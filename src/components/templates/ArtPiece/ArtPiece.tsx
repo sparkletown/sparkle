@@ -13,14 +13,12 @@ import { VideoAspectRatio } from "types/VideoAspectRatio";
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { WithId } from "utils/id";
 
+import { VenueWithOverlay } from "components/atoms/VenueWithOverlay/VenueWithOverlay";
+import { InformationCard } from "components/molecules/InformationCard";
+import { Loading } from "components/molecules/Loading";
 import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 import { Room } from "components/organisms/Room";
-
-import { InformationCard } from "components/molecules/InformationCard";
-import { Loading } from "components/molecules/Loading";
-
-import { VenueWithOverlay } from "components/atoms/VenueWithOverlay/VenueWithOverlay";
 
 import "./ArtPiece.scss";
 

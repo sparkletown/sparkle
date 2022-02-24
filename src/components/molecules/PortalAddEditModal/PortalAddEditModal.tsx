@@ -4,9 +4,8 @@ import { PortalInfoItem } from "settings";
 
 import { Room } from "types/rooms";
 
-import { PortalAddEditForm } from "components/organisms/PortalAddEditForm";
-
 import { Modal } from "components/molecules/Modal";
+import { PortalAddEditForm } from "components/organisms/PortalAddEditForm";
 
 type PortalAddEditModalProps = {
   item?: PortalInfoItem;

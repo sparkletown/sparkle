@@ -6,10 +6,9 @@ import { JazzbarVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
+import { InformationCard } from "components/molecules/InformationCard";
 import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
-
-import { InformationCard } from "components/molecules/InformationCard";
 
 import "./JazzBarSkeletonPage.scss";
 

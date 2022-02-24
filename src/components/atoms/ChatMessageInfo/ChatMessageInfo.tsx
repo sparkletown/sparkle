@@ -10,12 +10,11 @@ import { formatTimeLocalised } from "utils/time";
 
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 
+import { UserAvatar } from "components/atoms/UserAvatar";
 import {
   useChatboxDeleteChatMessage,
   useChatboxDeleteThreadMessage,
 } from "components/molecules/Chatbox/components/context/ChatboxContext";
-
-import { UserAvatar } from "components/atoms/UserAvatar";
 
 import "./ChatMessageInfo.scss";
 

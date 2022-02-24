@@ -1,9 +1,9 @@
-import { Participant } from "components/attendee/VideoComms/types";
-
 import { RoomVisibility } from "types/RoomVisibility";
 import { DisplayUser } from "types/User";
 
 import { WithId } from "utils/id";
+
+import { Participant } from "components/attendee/VideoComms/types";
 
 import { SoundConfigReference } from "./sounds";
 import { PortalTemplate } from "./venues";

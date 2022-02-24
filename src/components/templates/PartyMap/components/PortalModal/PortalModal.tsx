@@ -3,9 +3,8 @@ import React from "react";
 import { Room, RoomType } from "types/rooms";
 import { WorldEvent } from "types/venues";
 
-import { VideoModal } from "components/organisms/VideoModal";
-
 import { Modal } from "components/molecules/Modal";
+import { VideoModal } from "components/organisms/VideoModal";
 
 import { PortalModalContent } from "./PortalModalContent";
 

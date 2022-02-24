@@ -12,11 +12,10 @@ import { generateUrl } from "utils/url";
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useUser } from "hooks/useUser";
 
-import { Loading } from "components/molecules/Loading";
-import { LoadingPage } from "components/molecules/LoadingPage";
-
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { NotFound } from "components/atoms/NotFound";
+import { Loading } from "components/molecules/Loading";
+import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { updateUserProfile } from "./helpers";
 

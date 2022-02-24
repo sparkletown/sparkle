@@ -17,13 +17,12 @@ import { WithId } from "utils/id";
 import { useAllAuditoriumSections } from "hooks/auditorium";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 
-import { Loading } from "components/molecules/Loading";
-
 import { BackButton } from "components/atoms/BackButton";
 import { ButtonOG } from "components/atoms/ButtonOG";
 import { Checkbox } from "components/atoms/Checkbox";
 import { IFrame } from "components/atoms/IFrame";
 import { VenueWithOverlay } from "components/atoms/VenueWithOverlay/VenueWithOverlay";
+import { Loading } from "components/molecules/Loading";
 
 import { SectionPreview } from "../SectionPreview";
 

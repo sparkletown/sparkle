@@ -3,11 +3,9 @@ import classNames from "classnames";
 
 import { generateId } from "utils/string";
 
-import { RadioModal } from "components/organisms/RadioModal/RadioModal";
-
-import { Popover } from "components/molecules/Popover";
-
 import { ButtonNG } from "components/atoms/ButtonNG";
+import { Popover } from "components/molecules/Popover";
+import { RadioModal } from "components/organisms/RadioModal/RadioModal";
 
 import "./NormalRadio.scss";
 

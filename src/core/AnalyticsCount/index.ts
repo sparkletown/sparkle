@@ -1,6 +1,7 @@
+import { compose } from "lodash/fp";
+
 import { withWorldOrSpace } from "components/hocs/db/withWorldOrSpace";
 import { withChildren } from "components/hocs/gate/withChildren";
-import { compose } from "lodash/fp";
 
 import {
   AnalyticsCount as _AnalyticsCount,

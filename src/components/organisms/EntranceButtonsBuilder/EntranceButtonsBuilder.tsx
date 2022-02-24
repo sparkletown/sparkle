@@ -9,11 +9,9 @@ import {
 import { EntranceStepButtonConfig } from "types/EntranceStep";
 import { WorldEntranceFormInput } from "types/world";
 
-import { AdminSidebarSectionSubTitle } from "components/organisms/AdminVenueView/components/AdminSidebarSectionSubTitle";
-
-import { EntranceButtonsInputFieldSet } from "components/molecules/EntranceButtonsInputFieldSet";
-
 import { ButtonNG } from "components/atoms/ButtonNG";
+import { EntranceButtonsInputFieldSet } from "components/molecules/EntranceButtonsInputFieldSet";
+import { AdminSidebarSectionSubTitle } from "components/organisms/AdminVenueView/components/AdminSidebarSectionSubTitle";
 
 import "./EntranceButtonsBuilder.scss";
 

@@ -1,3 +1,9 @@
+import Twilio from "twilio-video";
+
+import { getTwilioVideoToken } from "api/video";
+
+import { isDefined } from "utils/types";
+
 import {
   AudioTrack,
   JoinChannelOptions,
@@ -8,11 +14,6 @@ import {
   VideoSource,
   VideoTrack,
 } from "components/attendee/VideoComms/types";
-import Twilio from "twilio-video";
-
-import { getTwilioVideoToken } from "api/video";
-
-import { isDefined } from "utils/types";
 
 const TRACK_NAME_SCREENSHARE = "screenshare";
 

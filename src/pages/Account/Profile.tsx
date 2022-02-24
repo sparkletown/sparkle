@@ -2,7 +2,6 @@ import React from "react";
 import { useForm, useFormState } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn } from "react-use";
-import { useBackgroundGradient } from "components/attendee/useBackgroundGradient";
 
 import {
   ACCOUNT_PROFILE_QUESTIONS_URL,
@@ -15,10 +14,10 @@ import { generateUrl } from "utils/url";
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useUser } from "hooks/useUser";
 
+import { ButtonNG } from "components/atoms/ButtonNG";
+import { useBackgroundGradient } from "components/attendee/useBackgroundGradient";
 import { Loading } from "components/molecules/Loading";
 import { ProfilePictureInput } from "components/molecules/ProfilePictureInput";
-
-import { ButtonNG } from "components/atoms/ButtonNG";
 
 import "firebase/storage";
 

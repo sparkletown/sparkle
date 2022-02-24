@@ -1,5 +1,4 @@
 import React, { useCallback, useMemo } from "react";
-import { VideoCommsParticipant } from "components/attendee/VideoComms/VideoCommsParticipant";
 
 import { User } from "types/User";
 import { AnimateMapVenue } from "types/venues";
@@ -8,6 +7,7 @@ import { useVideoRoomState } from "hooks/twilio/useVideoRoomState";
 import { useUser } from "hooks/useUser";
 
 import { ButtonOG } from "components/atoms/ButtonOG";
+import { VideoCommsParticipant } from "components/attendee/VideoComms/VideoCommsParticipant";
 
 import "./FirebarrelWidget.scss";
 

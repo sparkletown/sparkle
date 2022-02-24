@@ -11,10 +11,9 @@ import { VenueTemplate } from "types/VenueTemplate";
 import { useAdminRole } from "hooks/user/useAdminRole";
 import { useShowHide } from "hooks/useShowHide";
 
-import { Modal } from "components/molecules/Modal";
-
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { UserAvatar } from "components/atoms/UserAvatar";
+import { Modal } from "components/molecules/Modal";
 
 import PortalCloseIcon from "assets/icons/icon-close-portal.svg";
 

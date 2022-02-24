@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useVideoHuddle } from "components/attendee/VideoHuddle/useVideoHuddle";
 import { groupBy } from "lodash";
 
 import { ALLOWED_EMPTY_TABLES_NUMBER } from "settings";
@@ -22,11 +21,11 @@ import { useShowHide } from "hooks/useShowHide";
 import { useUpdateTableRecentSeatedUsers } from "hooks/useUpdateRecentSeatedUsers";
 import { useUser } from "hooks/useUser";
 
+import { ButtonNG } from "components/atoms/ButtonNG";
+import { useVideoHuddle } from "components/attendee/VideoHuddle/useVideoHuddle";
 import { Loading } from "components/molecules/Loading";
 import { Modal } from "components/molecules/Modal";
 import { StartTable } from "components/molecules/StartTable";
-
-import { ButtonNG } from "components/atoms/ButtonNG";
 
 import { TableComponent } from "../TableComponent";
 

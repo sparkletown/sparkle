@@ -22,11 +22,9 @@ import { useDebounceSearch } from "hooks/useDebounceSearch";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 
-import { PortalModal } from "components/templates/PartyMap/components/PortalModal";
-
-import { Loading } from "components/molecules/Loading";
-
 import { InputField } from "components/atoms/InputField";
+import { Loading } from "components/molecules/Loading";
+import { PortalModal } from "components/templates/PartyMap/components/PortalModal";
 
 import { NavSearchResult } from "./NavSearchResult";
 

@@ -30,10 +30,9 @@ import { generateAttendeeInsideUrl, generateUrl } from "utils/url";
 import { useWorldEvents } from "hooks/events";
 import { useValidImage } from "hooks/useCheckImage";
 
-import { RenderMarkdown } from "components/organisms/RenderMarkdown";
-
 import { InformationCard } from "components/molecules/InformationCard";
 import { SecretPasswordForm } from "components/molecules/SecretPasswordForm";
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 dayjs.extend(advancedFormat);
 

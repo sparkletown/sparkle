@@ -7,15 +7,13 @@ import { useSpaceEvents } from "hooks/events";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useShowHide } from "hooks/useShowHide";
 
+import { ButtonNG } from "components/atoms/ButtonNG";
+import { Checkbox } from "components/atoms/Checkbox";
+import { Loading } from "components/molecules/Loading";
 import { TimingDeleteModal } from "components/organisms/TimingDeleteModal";
 import { TimingEvent } from "components/organisms/TimingEvent";
 import { TimingEventModal } from "components/organisms/TimingEventModal";
 import { TimingSpace } from "components/organisms/TimingSpace";
-
-import { Loading } from "components/molecules/Loading";
-
-import { ButtonNG } from "components/atoms/ButtonNG";
-import { Checkbox } from "components/atoms/Checkbox";
 
 import "./EventsView.scss";
 

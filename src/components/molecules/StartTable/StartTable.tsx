@@ -8,9 +8,8 @@ import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
-import { Loading } from "components/molecules/Loading";
-
 import { ButtonNG } from "components/atoms/ButtonNG";
+import { Loading } from "components/molecules/Loading";
 
 import styles from "./StartTable.module.scss";
 

@@ -8,9 +8,8 @@ import {
   WorldWithId,
 } from "types/id";
 
-import { WithNavigationBar } from "components/organisms/WithNavigationBar";
-
 import { NotFound } from "components/atoms/NotFound";
+import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
 import { VenueLandingPageContent } from "./VenueLandingPageContent";
 

@@ -20,12 +20,10 @@ import useVenueScheduleEvents from "hooks/useVenueScheduleEvents";
 
 import { Login } from "pages/Account/Login";
 
-import { WithNavigationBar } from "components/organisms/WithNavigationBar";
-
+import { NotFound } from "components/atoms/NotFound";
 import { LoadingPage } from "components/molecules/LoadingPage";
 import { ScheduleEventSubList } from "components/molecules/ScheduleEventList/ScheduleEventSubList";
-
-import { NotFound } from "components/atoms/NotFound";
+import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
 import { EmergencyViewPagePortals } from "./EmergencyViewPagePortals";
 import EmergencyViewTabs from "./EmergencyViewTabs";

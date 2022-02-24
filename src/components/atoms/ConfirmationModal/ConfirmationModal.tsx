@@ -2,10 +2,9 @@ import React, { useCallback, useState } from "react";
 
 import { isTruthy } from "utils/types";
 
-import { Modal } from "components/molecules/Modal";
-
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { ButtonVariant } from "components/atoms/ButtonNG/ButtonNG";
+import { Modal } from "components/molecules/Modal";
 
 import "./ConfirmationModal.scss";
 

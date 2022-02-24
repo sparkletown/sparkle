@@ -59,8 +59,19 @@
         "classPropertiesAllowed": false
       }
     ],
-    "prefer-arrow-callback": ["error", { "allowNamedFunctions": true }],
-    "func-style": ["error", "expression", { "allowArrowFunctions": true }],
+    "prefer-arrow-callback": [
+      "error",
+      {
+        "allowNamedFunctions": true
+      }
+    ],
+    "func-style": [
+      "error",
+      "expression",
+      {
+        "allowArrowFunctions": true
+      }
+    ],
     "no-restricted-imports": [
       "error",
       {
@@ -119,10 +130,7 @@
           ["^(forms)(/.*|$)"],
           ["^(hooks)(/.*|$)"],
           ["^(pages)(/.*|$)"],
-          ["^(components/templates)(/.*|$)"],
-          ["^(components/organisms)(/.*|$)"],
-          ["^(components/molecules)(/.*|$)"],
-          ["^(components/atoms)(/.*|$)"],
+          ["^(components)(/.*|$)"],
           // Side effect imports.
           ["^\\u0000"],
           // Parent imports. Put `..` last.

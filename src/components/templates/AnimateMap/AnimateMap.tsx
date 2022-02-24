@@ -15,9 +15,8 @@ import { WithId } from "utils/id";
 
 import { useDispatch } from "hooks/useDispatch";
 
-import { AnimateMapErrorPrompt } from "components/templates/AnimateMap/components/AnimateMapErrorPrompt";
-
 import { LoadingSpinner } from "components/atoms/LoadingSpinner";
+import { AnimateMapErrorPrompt } from "components/templates/AnimateMap/components/AnimateMapErrorPrompt";
 
 import { CloudDataProviderWrapper } from "./bridges/CloudDataProviderWrapper";
 import { CloudDataProvider } from "./bridges/DataProvider/CloudDataProvider";

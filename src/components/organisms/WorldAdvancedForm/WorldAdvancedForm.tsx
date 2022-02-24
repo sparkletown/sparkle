@@ -16,16 +16,14 @@ import { emptyObjectSchema } from "forms/emptyObjectSchema";
 
 import { useUser } from "hooks/useUser";
 
-import { AdminSidebarButtons } from "components/organisms/AdminVenueView/components/AdminSidebarButtons";
-
+import { ButtonNG } from "components/atoms/ButtonNG";
 import { AdminCheckbox } from "components/molecules/AdminCheckbox";
 import { AdminInput } from "components/molecules/AdminInput";
 import { AdminSection } from "components/molecules/AdminSection";
 import { AdminUserStatusInput } from "components/molecules/AdminUserStatusInput";
 import { FormErrors } from "components/molecules/FormErrors";
 import { SubmitError } from "components/molecules/SubmitError";
-
-import { ButtonNG } from "components/atoms/ButtonNG";
+import { AdminSidebarButtons } from "components/organisms/AdminVenueView/components/AdminSidebarButtons";
 
 import "./WorldAdvancedForm.scss";
 

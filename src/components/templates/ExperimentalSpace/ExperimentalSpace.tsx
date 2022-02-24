@@ -1,13 +1,4 @@
 import React, { useCallback, useEffect, useMemo } from "react";
-import {
-  Participant,
-  VideoSource,
-  VideoTrack,
-} from "components/attendee/VideoComms/types";
-import { VideoTrackDisplay } from "components/attendee/VideoComms/VideoTrackDisplay";
-import { useVideoHuddle } from "components/attendee/VideoHuddle/useVideoHuddle";
-import { withCurrentUserId } from "components/hocs/db/withCurrentUserId";
-import { withRequired } from "components/hocs/gate/withRequired";
 import { compose } from "lodash/fp";
 
 import { COLLECTION_EXPERIMENTS } from "settings";
@@ -23,6 +14,15 @@ import { useRefiDocument } from "hooks/fire/useRefiDocument";
 import { useProfileById } from "hooks/user/useProfileById";
 
 import { Dropdown } from "components/atoms/Dropdown";
+import {
+  Participant,
+  VideoSource,
+  VideoTrack,
+} from "components/attendee/VideoComms/types";
+import { VideoTrackDisplay } from "components/attendee/VideoComms/VideoTrackDisplay";
+import { useVideoHuddle } from "components/attendee/VideoHuddle/useVideoHuddle";
+import { withCurrentUserId } from "components/hocs/db/withCurrentUserId";
+import { withRequired } from "components/hocs/gate/withRequired";
 
 import styles from "./ExperimentalSpace.module.scss";
 

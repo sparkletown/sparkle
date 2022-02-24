@@ -1,6 +1,5 @@
 import React from "react";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import { AdminLayout } from "components/layouts/AdminLayout";
 
 import { ADMIN_IA_WORLD_BASE_URL } from "settings";
 
@@ -13,15 +12,14 @@ import { WorldEditorAdvancedPanel } from "pages/WorldEditor/WorldEditorAdvancedP
 import { WorldEditorEntrancePanel } from "pages/WorldEditor/WorldEditorEntrancePanel";
 import { WorldEditorGeneralPanel } from "pages/WorldEditor/WorldEditorGeneralPanel";
 
-import { WithNavigationBar } from "components/organisms/WithNavigationBar";
-
+import { AdminRestricted } from "components/atoms/AdminRestricted";
+import { ButtonNG } from "components/atoms/ButtonNG";
+import { AdminLayout } from "components/layouts/AdminLayout";
 import { AdminTitle } from "components/molecules/AdminTitle";
 import { AdminTitleBar } from "components/molecules/AdminTitleBar";
 import { LoadingPage } from "components/molecules/LoadingPage";
 import { WorldNav } from "components/molecules/WorldNav";
-
-import { AdminRestricted } from "components/atoms/AdminRestricted";
-import { ButtonNG } from "components/atoms/ButtonNG";
+import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
 import "./WorldEditor.scss";
 

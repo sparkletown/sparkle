@@ -10,9 +10,8 @@ import { WithId } from "utils/id";
 
 import { useShowHide } from "hooks/useShowHide";
 
-import { ScreeningRoomVideoAddEditModal } from "components/molecules/ScreeningRoomVideoAddEditModal";
-
 import { ConfirmationModal } from "components/atoms/ConfirmationModal/ConfirmationModal";
+import { ScreeningRoomVideoAddEditModal } from "components/molecules/ScreeningRoomVideoAddEditModal";
 
 import "./ScreeningRoomVideosStripForm.scss";
 

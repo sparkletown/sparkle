@@ -10,12 +10,10 @@ import {
 import { EntranceStepConfig } from "types/EntranceStep";
 import { WorldEntranceFormInput } from "types/world";
 
-import { AdminSidebarSectionSubTitle } from "components/organisms/AdminVenueView/components/AdminSidebarSectionSubTitle";
-
+import { ButtonNG } from "components/atoms/ButtonNG";
 import { EntranceStepsInputFieldSet } from "components/molecules/EntranceStepsInputFieldSet";
 import { FormErrors } from "components/molecules/FormErrors";
-
-import { ButtonNG } from "components/atoms/ButtonNG";
+import { AdminSidebarSectionSubTitle } from "components/organisms/AdminVenueView/components/AdminSidebarSectionSubTitle";
 
 import "./EntranceStepsBuilder.scss";
 

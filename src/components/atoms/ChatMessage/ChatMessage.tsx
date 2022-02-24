@@ -10,13 +10,11 @@ import { WithId } from "utils/id";
 
 import { useIsCurrentUser } from "hooks/useIsCurrentUser";
 
-import { RenderMarkdown } from "components/organisms/RenderMarkdown";
-
-import { useSelectThisReplyThread } from "components/molecules/Chatbox/components/context/ChatboxContext";
-
 import { ChatMessageInfo } from "components/atoms/ChatMessageInfo";
 import { ChatMessageReplies } from "components/atoms/ChatMessageReplies";
 import { TextButton } from "components/atoms/TextButton";
+import { useSelectThisReplyThread } from "components/molecules/Chatbox/components/context/ChatboxContext";
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 export interface ChatMessageProps {
   message: WithId<MessageToDisplay>;

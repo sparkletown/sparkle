@@ -1,8 +1,5 @@
 import React, { useCallback } from "react";
 import { Redirect, useHistory, useParams } from "react-router-dom";
-import { WithAuthProps } from "components/hocs/db/withAuth";
-import { WithProfileProps } from "components/hocs/db/withProfile";
-import { WithWorldOrSpaceProps } from "components/hocs/db/withWorldOrSpace";
 
 import {
   ACCOUNT_PROFILE_VENUE_PARAM_URL,
@@ -18,6 +15,10 @@ import { isCompleteProfile } from "utils/profile";
 import { generateAttendeeInsideUrl, generateUrl } from "utils/url";
 
 import { WelcomeVideo } from "pages/entrance/WelcomeVideo";
+
+import { WithAuthProps } from "components/hocs/db/withAuth";
+import { WithProfileProps } from "components/hocs/db/withProfile";
+import { WithWorldOrSpaceProps } from "components/hocs/db/withWorldOrSpace";
 
 const ENTRANCE_STEP_TEMPLATE: Record<
   EntranceStepTemplate,

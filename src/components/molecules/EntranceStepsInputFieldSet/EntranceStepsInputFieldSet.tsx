@@ -11,12 +11,10 @@ import {
 import { EntranceStepConfig } from "types/EntranceStep";
 import { WorldEntranceFormInput } from "types/world";
 
-import { EntranceButtonsBuilder } from "components/organisms/EntranceButtonsBuilder";
-
+import { ButtonNG } from "components/atoms/ButtonNG";
 import { AdminInput } from "components/molecules/AdminInput";
 import { FormErrors } from "components/molecules/FormErrors";
-
-import { ButtonNG } from "components/atoms/ButtonNG";
+import { EntranceButtonsBuilder } from "components/organisms/EntranceButtonsBuilder";
 
 import "./EntranceStepsInputFieldSet.scss";
 

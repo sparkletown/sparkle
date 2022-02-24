@@ -14,9 +14,8 @@ import { useShowHide } from "hooks/useShowHide";
 
 import { VenueOwnersModal } from "pages/Admin/VenueOwnersModal";
 
-import { RunTabUserInfo } from "components/organisms/AdminVenueView/components/RunTabUserInfo";
-
 import { ButtonNG } from "components/atoms/ButtonNG";
+import { RunTabUserInfo } from "components/organisms/AdminVenueView/components/RunTabUserInfo";
 
 interface RunTabSidebarProps {
   space: SpaceWithId;

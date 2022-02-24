@@ -23,16 +23,14 @@ import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useRadio } from "hooks/useRadio";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 
-import { NavBarSchedule } from "components/organisms/NavBarSchedule/NavBarSchedule";
-
+import { BackButton } from "components/atoms/BackButton";
+import { UserAvatar } from "components/atoms/UserAvatar";
 import { NormalRadio } from "components/molecules/NavBar/components/NormalRadio";
 import { NavSearchBar } from "components/molecules/NavSearchBar";
 import { Popover } from "components/molecules/Popover";
 import { UpcomingTickets } from "components/molecules/UpcomingTickets";
 import { VenuePartygoers } from "components/molecules/VenuePartygoers";
-
-import { BackButton } from "components/atoms/BackButton";
-import { UserAvatar } from "components/atoms/UserAvatar";
+import { NavBarSchedule } from "components/organisms/NavBarSchedule/NavBarSchedule";
 
 import { NavBarLogin } from "./components/NavBarLogin";
 import { SoundCloudRadio } from "./components/SoundCloudRadio";

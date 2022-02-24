@@ -47,9 +47,11 @@ import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { BackgroundSelect } from "pages/Admin/BackgroundSelect";
 
-import { AdminSidebarButtons } from "components/organisms/AdminVenueView/components/AdminSidebarButtons";
-import { AdminSidebarSectionTitle } from "components/organisms/AdminVenueView/components/AdminSidebarSectionTitle";
-
+import { ButtonNG } from "components/atoms/ButtonNG";
+import { ImageInput } from "components/atoms/ImageInput";
+import { InputField } from "components/atoms/InputField";
+import { PortalVisibility } from "components/atoms/PortalVisibility";
+import { SpacesDropdown } from "components/atoms/SpacesDropdown";
 import { AdminCheckbox } from "components/molecules/AdminCheckbox";
 import { AdminInput } from "components/molecules/AdminInput";
 import { AdminSection } from "components/molecules/AdminSection";
@@ -58,12 +60,8 @@ import { AdminTextarea } from "components/molecules/AdminTextarea";
 import { FormErrors } from "components/molecules/FormErrors";
 import { SubmitError } from "components/molecules/SubmitError";
 import { YourUrlDisplay } from "components/molecules/YourUrlDisplay";
-
-import { ButtonNG } from "components/atoms/ButtonNG";
-import { ImageInput } from "components/atoms/ImageInput";
-import { InputField } from "components/atoms/InputField";
-import { PortalVisibility } from "components/atoms/PortalVisibility";
-import { SpacesDropdown } from "components/atoms/SpacesDropdown";
+import { AdminSidebarButtons } from "components/organisms/AdminVenueView/components/AdminSidebarButtons";
+import { AdminSidebarSectionTitle } from "components/organisms/AdminVenueView/components/AdminSidebarSectionTitle";
 
 import "./SpaceEditForm.scss";
 

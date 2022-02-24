@@ -1,9 +1,9 @@
 import { ReactNode, useCallback, useEffect, useState } from "react";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import { Footer } from "components/admin/Footer";
 import { Sidebar } from "components/admin/Sidebar";
-
 import { AdminProfileModal } from "components/organisms/AdminProfileModal";
 
 import "scss/admin/initial.scss";

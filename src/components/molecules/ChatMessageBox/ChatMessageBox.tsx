@@ -11,13 +11,12 @@ import { ChatTypes, SendChatMessage, SendThreadMessageProps } from "types/chat";
 import { useChatSidebarControls } from "hooks/chats/util/useChatSidebarControls";
 import { useShowHide } from "hooks/useShowHide";
 
+import { InputField } from "components/atoms/InputField";
 import {
   useChatboxSendChatMessage,
   useSelectedReplyThread,
 } from "components/molecules/Chatbox/components/context/ChatboxContext";
 import { EmojiPicker } from "components/molecules/EmojiPicker";
-
-import { InputField } from "components/atoms/InputField";
 
 import SendIcon from "assets/icons/send.svg";
 

@@ -23,15 +23,13 @@ import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 
-import { PrettyLink } from "components/organisms/AdminVenueView/components/PrettyLink";
-
+import { PortalIcon } from "components/atoms/PortalIcon";
 import { AdminCheckbox } from "components/molecules/AdminCheckbox";
 import { FormErrors } from "components/molecules/FormErrors";
 import { Loading } from "components/molecules/Loading";
 import { PortalAddEditModal } from "components/molecules/PortalAddEditModal";
 import { SubmitError } from "components/molecules/SubmitError";
-
-import { PortalIcon } from "components/atoms/PortalIcon";
+import { PrettyLink } from "components/organisms/AdminVenueView/components/PrettyLink";
 
 import "./PortalStripForm.scss";
 

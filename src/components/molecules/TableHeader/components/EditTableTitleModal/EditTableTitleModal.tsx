@@ -10,10 +10,9 @@ import { Table } from "types/Table";
 
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 
-import { Modal } from "components/molecules/Modal";
-
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { InputField } from "components/atoms/InputField";
+import { Modal } from "components/molecules/Modal";
 
 import "./EditTableTitleModal.scss";
 

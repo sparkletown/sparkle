@@ -27,11 +27,10 @@ import { useUser } from "hooks/useUser";
 import useVenueScheduleEvents from "hooks/useVenueScheduleEvents";
 import { useWorldParams } from "hooks/worlds/useWorldParams";
 
-import { Breadcrumbs } from "components/molecules/Breadcrumbs";
-import { Schedule } from "components/molecules/Schedule";
-
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { Toggler } from "components/atoms/Toggler";
+import { Breadcrumbs } from "components/molecules/Breadcrumbs";
+import { Schedule } from "components/molecules/Schedule";
 
 import { prepareForSchedule } from "./utils";
 

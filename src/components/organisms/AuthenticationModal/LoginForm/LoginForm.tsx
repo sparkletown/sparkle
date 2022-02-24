@@ -9,9 +9,8 @@ import { errorMessage, errorStatus } from "utils/error";
 
 import { useSocialSignIn } from "hooks/useSocialSignIn";
 
-import { TicketCodeField } from "components/organisms/TicketCodeField";
-
 import { ButtonNG } from "components/atoms/ButtonNG";
+import { TicketCodeField } from "components/organisms/TicketCodeField";
 
 import fIcon from "assets/icons/facebook-social-icon.svg";
 import gIcon from "assets/icons/google-social-icon.svg";

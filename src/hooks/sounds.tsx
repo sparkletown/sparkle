@@ -7,7 +7,6 @@ import React, {
   useState,
 } from "react";
 import Bugsnag from "@bugsnag/js";
-import { withCurrentUserId } from "components/hocs/db/withCurrentUserId";
 import { HowlOptions } from "howler";
 import { compose } from "lodash/fp";
 import { useSound } from "use-sound";
@@ -26,6 +25,8 @@ import { UserId } from "types/id";
 import { SoundConfigMap, SoundConfigReference } from "types/sounds";
 
 import { isDefined } from "utils/types";
+
+import { withCurrentUserId } from "components/hocs/db/withCurrentUserId";
 
 export type PlaySpriteFunction = (options?: PlaySpriteOptions) => void;
 export type PlaySpriteOptions = Omit<PlayOptions, "id">;

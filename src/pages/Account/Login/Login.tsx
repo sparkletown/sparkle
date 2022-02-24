@@ -1,6 +1,5 @@
 import React, { useCallback, useState } from "react";
 import { useAsync } from "react-use";
-import { useBackgroundGradient } from "components/attendee/useBackgroundGradient";
 
 import { fetchCustomAuthConfig } from "api/auth";
 
@@ -13,13 +12,13 @@ import { openUrl } from "utils/url";
 import { UseAnalyticsResult } from "hooks/useAnalytics";
 import { useSAMLSignIn } from "hooks/useSAMLSignIn";
 
+import { useBackgroundGradient } from "components/attendee/useBackgroundGradient";
+import { LoadingPage } from "components/molecules/LoadingPage";
 import { InitialForm } from "components/organisms/AuthenticationModal/InitialForm";
 import { LoginForm } from "components/organisms/AuthenticationModal/LoginForm";
 import { LoginFormData } from "components/organisms/AuthenticationModal/LoginForm/LoginForm";
 import { PasswordResetForm } from "components/organisms/AuthenticationModal/PasswordResetForm";
 import { RegisterForm } from "components/organisms/AuthenticationModal/RegisterForm";
-
-import { LoadingPage } from "components/molecules/LoadingPage";
 
 import SAMLLoginIcon from "assets/icons/saml-login-icon.png";
 

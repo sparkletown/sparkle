@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { TableGrid } from "components/attendee/TableGrid";
 
 import {
   ALWAYS_EMPTY_ARRAY,
@@ -20,17 +19,16 @@ import { useShowHide } from "hooks/useShowHide";
 import { useUpdateTableRecentSeatedUsers } from "hooks/useUpdateRecentSeatedUsers";
 import { useUser } from "hooks/useUser";
 
-import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
-import { RenderMarkdown } from "components/organisms/RenderMarkdown";
-import { Room } from "components/organisms/Room";
-
+import { BackButton } from "components/atoms/BackButton";
+import { VenueWithOverlay } from "components/atoms/VenueWithOverlay/VenueWithOverlay";
+import { TableGrid } from "components/attendee/TableGrid";
 import { InformationCard } from "components/molecules/InformationCard";
 import { TableHeader } from "components/molecules/TableHeader";
 import { TablesControlBar } from "components/molecules/TablesControlBar";
 import { UserList } from "components/molecules/UserList";
-
-import { BackButton } from "components/atoms/BackButton";
-import { VenueWithOverlay } from "components/atoms/VenueWithOverlay/VenueWithOverlay";
+import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
+import { Room } from "components/organisms/Room";
 
 import "./ConversationSpace.scss";
 
