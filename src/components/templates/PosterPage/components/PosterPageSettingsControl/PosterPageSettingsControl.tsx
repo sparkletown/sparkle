@@ -3,9 +3,8 @@ import { faCog } from "@fortawesome/free-solid-svg-icons";
 
 import { setVenueLiveStatus } from "api/venue";
 
-import { Popover } from "components/molecules/Popover";
-
 import { Checkbox } from "components/atoms/Checkbox";
+import { Popover } from "components/molecules/Popover";
 
 import { PosterPageControl } from "../PosterPageControl";
 

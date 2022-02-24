@@ -8,13 +8,11 @@ import { AnyVenue } from "types/venues";
 import { WithId } from "utils/id";
 import { getExtraLinkProps, openUrl } from "utils/url";
 
-import { RenderMarkdown } from "components/organisms/RenderMarkdown";
-
-import { UserList } from "components/molecules/UserList";
-
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { SparkleLogoIcon } from "components/atoms/SparkleLogoIcon";
 import { VenueWithOverlay } from "components/atoms/VenueWithOverlay/VenueWithOverlay";
+import { UserList } from "components/molecules/UserList";
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import "./ExternalRoom.scss";
 

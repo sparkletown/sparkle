@@ -9,9 +9,8 @@ import { formatDateRelativeToNow } from "utils/time";
 
 import { useVenuePoll } from "hooks/useVenuePoll";
 
-import { ChatPoll } from "components/molecules/ChatPoll";
-
 import { ChatMessage as ChatMessageComponent } from "components/atoms/ChatMessage";
+import { ChatPoll } from "components/molecules/ChatPoll";
 
 import "./ChatboxMessage.scss";
 

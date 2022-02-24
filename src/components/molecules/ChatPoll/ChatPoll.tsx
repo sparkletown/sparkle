@@ -12,12 +12,10 @@ import { useIsCurrentUser } from "hooks/useIsCurrentUser";
 import { useUser } from "hooks/useUser";
 import { useVenuePoll } from "hooks/useVenuePoll";
 
-import { RenderMarkdown } from "components/organisms/RenderMarkdown";
-
-import { Loading } from "components/molecules/Loading";
-
 import { ButtonOG } from "components/atoms/ButtonOG";
 import { ChatMessageInfo } from "components/atoms/ChatMessageInfo";
+import { Loading } from "components/molecules/Loading";
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import "./ChatPoll.scss";
 

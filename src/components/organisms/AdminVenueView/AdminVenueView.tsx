@@ -26,14 +26,12 @@ import { useShowHide } from "hooks/useShowHide";
 
 import VenueDeleteModal from "pages/Admin/Venue/VenueDeleteModal";
 
-import { SpaceTimingPanel } from "components/organisms/AdminVenueView/components/SpaceTimingPanel";
-
-import { AdminTitle } from "components/molecules/AdminTitle";
-import { AdminTitleBar } from "components/molecules/AdminTitleBar";
-
 import { AdminRestricted } from "components/atoms/AdminRestricted";
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { NotFound } from "components/atoms/NotFound";
+import { AdminTitle } from "components/molecules/AdminTitle";
+import { AdminTitleBar } from "components/molecules/AdminTitleBar";
+import { SpaceTimingPanel } from "components/organisms/AdminVenueView/components/SpaceTimingPanel";
 
 import { WithNavigationBar } from "../WithNavigationBar";
 

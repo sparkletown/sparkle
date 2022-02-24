@@ -1,8 +1,7 @@
 import React, { FC } from "react";
 
-import { Modal } from "components/molecules/Modal";
-
 import { ButtonNG } from "components/atoms/ButtonNG";
+import { Modal } from "components/molecules/Modal";
 
 import "./VideoErrorModal.scss";
 

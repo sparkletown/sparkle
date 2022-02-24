@@ -1,11 +1,9 @@
 import React from "react";
 
-import { RenderMarkdown } from "components/organisms/RenderMarkdown";
-
+import { ChatMessageInfo } from "components/atoms/ChatMessageInfo";
 import { useChatboxThread } from "components/molecules/Chatbox/components/context/ChatboxContext";
 import { Loading } from "components/molecules/Loading";
-
-import { ChatMessageInfo } from "components/atoms/ChatMessageInfo";
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import "./ChatMessageReplies.scss";
 

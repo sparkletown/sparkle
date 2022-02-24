@@ -36,12 +36,10 @@ import { useUserNG } from "hooks/user/useUserNG";
 import { LoginWithCustomToken } from "pages/Account/LoginWithCustomToken";
 import { VersionPage } from "pages/VersionPage/VersionPage";
 
-import { WithNavigationBar } from "components/organisms/WithNavigationBar";
-
-import { LoadingPage } from "components/molecules/LoadingPage";
-
 import { Forbidden } from "components/atoms/Forbidden";
 import { NotFound } from "components/atoms/NotFound";
+import { LoadingPage } from "components/molecules/LoadingPage";
+import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
 const SubAccount = lazy(() =>
   tracePromise("AppRouter::lazy-import::AccountSubrouter", () =>

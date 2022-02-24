@@ -2,9 +2,8 @@ import React from "react";
 
 import { isDefined } from "utils/types";
 
-import { useSelectedReplyThread } from "components/molecules/Chatbox/components/context/ChatboxContext";
-
 import { TextButton } from "components/atoms/TextButton";
+import { useSelectedReplyThread } from "components/molecules/Chatbox/components/context/ChatboxContext";
 
 import "./ChatboxThreadControls.scss";
 

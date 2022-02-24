@@ -1,10 +1,11 @@
 import { Fragment, useRef } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import { Button } from "components/admin/Button";
 
 import { STRING_SPACE, STRING_ZERO_WIDTH_SPACE } from "settings";
 
 import { useProfileModalControls } from "hooks/useProfileModalControls";
+
+import { Button } from "components/admin/Button";
 
 export const AdminProfileModal = () => {
   const {

@@ -1,3 +1,5 @@
+import { compose } from "lodash/fp";
+
 import { withSlugs, WithSlugsProps } from "components/hocs/context/withSlugs";
 import {
   withSpacesBySlug,
@@ -8,7 +10,6 @@ import {
   WithWorldBySlugProps,
 } from "components/hocs/db/withWorldBySlug";
 import { withChildren } from "components/hocs/gate/withChildren";
-import { compose } from "lodash/fp";
 
 export type WithWorldOrSpaceProps = WithSlugsProps &
   WithWorldBySlugProps &

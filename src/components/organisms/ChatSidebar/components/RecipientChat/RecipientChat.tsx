@@ -11,10 +11,9 @@ import { useRecipientChatActions } from "hooks/chats/private/useRecipientChatAct
 import { useChatSidebarControls } from "hooks/chats/util/useChatSidebarControls";
 import { useRenderInfiniteScroll } from "hooks/chats/util/useRenderInfiniteScroll";
 
+import { UserAvatar } from "components/atoms/UserAvatar";
 import { Chatbox } from "components/molecules/Chatbox";
 import { ChatboxContextProvider } from "components/molecules/Chatbox/components/context/ChatboxContext";
-
-import { UserAvatar } from "components/atoms/UserAvatar";
 
 import "./RecipientChat.scss";
 

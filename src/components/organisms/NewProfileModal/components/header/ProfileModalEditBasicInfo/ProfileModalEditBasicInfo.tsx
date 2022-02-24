@@ -15,10 +15,9 @@ import { ContainerClassName } from "types/utility";
 
 import { WithId } from "utils/id";
 
+import { DefaultAvatars } from "components/molecules/DefaultAvatars/DefaultAvatars";
 import { ProfileModalAvatar } from "components/organisms/NewProfileModal/components/header/ProfileModalAvatar";
 import { ProfileModalInput } from "components/organisms/NewProfileModal/components/ProfileModalInput";
-
-import { DefaultAvatars } from "components/molecules/DefaultAvatars/DefaultAvatars";
 
 import "./ProfileModalEditBasicInfo.scss";
 

@@ -17,12 +17,11 @@ import {
 
 import { useUser } from "hooks/useUser";
 
+import { ButtonNG } from "components/atoms/ButtonNG";
 import { AdminDateTime } from "components/molecules/AdminDateTime";
 import { AdminSection } from "components/molecules/AdminSection";
 import { FormErrors } from "components/molecules/FormErrors";
 import { SubmitError } from "components/molecules/SubmitError";
-
-import { ButtonNG } from "components/atoms/ButtonNG";
 
 // NOTE: add the keys of those errors that their respective fields have handled
 const HANDLED_ERRORS: string[] = [

@@ -1,6 +1,5 @@
 import React, { useMemo } from "react";
 import { faStop, faTv } from "@fortawesome/free-solid-svg-icons";
-import { VideoCommsParticipant } from "components/attendee/VideoComms/VideoCommsParticipant";
 
 import { IFRAME_ALLOW, POSTERPAGE_MAX_VIDEO_PARTICIPANTS } from "settings";
 
@@ -10,9 +9,9 @@ import { WithId } from "utils/id";
 
 import { useShowHide } from "hooks/useShowHide";
 
-import { UserList } from "components/molecules/UserList";
-
 import { PosterCategory } from "components/atoms/PosterCategory";
+import { VideoCommsParticipant } from "components/attendee/VideoComms/VideoCommsParticipant";
+import { UserList } from "components/molecules/UserList";
 
 import { IntroVideoPreviewModal } from "./components/IntroVideoPreviewModal";
 import { PosterPageControl } from "./components/PosterPageControl";

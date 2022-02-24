@@ -29,11 +29,10 @@ import { useSocialSignIn } from "hooks/useSocialSignIn";
 
 import { updateUserPrivate } from "pages/Account/helpers";
 
-import { LoginFormData } from "components/organisms/AuthenticationModal/LoginForm/LoginForm";
-import { TicketCodeField } from "components/organisms/TicketCodeField";
-
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { ConfirmationModal } from "components/atoms/ConfirmationModal/ConfirmationModal";
+import { LoginFormData } from "components/organisms/AuthenticationModal/LoginForm/LoginForm";
+import { TicketCodeField } from "components/organisms/TicketCodeField";
 
 import fIcon from "assets/icons/facebook-social-icon.svg";
 import gIcon from "assets/icons/google-social-icon.svg";

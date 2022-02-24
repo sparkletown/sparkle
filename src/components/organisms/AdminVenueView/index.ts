@@ -1,12 +1,11 @@
-import { withAuth } from "components/hocs/db/withAuth";
-import { withWorldOrSpace } from "components/hocs/db/withWorldOrSpace";
-import { withFallback } from "components/hocs/gate/withFallback";
 import { compose } from "lodash/fp";
-
-import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { NotFoundFallback } from "components/atoms/NotFoundFallback";
 import { NotLoggedInFallback } from "components/atoms/NotLoggedInFallback";
+import { withAuth } from "components/hocs/db/withAuth";
+import { withWorldOrSpace } from "components/hocs/db/withWorldOrSpace";
+import { withFallback } from "components/hocs/gate/withFallback";
+import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { AdminVenueView as _AdminVenueView } from "./AdminVenueView";
 

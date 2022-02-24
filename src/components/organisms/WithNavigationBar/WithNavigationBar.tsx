@@ -6,11 +6,9 @@ import { tracePromise } from "utils/performance";
 
 import { RelatedVenuesProvider } from "hooks/useRelatedVenues";
 
-import { NewProfileModal } from "components/organisms/NewProfileModal";
-
-import { Footer } from "components/molecules/Footer";
-
 import { MobileWarning } from "components/atoms/MobileWarning";
+import { Footer } from "components/molecules/Footer";
+import { NewProfileModal } from "components/organisms/NewProfileModal";
 
 import "./WithNavigationBar.scss";
 

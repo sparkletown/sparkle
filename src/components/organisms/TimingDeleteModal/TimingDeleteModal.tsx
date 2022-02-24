@@ -9,11 +9,9 @@ import { deleteEvent, EventInput } from "api/admin";
 
 import { WorldEvent } from "types/venues";
 
-import { RenderMarkdown } from "components/organisms/RenderMarkdown";
-
-import { Modal } from "components/molecules/Modal";
-
 import { ButtonNG } from "components/atoms/ButtonNG";
+import { Modal } from "components/molecules/Modal";
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import "./TimingDeleteModal.scss";
 

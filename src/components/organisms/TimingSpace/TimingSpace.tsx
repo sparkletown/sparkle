@@ -6,9 +6,8 @@ import { WithId } from "utils/id";
 
 import { useShowHide } from "hooks/useShowHide";
 
-import { TimingEvent } from "components/organisms/TimingEvent";
-
 import { ButtonNG } from "components/atoms/ButtonNG";
+import { TimingEvent } from "components/organisms/TimingEvent";
 
 import "./TimingSpace.scss";
 

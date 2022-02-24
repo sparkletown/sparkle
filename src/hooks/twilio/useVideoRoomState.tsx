@@ -1,7 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useAsyncRetry } from "react-use";
-import { useVideoComms } from "components/attendee/VideoComms/hooks";
-import { VideoCommsStatus } from "components/attendee/VideoComms/types";
 
 import { getUser } from "api/profile";
 import { getTwilioVideoToken } from "api/video";
@@ -12,6 +10,8 @@ import { WithId } from "utils/id";
 
 import { useShowHide } from "hooks/useShowHide";
 
+import { useVideoComms } from "components/attendee/VideoComms/hooks";
+import { VideoCommsStatus } from "components/attendee/VideoComms/types";
 import { VideoErrorModal } from "components/organisms/Room/VideoErrorModal";
 
 export const useVideoRoomState = (

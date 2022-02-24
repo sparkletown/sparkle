@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-import { Participant } from "components/attendee/VideoComms/types";
 
 import { ParticipantWithUser } from "types/rooms";
 import { User } from "types/User";
@@ -8,6 +7,8 @@ import { WithId } from "utils/id";
 
 import { useVideoRoomState } from "hooks/twilio/useVideoRoomState";
 import { useUser } from "hooks/useUser";
+
+import { Participant } from "components/attendee/VideoComms/types";
 
 export const usePosterVideo = (venueId: string) => {
   const { userId, userWithId } = useUser();

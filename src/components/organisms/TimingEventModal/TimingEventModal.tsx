@@ -16,9 +16,8 @@ import { eventEditSchema } from "forms/eventEditSchema";
 
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 
-import { Modal } from "components/molecules/Modal";
-
 import { ButtonNG } from "components/atoms/ButtonNG";
+import { Modal } from "components/molecules/Modal";
 
 import "./TimingEventModal.scss";
 

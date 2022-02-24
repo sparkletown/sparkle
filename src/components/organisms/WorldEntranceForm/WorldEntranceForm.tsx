@@ -14,17 +14,15 @@ import { worldEntranceSchema } from "forms/worldEntranceSchema";
 
 import { useUser } from "hooks/useUser";
 
-import { AdminSidebarButtons } from "components/organisms/AdminVenueView/components/AdminSidebarButtons";
-import { EntranceStepsBuilder } from "components/organisms/EntranceStepsBuilder";
-import { QuestionsBuilder } from "components/organisms/QuestionsBuilder";
-
+import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
+import { TesterRestricted } from "components/atoms/TesterRestricted";
 import { AdminCheckbox } from "components/molecules/AdminCheckbox";
 import { AdminSection } from "components/molecules/AdminSection";
 import { FormErrors } from "components/molecules/FormErrors";
 import { SubmitError } from "components/molecules/SubmitError";
-
-import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
-import { TesterRestricted } from "components/atoms/TesterRestricted";
+import { AdminSidebarButtons } from "components/organisms/AdminVenueView/components/AdminSidebarButtons";
+import { EntranceStepsBuilder } from "components/organisms/EntranceStepsBuilder";
+import { QuestionsBuilder } from "components/organisms/QuestionsBuilder";
 
 import "./WorldEntranceForm.scss";
 

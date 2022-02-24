@@ -5,10 +5,9 @@ import { httpsCallable } from "firebase/functions";
 
 import { SPACE_TAXON } from "settings";
 
-import { Modal } from "components/molecules/Modal";
-
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { LoadingSpinner } from "components/atoms/LoadingSpinner";
+import { Modal } from "components/molecules/Modal";
 
 import "./VenueDeleteModal.scss";
 

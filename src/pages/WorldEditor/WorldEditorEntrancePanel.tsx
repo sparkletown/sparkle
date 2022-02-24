@@ -2,13 +2,12 @@ import React from "react";
 
 import { useWorldBySlug } from "hooks/worlds/useWorldBySlug";
 
+import { Loading } from "components/molecules/Loading";
 import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
 import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
 import { AdminSidebar } from "components/organisms/AdminVenueView/components/AdminSidebar";
 import { AdminSidebarTitle } from "components/organisms/AdminVenueView/components/AdminSidebarTitle";
 import { WorldEntranceForm } from "components/organisms/WorldEntranceForm";
-
-import { Loading } from "components/molecules/Loading";
 
 export interface WorldEditorEntrancePanelProps {
   worldSlug?: string;

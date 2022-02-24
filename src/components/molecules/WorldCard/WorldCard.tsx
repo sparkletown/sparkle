@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import { ArrowRightIcon } from "@heroicons/react/solid";
-import { TableRowAvatar } from "components/admin/TableRowAvatar";
 
 import { ADMIN_IA_WORLD_PARAM_URL, DEFAULT_VENUE_LOGO } from "settings";
 
@@ -8,6 +7,8 @@ import { World } from "api/world";
 
 import { WithId } from "utils/id";
 import { generateUrl } from "utils/url";
+
+import { TableRowAvatar } from "components/admin/TableRowAvatar";
 
 interface WorldCardProps {
   world: WithId<World>;

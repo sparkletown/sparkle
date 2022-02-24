@@ -1,5 +1,4 @@
 import React, { useMemo } from "react";
-import { VideoCommsParticipant } from "components/attendee/VideoComms/VideoCommsParticipant";
 
 import { AnyVenue } from "types/venues";
 
@@ -9,6 +8,7 @@ import { WithId } from "utils/id";
 import { useVideoRoomState } from "hooks/twilio/useVideoRoomState";
 import { useUser } from "hooks/useUser";
 
+import { VideoCommsParticipant } from "components/attendee/VideoComms/VideoCommsParticipant";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 
 const DEFAULT_BURN_BARREL_SEATS = 8;

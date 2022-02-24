@@ -1,8 +1,6 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn } from "react-use";
-import { WithSlugsProps } from "components/hocs/context/withSlugs";
-import { WithAuthProps } from "components/hocs/db/withAuth";
 import firebase from "firebase/compat/app";
 
 import {
@@ -20,6 +18,8 @@ import { UseAdminRole } from "hooks/user/useAdminRole";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { SparkleLogo } from "components/atoms/SparkleLogo";
+import { WithSlugsProps } from "components/hocs/context/withSlugs";
+import { WithAuthProps } from "components/hocs/db/withAuth";
 
 import SHAPE_DENIED from "assets/images/access-forbidden.svg";
 

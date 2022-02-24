@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+
 import { AudioTrack } from "components/attendee/VideoComms/types";
 
 interface AudioTrackPlayerProps {

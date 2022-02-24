@@ -1,11 +1,11 @@
 import React, { Fragment, useCallback, useMemo } from "react";
-import { VideoCommsParticipant } from "components/attendee/VideoComms/VideoCommsParticipant";
 
 import { unsetTableSeat } from "api/venue";
 
 import { useVideoRoomState } from "hooks/twilio/useVideoRoomState";
 import { useUser } from "hooks/useUser";
 
+import { VideoCommsParticipant } from "components/attendee/VideoComms/VideoCommsParticipant";
 import { Loading } from "components/molecules/Loading";
 
 import "./Room.scss";

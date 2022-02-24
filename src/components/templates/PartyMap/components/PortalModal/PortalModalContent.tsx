@@ -22,11 +22,9 @@ import { useDispatch } from "hooks/useDispatch";
 import { usePortal } from "hooks/usePortal";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 
-import { RenderMarkdown } from "components/organisms/RenderMarkdown";
-
-import { UserList } from "components/molecules/UserList";
-
 import { ButtonNG } from "components/atoms/ButtonNG";
+import { UserList } from "components/molecules/UserList";
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import { PortalSchedule } from "../PortalSchedule";
 

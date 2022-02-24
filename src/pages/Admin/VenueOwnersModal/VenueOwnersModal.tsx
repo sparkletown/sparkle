@@ -12,9 +12,8 @@ import { AnyVenue, Venue_v2 } from "types/venues";
 import { WithId } from "utils/id";
 import { determineAvatar } from "utils/image";
 
-import { SearchField } from "components/organisms/AdminVenueView/components/SearchField/SearchField";
-
 import { Modal } from "components/molecules/Modal";
+import { SearchField } from "components/organisms/AdminVenueView/components/SearchField/SearchField";
 
 import PortalCloseIcon from "assets/icons/icon-close-portal.svg";
 

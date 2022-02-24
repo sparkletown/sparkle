@@ -8,10 +8,9 @@ import {
 
 import { WorldEntranceFormInput } from "types/world";
 
+import { ButtonNG } from "components/atoms/ButtonNG";
 import { AdminCheckbox } from "components/molecules/AdminCheckbox";
 import { AdminInput } from "components/molecules/AdminInput";
-
-import { ButtonNG } from "components/atoms/ButtonNG";
 
 import "./EntranceButtonsInputFieldSet.scss";
 

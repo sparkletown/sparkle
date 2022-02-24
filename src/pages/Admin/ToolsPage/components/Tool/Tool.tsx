@@ -6,10 +6,9 @@ import { httpsCallable } from "firebase/functions";
 
 import { WorldSlug } from "types/id";
 
-import { Loading } from "components/molecules/Loading";
-
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { InputField } from "components/atoms/InputField";
+import { Loading } from "components/molecules/Loading";
 
 import { SelfServeScript } from "../../types";
 

@@ -9,11 +9,10 @@ import { WorldId } from "types/id";
 
 import { useUser } from "hooks/useUser";
 
-import { Loading } from "components/molecules/Loading";
-import { SubmitError } from "components/molecules/SubmitError";
-
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { FileButton } from "components/atoms/FileButton";
+import { Loading } from "components/molecules/Loading";
+import { SubmitError } from "components/molecules/SubmitError";
 
 import "./BackgroundSelect.scss";
 

@@ -9,6 +9,7 @@ import { isWebGl2Enabled } from "utils/webgl";
 
 import { ReactionsProvider } from "hooks/reactions";
 
+import { LoadingPage } from "components/molecules/LoadingPage";
 import { AnimateMapErrorPrompt } from "components/templates/AnimateMap/components/AnimateMapErrorPrompt";
 import { ArtPiece } from "components/templates/ArtPiece";
 import { Auditorium } from "components/templates/Auditorium";
@@ -23,8 +24,6 @@ import { PosterHall } from "components/templates/PosterHall";
 import { PosterPage } from "components/templates/PosterPage";
 import { ScreeningRoom } from "components/templates/ScreeningRoom";
 import { ViewingWindow } from "components/templates/ViewingWindow";
-
-import { LoadingPage } from "components/molecules/LoadingPage";
 
 const AnimateMap = lazy(() =>
   tracePromise("TemplateWrapper::lazy-import::AnimateMap", () =>

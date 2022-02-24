@@ -18,12 +18,11 @@ import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useShowHide } from "hooks/useShowHide";
 import { useUpdateAuditoriumRecentSeatedUsers } from "hooks/useUpdateRecentSeatedUsers";
 
-import { Loading } from "components/molecules/Loading";
-import { ReactionsBar } from "components/molecules/ReactionsBar";
-
 import { BackButton } from "components/atoms/BackButton";
 import { IFrame } from "components/atoms/IFrame";
 import { VenueWithOverlay } from "components/atoms/VenueWithOverlay/VenueWithOverlay";
+import { Loading } from "components/molecules/Loading";
+import { ReactionsBar } from "components/molecules/ReactionsBar";
 
 import "./Section.scss";
 

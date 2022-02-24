@@ -1,11 +1,4 @@
 import React, { useMemo } from "react";
-import { CardList } from "components/admin/CardList";
-import { HeaderButton } from "components/admin/HeaderButton";
-import { Section } from "components/admin/Section";
-import { SectionSubtitle } from "components/admin/SectionSubtitle";
-import { SpaceCard } from "components/admin/SpaceCard";
-import { AdminLayout } from "components/layouts/AdminLayout";
-import { FullWidthLayout } from "components/layouts/FullWidthLayout";
 
 import { ADMIN_IA_SPACE_CREATE_PARAM_URL, SPACE_TAXON } from "settings";
 
@@ -16,8 +9,15 @@ import { generateUrl } from "utils/url";
 
 import { useWorldSpaces } from "hooks/spaces/useWorldSpaces";
 
+import { CardList } from "components/admin/CardList";
+import { HeaderButton } from "components/admin/HeaderButton";
+import { Section } from "components/admin/Section";
+import { SectionSubtitle } from "components/admin/SectionSubtitle";
+import { SpaceCard } from "components/admin/SpaceCard";
 import { AdminHeader } from "components/atoms/AdminHeader";
 import { AdminRestricted } from "components/atoms/AdminRestricted";
+import { AdminLayout } from "components/layouts/AdminLayout";
+import { FullWidthLayout } from "components/layouts/FullWidthLayout";
 
 interface SpacesDashboardProps {
   userId: UserId;

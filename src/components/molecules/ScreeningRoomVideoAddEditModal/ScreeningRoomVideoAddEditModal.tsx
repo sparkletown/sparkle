@@ -4,9 +4,8 @@ import { ScreeningRoomVideo } from "types/screeningRoom";
 
 import { WithId } from "utils/id";
 
-import { ScreeningRoomVideoAddEditForm } from "components/organisms/ScreeningRoomVideoAddEditForm";
-
 import { Modal } from "components/molecules/Modal";
+import { ScreeningRoomVideoAddEditForm } from "components/organisms/ScreeningRoomVideoAddEditForm";
 
 export type ScreeningRoomVideoAddEditModalProps = {
   show: boolean;

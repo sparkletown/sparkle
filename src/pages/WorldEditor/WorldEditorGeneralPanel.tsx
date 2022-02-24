@@ -2,14 +2,13 @@ import React from "react";
 
 import { useWorldBySlug } from "hooks/worlds/useWorldBySlug";
 
+import { Loading } from "components/molecules/Loading";
 import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
 import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
 import { AdminSidebar } from "components/organisms/AdminVenueView/components/AdminSidebar";
 import { AdminSidebarTitle } from "components/organisms/AdminVenueView/components/AdminSidebarTitle";
 import { WorldGeneralForm } from "components/organisms/WorldGeneralForm";
 import { WorldShowcase } from "components/organisms/WorldShowcase";
-
-import { Loading } from "components/molecules/Loading";
 
 import "./WorldEditorGeneralPanel.scss";
 

@@ -8,9 +8,8 @@ import { WithId } from "utils/id";
 
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 
-import { UserReactions } from "components/molecules/UserReactions";
-
 import { UserAvatar } from "components/atoms/UserAvatar";
+import { UserReactions } from "components/molecules/UserReactions";
 
 import { UserAvatarSize } from "../../atoms/UserAvatar/UserAvatar";
 

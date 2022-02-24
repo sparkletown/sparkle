@@ -24,10 +24,9 @@ import {
   SubVenueIconMap,
 } from "pages/Account/Venue/VenueMapEdition/Container";
 
-import { MapBackgroundPlaceholder } from "components/molecules/MapBackgroundPlaceholder";
-
 import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
 import { Legend } from "components/atoms/Legend";
+import { MapBackgroundPlaceholder } from "components/molecules/MapBackgroundPlaceholder";
 
 import "./MapPreview.scss";
 
