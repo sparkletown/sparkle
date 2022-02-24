@@ -84,8 +84,6 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
     containerClassName
   );
 
-  console.log("containers", containerClasses, sizeStyleName, size, styles);
-
   const status = user?.status;
 
   const imageClasses = classNames("UserAvatar__image", imageClassName);
