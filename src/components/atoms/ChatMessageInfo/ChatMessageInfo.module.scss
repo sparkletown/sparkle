@@ -1,4 +1,5 @@
 @use "scss/attendee/space";
+@use "scss/attendee/theme";
 
 .chatMessageInfo {
   display: flex;
@@ -10,7 +11,7 @@
   }
 
   svg {
-    color: #888888;
+    color: theme.$light--aux-text;
     // Slight alignment tweak
     margin-top: 3px;
     margin-left: space.empty(0.5);
@@ -18,5 +19,5 @@
 }
 
 .messageTime {
-  color: #888888;
+  color: theme.$light--aux-text;
 }

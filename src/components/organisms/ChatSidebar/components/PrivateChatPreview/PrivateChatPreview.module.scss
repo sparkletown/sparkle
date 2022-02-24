@@ -1,5 +1,6 @@
 @use "scss/attendee/layout";
 @use "scss/attendee/space";
+@use "scss/attendee/theme";
 
 .privateChatPreviewContainer {
   margin-bottom: space.empty(1.5);
@@ -25,5 +26,5 @@
 
 .chatPreviewInfoTime {
   margin-left: space.empty(0.5);
-  color: #888888;
+  color: theme.$light--aux-text;
 }
