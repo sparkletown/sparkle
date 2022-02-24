@@ -344,7 +344,6 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                 error={errors.logoImageUrl}
                 setValue={setValue}
                 register={register}
-                small
               />
             </AdminSection>
           </AdminSidebarAccordion>

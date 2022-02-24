@@ -243,7 +243,6 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
           name="image"
           setValue={setValue}
           register={register}
-          small
           nameWithUnderscore
           imgUrl={portal?.image_url ?? icon}
           error={errors?.image_url}
