@@ -34,16 +34,22 @@
       text-decoration: none;
       color: black;
       cursor: pointer;
+      position: relative;
     }
   }
 }
 
-.messageCount {
+.messageNotification {
   background: red;
-  @include rounded.normal;
   color: white;
   font-size: font.$size--sm;
-  padding: 4px;
+  border-radius: 100%;
+  width: 6px;
+  height: 6px;
+  display: inline-block;
+  vertical-align: text-top;
+  position: absolute;
+  right: 2px;
 }
 
 .toggler {
@@ -60,6 +66,7 @@
     top: -100vh;
     height: calc(100vh - layout.$h-chat-controls);
     bottom: unset;
+    width: 100%;
   }
   max-width: layout.$w-sidebar;
   backdrop-filter: blur(5px);

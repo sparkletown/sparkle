@@ -1,0 +1,41 @@
+@use "scss/attendee/layout";
+@use "scss/attendee/space";
+
+.privateChatPreviewContainer {
+  margin-bottom: space.empty(1.5);
+  display: flex;
+  flex-direction: row;
+  text-align: left;
+
+  &__highlight {
+    .chatPreviewText {
+      font-weight: 600;
+    }
+  }
+}
+
+.avatarContainer {
+  min-width: layout.$chat-avatar-size;
+  min-height: layout.$chat-avatar-size;
+  max-width: layout.$chat-avatar-size;
+  max-height: layout.$chat-avatar-size;
+
+  img {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.chatBodyContainer {
+  margin-left: space.empty(0.5);
+  cursor: pointer;
+}
+
+.chatPreviewInfo {
+  display: flex;
+}
+
+.chatPreviewInfoTime {
+  margin-left: space.empty(0.5);
+  color: #888888;
+}

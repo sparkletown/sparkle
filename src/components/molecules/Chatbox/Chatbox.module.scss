@@ -8,6 +8,8 @@
 
 .chatboxMessages {
   flex-grow: 1;
+  // Start tiny and grow so that the send box is always visible
+  flex-basis: 1px;
   overflow-y: scroll;
   padding: space.empty(1.5);
 }

@@ -23,13 +23,13 @@ export const ChatContainer: React.FC = () => {
       )}
       <div className={styles.ChatContainer}>
         <nav>
-          <span onClick={selectVenueChat}>Chat</span>
-          <span onClick={selectPrivateChat}>
+          <span onClick={isExpanded ? toggleSidebar : selectVenueChat}>
+            Chat
+          </span>
+          <span onClick={isExpanded ? toggleSidebar : selectPrivateChat}>
             Messages
             {numberOfUnreadMessages > 0 && (
-              <span className={styles.messageCount}>
-                {numberOfUnreadMessages}
-              </span>
+              <div className={styles.messageNotification}></div>
             )}
           </span>
           <span onClick={toggleSidebar} className={styles.toggler}>

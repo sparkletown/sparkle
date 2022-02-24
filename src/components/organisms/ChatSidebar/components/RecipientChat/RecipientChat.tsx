@@ -16,7 +16,7 @@ import { ChatboxContextProvider } from "components/molecules/Chatbox/components/
 
 import { UserAvatar } from "components/atoms/UserAvatar";
 
-import "./RecipientChat.scss";
+import styles from "./RecipientChat.module.scss";
 
 export interface RecipientChatProps {
   recipient: WithId<DisplayUser>;
@@ -49,14 +49,18 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({ recipient }) => {
   );
 
   return (
-    <div className="recipient-chat">
-      <div className="recipient-chat__breadcrumbs" onClick={selectPrivateChat}>
+    <div className={styles.recipientChat}>
+      <div onClick={selectPrivateChat} className={styles.infoContainer}>
         <FontAwesomeIcon
           icon={faChevronLeft}
-          className="recipient-chat__back-icon"
+          className={styles.backIcon}
           size="sm"
         />
-        <UserAvatar user={recipient} showStatus size="small" />
+        <UserAvatar
+          containerClassName={styles.avatarContainer}
+          user={recipient}
+          showStatus
+        />
         <div className="recipient-chat__nickname">{recipient.partyName}</div>
       </div>
       <ChatboxContextProvider preloadedThreads={replies} {...actions}>
