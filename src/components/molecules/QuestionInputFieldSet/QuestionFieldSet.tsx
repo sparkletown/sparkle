@@ -1,9 +1,13 @@
-import React, { ChangeEventHandler, useCallback } from "react";
-import { FieldErrors, FieldValues } from "react-hook-form";
+import React, { useCallback } from "react";
+import {
+  FieldErrors,
+  FieldValues,
+  UseFieldArrayRemove,
+  UseFormRegister,
+} from "react-hook-form";
 
 import { Question } from "types/Question";
-
-import { UseArrayRemove, UseArrayUpdate } from "hooks/useArray";
+import { WorldEntranceFormInput } from "types/world";
 
 import { AdminInput } from "components/molecules/AdminInput";
 
@@ -16,9 +20,9 @@ export interface QuestionFieldSetProps {
   hasLink?: boolean;
   index: number;
   name: string;
-  onUpdate: UseArrayUpdate<Question>;
-  onRemove: UseArrayRemove<Question>;
-  register: (Ref: unknown, RegisterOptions?: unknown) => void;
+  onRemove: UseFieldArrayRemove;
+  register: UseFormRegister<WorldEntranceFormInput>;
+  item: Question;
 }
 
 export const QuestionFieldSet: React.FC<QuestionFieldSetProps> = ({
@@ -26,75 +30,41 @@ export const QuestionFieldSet: React.FC<QuestionFieldSetProps> = ({
   hasLink,
   index,
   name,
-  onUpdate,
   onRemove,
   register,
+  item,
 }) => {
   const fieldName = `name`;
   const fieldText = `text`;
   const fieldLink = `link`;
-  const fieldset = `${name}[${index}]`;
-  const inputName = `${fieldset}${fieldName}`;
-  const inputText = `${fieldset}${fieldText}`;
-  const inputLink = `${fieldset}${fieldLink}`;
+  const fieldset = `${name}.${index}`;
+  const inputName = `${fieldset}.${fieldName}`;
+  const inputText = `${fieldset}.${fieldText}`;
+  const inputLink = `${fieldset}.${fieldLink}`;
 
-  const handleRemove = useCallback(() => onRemove({ index }), [
-    onRemove,
-    index,
-  ]);
-
-  const handleChange: ChangeEventHandler<HTMLInputElement> = useCallback(
-    ({ target }) => {
-      const { value, attributes, type, checked } = target;
-
-      // NOTE: there is possibly more complicated way of using handleChange as a curried function instead of relying on data-, but this works OK
-      const name = attributes.getNamedItem("data-field")?.value;
-      if (!name) {
-        return console.error(
-          QuestionFieldSet.name,
-          `data-field is missing on`,
-          target
-        );
-      }
-
-      onUpdate({
-        index,
-        callback: ({ item }) => ({
-          ...item,
-          [name]: type === "checkbox" ? checked : value,
-        }),
-      });
-    },
-    [onUpdate, index]
-  );
+  const handleRemove = useCallback(() => onRemove(index), [onRemove, index]);
 
   return (
     <fieldset className="QuestionFieldSet" name={fieldset}>
       <AdminInput
-        name={inputName}
         label="Title"
+        name={inputName}
         register={register}
         errors={errors}
-        data-field={fieldName}
-        onChange={handleChange}
       />
       <AdminInput
-        name={inputText}
         label="Text"
+        name={inputText}
         register={register}
         errors={errors}
-        data-field={fieldText}
-        onChange={handleChange}
       />
 
       {hasLink && (
         <AdminInput
-          name={inputLink}
           label="Link"
+          name={inputLink}
           register={register}
           errors={errors}
-          data-field={fieldLink}
-          onChange={handleChange}
         />
       )}
 

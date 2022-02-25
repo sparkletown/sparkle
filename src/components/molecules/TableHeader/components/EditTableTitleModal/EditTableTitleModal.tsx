@@ -1,5 +1,5 @@
 import React from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useFormState } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 
 import { MAX_TABLE_CAPACITY, MIN_TABLE_CAPACITY } from "settings";
@@ -8,8 +8,7 @@ import { updateVenueTable } from "api/table";
 
 import { Table } from "types/Table";
 
-import { useSpaceParams } from "hooks/spaces/useSpaceParams";
-import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
+import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 
 import { Modal } from "components/molecules/Modal";
 
@@ -43,10 +42,9 @@ export const EditTableTitleModal: React.FC<EditTableTitleModalProps> = ({
   capacity,
   onHide,
 }) => {
-  const { worldSlug, spaceSlug } = useSpaceParams();
-  const { spaceId } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
+  const { spaceId } = useWorldAndSpaceByParams();
 
-  const { register, handleSubmit, errors } = useForm<EditTableForm>({
+  const { register, handleSubmit, control } = useForm<EditTableForm>({
     mode: "onBlur",
     reValidateMode: "onBlur",
     defaultValues: {
@@ -55,6 +53,8 @@ export const EditTableTitleModal: React.FC<EditTableTitleModalProps> = ({
       capacity,
     },
   });
+
+  const { errors } = useFormState({ control });
 
   // use useAsyncFn for easier error handling, instead of state hook
   const [{ error: httpError, loading: isUpdating }, updateTables] = useAsyncFn(
@@ -82,8 +82,9 @@ export const EditTableTitleModal: React.FC<EditTableTitleModalProps> = ({
         className="EditTableTitleModal"
       >
         <InputField
-          ref={register({ required: true })}
+          register={register}
           name="title"
+          rules={{ required: true }}
           containerClassName="EditTableTitleModal__input--spacing"
           placeholder="Table topic"
           disabled={isUpdating}
@@ -93,7 +94,7 @@ export const EditTableTitleModal: React.FC<EditTableTitleModalProps> = ({
         )}
 
         <InputField
-          ref={register}
+          register={register}
           name="subtitle"
           containerClassName="EditTableTitleModal__input--spacing"
           placeholder="Describe this table (optional)"
@@ -104,11 +105,12 @@ export const EditTableTitleModal: React.FC<EditTableTitleModalProps> = ({
           <label className="EditTableTitleModal__max-capacity">
             Number of seats (max {MAX_TABLE_CAPACITY})
             <InputField
-              ref={register({
+              register={register}
+              rules={{
                 required: true,
                 max: MAX_TABLE_CAPACITY,
                 min: MIN_TABLE_CAPACITY,
-              })}
+              }}
               className="EditTableTitleModal__max-capacity--input"
               name="capacity"
               type="number"
@@ -135,7 +137,7 @@ export const EditTableTitleModal: React.FC<EditTableTitleModalProps> = ({
 
         <div className="EditTableTitleModal__footer-buttons">
           <ButtonNG onClick={onHide}>Cancel</ButtonNG>
-          <ButtonNG disabled={isUpdating} variant="primary">
+          <ButtonNG type="submit" disabled={isUpdating} variant="primary">
             Save
           </ButtonNG>
         </div>

@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useFormState } from "react-hook-form";
 import { useAsyncFn } from "react-use";
+import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { TestFunction } from "yup";
 
@@ -122,16 +123,17 @@ export const SpaceTimingForm: React.FC<SpaceTimingFormProps> = ({ venue }) => {
 
   const {
     reset,
-    formState: { dirty, isSubmitting },
     register,
-    errors,
+    control,
     handleSubmit,
   } = useForm<SpaceTimingFormInput>({
     mode: "onSubmit",
     reValidateMode: "onChange",
-    validationSchema,
+    resolver: yupResolver(validationSchema),
     defaultValues,
   });
+
+  const { errors, isDirty, isSubmitting } = useFormState({ control });
 
   const [{ error, loading: isSaving }, submit] = useAsyncFn(
     async (input: SpaceTimingFormInput) => {
@@ -162,9 +164,8 @@ export const SpaceTimingForm: React.FC<SpaceTimingFormProps> = ({ venue }) => {
 
   const isSaveLoading = isSubmitting || isSaving;
   const isSaveDisabled = !(
-    // Useful if form has mode: "onChange"
-    // Object.keys(errors).length ||
-    (dirty || isSaving || isSubmitting)
+    // @debt Object.keys(errors).length can be used if form has mode: "onChange"
+    (isDirty || isSaving || isSubmitting)
   );
 
   return (

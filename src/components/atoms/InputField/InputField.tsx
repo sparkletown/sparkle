@@ -1,14 +1,16 @@
-import React, { forwardRef } from "react";
-import { FieldError } from "react-hook-form";
+import React from "react";
+import { FieldError, RegisterOptions, UseFormRegister } from "react-hook-form";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
-import { ContainerClassName } from "types/utility";
+import { ALWAYS_EMPTY_OBJECT } from "settings";
+
+import { AnyForm, ContainerClassName } from "types/utility";
 
 import { isDefined, isTruthy } from "utils/types";
 
-import "./InputField.scss";
+import styles from "./InputField.module.scss";
 
 const isJsxElement = (
   component: IconProp | JSX.Element
@@ -51,30 +53,29 @@ interface InputFieldProps
   onIconStartClick?: () => void;
   onIconEndClick?: () => void;
   onLabelClick?: () => void;
-  label?: string;
+  register: UseFormRegister<AnyForm> | (() => void);
+  rules?: RegisterOptions;
+  name?: string;
 }
 
-export const _InputField: React.ForwardRefRenderFunction<
-  HTMLInputElement,
-  InputFieldProps
-> = (
-  {
-    containerClassName,
-    inputClassName,
-    iconStartClassName,
-    iconEndClassName,
-    errorTextClassName,
-    iconStart,
-    onIconStartClick,
-    iconEnd,
-    onIconEndClick,
-    onLabelClick,
-    error,
-    label,
-    ...extraInputProps
-  },
-  ref
-) => {
+export const InputField: React.FC<InputFieldProps> = ({
+  containerClassName,
+  inputClassName,
+  iconStartClassName,
+  iconEndClassName,
+  errorTextClassName,
+  iconStart,
+  onIconStartClick,
+  iconEnd,
+  onIconEndClick,
+  onLabelClick,
+  error,
+  label,
+  register,
+  rules = ALWAYS_EMPTY_OBJECT,
+  name = "",
+  ...extraInputProps
+}) => {
   const containerClassNames = classNames(
     "InputField",
     {
@@ -92,10 +93,18 @@ export const _InputField: React.ForwardRefRenderFunction<
       <div className="InputField__wrapper">
         {label ? (
           <label data-label={label} onClick={onLabelClick}>
-            <input ref={ref} className={inputClassNames} {...extraInputProps} />
+            <input
+              className={inputClassNames}
+              {...extraInputProps}
+              {...register(name, rules)}
+            />
           </label>
         ) : (
-          <input ref={ref} className={inputClassNames} {...extraInputProps} />
+          <input
+            className={inputClassNames}
+            {...extraInputProps}
+            {...register(name, rules)}
+          />
         )}
         {iconStart &&
           renderIcon(
@@ -106,7 +115,7 @@ export const _InputField: React.ForwardRefRenderFunction<
         {iconEnd &&
           renderIcon(
             iconEnd,
-            classNames("InputField__icon--end", iconEndClassName),
+            classNames(styles.iconEnd, iconEndClassName),
             onIconEndClick
           )}
       </div>
@@ -118,5 +127,3 @@ export const _InputField: React.ForwardRefRenderFunction<
     </div>
   );
 };
-
-export const InputField = forwardRef(_InputField);

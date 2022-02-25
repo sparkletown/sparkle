@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 import { CardList } from "components/admin/CardList";
+import { Header } from "components/admin/Header";
 import { HeaderButton } from "components/admin/HeaderButton";
 import { Section } from "components/admin/Section";
 import { SectionSubtitle } from "components/admin/SectionSubtitle";
@@ -16,7 +17,6 @@ import { generateUrl } from "utils/url";
 
 import { useWorldSpaces } from "hooks/spaces/useWorldSpaces";
 
-import { AdminHeader } from "components/atoms/AdminHeader";
 import { AdminRestricted } from "components/atoms/AdminRestricted";
 
 interface SpacesDashboardProps {
@@ -83,13 +83,13 @@ export const SpacesDashboard: React.FC<SpacesDashboardProps> = ({
     <AdminLayout>
       <AdminRestricted>
         <div className="SpacesDashboard">
-          <AdminHeader title="Spaces">
+          <Header title="Spaces">
             <HeaderButton
               to={createNewSpaceUrl}
               name="Create new space"
               variant="multicolor"
             />
-          </AdminHeader>
+          </Header>
           <FullWidthLayout>
             {!hasSpaces && (
               <div className="SpacesDashboard__welcome-message">

@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
 import {
+  ALWAYS_NOOP_FUNCTION,
   COVERT_ROOM_TYPES,
   DEFAULT_PARTY_NAME,
   ROOM_TAXON,
@@ -169,6 +170,7 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({
         value={searchInputValue}
         inputClassName="NavSearchBar__search-input"
         onChange={onSearchInputChange}
+        register={ALWAYS_NOOP_FUNCTION}
         placeholder={`Search for people, ${ROOMS_TAXON.lower}...`}
         autoComplete="off"
         iconStart={faSearch}

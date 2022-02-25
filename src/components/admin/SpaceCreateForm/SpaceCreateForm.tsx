@@ -1,9 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useFormState } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn } from "react-use";
-import { FormSection } from "components/admin/FormSection";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { Input } from "components/admin/Input";
+import { InputGroup } from "components/admin/InputGroup";
 
 import {
   ADMIN_IA_SPACE_BASE_PARAM_URL,
@@ -57,15 +58,17 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({
   >();
   const { icon: logoImageUrl, template } = selectedItem ?? {};
 
-  const { register, getValues, handleSubmit, errors, reset, watch } = useForm({
+  const { register, getValues, handleSubmit, control, reset, watch } = useForm({
     mode: "onSubmit",
     reValidateMode: "onSubmit",
-    validationSchema: createSpaceSchema,
+    resolver: yupResolver(createSpaceSchema),
     defaultValues: {
       venueName: "",
       template,
     },
   });
+
+  const { errors } = useFormState({ control });
 
   const { venueName } = getValues();
 
@@ -120,23 +123,24 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({
   return (
     <form className="SpaceCreateForm" onSubmit={handleSubmit(createSpace)}>
       <FormCover displayed={isLoading}>
-        <FormSection
+        <InputGroup
           withLabel
           title={`${SPACE_TAXON.capital} name`}
           subtitle="max 50 characters"
         >
           <Input
-            name="venueName"
             type="text"
             autoComplete="off"
             value={venueName}
             placeholder={`${SPACE_TAXON.capital} name`}
             errors={errors}
             register={register}
+            name="venueName"
             disabled={isLoading}
           />
-        </FormSection>
-        <FormSection title="Your URL will be">
+        </InputGroup>
+
+        <InputGroup title="Your URL will be">
           <YourUrlDisplay
             path={generateUrl({
               route: ADMIN_IA_SPACE_BASE_PARAM_URL,
@@ -145,8 +149,9 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({
             })}
             slug={slug}
           />
-        </FormSection>
-        <FormSection withLabel title="Select a template">
+        </InputGroup>
+
+        <InputGroup withLabel title="Select a template">
           <PortalList
             name="template"
             variant="input"
@@ -156,7 +161,8 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({
             register={register}
             errors={errors}
           />
-        </FormSection>
+        </InputGroup>
+
         <FormErrors errors={errors} omitted={HANDLED_ERRORS} />
         <SubmitError error={submitError} />
         <div className={TW.footer}>

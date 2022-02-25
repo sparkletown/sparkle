@@ -1,14 +1,13 @@
 import React from "react";
-import { FieldErrors, FieldValues } from "react-hook-form";
+import {
+  FieldErrors,
+  FieldValues,
+  UseFieldArrayRemove,
+  UseFormRegister,
+} from "react-hook-form";
 
 import { Question } from "types/Question";
-
-import {
-  UseArrayAdd,
-  UseArrayClear,
-  UseArrayRemove,
-  UseArrayUpdate,
-} from "hooks/useArray";
+import { WorldEntranceFormInput } from "types/world";
 
 import { AdminSidebarSectionSubTitle } from "components/organisms/AdminVenueView/components/AdminSidebarSectionSubTitle";
 
@@ -22,13 +21,12 @@ export interface QuestionsBuilderProps {
   items: Question[];
   name: string;
   hasLink?: boolean;
-  register: (Ref: unknown, RegisterOptions?: unknown) => void;
+  register: UseFormRegister<WorldEntranceFormInput>;
   title?: string;
   errors?: FieldErrors<FieldValues>;
-  onAdd: UseArrayAdd<Question>;
-  onUpdate: UseArrayUpdate<Question>;
-  onClear: UseArrayClear<Question>;
-  onRemove: UseArrayRemove<Question>;
+  onAdd: () => void;
+  onClear: () => void;
+  onRemove: UseFieldArrayRemove;
 }
 
 export const QuestionsBuilder: React.FC<QuestionsBuilderProps> = ({
@@ -39,7 +37,6 @@ export const QuestionsBuilder: React.FC<QuestionsBuilderProps> = ({
   title,
   errors,
   onAdd,
-  onUpdate,
   onClear,
   onRemove,
 }) => {
@@ -50,7 +47,7 @@ export const QuestionsBuilder: React.FC<QuestionsBuilderProps> = ({
         <AdminSidebarSectionSubTitle>{title}</AdminSidebarSectionSubTitle>
       )}
 
-      {Array.from({ length: count }).map((_, index) => {
+      {items.map((item, index) => {
         return (
           <QuestionFieldSet
             errors={errors}
@@ -58,9 +55,9 @@ export const QuestionsBuilder: React.FC<QuestionsBuilderProps> = ({
             index={index}
             key={`${name}-${index}`}
             name={name}
-            onUpdate={onUpdate}
             onRemove={onRemove}
             register={register}
+            item={item}
           />
         );
       })}

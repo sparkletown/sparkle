@@ -5,7 +5,6 @@ import { VenueTemplate } from "types/VenueTemplate";
 import { generateTables } from "utils/table";
 import { FIVE_MINUTES_MS } from "utils/time";
 
-import { STRING_COPYRIGHT } from "./interpolationSettings";
 import {
   ROOM_TAXON,
   ROOMS_TAXON,
@@ -15,6 +14,7 @@ import {
 } from "./taxonomy";
 
 // NOTE: please keep these exports sorted alphabetically for faster visual scan
+export * from "./adminDesignSettings";
 export * from "./apiSettings";
 export * from "./dateSettings";
 export * from "./disableSettings";
@@ -562,10 +562,12 @@ export const DEFAULT_CONVERSATION_SPACE_TABLES_NUMBER = 10;
 
 export const JAZZBAR_TABLES: Table[] = generateTables({
   num: DEFAULT_JAZZBAR_TABLES_NUMBER,
+  generateTableReference: (title: string) => title,
 });
 
 export const CONVERSATION_TABLES: Table[] = generateTables({
   num: DEFAULT_CONVERSATION_SPACE_TABLES_NUMBER,
+  generateTableReference: (title: string) => title,
 });
 
 // These are really supposed to be constants and to avoid possible mutable shared state in the code elsewhere
@@ -611,9 +613,3 @@ export const DEFAULT_SHOW_MORE_SETTINGS = {
   truncatedEndingComponent: "... ",
 };
 export const DEFAULT_MISSING_PLACEHOLDER = "Placeholder";
-
-export const CURRENT_YEAR = new Date().getFullYear();
-export const COPYRIGHT_TEXT = `${STRING_COPYRIGHT} Copyright SparkleVerse Inc & Contributors 2020 to ${CURRENT_YEAR}.`;
-
-export const SPACE_CARD_HEADER_BACKGROUND =
-  "https://images.unsplash.com/photo-1517369611053-aecb0ca6971e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80";

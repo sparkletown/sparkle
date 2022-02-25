@@ -11,11 +11,9 @@ export const withUserNG = <T = {}>(Component: React.FC<T>) => {
       profileError,
       isLoading: isUserNGLoading,
       isLoaded: isUserNGLoaded,
-      user: auth,
+      auth,
       userId,
       profile,
-      userWithId,
-      userLocation,
       isTester,
     } = useUserNG();
 
@@ -27,21 +25,9 @@ export const withUserNG = <T = {}>(Component: React.FC<T>) => {
         auth,
         userId,
         profile,
-        userWithId,
-        userLocation,
         isTester,
       }),
-      [
-        props,
-        isUserNGLoading,
-        isUserNGLoaded,
-        auth,
-        userId,
-        profile,
-        userWithId,
-        userLocation,
-        isTester,
-      ]
+      [props, isUserNGLoading, isUserNGLoaded, auth, userId, profile, isTester]
     );
 
     if (authError || profileError) {

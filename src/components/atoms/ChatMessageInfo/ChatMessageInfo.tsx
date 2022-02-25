@@ -8,6 +8,7 @@ import { BaseChatMessage } from "types/chat";
 import { WithId } from "utils/id";
 import { formatTimeLocalised } from "utils/time";
 
+import { useIsCurrentUser } from "hooks/useIsCurrentUser";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 
 import {
@@ -15,23 +16,18 @@ import {
   useChatboxDeleteThreadMessage,
 } from "components/molecules/Chatbox/components/context/ChatboxContext";
 
-import { UserAvatar } from "components/atoms/UserAvatar";
-
-import "./ChatMessageInfo.scss";
-
-const deleteIconClass = "ChatMessageInfo__delete-icon";
+import styles from "./ChatMessageInfo.module.scss";
 
 export interface ChatMessageInfoProps {
   threadId?: string;
   message: WithId<BaseChatMessage>;
-  reversed?: boolean;
 }
 
 export const ChatMessageInfo: React.FC<ChatMessageInfoProps> = ({
   message,
   threadId,
-  reversed: isReversed = false,
 }) => {
+  const isMine = useIsCurrentUser(message.fromUser.id);
   const { timestamp, fromUser } = message;
   const { openUserProfileModal } = useProfileModalControls();
 
@@ -52,31 +48,24 @@ export const ChatMessageInfo: React.FC<ChatMessageInfoProps> = ({
 
   const openAuthorProfile = useCallback(
     (event) => {
-      if (event.target.closest(`.${deleteIconClass}`)) return;
-
       openUserProfileModal(fromUser.id);
     },
     [openUserProfileModal, fromUser.id]
   );
 
-  const containerClasses = classNames("ChatMessageInfo", {
-    "ChatMessageInfo--reverse": isReversed,
+  const containerClassnames = classNames(styles.chatMessageInfo, {
+    [styles.isMine]: isMine,
   });
 
   return (
-    <div className={containerClasses} onClick={openAuthorProfile}>
-      <UserAvatar user={fromUser} showStatus />
-      <span className="ChatMessageInfo__author">{fromUser.partyName}</span>
-      <span className="ChatMessageInfo__time">
+    <div onClick={openAuthorProfile} className={containerClassnames}>
+      <span className={styles.authorName}>{fromUser.partyName}</span>
+      &nbsp;
+      <span className={styles.messageTime}>
         {formatTimeLocalised(timestampMillis)}
       </span>
       {deleteMessage && (
-        <FontAwesomeIcon
-          onClick={deleteMessage}
-          icon={faTrash}
-          className={deleteIconClass}
-          size="sm"
-        />
+        <FontAwesomeIcon onClick={deleteMessage} icon={faTrash} size="sm" />
       )}
     </div>
   );

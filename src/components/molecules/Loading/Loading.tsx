@@ -3,7 +3,7 @@ import classNames from "classnames";
 
 import { ContainerClassName } from "types/utility";
 
-import LoadingIcon from "assets/icons/icon-loading.svg";
+import { LoadingIcon } from "./LoadingIcon";
 
 import "./Loading.scss";
 
@@ -18,7 +18,7 @@ export const Loading: React.FC<LoadingProps> = ({
   const containerClasses = classNames("Loading", containerClassName);
   return (
     <span className={containerClasses}>
-      <img className="Loading__icon" src={LoadingIcon} alt="loading" />
+      <LoadingIcon />
       <span className="Loading__message">{label}</span>
     </span>
   );

@@ -1,13 +1,11 @@
 import { useEffect } from "react";
 
-import { ReactHook } from "types/utility";
-
 interface UseAudioProps {
   audioPath: string;
   isMuted: boolean;
 }
 
-export const useAudio: ReactHook<UseAudioProps, void> = ({
+export const useAudio: (options: UseAudioProps) => void = ({
   audioPath,
   isMuted,
 }) => {

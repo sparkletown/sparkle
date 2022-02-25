@@ -1,6 +1,8 @@
-import { FieldError, useForm } from "react-hook-form";
+import { FieldError, UseFormRegister } from "react-hook-form";
+
+import { AnyForm } from "./utility";
 
 export type FormFieldProps = {
-  register: ReturnType<typeof useForm>["register"];
+  register: UseFormRegister<AnyForm>;
   error: FieldError | undefined;
 };

@@ -1,7 +1,9 @@
 import React, { ReactNode, useMemo } from "react";
-import { FieldErrors, FieldValues } from "react-hook-form";
+import { FieldErrors, FieldValues, UseFormRegister } from "react-hook-form";
 import classNames from "classnames";
 import { get, omit } from "lodash";
+
+import { SpaceTimingFormInput } from "components/organisms/SpaceTimingForm/SpaceTimingForm";
 
 import "./AdminDateTime.scss";
 
@@ -18,7 +20,7 @@ export interface DateFieldProps {
   label?: ReactNode | string;
   subtext?: ReactNode | string;
   supertext?: ReactNode | string;
-  register: (Ref: unknown, RegisterOptions?: unknown) => void;
+  register: UseFormRegister<SpaceTimingFormInput>;
   errors?: FieldErrors<FieldValues>;
   dateProps?: AdminDateTimeChildInputProps;
   timeProps?: AdminDateTimeChildInputProps;
@@ -65,7 +67,7 @@ export const AdminDateTime: React.FC<DateFieldProps> = ({
           {...omitChildProps(dateProps)}
           className={classesDate}
           name={nameDate}
-          ref={register}
+          {...register}
         />
         {errorDate && (
           <span className="AdminDateTime__error">{errorDate?.message}</span>
@@ -84,7 +86,7 @@ export const AdminDateTime: React.FC<DateFieldProps> = ({
           {...omitChildProps(timeProps)}
           className={classesTime}
           name={nameTime}
-          ref={register}
+          {...register}
         />
         {errorTime && (
           <span className="AdminDateTime__error">{errorTime?.message}</span>
@@ -107,7 +109,7 @@ export const AdminDateTime: React.FC<DateFieldProps> = ({
           <input
             className="AdminDateTime__input"
             name={name}
-            ref={register}
+            {...register}
             type="hidden"
           />
         </label>

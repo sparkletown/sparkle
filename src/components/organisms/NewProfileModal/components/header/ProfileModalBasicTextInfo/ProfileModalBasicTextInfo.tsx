@@ -8,8 +8,7 @@ import { ContainerClassName } from "types/utility";
 
 import { WithId } from "utils/id";
 
-import { useSpaceParams } from "hooks/spaces/useSpaceParams";
-import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
+import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useIsCurrentUser } from "hooks/useIsCurrentUser";
 import { useUser } from "hooks/useUser";
 
@@ -25,11 +24,8 @@ export const ProfileModalBasicTextInfo: React.FC<ProfileModalBasicTextInfoProps>
   user,
   containerClassName,
 }) => {
-  const { worldSlug, spaceSlug } = useSpaceParams();
-  const { world } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
-
+  const { world } = useWorldAndSpaceByParams();
   const isCurrentUser = useIsCurrentUser(user.id);
-
   const { user: firebaseUser } = useUser();
 
   const userStatus = world?.showUserStatus && world?.userStatuses?.[0];

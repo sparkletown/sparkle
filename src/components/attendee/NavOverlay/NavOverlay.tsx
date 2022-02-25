@@ -3,8 +3,7 @@ import cn from "classnames";
 
 import { SPACE_TAXON } from "settings";
 
-import { useSpaceParams } from "hooks/spaces/useSpaceParams";
-import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
+import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 
 import { ScheduleOverlay } from "./ScheduleOverlay/ScheduleOverlay";
 import { SearchOverlay } from "./SearchOverlay/SearchOverlay";
@@ -34,8 +33,7 @@ const navOverlayTypeMap: Readonly<Record<NavOverlayTabType, string>> = {
 
 export const NavOverlay: React.FC<NavOverlayProps> = ({ onClose, type }) => {
   const [navOverlayType, setNavOverlay] = useState(type);
-  const { worldSlug, spaceSlug } = useSpaceParams();
-  const { space } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
+  const { space } = useWorldAndSpaceByParams();
 
   useEffect(() => {
     setNavOverlay(type);

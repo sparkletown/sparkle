@@ -1,5 +1,4 @@
 .Gradients {
-  // TODO Figure out CSS dither that doesn't look terrible
   min-height: 100vh;
   background: linear-gradient(#ff8888, transparent),
     linear-gradient(to top left, #88ff88, transparent),
@@ -8,4 +7,13 @@
     repeating-linear-gradient(90deg, #060606, #000 11px),
     repeating-linear-gradient(30deg, #060606, #000 13px);
   background-blend-mode: screen;
+
+  @media (prefers-color-scheme: dark) {
+    background: linear-gradient(#441111, transparent),
+      linear-gradient(to top left, #115511, transparent),
+      linear-gradient(to top right, #111155, transparent),
+      repeating-linear-gradient(#000, #030303 7px),
+      repeating-linear-gradient(90deg, #030303, #000 11px),
+      repeating-linear-gradient(30deg, #030303, #000 13px);
+  }
 }

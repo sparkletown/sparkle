@@ -1,13 +1,13 @@
 import React from "react";
+import { ThreeColumnLayout } from "components/admin/ThreeColumnLayout";
+import { WorldGeneralForm } from "components/admin/WorldGeneralForm";
+import { WorldShowcase } from "components/admin/WorldShowcase";
 
 import { useWorldBySlug } from "hooks/worlds/useWorldBySlug";
 
 import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
 import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
 import { AdminSidebar } from "components/organisms/AdminVenueView/components/AdminSidebar";
-import { AdminSidebarTitle } from "components/organisms/AdminVenueView/components/AdminSidebarTitle";
-import { WorldGeneralForm } from "components/organisms/WorldGeneralForm";
-import { WorldShowcase } from "components/organisms/WorldShowcase";
 
 import { Loading } from "components/molecules/Loading";
 
@@ -27,19 +27,18 @@ export const WorldEditorGeneralPanel: React.FC<WorldEditorGeneralPanelProps> = (
 
   return (
     <AdminPanel variant="bound">
-      <AdminSidebar>
-        <AdminSidebarTitle>
-          {worldSlug ? "Manage general settings" : "Create a new world"}
-        </AdminSidebarTitle>
-        {isUpdatingWorld || isCreatingWorld ? (
-          <WorldGeneralForm world={world} />
-        ) : (
-          <Loading />
-        )}
-      </AdminSidebar>
-      <AdminShowcase>
-        <WorldShowcase world={world} />
-      </AdminShowcase>
+      <ThreeColumnLayout>
+        <AdminSidebar>
+          {isUpdatingWorld || isCreatingWorld ? (
+            <WorldGeneralForm world={world} />
+          ) : (
+            <Loading />
+          )}
+        </AdminSidebar>
+        <AdminShowcase>
+          <WorldShowcase world={world} />
+        </AdminShowcase>
+      </ThreeColumnLayout>
     </AdminPanel>
   );
 };

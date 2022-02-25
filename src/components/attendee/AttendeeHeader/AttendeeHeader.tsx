@@ -2,6 +2,7 @@ import { useCallback, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 
 import { ATTENDEE_INSIDE_URL, SPACE_TAXON } from "settings";
 
@@ -9,10 +10,12 @@ import { BaseVenue } from "types/venues";
 
 import { generateUrl } from "utils/url";
 
-import { useSpaceParams } from "hooks/spaces/useSpaceParams";
-import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
+import { useChatSidebarControls } from "hooks/chats/util/useChatSidebarControls";
+import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useShowHide } from "hooks/useShowHide";
+import { useUser } from "hooks/useUser";
 
+import { Attendance } from "../Attendance";
 import { Button } from "../Button";
 import { NavOverlay } from "../NavOverlay/NavOverlay";
 
@@ -35,8 +38,7 @@ export const AttendeeHeader: React.FC<AttendeeHeaderProps> = ({
 }) => {
   const { isShown, hide, show } = useShowHide(false);
   const [overlayLabel, setOverlayLabel] = useState("");
-  const { worldSlug, spaceSlug } = useSpaceParams();
-  const { space } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
+  const { space, worldSlug } = useWorldAndSpaceByParams();
   const history = useHistory();
 
   const goBack = useCallback(() => {
@@ -58,8 +60,21 @@ export const AttendeeHeader: React.FC<AttendeeHeaderProps> = ({
     show();
   };
 
+  const { isExpanded: isChatExpanded } = useChatSidebarControls();
+
+  const headerClassnames = classNames(CN.attendeeHeader, {
+    [CN.chatExpanded]: isChatExpanded,
+  });
+
+  const { userWithId } = useUser();
+
+  if (!userWithId) return null;
+
+  // MOCK DATA
+  // const mockData: UserWithId[] = Array(30).fill(userWithId);
+
   return (
-    <header className={CN.attendeeHeader}>
+    <header className={headerClassnames}>
       <div className={CN.attendeeHeaderContainer}>
         <div>
           {backButtonSpace ? (
@@ -70,6 +85,10 @@ export const AttendeeHeader: React.FC<AttendeeHeaderProps> = ({
             <Button>{space?.name ?? `This ${SPACE_TAXON.title}`}</Button>
           )}
         </div>
+        <Attendance
+          totalUsersCount={space?.recentUserCount}
+          usersSample={space?.recentUsersSample}
+        />
         <div>
           {Object.entries(tabCaptions).map(([key, label]) => (
             <Button onClick={() => handleOverlayOpen(key)} key={key}>
