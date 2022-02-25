@@ -14,6 +14,7 @@ export const COLLECTION_WORLD_EVENTS = "worldEvents";
 
 // common search fields, please keep the list short and simple
 export const FIELD_HIDDEN = "isHidden";
+export const FIELD_OWNERS = "owners";
 export const FIELD_SLUG = "slug";
 export const FIELD_SPACE_ID = "spaceId";
 export const FIELD_WORLD_ID = "worldId";
