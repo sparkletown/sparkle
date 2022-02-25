@@ -6,33 +6,32 @@ import {
   getFirestore,
   onSnapshot,
   query,
-  QueryDocumentSnapshot,
   QuerySnapshot,
 } from "firebase/firestore";
 import { isEqual } from "lodash";
 
 import { ALWAYS_EMPTY_ARRAY } from "settings";
 
+import { DeferredAction } from "types/id";
+
 import { withIdConverter } from "utils/converters";
-import { withId } from "utils/id";
+import {
+  createConstraintsError,
+  createPathError,
+  dataWithId,
+  isDeferred,
+  isGoodConstraint,
+  isGoodSegment,
+  isNotValidConstraint,
+  isNotValidSegment,
+} from "utils/query";
 
 type UseLiveCollectionOptions =
   | string[]
   | {
       path: string[];
-      constraints?: (QueryConstraint | null | undefined)[];
+      constraints?: (QueryConstraint | DeferredAction | null | undefined)[];
     };
-
-const toDataWithId = <T extends object>(d: QueryDocumentSnapshot<T>) =>
-  withId(d.data(), d.id);
-
-const isValidSegment = (segment: string | undefined): segment is string =>
-  "string" === typeof segment && "" !== segment;
-
-const isValidConstraint = (
-  constraint: QueryConstraint | null | undefined
-): constraint is QueryConstraint =>
-  constraint !== null && constraint !== undefined;
 
 export const useLiveCollection = <T extends object>(
   options: UseLiveCollectionOptions
@@ -44,26 +43,48 @@ export const useLiveCollection = <T extends object>(
   const path = Array.isArray(options) ? options : options?.path;
   const constraints = Array.isArray(options) ? undefined : options?.constraints;
 
-  const memoizedPath = useMemo(
-    () => (path ?? ALWAYS_EMPTY_ARRAY).filter(isValidSegment),
-    [path]
+  const filteredPath = (path ?? ALWAYS_EMPTY_ARRAY).filter(isGoodSegment);
+  const filteredConstraints = (constraints ?? ALWAYS_EMPTY_ARRAY).filter(
+    isGoodConstraint
   );
 
-  const memoizedConstraints = useMemo(
-    () => (constraints ?? ALWAYS_EMPTY_ARRAY).filter(isValidConstraint),
-    [constraints]
+  // Some quality of life and input sanity checks follow, like
+  // Firestore API requires at least two defined arguments for it to not throw an error
+
+  const [first, ...rest] = filteredPath;
+  const shortPath = !rest?.length;
+  const incompletePath = !first;
+  const noConstraints = !filteredConstraints.length;
+  const invalidPath = path?.some(isNotValidSegment);
+  const invalidConstraints = constraints?.some(isNotValidConstraint);
+
+  const hasDeferred = path?.some(isDeferred) || constraints?.some(isDeferred);
+
+  const hasPathError = incompletePath || invalidPath;
+  const hasConstraintsError =
+    (shortPath && noConstraints) || invalidConstraints;
+
+  if (hasPathError) setError(createPathError(path));
+  if (hasConstraintsError) setError(createConstraintsError(constraints));
+
+  // construction of the query is where the Firestore SDK may break if invalid values are given
+  const memoizedQuery = useMemo(
+    () =>
+      hasPathError || hasConstraintsError || hasDeferred
+        ? undefined
+        : query(
+            collection(getFirestore(), first, ...rest),
+            ...filteredConstraints
+          ).withConverter(withIdConverter<T>()),
+    [
+      filteredConstraints,
+      first,
+      rest,
+      hasPathError,
+      hasConstraintsError,
+      hasDeferred,
+    ]
   );
-
-  const memoizedQuery = useMemo(() => {
-    const [first, ...rest] = memoizedPath;
-    // Firestore API requires at least two good segments for it to work
-    if (!rest?.length && !memoizedConstraints.length) return;
-
-    return query(
-      collection(getFirestore(), first, ...rest),
-      ...memoizedConstraints
-    ).withConverter(withIdConverter<T>());
-  }, [memoizedPath, memoizedConstraints]);
 
   useEffect(() => {
     // prevents warning: Can't perform a React state update on an unmounted component.
@@ -75,7 +96,7 @@ export const useLiveCollection = <T extends object>(
       if (!isMounted) return;
       setData((oldData) => {
         // this check prevents endless re-renders
-        const maybeNewData = snap.docs.map(toDataWithId);
+        const maybeNewData = snap.docs.map(dataWithId);
         return isEqual(oldData, maybeNewData) ? oldData : maybeNewData;
       });
       setIsLoading(false);
@@ -93,7 +114,14 @@ export const useLiveCollection = <T extends object>(
       isMounted = false;
       unsubscribe();
     };
-  }, [memoizedQuery, setData, setError, setIsLoading]);
+  }, [
+    memoizedQuery,
+    setData,
+    setError,
+    setIsLoading,
+    hasPathError,
+    hasConstraintsError,
+  ]);
 
   return useMemo(() => ({ error, data, isLoading, isLoaded: !isLoading }), [
     error,

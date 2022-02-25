@@ -3,9 +3,10 @@ import { where } from "firebase/firestore";
 
 import {
   ALWAYS_EMPTY_ARRAY,
-  COLLECTION_WORLDS,
+  DEFERRED,
   FIELD_HIDDEN,
   FIELD_OWNERS,
+  PATH,
 } from "settings";
 
 import { LoadStatus } from "types/fire";
@@ -18,18 +19,16 @@ type UseWorldsByOwner = (options: {
 }) => LoadStatus & { ownWorlds: WorldWithId[] };
 
 export const useWorldsByOwner: UseWorldsByOwner = ({ userId }) => {
-  const path = useMemo(() => [COLLECTION_WORLDS], []);
-
   const constraints = useMemo(
     () => [
       where(FIELD_HIDDEN, "==", false),
-      userId ? where(FIELD_OWNERS, "array-contains", userId) : undefined,
+      userId ? where(FIELD_OWNERS, "array-contains", userId) : DEFERRED,
     ],
     [userId]
   );
 
   const { error, isLoading, isLoaded, data } = useLiveCollection<WorldWithId>({
-    path,
+    path: PATH.worlds,
     constraints,
   });
 
