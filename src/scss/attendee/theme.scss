@@ -46,6 +46,10 @@ $c-button-bg: var(--button-bg);
 $c-overlay-fg: var(--overlay-fg);
 $c-overlay-bg: var(--overlay-bg);
 
+// Auxillary text that is less important than other text and so fades into the
+// background a little.
+$light--aux-text: rgba(128, 128, 128);
+
 $c-chat-input-background: var(--chat-input-background);
 
 $c-light-text-on-dark: rgb(230, 230, 230);
