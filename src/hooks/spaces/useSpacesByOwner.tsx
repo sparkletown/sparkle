@@ -4,6 +4,7 @@ import { where } from "firebase/firestore";
 import {
   ALWAYS_EMPTY_ARRAY,
   COLLECTION_SPACES,
+  DEFERRED,
   FIELD_OWNERS,
   FIELD_WORLD_ID,
 } from "settings";
@@ -25,8 +26,8 @@ export const useSpacesByOwner: UseSpacesByOwner = ({ worldId, userId }) => {
 
   const constraints = useMemo(
     () => [
-      worldId ? where(FIELD_WORLD_ID, "==", worldId) : undefined,
-      userId ? where(FIELD_OWNERS, "array-contains", userId) : undefined,
+      worldId ? where(FIELD_WORLD_ID, "==", worldId) : DEFERRED,
+      userId ? where(FIELD_OWNERS, "array-contains", userId) : DEFERRED,
     ],
     [worldId, userId]
   );

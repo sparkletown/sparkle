@@ -3,15 +3,11 @@ import {
   FirestoreError,
   onSnapshot,
   Query,
-  QueryDocumentSnapshot,
   QuerySnapshot,
 } from "firebase/firestore";
 import { isEqual } from "lodash";
 
-import { withId } from "utils/id";
-
-const toDataWithId = <T extends object>(d: QueryDocumentSnapshot<T>) =>
-  withId(d.data(), d.id);
+import { dataWithId } from "utils/query";
 
 export const useLiveQuery = <T extends object>(query: Query<T>) => {
   const [data, setData] = useState<T[]>();
@@ -26,7 +22,7 @@ export const useLiveQuery = <T extends object>(query: Query<T>) => {
       if (!isMounted) return;
       setData((oldData) => {
         // this check prevents endless re-renders
-        const maybeNewData = snap.docs.map(toDataWithId);
+        const maybeNewData = snap.docs.map(dataWithId);
         return isEqual(oldData, maybeNewData) ? oldData : maybeNewData;
       });
       setIsLoading(false);

@@ -12,9 +12,7 @@ import { FirePath } from "types/fire";
 
 import { withIdConverter } from "utils/converters";
 import { WithId } from "utils/id";
-
-const isValidSegment = (segment: string | undefined): segment is string =>
-  "string" === typeof segment && "" !== segment;
+import { isGoodSegment } from "utils/query";
 
 export const useLiveDocument = <T extends object>(path: FirePath) => {
   const [data, setData] = useState<WithId<T>>();
@@ -23,7 +21,7 @@ export const useLiveDocument = <T extends object>(path: FirePath) => {
 
   const firestore = getFirestore();
 
-  const [first, ...rest] = path.filter(isValidSegment);
+  const [first, ...rest] = path.filter(isGoodSegment);
 
   useEffect(() => {
     // prevents warning: Can't perform a React state update on an unmounted component.

@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { ALWAYS_EMPTY_ARRAY, COLLECTION_ROLES } from "settings";
+import { ALWAYS_EMPTY_ARRAY, PATH } from "settings";
 
 import { SpaceId, UserId, WorldId } from "types/id";
 
@@ -20,13 +20,11 @@ type UsePermissionOptions = {
 };
 
 export const usePermission = (options: UsePermissionOptions) => {
-  const path = useMemo(() => [COLLECTION_ROLES, "admin"], []);
-
   const {
     data: role,
     error: roleError,
     isLoading: roleLoading,
-  } = useLiveDocument<AdminRole>(path);
+  } = useLiveDocument<AdminRole>(PATH.rolesAdmin);
 
   const {
     ownWorlds,
