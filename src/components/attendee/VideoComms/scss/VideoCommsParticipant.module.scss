@@ -1,4 +1,6 @@
 @use "scss/attendee/layout";
+@use "scss/attendee/theme";
+@use "scss/attendee/effects/sparkle";
 
 .videoCommsParticipant {
   display: flex;
@@ -18,7 +20,7 @@
   display: flex;
   flex-direction: row-reverse;
   font-size: 22px;
-  color: #f1f1f1;
+  color: theme.$c-light-text-on-dark;
   background: rgba(0, 0, 0, 0.5);
   border-top-left-radius: 4px;
 
@@ -26,7 +28,7 @@
     margin: 2px 7px;
   }
   &__darkButtons {
-    color: #000000;
+    color: theme.$c-default-text;
     background: none;
     cursor: pointer;
   }
@@ -34,9 +36,10 @@
 
 .avatarContainer {
   display: flex;
-  border: 1px solid #dbdbdb;
-  background: #f0f0f0;
+  border: 1px solid theme.$sparkle--border;
   min-width: 186px;
+
+  @include sparkle.panel--normal;
 
   img {
     max-width: 64px;

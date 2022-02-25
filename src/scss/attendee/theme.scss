@@ -2,18 +2,50 @@
 // Please make sure their names have semantic meaning
 // i.e. instead of $white it would be $c-button--fg or $c-input--bg
 
-$sparkle--bg: rgb(99, 42, 199); // previously named $sparkle-theme
-$sparkle--border: rgba(130, 130, 130, 0.3); // previously named $sparkle-border
+// All the colour definitions are dona via CSS variables and then we use SCSS
+// variables to substitue them into the right place.
+:root {
+  --default-text: rgb(0, 0, 0);
+  --chat-input-background: rgb(230, 230, 230);
 
-$light--text: rgb(0, 0, 0); // previously named $text-lightmode
-$light--panel: rgb(255, 255, 255); // previously named $panel-lightmode
-$light--canvas: rgb(230, 230, 230); // previously named $canvas-lightmode
-// Auxillary text that is less important than other text and so fades into the
-// background a little.
-$light--aux-text: rgba(128, 128, 128);
+  --panel-background: rgb(255, 255, 255);
+  --glass-panel-background: rgba(255, 255, 255, 0.4);
 
-$dark--text: rgb(255, 255, 255); // previously named $text-darkmode
-$dark--panel: rgb(0, 0, 0); // previously named $panel-darkmode
-$dark--canvas: rgb(50, 50, 50); // previously named $canvas-darkmode
+  --sparkle--bg: rgb(99, 42, 199);
+  --sparkle--border: rgba(130, 130, 130, 0.3);
 
-$chat--input--background: rgb(230, 230, 230);
+  --button-fg: rgb(255, 255, 255);
+  --button-bg: rgb(99, 42, 199);
+
+  --overlay-fg: rgb(255, 255, 255);
+  --overlay-bg: rgba(99, 42, 199, 0.7);
+
+  @media (prefers-color-scheme: dark) {
+    --default-text: rgb(255, 255, 255);
+    --chat-input-background: rgb(60, 60, 60);
+
+    --panel-background: rgb(0, 0, 0);
+    --glass-panel-background: rgba(0, 0, 0, 0.4);
+  }
+}
+
+// This is the colour that should be used for 90% of text
+$c-default-text: var(--default-text);
+// Used wherever we are putting text on to a light background
+$c-inverted-text: var(--inverted-text);
+
+$sparkle--bg: var(--sparkle--bg); // previously named $sparkle-theme
+$sparkle--border: var(--sparkle--border); // previously named $sparkle-border
+
+$c-panel-background: var(--panel-background);
+$c-glass-panel-background: var(--glass-panel-background);
+
+$c-button-fg: var(--button-fg);
+$c-button-bg: var(--button-bg);
+
+$c-overlay-fg: var(--overlay-fg);
+$c-overlay-bg: var(--overlay-bg);
+
+$c-chat-input-background: var(--chat-input-background);
+
+$c-light-text-on-dark: rgb(230, 230, 230);
