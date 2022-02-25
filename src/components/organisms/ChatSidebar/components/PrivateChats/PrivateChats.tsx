@@ -62,10 +62,7 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({ recipient }) => {
   }
 
   return (
-    <div
-      className={styles.privateChatsContainer}
-      id="private_chats_scrollable_div"
-    >
+    <div className={styles.privateChatsContainer}>
       {hasChatPreviews && (
         <div className="private-chats__previews">
           {renderedPrivateChatPreviews}

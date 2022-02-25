@@ -58,10 +58,9 @@
 
 .chatSidebar {
   position: absolute;
-  background-color: rgba(255, 255, 255, 0.4);
   bottom: layout.$h-chat-controls;
   right: 0;
-  height: calc(100vh - layout.$h-chat-controls - layout.$top-nav-height);
+  height: calc(100vh - layout.$h-chat-controls - layout.$h-top-nav);
   @media (min-width: breakpoint.$md) {
     top: -100vh;
     height: calc(100vh - layout.$h-chat-controls);
@@ -69,5 +68,6 @@
     width: 100%;
   }
   max-width: layout.$w-sidebar;
-  backdrop-filter: blur(5px);
+
+  @include sparkle.panel--glass;
 }

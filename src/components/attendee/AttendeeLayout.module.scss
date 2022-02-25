@@ -39,10 +39,6 @@
 
   &[open] {
     height: 45vh;
-
-    &.has-component-shoutout {
-      height: calc(45vh - #{space.button(1) + space.empty(1)});
-    }
   }
 
   @media (min-width: breakpoint.$md) {

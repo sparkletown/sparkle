@@ -8,18 +8,17 @@
   z-index: 111;
   width: 100%;
   padding: space.empty(1);
+}
 
-  // @debt use camelCase
-  &__container {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-  }
+.container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
 
-  &__chatExpanded {
-    @media (min-width: breakpoint.$md) {
-      width: calc(100% - layout.$w-sidebar);
-      padding-right: space.empty(1);
-    }
+.chatExpanded {
+  @media (min-width: breakpoint.$md) {
+    width: calc(100% - layout.$w-sidebar);
+    padding-right: space.empty(1);
   }
 }

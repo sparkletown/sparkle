@@ -3,12 +3,6 @@
 
 .chatMessageInfo {
   display: flex;
-  &__isMine {
-    justify-content: right;
-    .authorName {
-      display: none;
-    }
-  }
 
   svg {
     color: theme.$light--aux-text;
@@ -20,4 +14,12 @@
 
 .messageTime {
   color: theme.$light--aux-text;
+}
+
+.isMine {
+  justify-content: right;
+}
+
+.authorName {
+  display: none;
 }

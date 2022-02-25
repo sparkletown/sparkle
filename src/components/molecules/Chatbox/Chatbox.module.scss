@@ -17,7 +17,9 @@
 .messageScroller {
   display: flex;
   flex-direction: column-reverse;
-  // Required to prevent inline styles from the infinite scroller creating
-  // a horizontal scrollbar
+  // The infinite scrolling library that we use forces an inline style that
+  // creates a horizontal scrollbar. The horizontal scrollbar isn't desired.
+  // The only way to work around that is to (unfortunately) use an !important
+  // marker here.
   overflow-x: hidden !important;
 }

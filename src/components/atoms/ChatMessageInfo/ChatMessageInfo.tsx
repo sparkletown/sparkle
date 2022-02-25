@@ -54,7 +54,7 @@ export const ChatMessageInfo: React.FC<ChatMessageInfoProps> = ({
   );
 
   const containerClassnames = classNames(styles.chatMessageInfo, {
-    [styles.chatMessageInfo__isMine]: isMine,
+    [styles.isMine]: isMine,
   });
 
   return (

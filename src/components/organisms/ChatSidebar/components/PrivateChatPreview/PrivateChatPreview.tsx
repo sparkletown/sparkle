@@ -26,7 +26,7 @@ export const PrivateChatPreview: React.FC<PrivateChatPreviewProps> = ({
   const timestampMillis = timestamp.toMillis();
 
   const containerClasses = classNames(styles.privateChatPreviewContainer, {
-    [styles.privateChatPreviewContainer__highlight]: !isRead && !isMine,
+    [styles.highlight]: !isRead && !isMine,
   });
 
   return (

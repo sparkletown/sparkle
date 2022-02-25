@@ -3,9 +3,10 @@
 
 .templateContainer {
   width: 100%;
-  &__shrinkForChat {
-    @media (min-width: breakpoint.$md) {
-      width: calc(100% - layout.$w-sidebar);
-    }
+}
+
+.shrunk {
+  @media (min-width: breakpoint.$md) {
+    width: calc(100% - layout.$w-sidebar);
   }
 }

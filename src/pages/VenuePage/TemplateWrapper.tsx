@@ -132,8 +132,7 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   const venueShrinksForChat = venue.template !== VenueTemplate.partymap;
 
   const containerClassnames = classNames(styles.templateContainer, {
-    [styles.templateContainer__shrinkForChat]:
-      isChatExpanded && venueShrinksForChat,
+    [styles.shrunk]: isChatExpanded && venueShrinksForChat,
   });
 
   return (

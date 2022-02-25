@@ -47,12 +47,12 @@ export const AttendeeHeader: React.FC<AttendeeHeaderProps> = ({
   const { isExpanded: isChatExpanded } = useChatSidebarControls();
 
   const headerClassnames = classNames(CN.attendeeHeader, {
-    [CN.attendeeHeader__chatExpanded]: isChatExpanded,
+    [CN.chatExpanded]: isChatExpanded,
   });
 
   return (
     <header className={headerClassnames}>
-      <div className={CN.attendeeHeader__container}>
+      <div className={CN.container}>
         <div>
           {backButtonSpace ? (
             <Button onClick={goBack}>

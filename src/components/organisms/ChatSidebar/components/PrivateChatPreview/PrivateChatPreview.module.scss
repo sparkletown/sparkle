@@ -7,11 +7,11 @@
   display: flex;
   flex-direction: row;
   text-align: left;
+}
 
-  &__highlight {
-    .chatPreviewText {
-      font-weight: 600;
-    }
+.highlight {
+  .chatPreviewText {
+    font-weight: 600;
   }
 }
 
