@@ -2,23 +2,27 @@ import React, {
   ChangeEvent,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
 import { FieldError, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import classNames from "classnames";
+import { Button } from "components/admin/Button";
 
-import { ACCEPTED_IMAGE_TYPES } from "settings";
+import {
+  ACCEPTED_IMAGE_TYPES,
+  DEFAULT_IMAGE_INPUT_BACKGROUND,
+  DEFAULT_IMAGE_INPUT_ROUND_BACKGOUND,
+} from "settings";
 
 import { AnyForm } from "types/utility";
 
 import { useImageInputCompression } from "hooks/useImageInputCompression";
 
-import { ImageOverlay } from "components/atoms/ImageOverlay";
+import * as TW from "./ImageInput.tailwind";
 
-import { ButtonNG } from "../ButtonNG";
-
-import "./ImageInput.scss";
+type ImageInputVariant = "wide" | "round";
 
 export interface ImageInputProps {
   onChange?: (
@@ -34,12 +38,12 @@ export interface ImageInputProps {
   imgUrl?: string;
   error?: FieldError;
   setValue: UseFormSetValue<AnyForm>;
-  small?: boolean;
   register: UseFormRegister<AnyForm>;
   nameWithUnderscore?: boolean;
   text?: string;
   subtext?: string;
-  isInputHidden?: boolean;
+  // isInputHidden?: boolean;
+  variant?: ImageInputVariant;
 }
 
 export const ImageInput: React.FC<ImageInputProps> = ({
@@ -47,13 +51,13 @@ export const ImageInput: React.FC<ImageInputProps> = ({
   name,
   imgUrl,
   error,
-  small = false,
   register,
   setValue,
   nameWithUnderscore = false,
-  isInputHidden = false,
+  // isInputHidden = false,
   text = "Upload",
   subtext = "",
+  variant = "wide",
 }) => {
   const inputFileRef = useRef<HTMLInputElement>(null);
 
@@ -95,16 +99,37 @@ export const ImageInput: React.FC<ImageInputProps> = ({
 
   const onButtonClick = useCallback(() => inputFileRef?.current?.click(), []);
 
-  const labelClasses = classNames("ImageInput__container", {
-    "ImageInput__container--error": !!error?.message,
-    "ImageInput__container--small": small,
-    "ImageInput__container--disabled": loading,
-    "mod--hidden": isInputHidden || !imageUrl,
+  const wrapperClasses = classNames("ImageInput__wrapper", TW.wrapper, {
+    [TW.wideWrapper]: variant === "wide",
+    [TW.roundWrapper]: variant === "round",
   });
+
+  const backgroundImage =
+    imgUrl ||
+    (variant === "wide"
+      ? DEFAULT_IMAGE_INPUT_BACKGROUND
+      : DEFAULT_IMAGE_INPUT_ROUND_BACKGOUND);
+
+  const wrapperVariantStyles = useMemo(
+    () =>
+      variant === "wide"
+        ? {
+            height: "150px",
+          }
+        : { backgroundPosition: "100% 100%" },
+    [variant]
+  );
+  const wrapperStyles = useMemo(
+    () => ({
+      backgroundImage: `url(${backgroundImage})`,
+      ...wrapperVariantStyles,
+    }),
+    [backgroundImage, wrapperVariantStyles]
+  );
 
   return (
     <>
-      <label className={labelClasses}>
+      <label className="ImageInput__container">
         <input
           accept={ACCEPTED_IMAGE_TYPES}
           hidden
@@ -113,19 +138,12 @@ export const ImageInput: React.FC<ImageInputProps> = ({
           type="file"
           ref={inputFileRef}
         />
-        {loading && <ImageOverlay disabled>processing...</ImageOverlay>}
-        <span
-          className={classNames("ImageInput__button", {
-            "ImageInput__button--small": small,
-            "ImageInput__button--hidden": !!imageUrl,
-          })}
-        >
-          Upload
-        </span>
       </label>
       <input type="hidden" name={fileUrl} {...register} readOnly />
-      <div className="ImageInput__wrapper">
-        <ButtonNG onClick={onButtonClick}>{text}</ButtonNG>
+      <div className={wrapperClasses} style={wrapperStyles}>
+        <Button onClick={onButtonClick} disabled={loading} borders="rounded">
+          {loading ? "processing..." : text}
+        </Button>
         <div className="ImageInput__subtext">{subtext}</div>
       </div>
       {errorMessage && <div className="ImageInput__error">{errorMessage}</div>}

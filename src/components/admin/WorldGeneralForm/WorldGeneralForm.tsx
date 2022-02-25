@@ -1,11 +1,21 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm, useFormState } from "react-hook-form";
 import { useHistory } from "react-router";
+import { Link } from "react-router-dom";
 import { useAsyncFn } from "react-use";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { Button } from "components/admin/Button";
+import { ImageInput } from "components/admin/ImageInput";
+import { Input } from "components/admin/Input";
+import { InputGroup } from "components/admin/InputGroup";
+import { Textarea } from "components/admin/Textarea/Textarea";
 import { omit } from "lodash";
 
-import { ADMIN_IA_WORLD_BASE_URL, COMMON_NAME_MAX_CHAR_COUNT } from "settings";
+import {
+  ADMIN_IA_WORLD_BASE_URL,
+  ADMIN_IA_WORLD_PARAM_URL,
+  COMMON_NAME_MAX_CHAR_COUNT,
+} from "settings";
 
 import { createSlug } from "api/admin";
 import { createWorld, updateWorldStartSettings, World } from "api/world";
@@ -15,6 +25,7 @@ import { worldEdit, WorldEditActions } from "store/actions/WorldEdit";
 import { WorldGeneralFormInput } from "types/world";
 
 import { WithId, WithOptionalWorldId } from "utils/id";
+import { generateUrl } from "utils/url";
 
 import { worldStartSchema } from "forms/worldStartSchema";
 
@@ -23,14 +34,9 @@ import { useUser } from "hooks/useUser";
 
 import { AdminSidebarButtons } from "components/organisms/AdminVenueView/components/AdminSidebarButtons";
 
-import { AdminInput } from "components/molecules/AdminInput";
-import { AdminSection } from "components/molecules/AdminSection";
 import { FormErrors } from "components/molecules/FormErrors";
 import { SubmitError } from "components/molecules/SubmitError";
 import { YourUrlDisplay } from "components/molecules/YourUrlDisplay";
-
-import { ButtonNG, ButtonProps } from "components/atoms/ButtonNG/ButtonNG";
-import { ImageInput } from "components/atoms/ImageInput";
 
 import "./WorldGeneralForm.scss";
 
@@ -97,7 +103,13 @@ export const WorldGeneralForm: React.FC<WorldGeneralFormProps> = ({
       if (worldId) {
         await updateWorldStartSettings({ ...values, id: worldId }, user);
         //TODO: Change this to the most appropriate url when product decides the perfect UX
-        history.push(ADMIN_IA_WORLD_BASE_URL);
+        history.push(
+          generateUrl({
+            route: ADMIN_IA_WORLD_PARAM_URL,
+            required: ["worldSlug"],
+            params: { worldSlug: world?.slug },
+          })
+        );
       } else {
         const { worldId: id, error } = await createWorld(values, user);
 
@@ -117,16 +129,7 @@ export const WorldGeneralForm: React.FC<WorldGeneralFormProps> = ({
 
       reset(omit(input, "creating"));
     },
-    [worldId, user, values, reset, history]
-  );
-
-  const saveButtonProps: ButtonProps = useMemo(
-    () => ({
-      type: "submit",
-      disabled: !isDirty && !isSaving && !isSubmitting,
-      loading: isSubmitting || isSaving,
-    }),
-    [isDirty, isSaving, isSubmitting]
+    [values, user, worldId, reset, history, world?.slug]
   );
 
   const dispatch = useDispatch();
@@ -153,48 +156,60 @@ export const WorldGeneralForm: React.FC<WorldGeneralFormProps> = ({
   return (
     <div className="WorldGeneralForm">
       <form onSubmit={handleSubmit(submit)} onChange={handleChange}>
-        <AdminSection title="Name your world" withLabel>
-          <AdminInput
-            subtext="If you are hosting an event, use the event name."
-            placeholder="World or Event Name"
+        <InputGroup
+          title="Name your world"
+          subtitle="max 50 characters"
+          isRequired
+          withLabel
+        >
+          <Input
             name="name"
             register={register}
             errors={errors}
             max={COMMON_NAME_MAX_CHAR_COUNT}
           />
-        </AdminSection>
-        <AdminSection title="Your URL will be">
+        </InputGroup>
+
+        <InputGroup title="Your URL will be">
           <YourUrlDisplay path={ADMIN_IA_WORLD_BASE_URL} slug={worldSlug} />
-        </AdminSection>
-        <AdminSection
-          title={
-            <>
-              Upload Highlight image &nbsp;
-              <span className="mod--subdued">(optional)</span>
-            </>
-          }
+        </InputGroup>
+
+        <InputGroup
+          title="Describe your world"
+          subtitle="(max 200 characters)"
+          withLabel
+          isOptional
+        >
+          <Textarea
+            name="description"
+            register={register}
+            errors={errors}
+          ></Textarea>
+        </InputGroup>
+
+        <InputGroup
+          title="Upload Highlight image"
           subtitle="A plain 1920 x 1080px image works best."
           withLabel
+          isOptional
         >
           <ImageInput
             imgUrl={values.bannerImageUrl}
             error={errors.bannerImageFile || errors.bannerImageUrl}
-            isInputHidden={!values.bannerImageUrl}
+            // isInputHidden={!values.bannerImageUrl}
             register={register}
             name="bannerImage"
             setValue={setValue}
             onChange={handleChange}
+            text="Upload highlight image"
           />
-        </AdminSection>
-        <AdminSection
-          title={
-            <>
-              Upload your logo &nbsp;
-              <span className="mod--subdued">(optional)</span>
-            </>
-          }
+        </InputGroup>
+
+        <InputGroup
+          title="Upload your logo"
           subtitle="A 400 px square image works best."
           withLabel
+          isOptional
         >
           <ImageInput
             name="logoImage"
@@ -202,21 +217,26 @@ export const WorldGeneralForm: React.FC<WorldGeneralFormProps> = ({
             error={errors.logoImageFile || errors.logoImageUrl}
             setValue={setValue}
             register={register}
-            small
+            text="Upload logo image"
             onChange={handleChange}
+            variant="round"
           />
-        </AdminSection>
+        </InputGroup>
+
         <FormErrors errors={errors} omitted={HANDLED_ERRORS} />
         <SubmitError error={error} />
 
         <AdminSidebarButtons>
-          <ButtonNG
-            className="AdminSidebarButtons__button--larger"
-            variant="primary"
-            {...saveButtonProps}
+          <Button
+            type="submit"
+            disabled={!isDirty && !isSaving && !isSubmitting}
+            loading={isSubmitting || isSaving}
           >
-            {worldId ? "Update" : "Create"}
-          </ButtonNG>
+            Save
+          </Button>
+          <Link to={ADMIN_IA_WORLD_BASE_URL}>
+            <Button variant="secondary">Cancel</Button>
+          </Link>
         </AdminSidebarButtons>
       </form>
     </div>
