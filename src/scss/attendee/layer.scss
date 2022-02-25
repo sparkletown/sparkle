@@ -11,6 +11,7 @@
 // $z-index--chat: above($z-index--header);
 
 $-z-index--baseline: 1000;
+$z-index--baseline: $-z-index--baseline;
 
 // NOTE: make greater steps upwards to have some slack for other elements
 @function above($z-index) {

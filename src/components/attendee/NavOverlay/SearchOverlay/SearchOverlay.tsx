@@ -17,8 +17,7 @@ import { UserWithLocation } from "types/User";
 import { isDefined } from "utils/types";
 
 import { useAlgoliaSearch } from "hooks/algolia/useAlgoliaSearch";
-import { useSpaceParams } from "hooks/spaces/useSpaceParams";
-import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
+import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useDebounceSearch } from "hooks/useDebounceSearch";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 
@@ -32,8 +31,7 @@ type SearchOverlayProps = {
   onClose: () => void;
 };
 export const SearchOverlay: React.FC<SearchOverlayProps> = ({ onClose }) => {
-  const { worldSlug, spaceSlug } = useSpaceParams();
-  const { space, worldId } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
+  const { space, worldId } = useWorldAndSpaceByParams();
   const [searchValue, setSearchValue] = useState("");
 
   const { searchQuery, setSearchInputValue } = useDebounceSearch();

@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { AttendeeFooter } from "components/attendee/AttendeeFooter";
+import { AttendeeHeader } from "components/attendee/AttendeeHeader";
+import { ChatContainer } from "components/attendee/ChatContainer";
 import { withAuth } from "components/hocs/db/withAuth";
 import { withFallback } from "components/hocs/gate/withFallback";
 import { withRequired } from "components/hocs/gate/withRequired";
@@ -12,12 +15,9 @@ import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { NotLoggedInFallback } from "components/atoms/NotLoggedInFallback";
 
-import { AttendeeHeader } from "./AttendeeHeader/AttendeeHeader";
 import { VideoCommsProvider } from "./VideoComms/VideoCommsProvider";
 import { HuddleProvider } from "./VideoHuddle/HuddleProvider";
 import { VideoHuddle } from "./VideoHuddle/VideoHuddle";
-import { AttendeeFooter } from "./AttendeeFooter";
-import { ChatContainer } from "./ChatContainer";
 
 import "scss/attendee/initial.scss";
 import styles from "./AttendeeLayout.module.scss";

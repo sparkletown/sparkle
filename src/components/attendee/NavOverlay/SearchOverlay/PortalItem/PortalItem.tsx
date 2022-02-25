@@ -7,21 +7,19 @@ import { Room } from "types/rooms";
 import { isExternalPortal, openUrl } from "utils/url";
 
 import { useCustomSound } from "hooks/sounds";
-import { useSpaceParams } from "hooks/spaces/useSpaceParams";
-import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
+import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useAnalytics } from "hooks/useAnalytics";
 import { usePortal } from "hooks/usePortal";
 
-import CN from "../SearchOverlay.module.scss";
+import CN from "./PortalItem.module.scss";
 
-type PortalItemProps = {
+export type PortalItemProps = {
   portal: Room;
   onClick: () => void;
 };
 
 export const PortalItem: React.FC<PortalItemProps> = ({ portal, onClick }) => {
-  const { worldSlug, spaceSlug } = useSpaceParams();
-  const { space } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
+  const { space } = useWorldAndSpaceByParams();
 
   const { enterPortal } = usePortal({
     portal,
@@ -42,13 +40,13 @@ export const PortalItem: React.FC<PortalItemProps> = ({ portal, onClick }) => {
 
   return (
     <div>
-      <div className={CN.searchOverlayResultHeader} onClick={enter}>
-        <h3 className={CN.searchOverlayResultTitle}>
+      <div className={CN.portalItemResultHeader} onClick={enter}>
+        <h3 className={CN.portalItemResultTitle}>
           {portal.title}
           <span>{SPACE_TAXON.title}</span>
         </h3>
       </div>
-      <p className={CN.searchOverlayResultSubtitle}>{portal.subtitle}</p>
+      <p className={CN.portalItemResultSubtitle}>{portal.subtitle}</p>
     </div>
   );
 };

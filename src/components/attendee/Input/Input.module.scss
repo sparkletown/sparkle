@@ -1,4 +1,3 @@
-@use "scss/attendee/variables.scss"as *;
 @use "scss/attendee/space";
 @use "scss/attendee/border";
 @use "scss/attendee/theme";
@@ -12,10 +11,10 @@
     align-items: center;
     padding: 0 0 0 space.empty(0.75);
     height: 26px;
-    color: rgba(0, 0, 0, 0.6);
+    color: theme.$c-glass-panel-text;
     right: space.empty(0.8);
     border-left: border.$radius--s3 solid theme.$sparkle--border;
-    color: black;
+    color: theme.$c-default-text;
     cursor: pointer;
   }
 }

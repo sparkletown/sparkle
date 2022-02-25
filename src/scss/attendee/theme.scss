@@ -26,6 +26,7 @@
 
     --panel-background: rgb(0, 0, 0);
     --glass-panel-background: rgba(0, 0, 0, 0.4);
+    --glass-panel-text: rgba(0, 0, 0, 0.6);
   }
 }
 
@@ -39,6 +40,7 @@ $sparkle--border: var(--sparkle--border); // previously named $sparkle-border
 
 $c-panel-background: var(--panel-background);
 $c-glass-panel-background: var(--glass-panel-background);
+$c-glass-panel-text: var(--glass-panel-text);
 
 $c-button-fg: var(--button-fg);
 $c-button-bg: var(--button-bg);

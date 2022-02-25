@@ -3,6 +3,9 @@ import { useHistory } from "react-router-dom";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
+import { Attendance } from "components/attendee/Attendance";
+import { Button } from "components/attendee/Button";
+import { NavOverlay } from "components/attendee/NavOverlay/NavOverlay";
 
 import { ATTENDEE_INSIDE_URL, SPACE_TAXON } from "settings";
 
@@ -14,10 +17,6 @@ import { useChatSidebarControls } from "hooks/chats/util/useChatSidebarControls"
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
-
-import { Attendance } from "../Attendance";
-import { Button } from "../Button";
-import { NavOverlay } from "../NavOverlay/NavOverlay";
 
 import CN from "./AttendeeHeader.module.scss";
 
@@ -75,7 +74,7 @@ export const AttendeeHeader: React.FC<AttendeeHeaderProps> = ({
 
   return (
     <header className={headerClassnames}>
-      <div className={CN.attendeeHeaderContainer}>
+      <div className={CN.container}>
         <div>
           {backButtonSpace ? (
             <Button onClick={goBack}>

@@ -1,3 +1,5 @@
+@use "scss/attendee/theme";
+
 .Attendance {
   display: flex;
   align-items: center;
@@ -38,7 +40,7 @@
 
   &__totalUsersCountText {
     margin-left: 5px;
-    color: black;
+    color: theme.$c-default-text;
     white-space: nowrap;
   }
 }
