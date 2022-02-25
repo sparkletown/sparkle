@@ -32,7 +32,7 @@
     span {
       padding: space.empty(0.5) space.empty(1);
       text-decoration: none;
-      color: black;
+      color: theme.$c-default-text;
       cursor: pointer;
       position: relative;
     }
@@ -41,7 +41,6 @@
 
 .messageNotification {
   background: red;
-  color: white;
   font-size: font.$size--sm;
   border-radius: 100%;
   width: 6px;
