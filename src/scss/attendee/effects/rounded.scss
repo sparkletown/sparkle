@@ -1,5 +1,7 @@
+$border-radius-normal: 4px;
+
 @mixin normal {
-  border-radius: 4px;
+  border-radius: $border-radius-normal;
 }
 
 @mixin top {
@@ -24,4 +26,9 @@
   @include normal;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
+}
+
+@mixin topleft {
+  border-radius: 0;
+  border-top-left-radius: $border-radius-normal;
 }

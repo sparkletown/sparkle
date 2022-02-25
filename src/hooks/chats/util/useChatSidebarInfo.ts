@@ -1,11 +1,9 @@
 import { useMemo } from "react";
 
-import { AnyVenue } from "types/venues";
-
 import { usePrivateChatPreviews } from "hooks/chats/private/usePrivateChatPreviews";
 import { useUser } from "hooks/useUser";
 
-export const useChatSidebarInfo = (venue: AnyVenue) => {
+export const useChatSidebarInfo = () => {
   const numberOfUnreadChats = useNumberOfUnreadChats();
 
   return {

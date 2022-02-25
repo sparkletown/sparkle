@@ -8,7 +8,12 @@ $sparkle--border: rgba(130, 130, 130, 0.3); // previously named $sparkle-border
 $light--text: rgb(0, 0, 0); // previously named $text-lightmode
 $light--panel: rgb(255, 255, 255); // previously named $panel-lightmode
 $light--canvas: rgb(230, 230, 230); // previously named $canvas-lightmode
+// Auxillary text that is less important than other text and so fades into the
+// background a little.
+$light--aux-text: rgba(128, 128, 128);
 
 $dark--text: rgb(255, 255, 255); // previously named $text-darkmode
 $dark--panel: rgb(0, 0, 0); // previously named $panel-darkmode
 $dark--canvas: rgb(50, 50, 50); // previously named $canvas-darkmode
+
+$chat--input--background: rgb(230, 230, 230);

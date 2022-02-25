@@ -25,23 +25,6 @@
   justify-content: center;
   transition: padding-right 0.2s ease;
   padding-right: 0;
-  /*
-  TODO
-  & > *:first-child {
-    margin-top: $button-height*2 + $whitespace;
-  }
-  &.component-chat-open {
-    @media (max-width: 767px) {
-      justify-content: flex-start;
-    }
-    @media (min-width: 768px) {
-      padding-right: 50%;
-    }
-    @media (min-width: 960px) {
-      padding-right: $sidebar-width + $whitespace;
-    }
-  }
-  */
 }
 
 .LayerUi {
@@ -51,29 +34,16 @@
   z-index: 40;
   @include sparkle.panel--normal;
 
-  @media (max-width: breakpoint.$md - 1) {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 
-    &[open] {
-      height: 45vh;
-
-      &.has-component-shoutout {
-        height: calc(45vh - #{space.button(1) + space.empty(1)});
-      }
-    }
+  &[open] {
+    height: 45vh;
   }
 
   @media (min-width: breakpoint.$md) {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    position: fixed;
     padding: 0 space.empty(1);
-    grid-gap: space.empty(1);
     background: transparent;
-  }
-
-  @media (min-width: breakpoint.$lg) {
-    grid-template-columns: 1fr layout.$w-sidebar;
-    justify-items: center;
   }
 }

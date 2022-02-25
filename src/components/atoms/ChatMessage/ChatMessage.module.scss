@@ -1,0 +1,47 @@
+@use "sass:map";
+
+@use "scss/attendee/layout";
+@use "scss/attendee/space";
+
+.chatMessageRow {
+  margin-bottom: space.empty(1.5);
+  display: flex;
+  flex-direction: row;
+  text-align: left;
+
+  &__isMine {
+    text-align: right;
+    .avatarSpacer {
+      order: 1;
+    }
+
+    .avatarContainer {
+      order: 3;
+    }
+
+    p {
+      text-align: right;
+    }
+  }
+}
+
+.avatarSpacer {
+  order: 3;
+  width: map.get(layout.$avatarSizes, "medium");
+  height: map.get(layout.$avatarSizes, "medium");
+}
+
+.avatarContainer {
+  order: 1;
+}
+
+.chatMessageBody {
+  order: 2;
+  flex-grow: 1;
+  margin: 0 space.empty(1);
+
+  p {
+    margin-top: space.empty(0.5);
+    word-break: break-word;
+  }
+}

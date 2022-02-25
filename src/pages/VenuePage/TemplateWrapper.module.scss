@@ -1,0 +1,12 @@
+@use "scss/attendee/layout";
+@use "scss/attendee/breakpoint";
+
+.templateContainer {
+  width: 100%;
+}
+
+.shrunk {
+  @media (min-width: breakpoint.$md) {
+    width: calc(100% - layout.$w-sidebar);
+  }
+}

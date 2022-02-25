@@ -1,0 +1,18 @@
+@use "scss/attendee/layout";
+@use "scss/attendee/space";
+
+.recipientChat {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.infoContainer {
+  padding: space.empty(1.5);
+  display: flex;
+  gap: space.empty(1);
+}
+
+.backIcon {
+  cursor: pointer;
+}

@@ -11,7 +11,7 @@ import { useUser } from "hooks/useUser";
 
 import { OnlineUser, PrivateChatPreview, RecipientChat } from "..";
 
-import "./PrivateChats.scss";
+import styles from "./PrivateChats.module.scss";
 
 export interface PrivateChatsProps {
   recipient: WithId<DisplayUser> | undefined;
@@ -62,7 +62,7 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({ recipient }) => {
   }
 
   return (
-    <div className="private-chats" id="private_chats_scrollable_div">
+    <div className={styles.privateChatsContainer}>
       {hasChatPreviews && (
         <div className="private-chats__previews">
           {renderedPrivateChatPreviews}

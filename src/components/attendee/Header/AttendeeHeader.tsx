@@ -2,6 +2,7 @@ import { useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 
 import { ATTENDEE_INSIDE_URL, SPACE_TAXON } from "settings";
 
@@ -9,6 +10,7 @@ import { BaseVenue } from "types/venues";
 
 import { generateUrl } from "utils/url";
 
+import { useChatSidebarControls } from "hooks/chats/util/useChatSidebarControls";
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useShowHide } from "hooks/useShowHide";
 
@@ -42,9 +44,15 @@ export const AttendeeHeader: React.FC<AttendeeHeaderProps> = ({
     }
   }, [backButtonSpace, history, worldSlug]);
 
+  const { isExpanded: isChatExpanded } = useChatSidebarControls();
+
+  const headerClassnames = classNames(CN.attendeeHeader, {
+    [CN.chatExpanded]: isChatExpanded,
+  });
+
   return (
-    <header className={CN.attendeeHeader}>
-      <div className={CN.attendeeHeader__container}>
+    <header className={headerClassnames}>
+      <div className={CN.container}>
         <div>
           {backButtonSpace ? (
             <Button onClick={goBack}>
