@@ -12,7 +12,7 @@ import { extractLocationFromUser, omitLocationFromUser } from "utils/user";
 
 import { useLiveDocument } from "hooks/fire/useLiveDocument";
 
-type UseProfile = (options: {
+type UseLiveProfile = (options: {
   auth?: FireAuthUser | RefiAuthUser;
 }) => LoadStatus & {
   auth?: FireAuthUser | RefiAuthUser;
@@ -23,7 +23,7 @@ type UseProfile = (options: {
   isTester: boolean;
 };
 
-export const useProfile: UseProfile = (props) => {
+export const useLiveProfile: UseLiveProfile = (props) => {
   const auth = props?.auth;
   const userId = auth?.uid as UserId | undefined;
 
