@@ -1,6 +1,9 @@
 import React from "react";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { AdminRestrictedLoading } from "components/admin/AdminRestrictedLoading";
+import { AdminRestrictedMessage } from "components/admin/AdminRestrictedMessage";
 import { AdminLayout } from "components/layouts/AdminLayout";
+import { WithPermission } from "components/shared/WithPermission";
 
 import { ADMIN_IA_WORLD_BASE_URL } from "settings";
 
@@ -20,7 +23,6 @@ import { AdminTitleBar } from "components/molecules/AdminTitleBar";
 import { LoadingPage } from "components/molecules/LoadingPage";
 import { WorldNav } from "components/molecules/WorldNav";
 
-import { AdminRestricted } from "components/atoms/AdminRestricted";
 import { ButtonNG } from "components/atoms/ButtonNG";
 
 import "./WorldEditor.scss";
@@ -53,7 +55,11 @@ export const WorldEditor: React.FC = () => {
     <AdminLayout>
       <div className="WorldEditor">
         <WithNavigationBar title={worldName}>
-          <AdminRestricted>
+          <WithPermission
+            check="world"
+            loading={<AdminRestrictedLoading />}
+            fallback={<AdminRestrictedMessage />}
+          >
             <AdminTitleBar variant="two-rows">
               <ButtonNG linkTo={ADMIN_IA_WORLD_BASE_URL} iconName={faArrowLeft}>
                 Back to Dashboard
@@ -62,7 +68,7 @@ export const WorldEditor: React.FC = () => {
             </AdminTitleBar>
             {editMode && <WorldNav />}
             <WorldEditorPanel worldSlug={worldSlug} />
-          </AdminRestricted>
+          </WithPermission>
         </WithNavigationBar>
       </div>
     </AdminLayout>

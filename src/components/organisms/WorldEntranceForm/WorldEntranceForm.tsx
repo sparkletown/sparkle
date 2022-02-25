@@ -2,6 +2,7 @@ import React, { useCallback, useMemo } from "react";
 import { useFieldArray, useForm, useFormState } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { TesterRestricted } from "components/shared/TesterRestricted";
 
 import { updateWorldEntranceSettings, World } from "api/world";
 
@@ -24,7 +25,6 @@ import { FormErrors } from "components/molecules/FormErrors";
 import { SubmitError } from "components/molecules/SubmitError";
 
 import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
-import { TesterRestricted } from "components/atoms/TesterRestricted";
 
 import "./WorldEntranceForm.scss";
 

@@ -1,4 +1,6 @@
 import React, { useMemo } from "react";
+import { AdminRestrictedLoading } from "components/admin/AdminRestrictedLoading";
+import { AdminRestrictedMessage } from "components/admin/AdminRestrictedMessage";
 import { CardList } from "components/admin/CardList";
 import { HeaderButton } from "components/admin/HeaderButton";
 import { Section } from "components/admin/Section";
@@ -6,6 +8,7 @@ import { SectionSubtitle } from "components/admin/SectionSubtitle";
 import { SpaceCard } from "components/admin/SpaceCard";
 import { AdminLayout } from "components/layouts/AdminLayout";
 import { FullWidthLayout } from "components/layouts/FullWidthLayout";
+import { WithPermission } from "components/shared/WithPermission";
 
 import { ADMIN_IA_SPACE_CREATE_PARAM_URL, SPACE_TAXON } from "settings";
 
@@ -17,7 +20,6 @@ import { generateUrl } from "utils/url";
 import { useWorldSpaces } from "hooks/spaces/useWorldSpaces";
 
 import { AdminHeader } from "components/atoms/AdminHeader";
-import { AdminRestricted } from "components/atoms/AdminRestricted";
 
 interface SpacesDashboardProps {
   userId: UserId;
@@ -81,7 +83,11 @@ export const SpacesDashboard: React.FC<SpacesDashboardProps> = ({
 
   return (
     <AdminLayout>
-      <AdminRestricted>
+      <WithPermission
+        check="world"
+        loading={<AdminRestrictedLoading />}
+        fallback={<AdminRestrictedMessage />}
+      >
         <div className="SpacesDashboard">
           <AdminHeader title="Spaces">
             <HeaderButton
@@ -113,7 +119,7 @@ export const SpacesDashboard: React.FC<SpacesDashboardProps> = ({
             )}
           </FullWidthLayout>
         </div>
-      </AdminRestricted>
+      </WithPermission>
     </AdminLayout>
   );
 };

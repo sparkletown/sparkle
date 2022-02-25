@@ -5,6 +5,9 @@ import { faClock, faPlayCircle } from "@fortawesome/free-regular-svg-icons";
 import { faArrowLeft, faBorderNone } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
+import { AdminRestrictedLoading } from "components/admin/AdminRestrictedLoading";
+import { AdminRestrictedMessage } from "components/admin/AdminRestrictedMessage";
+import { WithPermission } from "components/shared/WithPermission";
 
 import { ADMIN_IA_WORLD_PARAM_URL, SPACE_TAXON } from "settings";
 
@@ -31,7 +34,6 @@ import { SpaceTimingPanel } from "components/organisms/AdminVenueView/components
 import { AdminTitle } from "components/molecules/AdminTitle";
 import { AdminTitleBar } from "components/molecules/AdminTitleBar";
 
-import { AdminRestricted } from "components/atoms/AdminRestricted";
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { NotFound } from "components/atoms/NotFound";
 
@@ -125,9 +127,13 @@ export const AdminVenueView: React.FC<AdminVenueViewProps> = ({
   if (!space) {
     return (
       <WithNavigationBar withSchedule withHiddenLoginButton title={navBarTitle}>
-        <AdminRestricted>
+        <WithPermission
+          check="space"
+          loading={<AdminRestrictedLoading />}
+          fallback={<AdminRestrictedMessage />}
+        >
           <NotFound />
-        </AdminRestricted>
+        </WithPermission>
       </WithNavigationBar>
     );
   }
@@ -138,7 +144,11 @@ export const AdminVenueView: React.FC<AdminVenueViewProps> = ({
       variant="internal-scroll"
       title={navBarTitle}
     >
-      <AdminRestricted>
+      <WithPermission
+        check="space"
+        loading={<AdminRestrictedLoading />}
+        fallback={<AdminRestrictedMessage />}
+      >
         <div className="AdminVenueView">
           <AdminTitleBar variant="grid-with-tools">
             <ButtonNG onClick={navigateToHome} iconName={faArrowLeft}>
@@ -183,7 +193,7 @@ export const AdminVenueView: React.FC<AdminVenueViewProps> = ({
             onCancel={closeDeleteModal}
           />
         </div>
-      </AdminRestricted>
+      </WithPermission>
     </WithNavigationBar>
   );
 };

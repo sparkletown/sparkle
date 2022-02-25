@@ -4,8 +4,6 @@ import { withWorldOrSpace } from "components/hocs/db/withWorldOrSpace";
 import { withFallback } from "components/hocs/gate/withFallback";
 import { compose } from "lodash/fp";
 
-import { Login } from "pages/Account/Login";
-
 import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { NotFound } from "components/atoms/NotFound";
@@ -14,7 +12,6 @@ import { VenueEntrancePage as _VenueEntrancePage } from "./VenueEntrancePage";
 
 export const VenueEntrancePage = compose(
   withAuth,
-  withFallback(["auth"], Login),
   withProfile,
   withWorldOrSpace,
   withFallback(

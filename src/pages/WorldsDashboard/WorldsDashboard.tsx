@@ -1,48 +1,49 @@
 import React, { useMemo } from "react";
+import { AdminRestrictedLoading } from "components/admin/AdminRestrictedLoading";
+import { AdminRestrictedMessage } from "components/admin/AdminRestrictedMessage";
 import { HeaderButton } from "components/admin/HeaderButton";
 import { Section } from "components/admin/Section";
 import { SectionHeading } from "components/admin/SectionHeading";
 import { SectionTitle } from "components/admin/SectionTitle";
 import { AdminLayout } from "components/layouts/AdminLayout";
 import { FullWidthLayout } from "components/layouts/FullWidthLayout";
+import { WithPermission } from "components/shared/WithPermission";
 import { uniq } from "lodash/fp";
 
 import { ADMIN_IA_WORLD_CREATE_URL } from "settings";
 
-import { UserId } from "types/id";
-
-import { useOwnedVenues } from "hooks/useOwnedVenues";
-import { useAdminRole } from "hooks/user/useAdminRole";
-import { useOwnWorlds } from "hooks/worlds/useOwnWorlds";
-import { useWorlds } from "hooks/worlds/useWorlds";
+import { useSpacesByOwner } from "hooks/spaces/useSpacesByOwner";
+import { usePermission } from "hooks/user/usePermission";
+import { useUserId } from "hooks/user/useUserId";
+import { useWorldsByNotHidden } from "hooks/worlds/useWorldsByNotHidden";
+import { useWorldsByOwner } from "hooks/worlds/useWorldsByOwner";
 
 import { AdminShowcaseTitle } from "components/organisms/AdminVenueView/components/AdminShowcaseTitle";
 
+import { LoadingPage } from "components/molecules/LoadingPage";
+
 import { AdminHeader } from "components/atoms/AdminHeader";
-import { AdminRestricted } from "components/atoms/AdminRestricted";
 
 import { WorldsTable } from "./WorldsTable";
 
 import ARROW from "assets/images/admin/dashboard-arrow.svg";
 
-import "./WorldsDashboard.scss";
-
-type WorldsDashboardProps = { userId: UserId };
-
-export const WorldsDashboard: React.FC<WorldsDashboardProps> = ({ userId }) => {
-  const { ownedVenues } = useOwnedVenues({ userId });
-  const worlds = useWorlds();
-  const { ownWorlds } = useOwnWorlds({ userId });
-
-  const { isAdminUser: isSuperAdmin } = useAdminRole({ userId });
+export const WorldsDashboard: React.FC = () => {
+  const { userId, isLoading } = useUserId();
+  const { worlds } = useWorldsByNotHidden();
+  const { ownWorlds } = useWorldsByOwner({ userId });
+  const { ownSpaces } = useSpacesByOwner({ userId });
+  const { isSuperAdmin } = usePermission({
+    userId,
+  });
 
   const visibleWorldIds = useMemo(
     () =>
       uniq([
-        ...ownedVenues.map(({ worldId }) => worldId),
+        ...ownSpaces.map(({ worldId }) => worldId),
         ...ownWorlds.map((world) => world.id),
       ]),
-    [ownedVenues, ownWorlds]
+    [ownSpaces, ownWorlds]
   );
 
   // NOTE: Firebase query where([world.id, 'in', visibleWorldIds]) has a limit of 10 items in visibleWorldIds. Because of that, it is filtered here
@@ -65,9 +66,15 @@ export const WorldsDashboard: React.FC<WorldsDashboardProps> = ({ userId }) => {
     []
   );
 
+  if (isLoading) return <LoadingPage />;
+
   return (
     <AdminLayout>
-      <AdminRestricted>
+      <WithPermission
+        check="super"
+        loading={<AdminRestrictedLoading />}
+        fallback={<AdminRestrictedMessage />}
+      >
         {hasWorlds ? (
           <>
             <AdminHeader title="Switch World" />
@@ -94,7 +101,7 @@ export const WorldsDashboard: React.FC<WorldsDashboardProps> = ({ userId }) => {
                 name="Create new world"
                 to={ADMIN_IA_WORLD_CREATE_URL}
                 variant="primary"
-              ></HeaderButton>
+              />
               <img
                 alt="arrow pointing towards the Create a world button"
                 className="WorldsDashboard__arrow"
@@ -104,7 +111,7 @@ export const WorldsDashboard: React.FC<WorldsDashboardProps> = ({ userId }) => {
             {renderedWelcomePage}
           </FullWidthLayout>
         )}
-      </AdminRestricted>
+      </WithPermission>
     </AdminLayout>
   );
 };
