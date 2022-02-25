@@ -2,6 +2,7 @@ import React, { useEffect, useMemo } from "react";
 import { useForm, useFormState } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { ImageInput } from "components/admin/ImageInput";
 import omit from "lodash/omit";
 
 import { deleteScreeningRoomVideo, upsertScreeningRoomVideo } from "api/admin";
@@ -21,7 +22,6 @@ import { AdminInput } from "components/molecules/AdminInput";
 import { SubmitError } from "components/molecules/SubmitError";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
-import { ImageInput } from "components/atoms/ImageInput";
 
 import "./ScreeningRoomVideoAddEditForm.scss";
 

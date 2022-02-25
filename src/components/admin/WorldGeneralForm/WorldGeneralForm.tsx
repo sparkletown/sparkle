@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { useAsyncFn } from "react-use";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button } from "components/admin/Button";
+import { ImageInput } from "components/admin/ImageInput";
 import { Input } from "components/admin/Input";
 import { InputGroup } from "components/admin/InputGroup";
 import { Textarea } from "components/admin/Textarea/Textarea";
@@ -36,9 +37,6 @@ import { AdminSidebarButtons } from "components/organisms/AdminVenueView/compone
 import { FormErrors } from "components/molecules/FormErrors";
 import { SubmitError } from "components/molecules/SubmitError";
 import { YourUrlDisplay } from "components/molecules/YourUrlDisplay";
-
-import { ButtonProps } from "components/atoms/ButtonNG/ButtonNG";
-import { ImageInput } from "components/atoms/ImageInput";
 
 import "./WorldGeneralForm.scss";
 
@@ -134,15 +132,6 @@ export const WorldGeneralForm: React.FC<WorldGeneralFormProps> = ({
     [values, user, worldId, reset, history, world?.slug]
   );
 
-  const saveButtonProps: Omit<ButtonProps, "variant"> = useMemo(
-    () => ({
-      type: "submit",
-      disabled: !isDirty && !isSaving && !isSubmitting,
-      loading: isSubmitting || isSaving,
-    }),
-    [isDirty, isSaving, isSubmitting]
-  );
-
   const dispatch = useDispatch();
   const handleChange = useCallback(
     // if form onChange called -> ignore first arg
@@ -207,7 +196,7 @@ export const WorldGeneralForm: React.FC<WorldGeneralFormProps> = ({
           <ImageInput
             imgUrl={values.bannerImageUrl}
             error={errors.bannerImageFile || errors.bannerImageUrl}
-            isInputHidden={!values.bannerImageUrl}
+            // isInputHidden={!values.bannerImageUrl}
             register={register}
             name="bannerImage"
             setValue={setValue}
@@ -238,7 +227,13 @@ export const WorldGeneralForm: React.FC<WorldGeneralFormProps> = ({
         <SubmitError error={error} />
 
         <AdminSidebarButtons>
-          <Button {...saveButtonProps}>Save</Button>
+          <Button
+            type="submit"
+            disabled={!isDirty && !isSaving && !isSubmitting}
+            loading={isSubmitting || isSaving}
+          >
+            Save
+          </Button>
           <Link to={ADMIN_IA_WORLD_BASE_URL}>
             <Button variant="secondary">Cancel</Button>
           </Link>

@@ -20,7 +20,7 @@ import { AnyForm } from "types/utility";
 
 import { useImageInputCompression } from "hooks/useImageInputCompression";
 
-import "./ImageInput.scss";
+import * as TW from "./ImageInput.tailwind";
 
 type ImageInputVariant = "wide" | "round";
 
@@ -42,7 +42,7 @@ export interface ImageInputProps {
   nameWithUnderscore?: boolean;
   text?: string;
   subtext?: string;
-  isInputHidden?: boolean;
+  // isInputHidden?: boolean;
   variant?: ImageInputVariant;
 }
 
@@ -54,7 +54,7 @@ export const ImageInput: React.FC<ImageInputProps> = ({
   register,
   setValue,
   nameWithUnderscore = false,
-  isInputHidden = false,
+  // isInputHidden = false,
   text = "Upload",
   subtext = "",
   variant = "wide",
@@ -99,42 +99,37 @@ export const ImageInput: React.FC<ImageInputProps> = ({
 
   const onButtonClick = useCallback(() => inputFileRef?.current?.click(), []);
 
-  const labelClasses = classNames("ImageInput__container", {
-    "ImageInput__container--error": !!error?.message,
-    "ImageInput__container--disabled": loading,
-    "mod--hidden": isInputHidden || !imageUrl,
+  const wrapperClasses = classNames("ImageInput__wrapper", TW.wrapper, {
+    [TW.wideWrapper]: variant === "wide",
+    [TW.roundWrapper]: variant === "round",
   });
 
-  console.log("imgUrl", fileUrl);
+  const backgroundImage =
+    imgUrl ||
+    (variant === "wide"
+      ? DEFAULT_IMAGE_INPUT_BACKGROUND
+      : DEFAULT_IMAGE_INPUT_ROUND_BACKGOUND);
 
-  const wrapperClasses = classNames(
-    "ImageInput__wrapper justify-center items-center flex bg-cover",
-    {
-      "w-full text-white rounded-md": variant === "wide",
-      "w-48 h-48 text-white rounded-full flex-shrink-0 mx-auto":
-        variant === "round",
-    }
-  );
-
-  const wrapperStyles = useMemo(
+  const wrapperVariantStyles = useMemo(
     () =>
       variant === "wide"
         ? {
             height: "150px",
-            backgroundImage: `url(${imgUrl || DEFAULT_IMAGE_INPUT_BACKGROUND})`,
           }
-        : {
-            backgroundImage: `url(${
-              imgUrl || DEFAULT_IMAGE_INPUT_ROUND_BACKGOUND
-            })`,
-            backgroundPosition: "100% 100%",
-          },
-    [imgUrl, variant]
+        : { backgroundPosition: "100% 100%" },
+    [variant]
+  );
+  const wrapperStyles = useMemo(
+    () => ({
+      backgroundImage: `url(${backgroundImage})`,
+      ...wrapperVariantStyles,
+    }),
+    [backgroundImage, wrapperVariantStyles]
   );
 
   return (
     <>
-      <label className={labelClasses}>
+      <label className="ImageInput__container">
         <input
           accept={ACCEPTED_IMAGE_TYPES}
           hidden

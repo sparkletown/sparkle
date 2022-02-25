@@ -1,4 +1,5 @@
 import React from "react";
+import { Header } from "components/admin/Header";
 import { AdminLayout } from "components/layouts/AdminLayout";
 
 import { ALWAYS_EMPTY_ARRAY } from "settings";
@@ -15,7 +16,6 @@ import { WorldEditorGeneralPanel } from "pages/WorldEditor/WorldEditorGeneralPan
 import { LoadingPage } from "components/molecules/LoadingPage";
 import { WorldNav } from "components/molecules/WorldNav";
 
-import { AdminHeader } from "components/atoms/AdminHeader";
 import { AdminRestricted } from "components/atoms/AdminRestricted";
 
 import "./WorldEditor.scss";
@@ -25,6 +25,8 @@ const PANEL_MAP = Object.freeze({
   [WorldNavTab.entrance]: WorldEditorEntrancePanel,
   [WorldNavTab.advanced]: WorldEditorAdvancedPanel,
 });
+
+const createModeCrumbtrail = [{ name: "Switch World", href: "switch-world" }];
 
 export const WorldEditor: React.FC = () => {
   const { worldSlug, selectedTab } = useWorldParams();
@@ -39,15 +41,13 @@ export const WorldEditor: React.FC = () => {
 
   const WorldEditorPanel = PANEL_MAP[selectedTab] ?? <></>;
 
-  const crumbtrail = editMode
-    ? ALWAYS_EMPTY_ARRAY
-    : [{ name: "Switch World", href: "switch-world" }];
+  const crumbtrail = editMode ? ALWAYS_EMPTY_ARRAY : createModeCrumbtrail;
 
   return (
     <AdminLayout>
       <div className="WorldEditor">
         <AdminRestricted>
-          <AdminHeader crumbtrail={crumbtrail} title={adminTitle} />
+          <Header crumbtrail={crumbtrail} title={adminTitle} />
           {editMode && <WorldNav />}
           <WorldEditorPanel worldSlug={worldSlug} />
         </AdminRestricted>

@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo } from "react";
 import { useForm, useFormState } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { ImageInput } from "components/admin/ImageInput";
 
 import {
   ADMIN_IA_SPACE_BASE_PARAM_URL,
@@ -60,7 +61,6 @@ import { SubmitError } from "components/molecules/SubmitError";
 import { YourUrlDisplay } from "components/molecules/YourUrlDisplay";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
-import { ImageInput } from "components/atoms/ImageInput";
 import { InputField } from "components/atoms/InputField";
 import { PortalVisibility } from "components/atoms/PortalVisibility";
 import { SpacesDropdown } from "components/atoms/SpacesDropdown";
@@ -327,7 +327,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                 name="bannerImage"
                 imgUrl={values.bannerImageUrl}
                 error={errors.bannerImageUrl}
-                isInputHidden={!values.bannerImageUrl}
+                // isInputHidden={!values.bannerImageUrl}
                 register={register}
                 setValue={setValue}
               />

@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo } from "react";
 import { useForm, useFormState } from "react-hook-form";
 import { useAsyncFn, useToggle } from "react-use";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { ImageInput } from "components/admin/ImageInput";
 
 import {
   DEFAULT_PORTAL_INPUT,
@@ -34,7 +35,6 @@ import { SubmitError } from "components/molecules/SubmitError";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { Checkbox } from "components/atoms/Checkbox";
-import { ImageInput } from "components/atoms/ImageInput";
 import { PortalVisibility } from "components/atoms/PortalVisibility";
 import { SpacesDropdown } from "components/atoms/SpacesDropdown";
 
