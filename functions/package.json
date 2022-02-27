@@ -21,7 +21,7 @@
     "yup": "^0.32.9"
   },
   "devDependencies": {
-    "eslint": "^7.19.0",
+    "eslint": "^7.32.0",
     "eslint-plugin-promise": "^5.1.0",
     "firebase-functions-test": "^0.2.3",
     "firebase-tools": "^9.2.2",
