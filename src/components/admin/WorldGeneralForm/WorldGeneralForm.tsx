@@ -11,21 +11,17 @@ import { InputGroup } from "components/admin/InputGroup";
 import { Textarea } from "components/admin/Textarea/Textarea";
 import { omit } from "lodash";
 
-import {
-  ADMIN_IA_WORLD_BASE_URL,
-  ADMIN_IA_WORLD_PARAM_URL,
-  COMMON_NAME_MAX_CHAR_COUNT,
-} from "settings";
+import { ADMIN_IA_WORLD_BASE_URL, COMMON_NAME_MAX_CHAR_COUNT } from "settings";
 
 import { createSlug } from "api/admin";
 import { createWorld, updateWorldStartSettings, World } from "api/world";
 
 import { worldEdit, WorldEditActions } from "store/actions/WorldEdit";
 
+import { WorldId } from "types/id";
 import { WorldGeneralFormInput } from "types/world";
 
 import { WithId, WithOptionalWorldId } from "utils/id";
-import { generateUrl } from "utils/url";
 
 import { worldStartSchema } from "forms/worldStartSchema";
 
@@ -88,7 +84,7 @@ export const WorldGeneralForm: React.FC<WorldGeneralFormProps> = ({
   } = useForm<WorldGeneralFormInput>({
     mode: "onSubmit",
     reValidateMode: "onChange",
-    resolver: yupResolver(worldStartSchema),
+    resolver: yupResolver(worldStartSchema(worldId as WorldId)),
     defaultValues,
   });
 
@@ -102,14 +98,6 @@ export const WorldGeneralForm: React.FC<WorldGeneralFormProps> = ({
 
       if (worldId) {
         await updateWorldStartSettings({ ...values, id: worldId }, user);
-        //TODO: Change this to the most appropriate url when product decides the perfect UX
-        history.push(
-          generateUrl({
-            route: ADMIN_IA_WORLD_PARAM_URL,
-            required: ["worldSlug"],
-            params: { worldSlug: world?.slug },
-          })
-        );
       } else {
         const { worldId: id, error } = await createWorld(values, user);
 
@@ -129,7 +117,7 @@ export const WorldGeneralForm: React.FC<WorldGeneralFormProps> = ({
 
       reset(omit(input, "creating"));
     },
-    [values, user, worldId, reset, history, world?.slug]
+    [values, user, worldId, reset, history]
   );
 
   const dispatch = useDispatch();
@@ -196,7 +184,6 @@ export const WorldGeneralForm: React.FC<WorldGeneralFormProps> = ({
           <ImageInput
             imgUrl={values.bannerImageUrl}
             error={errors.bannerImageFile || errors.bannerImageUrl}
-            // isInputHidden={!values.bannerImageUrl}
             register={register}
             name="bannerImage"
             setValue={setValue}
