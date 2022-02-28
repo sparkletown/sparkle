@@ -52,7 +52,6 @@ interface InputFieldProps
   error?: FieldError;
   onIconStartClick?: () => void;
   onIconEndClick?: () => void;
-  onLabelClick?: () => void;
   register: UseFormRegister<AnyForm> | (() => void);
   rules?: RegisterOptions;
   name?: string;
@@ -68,9 +67,7 @@ export const InputField: React.FC<InputFieldProps> = ({
   onIconStartClick,
   iconEnd,
   onIconEndClick,
-  onLabelClick,
   error,
-  label,
   register,
   rules = ALWAYS_EMPTY_OBJECT,
   name = "",
@@ -90,22 +87,13 @@ export const InputField: React.FC<InputFieldProps> = ({
 
   return (
     <div className={containerClassNames}>
-      <div className="InputField__wrapper">
-        {label ? (
-          <label data-label={label} onClick={onLabelClick}>
-            <input
-              className={inputClassNames}
-              {...extraInputProps}
-              {...register(name, rules)}
-            />
-          </label>
-        ) : (
-          <input
-            className={inputClassNames}
-            {...extraInputProps}
-            {...register(name, rules)}
-          />
-        )}
+      <div className={styles.inputFieldWrapper}>
+        <input
+          className={inputClassNames}
+          {...register(name, rules)}
+          {...extraInputProps}
+        />
+
         {iconStart &&
           renderIcon(
             iconStart,

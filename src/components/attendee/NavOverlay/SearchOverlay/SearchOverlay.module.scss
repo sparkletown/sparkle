@@ -3,14 +3,14 @@
 @use "scss/attendee/theme";
 @use "scss/attendee/breakpoint";
 
-$overlayMaxWidth: 800px;
+$-overlay-max-width: 800px;
 
 .searchOverlayWrapper {
   height: 100%;
   width: 100%;
   display: flex;
   flex-direction: column;
-  max-width: $overlayMaxWidth;
+  max-width: $-overlay-max-width;
   min-height: 100vh;
   margin: space.empty(10) auto 0 0;
   padding: space.empty(4) space.empty(3);

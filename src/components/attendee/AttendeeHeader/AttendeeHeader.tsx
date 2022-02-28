@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -54,10 +54,13 @@ export const AttendeeHeader: React.FC<AttendeeHeaderProps> = ({
     }
   }, [backButtonSpace, history, worldSlug]);
 
-  const handleOverlayOpen = (key: string) => {
-    setOverlayLabel(key);
-    show();
-  };
+  const handleOverlayOpen = useCallback(
+    (key: string) => {
+      setOverlayLabel(key);
+      show();
+    },
+    [show]
+  );
 
   const { isExpanded: isChatExpanded } = useChatSidebarControls();
 
@@ -67,10 +70,17 @@ export const AttendeeHeader: React.FC<AttendeeHeaderProps> = ({
 
   const { userWithId } = useUser();
 
-  if (!userWithId) return null;
+  const renderedCaptions = useMemo(
+    () =>
+      Object.entries(tabCaptions).map(([key, label]) => (
+        <Button onClick={() => handleOverlayOpen(key)} key={key}>
+          {label}
+        </Button>
+      )),
+    [handleOverlayOpen]
+  );
 
-  // MOCK DATA
-  // const mockData: UserWithId[] = Array(30).fill(userWithId);
+  if (!userWithId) return null;
 
   return (
     <header className={headerClassnames}>
@@ -88,13 +98,7 @@ export const AttendeeHeader: React.FC<AttendeeHeaderProps> = ({
           totalUsersCount={space?.recentUserCount}
           usersSample={space?.recentUsersSample}
         />
-        <div>
-          {Object.entries(tabCaptions).map(([key, label]) => (
-            <Button onClick={() => handleOverlayOpen(key)} key={key}>
-              {label}
-            </Button>
-          ))}
-        </div>
+        <div>{renderedCaptions}</div>
       </div>
       {isShown && <NavOverlay onClose={hide} type={overlayLabel} />}
     </header>
