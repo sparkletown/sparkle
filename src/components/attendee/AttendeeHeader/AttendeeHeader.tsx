@@ -1,11 +1,11 @@
-import { useCallback, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { Attendance } from "components/attendee/Attendance";
 import { Button } from "components/attendee/Button";
-import { NavOverlay } from "components/attendee/NavOverlay/NavOverlay";
+import { NavOverlay } from "components/attendee/NavOverlay";
 
 import { ATTENDEE_INSIDE_URL, SPACE_TAXON } from "settings";
 

@@ -2,7 +2,11 @@
 @use "scss/attendee/space";
 @use "scss/attendee/font";
 @use "scss/attendee/layout";
+@use "scss/attendee/layer";
 @use "scss/attendee/breakpoint";
+
+$-z-index--space: layer.above(0);
+$-z-index--ui: layer.above($-z-index--space);
 
 @font-face {
   font-family: "Sparkle";
@@ -25,13 +29,14 @@
   justify-content: center;
   transition: padding-right 0.2s ease;
   padding-right: 0;
+  z-index: $-z-index--space;
 }
 
 .LayerUi {
   position: sticky;
   bottom: 0;
   width: 100%;
-  z-index: 40;
+  z-index: $-z-index--ui;
   @include sparkle.panel--normal;
 
   display: flex;
