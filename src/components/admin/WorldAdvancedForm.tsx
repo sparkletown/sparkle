@@ -175,11 +175,7 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
         {values.showUserStatus && (
           <>
             {renderedUserStatuses}
-            <Button
-              variant="primary"
-              // iconName={faPlus}
-              onClick={handleAddStatus}
-            >
+            <Button variant="primary" onClick={handleAddStatus}>
               Add a status
             </Button>
           </>

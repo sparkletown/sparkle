@@ -251,7 +251,6 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
         subtitle="(overrides general)"
       >
         <Checkbox
-          // toggler
           checked={isOverrideAppearanceEnabled}
           onChange={toggleOverrideAppearance}
           name="isAppearanceOverriden"

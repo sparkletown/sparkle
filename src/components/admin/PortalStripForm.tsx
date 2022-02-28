@@ -198,7 +198,6 @@ export const PortalStripForm: React.FC<PortalStripFormProps> = ({
             name="isClickable"
             register={register}
             label={renderedClickableLabel}
-            // labelPosition="after"
             onClick={handleClickable}
           />
         </div>
@@ -208,7 +207,6 @@ export const PortalStripForm: React.FC<PortalStripFormProps> = ({
             name="isEnabled"
             register={register}
             label={renderedEnabledLabel}
-            // labelPosition="after"
             onClick={handleEnabled}
           />
         </div>
