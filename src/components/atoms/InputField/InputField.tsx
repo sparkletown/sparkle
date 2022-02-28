@@ -58,6 +58,11 @@ interface InputFieldProps
   name?: string;
 }
 
+/**
+ * @deprecated Please use the appropriate attendee or admin Input
+ * @see src/components/admin/Input
+ * @see src/components/attendee/Input
+ */
 export const InputField: React.FC<InputFieldProps> = ({
   containerClassName,
   inputClassName,
@@ -86,25 +91,33 @@ export const InputField: React.FC<InputFieldProps> = ({
     containerClassName
   );
 
-  const inputClassNames = classNames("InputField__input", inputClassName);
+  const inputClassNames = classNames(
+    "InputField__input",
+    styles.inputElement,
+    inputClassName
+  );
+
+  const renderedInputElement = (
+    <input
+      className={inputClassNames}
+      {...extraInputProps}
+      {...register(name, rules)}
+    />
+  );
 
   return (
     <div className={containerClassNames}>
-      <div className="InputField__wrapper">
+      <div className={styles.inputFieldWrapper}>
         {label ? (
-          <label data-label={label} onClick={onLabelClick}>
-            <input
-              className={inputClassNames}
-              {...extraInputProps}
-              {...register(name, rules)}
-            />
+          <label
+            className={styles.label}
+            data-label={label}
+            onClick={onLabelClick}
+          >
+            {renderedInputElement}
           </label>
         ) : (
-          <input
-            className={inputClassNames}
-            {...extraInputProps}
-            {...register(name, rules)}
-          />
+          { renderedInputElement }
         )}
         {iconStart &&
           renderIcon(

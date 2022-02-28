@@ -1,3 +1,5 @@
+@use "scss/attendee/theme";
+
 .inputFieldWrapper {
   position: relative;
 }
@@ -8,7 +10,28 @@
   right: 0;
   height: 100%;
   display: flex;
+
   svg {
     margin: auto 0;
+  }
+}
+
+.inputElement {
+  border: none;
+}
+
+.label {
+  &::after {
+    content: attr(data-label);
+    position: absolute;
+    top: 9px;
+    display: flex;
+    align-items: center;
+    padding: 0 0 0 8px;
+    height: 26px;
+    right: 10px;
+    border-left: 1px solid theme.$sparkle--border;
+    color: theme.$c-default-text;
+    cursor: pointer;
   }
 }
