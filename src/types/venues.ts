@@ -266,6 +266,12 @@ export interface VenueConfig {
   redirectUrl?: string;
   memberEmails?: string[];
   tables?: Table[];
+  // See PartyMap for what safe zone means
+  // These are expressed as a percentage of the total image width/height.
+  safeZone?: {
+    width: number;
+    height: number;
+  };
 }
 
 // @debt The following keys are marked as required on this type, but i'm not sure they should be:

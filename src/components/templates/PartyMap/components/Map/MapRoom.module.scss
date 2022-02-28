@@ -7,11 +7,14 @@
 @use "scss/attendee/effects/rounded";
 @use "scss/attendee/layout";
 
+$-title-height: 42px;
+
 .MapRoom {
   display: flex;
   flex-direction: column;
   overflow: hidden;
   max-width: layout.$w-sidebar;
+  position: relative;
 
   @media (min-width: 768px) {
     align-self: center;
@@ -23,17 +26,22 @@
 }
 
 .PortalImage {
-  position: relative;
+  position: absolute;
   display: block;
   cursor: pointer;
   width: 100%;
+  height: 100%;
 
   img {
     position: relative;
     width: 100%;
     height: 100%;
-    object-fit: cover;
   }
+}
+
+.portalInfo {
+  position: absolute;
+  top: 100%;
 }
 
 .PortalTitle {
@@ -41,26 +49,7 @@
   @include rounded.normal;
   @include sparkle.color--glass;
 
-  &:hover {
-    @include sparkle.color--normal;
-  }
-
   white-space: nowrap;
-
-  & > span {
-    display: flex;
-    padding-left: space.empty(0.5);
-    opacity: opacity.$md;
-
-    span {
-      @include atom.icon;
-      background-image: url(/assets/icons/icon-users.svg);
-      position: relative;
-      filter: invert(1);
-      margin-right: space.empty(0.5);
-      top: -2px;
-    }
-  }
 }
 
 .PortalOnMap {
@@ -84,16 +73,11 @@
 }
 
 .PortalPopupInfo {
-  position: absolute;
   @include sparkle.panel--glass;
   @include rounded.normal;
   border: 1px solid theme.$sparkle--border;
   box-sizing: border-box;
-  left: 50%;
-  top: space.button(1) + space.empty(1);
-  $portal-info-panel-width: 200px;
-  width: $portal-info-panel-width;
-  margin-left: $portal-info-panel-width * -0.5;
+  width: 100%;
   z-index: 100;
 
   h3 {
@@ -113,4 +97,5 @@
   @include rounded.bottom;
   @include sparkle.color--normal;
   justify-content: center;
+  cursor: pointer;
 }

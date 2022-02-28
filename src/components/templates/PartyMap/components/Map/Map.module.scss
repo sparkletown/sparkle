@@ -7,11 +7,12 @@
   right: 0;
   bottom: 0;
   background-position: center;
-  background-size: cover;
+  background-size: contain;
   background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-color: black;
 
   @media (min-width: 768px) {
-    bottom: 0 - space.button(1) - space.empty(1);
     background-attachment: scroll;
 
     @media (orientation: portrait) {
@@ -58,7 +59,7 @@
 
   @media (min-width: 768px) {
     position: absolute;
-    top: 10%;
+    top: 0;
     left: 0;
     right: 0;
     bottom: 0;

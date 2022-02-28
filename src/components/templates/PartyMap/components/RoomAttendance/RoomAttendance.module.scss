@@ -1,0 +1,7 @@
+@use "scss/attendee/space";
+
+.RoomAttendance {
+  svg {
+    margin-right: space.empty(0.5);
+  }
+}
