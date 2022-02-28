@@ -1,6 +1,10 @@
+@use "scss/attendee/space";
+
 .Attendance {
   display: flex;
   align-items: center;
+  margin-right: auto;
+  margin-left: space.empty(1);
 
   &__avatarsContainer {
     width: auto;
