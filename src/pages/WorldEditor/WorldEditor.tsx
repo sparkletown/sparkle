@@ -1,5 +1,6 @@
 import React from "react";
 import { Header } from "components/admin/Header";
+import { WorldNav } from "components/admin/WorldNav";
 import { AdminLayout } from "components/layouts/AdminLayout";
 
 import { ALWAYS_EMPTY_ARRAY } from "settings";
@@ -14,7 +15,6 @@ import { WorldEditorEntrancePanel } from "pages/WorldEditor/WorldEditorEntranceP
 import { WorldEditorGeneralPanel } from "pages/WorldEditor/WorldEditorGeneralPanel";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
-import { WorldNav } from "components/molecules/WorldNav";
 
 import { AdminRestricted } from "components/atoms/AdminRestricted";
 
