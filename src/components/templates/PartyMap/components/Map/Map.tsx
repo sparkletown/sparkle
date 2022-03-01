@@ -46,6 +46,80 @@ const Portals: React.FC<PortalsProps> = ({
   return <div className={styles.Portals}>{portalsFragment}</div>;
 };
 
+type CalculateImageDimensionsOptions = {
+  browserWidth: number;
+  browserHeight: number;
+  imageWidth: number;
+  imageHeight: number;
+  venue: PartyMapVenue;
+};
+
+/**
+ * Calculates the size that the background should be rendered at as well as
+ * where the "safe zone" is after image resizing - this can then be used to
+ * place portals in the right place.
+ */
+const calculateImageDimensions = ({
+  browserWidth,
+  browserHeight,
+  imageWidth,
+  imageHeight,
+  venue,
+}: CalculateImageDimensionsOptions) => {
+  const { width: safeWidthPerc, height: safeHeightPerc } = venue.config
+    ?.safeZone || {
+    width: 1.0,
+    height: 1.0,
+  };
+
+  // @debt this should probably come from elsewhere.
+  // This is the pad to allow for the top and bottom controls.
+  const verticalPad = 140; // 70px for top and bottom
+
+  // Decide whether the image needs to be rescaled using the width or the
+  // height as the constraint - otherwise part of the safe zone will end up
+  // off screen.
+  // This is how big the safe zone is in terms of pixels in the original image
+  const safeZoneWidth = safeWidthPerc * imageWidth;
+  const safeZoneHeight = safeHeightPerc * imageHeight;
+
+  // These are what the width/height would be if the width/height was used as
+  // the restricting factor for scale
+  const scaledWidth =
+    safeZoneWidth * ((browserHeight - verticalPad) / safeZoneHeight);
+  const scaledHeight = safeZoneHeight * (browserWidth / safeZoneWidth);
+
+  let desiredSafezoneWidth;
+  let desiredSafezoneHeight;
+
+  if (scaledWidth > browserWidth) {
+    // Use the height as the scaling factor as doing it by width would result
+    // in an image that is too big
+    desiredSafezoneWidth = browserWidth;
+    desiredSafezoneHeight = scaledHeight;
+  } else {
+    // As above, but for width.
+    desiredSafezoneWidth = scaledWidth;
+    desiredSafezoneHeight = browserHeight - verticalPad;
+  }
+
+  // Now that we know what we want the safe zone to be in terms of width/height
+  // we have to calculate the desired width and height for the background image
+  const desiredWidth = desiredSafezoneWidth / safeWidthPerc;
+  const desiredHeight = desiredSafezoneHeight / safeHeightPerc;
+
+  // The safe zone is in the center of the image, calculate the bounds so that
+  // it can be used for portals
+  const safeZoneBounds = {
+    left: (browserWidth - desiredSafezoneWidth) / 2,
+    top: (browserHeight - desiredSafezoneHeight) / 2,
+    width: desiredSafezoneWidth,
+    height: desiredSafezoneHeight,
+  };
+
+  return { desiredWidth, desiredHeight, safeZoneBounds };
+};
+
 interface MapProps {
   user: RefiAuthUser;
   venue: PartyMapVenue;
@@ -114,46 +188,17 @@ export const Map: React.FC<MapProps> = ({ user, venue, selectRoom }) => {
     return <>Error</>;
   }
 
-  const { width: safeWidthPerc, height: safeHeightPerc } = venue.config
-    ?.safeZone || {
-    width: 1.0,
-    height: 1.0,
-  };
-
-  // TODO Account for height of top and bottom nav
-
-  const verticalPad = 140; // 70px for top and bottom
-
-  // Figure out if the image should be rescaled using the width or height as
-  // a basis
-  const safeZoneWidth = safeWidthPerc * imageWidth;
-  const safeZoneHeight = safeHeightPerc * imageHeight;
-
-  const _scaledWidth =
-    safeZoneWidth * ((browserHeight - verticalPad) / safeZoneHeight);
-  const _scaledHeight = safeZoneHeight * (browserWidth / safeZoneWidth);
-
-  let desiredSafezoneWidth = 1;
-  let desiredSafezoneHeight = 1;
-
-  if (_scaledWidth > browserWidth) {
-    // Use width
-    desiredSafezoneWidth = browserWidth;
-    desiredSafezoneHeight = _scaledHeight;
-  } else {
-    desiredSafezoneWidth = _scaledWidth;
-    desiredSafezoneHeight = browserHeight - verticalPad;
-  }
-
-  const desiredWidth = desiredSafezoneWidth / safeWidthPerc;
-  const desiredHeight = desiredSafezoneHeight / safeHeightPerc;
-
-  const safeZoneBounds = {
-    left: (browserWidth - desiredSafezoneWidth) / 2,
-    top: (browserHeight - desiredSafezoneHeight) / 2,
-    width: desiredSafezoneWidth,
-    height: desiredSafezoneHeight,
-  };
+  const {
+    desiredWidth,
+    desiredHeight,
+    safeZoneBounds,
+  } = calculateImageDimensions({
+    browserWidth,
+    browserHeight,
+    imageWidth,
+    imageHeight,
+    venue,
+  });
 
   const mapStyles = {
     backgroundImage: `url(${mapBackground})`,
