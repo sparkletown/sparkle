@@ -25,10 +25,13 @@ export const useSpacesByOwner: UseSpacesByOwner = ({ worldId, userId }) => {
   const path = useMemo(() => [COLLECTION_SPACES], []);
 
   const constraints = useMemo(
-    () => [
-      worldId ? where(FIELD_WORLD_ID, "==", worldId) : DEFERRED,
-      userId ? where(FIELD_OWNERS, "array-contains", userId) : DEFERRED,
-    ],
+    () =>
+      worldId && userId
+        ? [
+            where(FIELD_WORLD_ID, "==", worldId),
+            where(FIELD_OWNERS, "array-contains", userId),
+          ]
+        : DEFERRED,
     [worldId, userId]
   );
 

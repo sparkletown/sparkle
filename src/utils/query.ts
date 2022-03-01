@@ -27,7 +27,8 @@ export const createConstraintsError: CreateConstraintsError = (constraints) =>
 export const dataWithId = <T extends object>(d: QueryDocumentSnapshot<T>) =>
   withId(d.data(), d.id);
 
-export const isDeferred = (value: unknown) => value === DEFERRED;
+export const isDeferred = (value: unknown): value is DeferredAction =>
+  value === DEFERRED;
 
 export const isGoodSegment = (
   segment: string | DeferredAction | undefined

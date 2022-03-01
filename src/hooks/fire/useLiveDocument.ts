@@ -8,35 +8,55 @@ import {
 } from "firebase/firestore";
 import { isEqual } from "lodash";
 
+import { ALWAYS_EMPTY_ARRAY } from "settings";
+
 import { FirePath } from "types/fire";
+import { DeferredAction } from "types/id";
 
 import { withIdConverter } from "utils/converters";
 import { WithId } from "utils/id";
-import { isGoodSegment } from "utils/query";
+import {
+  createPathError,
+  isDeferred,
+  isGoodSegment,
+  isNotValidSegment,
+} from "utils/query";
 
-export const useLiveDocument = <T extends object>(path: FirePath) => {
+export const useLiveDocument = <T extends object>(
+  path: FirePath | DeferredAction
+) => {
   const [data, setData] = useState<WithId<T>>();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | undefined>();
 
-  const firestore = getFirestore();
+  const hasDeferred = isDeferred(path) || path?.some(isDeferred);
 
-  const [first, ...rest] = path.filter(isGoodSegment);
+  const filteredPath = hasDeferred
+    ? ALWAYS_EMPTY_ARRAY
+    : path.filter(isGoodSegment);
+
+  // Some quality of life and input sanity checks follow, like
+  // Firestore API requires at least two defined arguments for it to not throw an error
+
+  const [first, ...rest] = filteredPath;
+  const shortPath = !rest?.length;
+  const incompletePath = !first;
+  const invalidPath = !hasDeferred && path?.some(isNotValidSegment);
+
+  const hasPathError = incompletePath || invalidPath;
 
   useEffect(() => {
     // prevents warning: Can't perform a React state update on an unmounted component.
     let isMounted = true;
 
-    // Firestore API requires at least two good segments for it to work
-    if (!rest?.length) return;
+    if (shortPath || hasPathError || hasDeferred) return;
 
-    const reference = doc(firestore, first, ...rest).withConverter(
+    const reference = doc(getFirestore(), first, ...rest).withConverter(
       withIdConverter<T>()
     );
 
     const onNext = (doc: DocumentSnapshot<WithId<T>>) => {
       if (!isMounted) return;
-      // setData(doc.data());
       setData((oldData) => {
         // this check prevents endless re-renders
         const maybeNewData = doc.data();
@@ -57,11 +77,24 @@ export const useLiveDocument = <T extends object>(path: FirePath) => {
       isMounted = false;
       unsubscribe();
     };
-  }, [firestore, first, rest, setData, setError, setIsLoading]);
-
-  return useMemo(() => ({ error, data, isLoading, isLoaded: !isLoading }), [
-    error,
-    isLoading,
-    data,
+  }, [
+    first,
+    rest,
+    shortPath,
+    hasPathError,
+    hasDeferred,
+    setData,
+    setError,
+    setIsLoading,
   ]);
+
+  const result = useMemo(
+    () => ({ error, data, isLoading, isLoaded: !isLoading }),
+    [error, isLoading, data]
+  );
+
+  // don't emit error when deferred, hook isn't listening anyway
+  if (!hasDeferred && hasPathError) setError(createPathError(path));
+
+  return result;
 };

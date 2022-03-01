@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import { QueryConstraint } from "@firebase/firestore";
 import {
   collection,
   FirestoreError,
@@ -12,6 +11,7 @@ import { isEqual } from "lodash";
 
 import { ALWAYS_EMPTY_ARRAY } from "settings";
 
+import { FireConstraint } from "types/fire";
 import { DeferredAction } from "types/id";
 
 import { withIdConverter } from "utils/converters";
@@ -27,11 +27,44 @@ import {
 } from "utils/query";
 
 type UseLiveCollectionOptions =
+  | DeferredAction
   | string[]
   | {
-      path: string[];
-      constraints?: (QueryConstraint | DeferredAction | null | undefined)[];
+      path: string[] | DeferredAction;
+      constraints?: FireConstraint[] | DeferredAction;
     };
+
+type OptionsToPath = (options: UseLiveCollectionOptions) => string[];
+type OptionsToConstraints = (
+  options: UseLiveCollectionOptions
+) => FireConstraint[];
+type CheckDeferred = (options: UseLiveCollectionOptions) => boolean | undefined;
+
+const optionsToPath: OptionsToPath = (options) => {
+  if (Array.isArray(options)) return options;
+  if (isDeferred(options)) return ALWAYS_EMPTY_ARRAY;
+  if (isDeferred(options.path)) return ALWAYS_EMPTY_ARRAY;
+  return options.path ?? ALWAYS_EMPTY_ARRAY;
+};
+
+const optionsToConstraints: OptionsToConstraints = (options) => {
+  if (Array.isArray(options)) return ALWAYS_EMPTY_ARRAY;
+  if (isDeferred(options)) return ALWAYS_EMPTY_ARRAY;
+  if (isDeferred(options.constraints)) return ALWAYS_EMPTY_ARRAY;
+  return options.constraints ?? ALWAYS_EMPTY_ARRAY;
+};
+
+const checkDeferred: CheckDeferred = (options) => {
+  if (isDeferred(options)) return true;
+  if (Array.isArray(options)) return options?.some(isDeferred);
+
+  const path = options.path;
+  const constraints = options.constraints;
+  if (isDeferred(path)) return true;
+  if (isDeferred(constraints)) return true;
+
+  return path?.some(isDeferred) || constraints?.some(isDeferred);
+};
 
 export const useLiveCollection = <T extends object>(
   options: UseLiveCollectionOptions
@@ -40,13 +73,12 @@ export const useLiveCollection = <T extends object>(
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | undefined>();
 
-  const path = Array.isArray(options) ? options : options?.path;
-  const constraints = Array.isArray(options) ? undefined : options?.constraints;
+  const hasDeferred = checkDeferred(options);
+  const path = optionsToPath(options);
+  const constraints = optionsToConstraints(options);
 
-  const filteredPath = (path ?? ALWAYS_EMPTY_ARRAY).filter(isGoodSegment);
-  const filteredConstraints = (constraints ?? ALWAYS_EMPTY_ARRAY).filter(
-    isGoodConstraint
-  );
+  const filteredPath = path.filter(isGoodSegment);
+  const filteredConstraints = constraints.filter(isGoodConstraint);
 
   // Some quality of life and input sanity checks follow, like
   // Firestore API requires at least two defined arguments for it to not throw an error
@@ -58,14 +90,9 @@ export const useLiveCollection = <T extends object>(
   const invalidPath = path?.some(isNotValidSegment);
   const invalidConstraints = constraints?.some(isNotValidConstraint);
 
-  const hasDeferred = path?.some(isDeferred) || constraints?.some(isDeferred);
-
   const hasPathError = incompletePath || invalidPath;
   const hasConstraintsError =
     (shortPath && noConstraints) || invalidConstraints;
-
-  if (hasPathError) setError(createPathError(path));
-  if (hasConstraintsError) setError(createConstraintsError(constraints));
 
   // construction of the query is where the Firestore SDK may break if invalid values are given
   const memoizedQuery = useMemo(
@@ -114,18 +141,19 @@ export const useLiveCollection = <T extends object>(
       isMounted = false;
       unsubscribe();
     };
-  }, [
-    memoizedQuery,
-    setData,
-    setError,
-    setIsLoading,
-    hasPathError,
-    hasConstraintsError,
-  ]);
+  }, [memoizedQuery, setData, setError, setIsLoading]);
 
-  return useMemo(() => ({ error, data, isLoading, isLoaded: !isLoading }), [
-    error,
-    isLoading,
-    data,
-  ]);
+  const result = useMemo(
+    () => ({ error, data, isLoading, isLoaded: !isLoading }),
+    [error, isLoading, data]
+  );
+
+  // don't emit errors when deferred, hook isn't listening anyway
+  if (!hasDeferred) {
+    // pick only one error, no need to make it complicated output
+    if (hasPathError) setError(createPathError(path));
+    else if (hasConstraintsError) setError(createConstraintsError(constraints));
+  }
+
+  return result;
 };
