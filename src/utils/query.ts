@@ -3,19 +3,19 @@ import { QueryDocumentSnapshot } from "firebase/firestore";
 
 import { DEFERRED } from "settings";
 
-import { FirePath } from "types/fire";
+import { FireConstraint, FirePath } from "types/fire";
 import { DeferredAction } from "types/id";
 
 import { withId } from "utils/id";
 
-class SparkleQueryError extends Error {}
+import { SparkleQueryError } from "./error";
 
 type CreatePathError = (path: FirePath) => SparkleQueryError;
 export const createPathError: CreatePathError = (path) =>
   new SparkleQueryError(`Invalid query path: ${path.map(String).join("/")}`);
 
 type CreateConstraintsError = (
-  constraints?: (QueryConstraint | DeferredAction | null | undefined)[]
+  constraints?: FireConstraint[]
 ) => SparkleQueryError;
 export const createConstraintsError: CreateConstraintsError = (constraints) =>
   new SparkleQueryError(

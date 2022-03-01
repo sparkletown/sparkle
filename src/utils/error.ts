@@ -1,6 +1,10 @@
 import { NotifiableError } from "@bugsnag/js";
 import { HttpResponse } from "firebase-admin/lib/utils/api-request";
 
+// NOTE: keep this one private as to only create subclasses for specific uses
+class SparkleError extends Error {}
+export class SparkleQueryError extends SparkleError {}
+
 type AssertUnreachable = (_: never) => void;
 export const assertUnreachable: AssertUnreachable = () => {
   throw new Error("Didn't expect to get here");

@@ -49,7 +49,10 @@ export const useLiveDocument = <T extends object>(
     // prevents warning: Can't perform a React state update on an unmounted component.
     let isMounted = true;
 
-    if (shortPath || hasPathError || hasDeferred) return;
+    if (shortPath || hasPathError || hasDeferred) {
+      setIsLoading(false);
+      return;
+    }
 
     const reference = doc(getFirestore(), first, ...rest).withConverter(
       withIdConverter<T>()
@@ -94,7 +97,8 @@ export const useLiveDocument = <T extends object>(
   );
 
   // don't emit error when deferred, hook isn't listening anyway
-  if (!hasDeferred && hasPathError) setError(createPathError(path));
+  // also, if there's already an error, don't set another one, will just trigger re-render
+  if (!hasDeferred && hasPathError && !error) setError(createPathError(path));
 
   return result;
 };

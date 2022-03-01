@@ -117,7 +117,10 @@ export const useLiveCollection = <T extends object>(
     // prevents warning: Can't perform a React state update on an unmounted component.
     let isMounted = true;
 
-    if (!memoizedQuery) return;
+    if (!memoizedQuery) {
+      setIsLoading(false);
+      return;
+    }
 
     const onNext = (snap: QuerySnapshot<T>) => {
       if (!isMounted) return;
@@ -149,8 +152,8 @@ export const useLiveCollection = <T extends object>(
   );
 
   // don't emit errors when deferred, hook isn't listening anyway
-  if (!hasDeferred) {
-    // pick only one error, no need to make it complicated output
+  // also, if there's already an error, don't set another one, will just trigger re-render
+  if (!hasDeferred && !error) {
     if (hasPathError) setError(createPathError(path));
     else if (hasConstraintsError) setError(createConstraintsError(constraints));
   }
