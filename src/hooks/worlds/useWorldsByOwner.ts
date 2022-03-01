@@ -20,10 +20,13 @@ type UseWorldsByOwner = (options: {
 
 export const useWorldsByOwner: UseWorldsByOwner = ({ userId }) => {
   const constraints = useMemo(
-    () => [
-      where(FIELD_HIDDEN, "==", false),
-      userId ? where(FIELD_OWNERS, "array-contains", userId) : DEFERRED,
-    ],
+    () =>
+      userId
+        ? [
+            where(FIELD_HIDDEN, "==", false),
+            where(FIELD_OWNERS, "array-contains", userId),
+          ]
+        : DEFERRED,
     [userId]
   );
 
