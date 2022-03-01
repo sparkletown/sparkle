@@ -24,8 +24,8 @@ export const WithPermission: React.FC<AdminRestrictedProps> = ({
   const { userId, isLoading: isLoadingUserId } = useUserId();
   const {
     isSuperAdmin,
-    isSpaceOwner,
     isWorldOwner,
+    isSpaceOwner,
     isLoading: isLoadingRole,
   } = usePermission({ userId, worldId, spaceId });
 

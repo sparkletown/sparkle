@@ -16,7 +16,7 @@ import "./WithNavigationBar.scss";
 
 const NavBar = lazy(() =>
   tracePromise("WithNavigationBar::lazy-import::NavBar", () =>
-    import("components/molecules/NavBar").then(({ NavBar }) => ({
+    import("components/attendee/NavBar").then(({ NavBar }) => ({
       default: NavBar,
     }))
   )

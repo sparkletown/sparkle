@@ -1,8 +1,5 @@
 import React, { useCallback } from "react";
 import { Redirect, useHistory, useParams } from "react-router-dom";
-import { WithAuthProps } from "components/hocs/db/withAuth";
-import { WithProfileProps } from "components/hocs/db/withProfile";
-import { WithWorldOrSpaceProps } from "components/hocs/db/withWorldOrSpace";
 
 import {
   ACCOUNT_PROFILE_VENUE_PARAM_URL,
@@ -17,7 +14,14 @@ import {
 import { isCompleteProfile } from "utils/profile";
 import { generateAttendeeInsideUrl, generateUrl } from "utils/url";
 
+import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
+import { useUser } from "hooks/useUser";
+
 import { WelcomeVideo } from "pages/entrance/WelcomeVideo";
+
+import { LoadingPage } from "components/molecules/LoadingPage";
+
+import { NotFound } from "components/atoms/NotFound";
 
 const ENTRANCE_STEP_TEMPLATE: Record<
   EntranceStepTemplate,
@@ -26,17 +30,15 @@ const ENTRANCE_STEP_TEMPLATE: Record<
   [EntranceStepTemplate.WelcomeVideo]: WelcomeVideo,
 };
 
-type VenueEntrancePageProps = WithAuthProps &
-  WithProfileProps &
-  WithWorldOrSpaceProps;
-
-export const VenueEntrancePage: React.FC<VenueEntrancePageProps> = ({
-  profile,
-  space,
-  spaceSlug,
-  world,
-  worldSlug,
-}) => {
+export const VenueEntrancePage: React.FC = () => {
+  const { profile, isLoading: isProfileLoading } = useUser();
+  const {
+    worldSlug,
+    spaceSlug,
+    world,
+    space,
+    isLoading: isSpaceLoading,
+  } = useWorldAndSpaceByParams();
   const history = useHistory();
   const { step: unparsedStep } = useParams<{ step?: string }>();
 
@@ -53,6 +55,14 @@ export const VenueEntrancePage: React.FC<VenueEntrancePageProps> = ({
       ),
     [worldSlug, spaceSlug, step, history]
   );
+
+  if (isSpaceLoading || isProfileLoading) {
+    return <LoadingPage />;
+  }
+
+  if (!space || !world) {
+    return <NotFound />;
+  }
 
   const stepConfig = world.entrance?.[step - 1];
   if (Number.isNaN(step) || !stepConfig) {
