@@ -24,8 +24,6 @@ import { AdminSidebarButtons } from "components/organisms/AdminVenueView/compone
 import { FormErrors } from "components/molecules/FormErrors";
 import { SubmitError } from "components/molecules/SubmitError";
 
-import "./WorldEntranceForm.scss";
-
 // NOTE: add the keys of those errors that their respective fields have handled
 const HANDLED_ERRORS: string[] = ["entrance"];
 
