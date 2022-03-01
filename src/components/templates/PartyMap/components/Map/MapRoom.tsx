@@ -1,4 +1,6 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
+import ReactDOM from "react-dom";
+import { usePopper } from "react-popper";
 import { useToggle } from "react-use";
 
 import { COVERT_ROOM_TYPES } from "settings";
@@ -63,12 +65,24 @@ export const MapRoom: React.FC<MapRoomProps> = ({
 
   const selectRoomWithSound = useCallback(
     (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+      console.log("TFARRR");
       if (!shouldBeClickable) return;
       analytics.trackEnterRoomEvent(room.title, room.template);
       isExternalPortal(room) ? openUrl(room.url) : enterWithSound();
     },
     [analytics, enterWithSound, room, shouldBeClickable]
   );
+
+  const [referenceElement, setReferenceElement] = useState<HTMLElement | null>(
+    null
+  );
+  const [popperElement, setPopperElement] = useState<HTMLElement | null>(null);
+  const { styles: popperStyles, attributes: popperAttributes } = usePopper(
+    referenceElement,
+    popperElement
+  );
+
+  const popoverContainerElement = document.querySelector("#popoverContainer");
 
   return (
     <div className={styles.MapRoom} style={roomInlineStyles}>
@@ -83,22 +97,34 @@ export const MapRoom: React.FC<MapRoomProps> = ({
               <span></span>
               <RoomAttendance room={room} />
             </span>
-            <span className={styles.InfoButton} onClick={toggleInfoVisible}>
+            <span
+              className={styles.InfoButton}
+              ref={setReferenceElement}
+              onClick={toggleInfoVisible}
+            >
               <span />
             </span>
           </div>
-          {infoVisible && (
-            <div className={styles.PortalPopupInfo}>
-              <h3>TODO Lazer Show</h3>
-              <p>TODO Put things here</p>
-              <span
-                className={styles.PortalInfoButton}
-                onClick={selectRoomWithSound}
+          {infoVisible &&
+            popoverContainerElement &&
+            ReactDOM.createPortal(
+              <div
+                className={styles.PortalPopupInfo}
+                ref={setPopperElement}
+                style={popperStyles.popper}
+                {...popperAttributes.popper}
               >
-                Enter
-              </span>
-            </div>
-          )}
+                <h3>TODO Title</h3>
+                <p>TODO</p>
+                <span
+                  className={styles.PortalInfoButton}
+                  onClick={selectRoomWithSound}
+                >
+                  Enter
+                </span>
+              </div>,
+              popoverContainerElement
+            )}
         </div>
       </div>
     </div>

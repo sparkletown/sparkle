@@ -53,3 +53,18 @@ $-z-index--ui: layer.above($-z-index--space);
     pointer-events: all;
   }
 }
+
+.popoverContainer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 100;
+  // Make the overlay ignore pointers, however, the things in the overlay must
+  // receive pointer events
+  pointer-events: none;
+  * {
+    pointer-events: all;
+  }
+}

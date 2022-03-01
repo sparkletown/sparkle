@@ -1,27 +1,24 @@
+@use "scss/attendee/breakpoint";
 @use "scss/attendee/space";
 
 .MapBackground {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   background-position: center;
-  background-size: contain;
-  background-attachment: fixed;
   background-repeat: no-repeat;
   background-color: black;
 
-  @media (min-width: 768px) {
-    background-attachment: scroll;
+  @media (max-width: calc(breakpoint.$md - 1px)) {
+    // Needed to override inline styles that are only used on larger screens
+    background-size: cover !important;
+    z-index: -1;
+  }
 
-    @media (orientation: portrait) {
-      background-size: auto 100%;
-    }
-
-    @media (orientation: landscape) {
-      background-size: 100% auto;
-    }
+  @media (min-width: breakpoint.$md) {
+    position: absolute;
   }
 }
 
