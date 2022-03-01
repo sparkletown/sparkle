@@ -3,10 +3,13 @@
 @use "scss/attendee/space";
 @use "scss/attendee/layer";
 
+// These is module private.
+$-z-index--header: layer.above(layer.$z-index--attendee);
+
 .attendeeHeader {
   display: flex;
   position: fixed;
-  z-index: layer.above(layer.$z-index--attendee);
+  z-index: $-z-index--header;
   width: 100%;
   padding: space.empty(1);
 }
@@ -20,7 +23,7 @@
 
 .chatExpanded {
   @media (min-width: breakpoint.$md) {
-    width: calc(100% - layout.$w-sidebar);
+    width: calc(100% - #{layout.$w-sidebar});
     padding-right: space.empty(1);
   }
 }

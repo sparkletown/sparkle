@@ -57,6 +57,11 @@ interface InputFieldProps
   name?: string;
 }
 
+/**
+ * @deprecated Please use the appropriate attendee or admin Input
+ * @see src/components/admin/Input
+ * @see src/components/attendee/Input
+ */
 export const InputField: React.FC<InputFieldProps> = ({
   containerClassName,
   inputClassName,
