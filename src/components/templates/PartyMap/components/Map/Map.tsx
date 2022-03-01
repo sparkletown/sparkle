@@ -92,7 +92,7 @@ interface MapProps {
 export const Map: React.FC<MapProps> = ({ user, venue, selectRoom }) => {
   const [
     mapBackground,
-    { width: imageWidth, height: imageHeight },
+    { width: imageWidth, height: imageHeight, isLoading: isImageLoading },
   ] = useValidImage(venue?.mapBackgroundImageUrl, DEFAULT_MAP_BACKGROUND);
 
   const { width: _browserWidth, height: browserHeight } = useWindowSize();
@@ -104,7 +104,7 @@ export const Map: React.FC<MapProps> = ({ user, venue, selectRoom }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [_browserWidth]);
 
-  if (!user || !venue) {
+  if (!user || !venue || isImageLoading) {
     return <>Loading map...</>;
   }
 
