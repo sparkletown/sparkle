@@ -28,13 +28,11 @@ import { WorldsTable } from "./WorldsTable";
 import ARROW from "assets/images/admin/dashboard-arrow.svg";
 
 export const WorldsDashboard: React.FC = () => {
-  const { userId, isLoading } = useUserId();
+  const authResult = useUserId();
   const { worlds } = useWorldsByNotHidden();
-  const { ownWorlds } = useWorldsByOwner({ userId });
-  const { ownSpaces } = useSpacesByOwner({ userId });
-  const { isSuperAdmin } = usePermission({
-    userId,
-  });
+  const { ownWorlds } = useWorldsByOwner(authResult);
+  const { ownSpaces } = useSpacesByOwner(authResult);
+  const { isSuperAdmin } = usePermission(authResult);
 
   const visibleWorldIds = useMemo(
     () =>
@@ -65,7 +63,7 @@ export const WorldsDashboard: React.FC = () => {
     []
   );
 
-  if (isLoading) return <LoadingPage />;
+  if (authResult.isLoading) return <LoadingPage />;
 
   return (
     <AdminLayout>
