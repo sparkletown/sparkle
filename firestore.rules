@@ -1,7 +1,7 @@
 rules_version = '2';
 
 function isUpdateRestrictedToField(request, field) {
-    return request.resource.data.diff(resource.data).affectedKeys().hasOnly([field]);
+  return request.resource.data.diff(resource.data).affectedKeys().hasOnly([field]);
 }
 
 function role(name) {
@@ -32,7 +32,7 @@ service cloud.firestore {
       }
     }
     match /userprivate/{userId} {
-      allow read,write: if request.auth.uid == userId;
+      allow read, write: if request.auth.uid == userId;
     }
     match /privatechats/{userId}/{restOfPath=**} {
       allow create: if request.auth.uid != null && request.resource.data.fromUser.id == request.auth.uid;
@@ -53,7 +53,7 @@ service cloud.firestore {
         return get(/databases/$(database)/documents/worlds/$(venueData().worldId)).data;
       }
 
-      function checkIfSpaceOrWorldOwner(userId) {
+      function checkIfSpaceOrWorldOwner() {
         return request.auth.uid in role('admin').users || request.auth.uid in venueData().owners || request.auth.uid in world().owners
       }
 
@@ -63,25 +63,24 @@ service cloud.firestore {
       }
 
       match /chatMessagesCounter/{shardId} {
-        allow read,write: if request.auth.uid != null;
+        allow read, write: if request.auth.uid != null;
         allow delete: if false;
       }
       match /chats/{messageId} {
-        allow read,create: if request.auth.uid != null && !world().isHidden;
+        allow read, create: if request.auth.uid != null && !world().isHidden;
         allow delete: if checkIfSpaceOrWorldOwner();
         allow update: if request.auth.uid != null && isUpdateRestrictedToField(request, 'repliesCount');
 
         match /thread/{messageId} {
-          allow read,create: if request.auth.uid != null;
+          allow read, create: if request.auth.uid != null;
           allow delete: if checkIfSpaceOrWorldOwner();
           allow update: if false;
         }
       }
 
       match /jukeboxMessages/{restOfPath=**} {
-        allow read,create: if request.auth.uid != null;
-        allow update: if checkIfSpaceOrWorldOwner() &&
-          isUpdateRestrictedToField(request, 'deleted');
+        allow read, create: if request.auth.uid != null;
+        allow update: if checkIfSpaceOrWorldOwner() && isUpdateRestrictedToField(request, 'deleted');
       }
       match /access/{method} {
         allow read, write: if false;
