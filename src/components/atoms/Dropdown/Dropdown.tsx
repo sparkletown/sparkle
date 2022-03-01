@@ -1,6 +1,5 @@
 import React, { ReactElement, ReactNode } from "react";
 import Select, { MenuPlacement } from "react-select";
-import classNames from "classnames";
 
 import {
   ALWAYS_EMPTY_ARRAY,
@@ -57,32 +56,18 @@ interface DropdownProps {
   noArrow?: boolean;
 }
 
-export const Dropdown: React.FC<DropdownProps> = ({
-  title,
-  className,
-  placement,
-  noArrow,
-  children,
-}) => {
+export const Dropdown: React.FC<DropdownProps> = ({ title, children }) => {
   const value = remap(title);
   const options = React.Children.map(children, remap) ?? ALWAYS_EMPTY_ARRAY;
 
-  const containerClasses = classNames(
-    className,
-    "Dropdown",
-    noArrow ? "Dropdown--arrowless" : "Dropdown--arrowful"
-  );
-
   return (
     <Select
-      className={containerClasses}
-      classNamePrefix="Select"
+      className={
+        "z-10 w-44 text-base list-none bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600"
+      }
       value={value}
       placeholder={value}
       options={options}
-      menuPlacement={placement}
-      styles={NO_INLINE_STYLES_PLEASE}
-      // menuIsOpen // NOTE: useful for dev, keep under comment
     />
   );
 };

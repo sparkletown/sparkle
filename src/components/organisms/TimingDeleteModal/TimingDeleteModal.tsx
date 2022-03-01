@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
+import { Button } from "components/admin/Button";
 import dayjs from "dayjs";
 
 import { DAYJS_INPUT_DATE_FORMAT, DAYJS_INPUT_TIME_FORMAT } from "settings";
@@ -12,8 +13,6 @@ import { WorldEvent } from "types/venues";
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import { Modal } from "components/molecules/Modal";
-
-import { ButtonNG } from "components/atoms/ButtonNG";
 
 import "./TimingDeleteModal.scss";
 
@@ -94,14 +93,13 @@ export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
             <p>Duration: {eventDuration}</p>
             <p>Are you sure you wish to delete this event?</p>
           </div>
-          <ButtonNG
-            className="TimingDeleteModal__button"
+          <Button
             type="submit"
-            variant="danger"
+            variant="primary"
             disabled={formState.isSubmitting || isDeletingEvent}
           >
             Delete
-          </ButtonNG>
+          </Button>
         </form>
       </div>
     </Modal>

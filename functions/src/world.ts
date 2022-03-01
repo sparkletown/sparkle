@@ -49,6 +49,7 @@ export const updateWorld = functions.https.onCall(async (data, context) => {
     bannerImageUrl,
     description,
     entrance,
+    endTimeUnix,
     id: worldId,
     logoImageUrl,
     name,
@@ -61,6 +62,7 @@ export const updateWorld = functions.https.onCall(async (data, context) => {
     showUserStatus,
     slug,
     subtitle,
+    startTimeUnix,
     showSchedule,
     userStatuses,
     hasSocialLoginEnabled,
@@ -118,6 +120,8 @@ export const updateWorld = functions.https.onCall(async (data, context) => {
     ...(!isNil(slug) && { slug }),
     ...(!isNil(showBadges) && { showBadges }),
     ...(!isNil(hasSocialLoginEnabled) && { hasSocialLoginEnabled }),
+    ...(!isNil(startTimeUnix) && { startTimeUnix }),
+    ...(!isNil(endTimeUnix) && { endTimeUnix }),
   };
 
   await admin

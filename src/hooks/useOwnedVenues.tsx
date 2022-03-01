@@ -13,7 +13,7 @@ import { useRefiCollection } from "hooks/fire/useRefiCollection";
 
 export interface UseOwnedVenuesOptions {
   worldId?: string;
-  userId: UserId;
+  userId?: UserId;
 }
 
 type UseOwnedVenuesResult = LoadStatus & {

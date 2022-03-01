@@ -1,12 +1,16 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm, useFormState } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { Button } from "components/admin/Button";
+import { Input } from "components/admin/Input";
+import { Textarea } from "components/admin/Textarea";
 import dayjs from "dayjs";
 
 import { DAYJS_INPUT_DATE_FORMAT, DAYJS_INPUT_TIME_FORMAT } from "settings";
 
 import { createEvent, EventInput, updateEvent } from "api/admin";
 
+import { WorldId } from "types/id";
 import { AnyVenue, WorldEvent } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
 
@@ -14,23 +18,28 @@ import { MaybeWithId, WithId } from "utils/id";
 
 import { eventEditSchema } from "forms/eventEditSchema";
 
-import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { useOwnedVenues } from "hooks/useOwnedVenues";
+import { useUser } from "hooks/useUser";
 
 import { Modal } from "components/molecules/Modal";
 
-import { ButtonNG } from "components/atoms/ButtonNG";
+import { Dropdown } from "components/atoms/Dropdown";
 
 import "./TimingEventModal.scss";
+
+export type SpaceType = {
+  id?: string;
+  name?: string;
+};
 
 export type TimingEventModalProps = {
   show: boolean;
   onHide: () => void;
-  venueId: string | undefined;
+  venueId?: string | undefined;
   event?: WorldEvent;
   template?: VenueTemplate;
-  venue: WithId<AnyVenue>;
-  setEditedEvent: Function | undefined;
-  setShowDeleteEventModal: () => void;
+  venue?: WithId<AnyVenue>;
+  worldId: WorldId | string;
 };
 
 // Dispatch<SetStateAction<WithId<Experience> | undefined>>
@@ -38,10 +47,16 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
   show,
   onHide,
   venue,
-  setEditedEvent,
   event,
-  setShowDeleteEventModal,
+  worldId,
 }) => {
+  const [selectedSpace, setSelectedSpace] = useState<SpaceType>({
+    id: "",
+    name: "",
+  });
+
+  const eventSpaceId = event?.spaceId || venue?.id;
+
   const {
     register,
     handleSubmit,
@@ -52,15 +67,15 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
     mode: "onSubmit",
     reValidateMode: "onChange",
     resolver: yupResolver(eventEditSchema),
+    context: {
+      eventSpaceId,
+      selectedSpace,
+    },
   });
 
   const { errors } = useFormState({ control });
 
-  // When we're creating a new event it will default to
-  // being on the space that triggered this modal.
-  const eventSpaceId = event?.spaceId || venue.id;
-  const { findVenueInRelatedVenues } = useRelatedVenues();
-  const eventSpace = findVenueInRelatedVenues({ spaceId: eventSpaceId });
+  const eventSpace = venue;
 
   useEffect(() => {
     if (event?.id) {
@@ -80,9 +95,37 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
     }
   }, [event, reset, eventSpaceId]);
 
+  const { userId } = useUser();
+  const { ownedVenues, isLoading: isSpacesLoading } = useOwnedVenues({
+    worldId,
+    userId,
+  });
+
+  const spacesMap: SpaceType[] = ownedVenues.map((venue) => ({
+    id: venue.id,
+    name: venue.name,
+  }));
+
+  const renderedSpaceIds = useMemo(
+    () =>
+      spacesMap.map((space) => {
+        return (
+          <div
+            key={space.id}
+            className="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+            onClick={() => setSelectedSpace(space)}
+          >
+            {space.name}
+          </div>
+        );
+      }) ?? [],
+    [spacesMap]
+  );
+
   const onUpdateEvent = useCallback(
     async (data: EventInput) => {
       const start = dayjs(`${data.start_date} ${data.start_time}`);
+      const spaceId = eventSpaceId ?? selectedSpace.id ?? "";
       const formEvent: MaybeWithId<WorldEvent> = {
         name: data.name,
         description: data.description,
@@ -91,14 +134,15 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
         durationMinutes:
           data.duration_hours * 60 + (data.duration_minutes ?? 0),
         host: data.host,
-        spaceId: eventSpaceId,
+        spaceId: spaceId,
         // @debt this needs figuring out. We shouldn't get to here without
         // an eventSpace
-        worldId: eventSpace?.worldId ?? "",
+        worldId: eventSpace?.worldId ?? worldId,
       };
       // Add the ID conditionally - otherwise the field is set to undefined
       // which firebase does not like.
-      if (eventSpaceId) {
+
+      if (spaceId) {
         if (event?.id) {
           formEvent.id = event.id;
           await updateEvent(formEvent as WorldEvent);
@@ -108,15 +152,19 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
       }
       onHide();
     },
-    [onHide, eventSpaceId, eventSpace, event]
+    [
+      eventSpaceId,
+      selectedSpace.id,
+      eventSpace?.worldId,
+      worldId,
+      onHide,
+      event?.id,
+    ]
   );
 
-  const showDeleteButton = event?.id;
-  const handleDelete = () => {
-    onHide();
-    setEditedEvent && setEditedEvent(event);
-    setShowDeleteEventModal();
-  };
+  if (isSpacesLoading) {
+    return null;
+  }
 
   return (
     <Modal show={show} onHide={onHide} centered autoHide>
@@ -125,45 +173,48 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
         <form className="form" onSubmit={handleSubmit(onUpdateEvent)}>
           <p>Your experience is in {eventSpace?.name}</p>
 
+          {!eventSpace?.name && (
+            <>
+              <Dropdown title={selectedSpace?.name ?? "None"}>
+                {renderedSpaceIds}
+              </Dropdown>
+              {errors.space && (
+                <span className="text-red-500">
+                  {errors.space.name?.message}
+                </span>
+              )}
+            </>
+          )}
+
           <div className="TimingEventModal__input-group">
             <label htmlFor="name">Name your experience</label>
-            <input
-              id="name"
-              name="name"
-              className="TimingEventModal__input-group__modal-input"
+            <Input
+              type="text"
               placeholder="Name"
-              {...register}
+              errors={errors}
+              register={register}
+              name="name"
             />
-            {errors.name && (
-              <span className="input-error">{errors.name.message}</span>
-            )}
           </div>
 
           <div className="TimingEventModal__input-group">
             <label htmlFor="description">Describe your experience</label>
-            <textarea
+            <Textarea
               name="description"
-              className="TimingEventModal__input-group__modal-input"
               placeholder="Description"
-              {...register}
+              register={register}
             />
-            {errors.description && (
-              <span className="input-error">{errors.description.message}</span>
-            )}
           </div>
 
           <div className="TimingEventModal__input-group">
             <label htmlFor="host">Host (people hosting the event)</label>
-            <input
-              id="host"
-              name="host"
-              className="TimingEventModal__input-group__modal-input"
+            <Input
+              type="text"
               placeholder="Dottie Longstockings"
-              {...register}
+              errors={errors}
+              register={register}
+              name="host"
             />
-            {errors.host && (
-              <span className="input-error">{errors.host.message}</span>
-            )}
           </div>
 
           <div className="TimingEventModal__input-group">
@@ -179,30 +230,35 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                   resolve this..
                   */}
               <div>
-                <input
+                <Input
                   type="date"
                   min={dayjs().format(DAYJS_INPUT_DATE_FORMAT)}
+                  placeholder="Dottie Longstockings"
+                  errors={errors}
+                  register={register}
                   name="start_date"
-                  className="TimingEventModal__input-group__modal-input"
-                  {...register}
                 />
               </div>
               <div>
-                <input
+                <Input
                   type="time"
+                  errors={errors}
+                  register={register}
                   name="start_time"
-                  className="TimingEventModal__input-group__modal-input"
-                  {...register}
                 />
               </div>
             </div>
 
             <div className="TimingEventModal__container">
               {errors.start_date && (
-                <span className="input-error">{errors.start_date.message}</span>
+                <span className="text-red-500">
+                  {errors.start_date.message}
+                </span>
               )}
               {errors.start_time && (
-                <span className="input-error">{errors.start_time.message}</span>
+                <span className="text-red-500">
+                  {errors.start_time.message}
+                </span>
               )}
             </div>
           </div>
@@ -210,31 +266,29 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
           <div className="TimingEventModal__input-group">
             <label>Duration</label>
             <div className="TimingEventModal__duration_container">
-              <input
-                name="duration_hours"
-                className="TimingEventModal__input-group__modal-input--indent"
+              <Input
                 placeholder="hours"
-                {...register}
-                size={8}
+                errors={errors}
+                register={register}
+                name="duration_hours"
               />
               <label htmlFor="duration_hours">hour(s)</label>
-              <input
-                name="duration_minutes"
-                className="TimingEventModal__input-group__modal-input--indent"
+              <Input
                 placeholder="minutes"
-                {...register}
-                size={8}
+                errors={errors}
+                register={register}
+                name="duration_minutes"
               />
               <label htmlFor="duration_minutes">minutes</label>
             </div>
             <div className="TimingEventModal__container">
               {errors.duration_hours && (
-                <span className="input-error">
+                <span className="text-red-500">
                   {errors.duration_hours.message}
                 </span>
               )}
               {errors.duration_minutes && (
-                <span className="input-error">
+                <span className="text-red-500">
                   {errors.duration_minutes.message}
                 </span>
               )}
@@ -242,30 +296,17 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
           </div>
 
           <div className="TimingEventModal__container">
-            {
-              // @debt: move this delete button to the experience list component
-            }
-            {showDeleteButton && (
-              <ButtonNG
-                disabled={formState.isSubmitting}
-                variant="danger"
-                onClick={handleDelete}
-              >
-                Delete
-              </ButtonNG>
-            )}
-
-            <ButtonNG variant="secondary" onClick={onHide}>
+            <Button variant="secondary" onClick={onHide}>
               Cancel
-            </ButtonNG>
+            </Button>
 
-            <ButtonNG
+            <Button
               disabled={formState.isSubmitting}
               variant="primary"
               type="submit"
             >
               {event?.id ? "Update" : "Create"}
-            </ButtonNG>
+            </Button>
           </div>
         </form>
       </div>

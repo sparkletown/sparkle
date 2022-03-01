@@ -7,7 +7,6 @@ import { useSpaceEvents } from "hooks/events";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useShowHide } from "hooks/useShowHide";
 
-import { TimingDeleteModal } from "components/organisms/TimingDeleteModal";
 import { TimingEvent } from "components/organisms/TimingEvent";
 import { TimingEventModal } from "components/organisms/TimingEventModal";
 import { TimingSpace } from "components/organisms/TimingSpace";
@@ -44,12 +43,6 @@ export const EventsView: React.FC<EventsViewProps> = ({ spaceId, space }) => {
   } = useShowHide();
 
   const {
-    isShown: showDeleteEventModal,
-    show: setShowDeleteEventModal,
-    hide: setHideDeleteEventModal,
-  } = useShowHide();
-
-  const {
     isShown: showSplittedEvents,
     toggle: toggleSplittedEvents,
   } = useShowHide();
@@ -64,17 +57,8 @@ export const EventsView: React.FC<EventsViewProps> = ({ spaceId, space }) => {
   const hasVenueEvents = events?.length !== 0;
 
   const renderedEvents = useMemo(
-    () =>
-      events?.map((event) => (
-        <TimingEvent
-          event={event}
-          setShowCreateEventModal={setShowCreateEventModal}
-          // @debt these need to be renamed as a proper callback props onSomething
-          setEditedEvent={setEditedEvent}
-          key={event.id}
-        />
-      )),
-    [events, setShowCreateEventModal, setEditedEvent]
+    () => events?.map((event) => <TimingEvent event={event} key={event.id} />),
+    [events]
   );
 
   const renderedSpaces = useMemo(() => {
@@ -95,17 +79,10 @@ export const EventsView: React.FC<EventsViewProps> = ({ spaceId, space }) => {
           key={spaceId}
           space={space}
           spaceEvents={getSpaceEvents(spaceId)}
-          setShowCreateEventModal={setShowCreateEventModal}
-          setEditedEvent={setEditedEvent}
         />
       );
     });
-  }, [
-    events,
-    setShowCreateEventModal,
-    setEditedEvent,
-    findVenueInRelatedVenues,
-  ]);
+  }, [events, findVenueInRelatedVenues]);
 
   if (isVenuesLoading || !isEventsLoaded) {
     return <Loading />;
@@ -158,19 +135,7 @@ export const EventsView: React.FC<EventsViewProps> = ({ spaceId, space }) => {
           venueId={spaceId}
           venue={space}
           event={editedEvent}
-          setEditedEvent={setEditedEvent}
-          setShowDeleteEventModal={setShowDeleteEventModal}
-        />
-      )}
-
-      {showDeleteEventModal && (
-        <TimingDeleteModal
-          show={showDeleteEventModal}
-          onHide={() => {
-            setHideDeleteEventModal();
-            setEditedEvent && setEditedEvent(undefined);
-          }}
-          event={editedEvent}
+          worldId={space.worldId}
         />
       )}
     </div>

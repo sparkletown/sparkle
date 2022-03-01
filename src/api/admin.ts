@@ -27,10 +27,13 @@ import { VenueTemplate } from "types/VenueTemplate";
 import { WithId, WithoutId, WithWorldId } from "utils/id";
 import { generateAttendeeInsideUrl } from "utils/url";
 
+import { SpaceType } from "components/organisms/TimingEventModal/TimingEventModal";
+
 import { fetchVenue } from "./venue";
 import { fetchWorld } from "./world";
 
 export interface EventInput {
+  space?: SpaceType;
   name: string;
   description: string;
   start_date: string;
