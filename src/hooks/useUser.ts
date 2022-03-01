@@ -1,111 +1,46 @@
 import { useMemo } from "react";
-import { useFirestore, useFirestoreDocData, useSigninCheck } from "reactfire";
-import { doc } from "firebase/firestore";
 
-import { COLLECTION_USERS } from "settings";
+import { FireAuthUser, LoadStatus } from "types/fire";
+import { UserId, UserWithId } from "types/id";
+import { Profile, UserLocation } from "types/User";
 
-import { RefiAuthUser, RefiError, RefiStatus } from "types/fire";
-import { UserId } from "types/id";
-import { Profile, User, UserLocation, UserWithLocation } from "types/User";
+import { useUserId } from "hooks/user/useUserId";
 
-import { identityConverter } from "utils/converters";
-import { convertToFirestoreKey, WithId, withId } from "utils/id";
-import { extractLocationFromUser, omitLocationFromUser } from "utils/user";
+import { useLiveProfile } from "./user/useLiveProfile";
 
-export interface UseUserResult {
-  user?: RefiAuthUser;
+type UseUserResult = LoadStatus & {
+  /** @deprecated this field is ambiguous, pick either auth or profile or userId */
+  user?: FireAuthUser;
+  auth?: FireAuthUser;
   profile?: Profile;
   userLocation?: UserLocation;
-  userWithId?: WithId<User>;
+  userWithId?: UserWithId;
   userId?: UserId;
   isTester: boolean;
-  isLoading: boolean;
-  authStatus: RefiStatus;
-  authError: RefiError;
-  profileStatus: RefiStatus;
-  profileError: RefiError;
-}
+  authError?: Error;
+  profileError?: Error;
+};
 
 export const useUser = (): UseUserResult => {
-  const {
-    status: authStatus,
-    data: authData,
-    error: authError,
-  } = useSigninCheck();
+  const authResult = useUserId();
+  const profileResult = useLiveProfile(authResult);
+  const authError = authResult.error;
+  const profileError = profileResult.error;
 
-  const user: RefiAuthUser | undefined = authData?.user ?? undefined;
-  const userId = user?.uid as UserId;
-
-  const firestore = useFirestore();
-  const {
-    status: profileStatus,
-    data: profileDataWithLocation,
-    error: profileError,
-  } = useFirestoreDocData(
-    doc(
-      firestore,
-      COLLECTION_USERS,
-      convertToFirestoreKey(userId)
-    ).withConverter<UserWithLocation>(identityConverter())
-  );
-
-  const profile: Profile | undefined = useMemo(
-    () =>
-      profileDataWithLocation
-        ? omitLocationFromUser(profileDataWithLocation)
-        : undefined,
-    [profileDataWithLocation]
-  );
-
-  const userLocation = useMemo(
-    () =>
-      profileDataWithLocation
-        ? extractLocationFromUser(profileDataWithLocation)
-        : undefined,
-    [profileDataWithLocation]
-  );
-
-  const userWithId = useMemo(() => {
-    if (!userId || !user || !profile) return;
-
-    const profileData = {
-      ...profile,
-      partyName: profile.partyName ?? user.displayName ?? "",
-      pictureUrl: profile.pictureUrl ?? user.photoURL ?? "",
-    };
-
-    return withId(profileData, userId);
-  }, [user, userId, profile]);
-
-  const isTester = useMemo(() => !!profile?.tester, [profile?.tester]);
-  const isLoading = "loading" === authStatus || "loading" === profileStatus;
+  const isLoaded = authResult.isLoaded && profileResult.isLoaded;
+  const isLoading = authResult.isLoading || profileResult.isLoading;
+  const error = authError || profileError;
+  const user = authResult.auth;
 
   return useMemo(
     () => ({
+      ...authResult,
+      ...profileResult,
       user,
-      profile,
-      userLocation,
-      userWithId,
-      userId,
-      isTester,
+      error,
+      isLoaded,
       isLoading,
-      authStatus,
-      authError,
-      profileStatus,
-      profileError,
     }),
-    [
-      user,
-      profile,
-      userLocation,
-      userWithId,
-      userId,
-      isTester,
-      isLoading,
-      authStatus,
-      authError,
-      profileStatus,
-      profileError,
-    ]
+    [authResult, profileResult, user, error, isLoaded, isLoading]
   );
 };
