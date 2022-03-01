@@ -65,7 +65,6 @@ export const MapRoom: React.FC<MapRoomProps> = ({
 
   const selectRoomWithSound = useCallback(
     (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
-      console.log("TFARRR");
       if (!shouldBeClickable) return;
       analytics.trackEnterRoomEvent(room.title, room.template);
       isExternalPortal(room) ? openUrl(room.url) : enterWithSound();
