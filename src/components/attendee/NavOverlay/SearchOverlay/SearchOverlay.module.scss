@@ -1,0 +1,63 @@
+@use "scss/attendee/font.scss";
+@use "scss/attendee/space";
+@use "scss/attendee/theme";
+@use "scss/attendee/breakpoint";
+
+$-overlay-max-width: 800px;
+
+.searchOverlayWrapper {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  max-width: $-overlay-max-width;
+  min-height: 100vh;
+  margin: space.empty(10) auto 0 0;
+  padding: space.empty(4) space.empty(3);
+
+  @media (max-width: breakpoint.$md) {
+    margin: 0;
+  }
+}
+
+.searchOverlayHeader {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: space.$l3;
+  margin: space.empty(3) 0 0 0;
+}
+
+.searchOverlayContent {
+  height: 100%;
+  width: 100%;
+}
+
+.searchOverlaySearch {
+  @include font.core;
+  width: 100%;
+  position: relative;
+  border-radius: space.$xs;
+  background: theme.$c-panel-background;
+  color: theme.$c-panel-background;
+  margin: space.empty(1) 0;
+}
+
+.searchOverlaySearchInput {
+  display: flex;
+  align-items: center;
+  padding: 0 space.empty(1);
+  height: space.$l3;
+  border-radius: space.$xs;
+  box-sizing: border-box;
+  padding-right: 5em;
+  width: 100%;
+}
+
+.searchOverlayBody {
+  padding: 0 0 space.empty(3);
+}
+
+.searchOverlayCount {
+  @include font.core;
+}

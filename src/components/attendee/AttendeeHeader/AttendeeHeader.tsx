@@ -1,12 +1,14 @@
-import { useCallback } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
+import { Attendance } from "components/attendee/Attendance";
+import { Button } from "components/attendee/Button";
+import { NavOverlay } from "components/attendee/NavOverlay/NavOverlay";
 
 import { ATTENDEE_INSIDE_URL, SPACE_TAXON } from "settings";
 
-import { UserWithId } from "types/id";
 import { BaseVenue } from "types/venues";
 
 import { generateUrl } from "utils/url";
@@ -16,11 +18,15 @@ import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams"
 import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 
-import { Attendance } from "../Attendance";
-import { Button } from "../Button";
-import { NavOverlay } from "../NavOverlay/NavOverlay";
-
 import CN from "./AttendeeHeader.module.scss";
+
+type HeaderTab = "schedule" | "search" | "profile";
+
+const tabCaptions: Readonly<Record<HeaderTab, String>> = {
+  schedule: "Schedule",
+  search: "Search",
+  profile: "Profile",
+};
 
 interface AttendeeHeaderProps {
   backButtonSpace?: BaseVenue;
@@ -29,7 +35,8 @@ interface AttendeeHeaderProps {
 export const AttendeeHeader: React.FC<AttendeeHeaderProps> = ({
   backButtonSpace,
 }) => {
-  const { isShown: isScheduleShown, hide, show } = useShowHide(false);
+  const { isShown, hide, show } = useShowHide(false);
+  const [overlayLabel, setOverlayLabel] = useState("");
   const { space, worldSlug } = useWorldAndSpaceByParams();
   const history = useHistory();
 
@@ -47,21 +54,33 @@ export const AttendeeHeader: React.FC<AttendeeHeaderProps> = ({
     }
   }, [backButtonSpace, history, worldSlug]);
 
+  const handleOverlayOpen = useCallback(
+    (key: string) => {
+      setOverlayLabel(key);
+      show();
+    },
+    [show]
+  );
+
   const { isExpanded: isChatExpanded } = useChatSidebarControls();
 
   const headerClassnames = classNames(CN.attendeeHeader, {
     [CN.chatExpanded]: isChatExpanded,
   });
 
-  // MOCK DATA
-
   const { userWithId } = useUser();
 
+  const renderedCaptions = useMemo(
+    () =>
+      Object.entries(tabCaptions).map(([key, label]) => (
+        <Button onClick={() => handleOverlayOpen(key)} key={key}>
+          {label}
+        </Button>
+      )),
+    [handleOverlayOpen]
+  );
+
   if (!userWithId) return null;
-
-  const mockData: UserWithId[] = Array(30).fill(userWithId);
-
-  console.log(userWithId, mockData);
 
   return (
     <header className={headerClassnames}>
@@ -79,13 +98,9 @@ export const AttendeeHeader: React.FC<AttendeeHeaderProps> = ({
           totalUsersCount={space?.recentUserCount}
           usersSample={space?.recentUsersSample}
         />
-        <div>
-          <Button onClick={show}>Schedule</Button>
-          <Button>Profile</Button>
-          <Button>Search</Button>
-        </div>
+        <div>{renderedCaptions}</div>
       </div>
-      <NavOverlay isShown={isScheduleShown} onClose={hide} type="Schedule" />
+      {isShown && <NavOverlay onClose={hide} type={overlayLabel} />}
     </header>
   );
 };

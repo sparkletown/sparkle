@@ -1,3 +1,4 @@
+@use "scss/attendee/theme";
 @use "scss/attendee/space";
 
 .Attendance {
@@ -42,7 +43,7 @@
 
   &__totalUsersCountText {
     margin-left: 5px;
-    color: black;
+    color: theme.$c-default-text;
     white-space: nowrap;
   }
 }
