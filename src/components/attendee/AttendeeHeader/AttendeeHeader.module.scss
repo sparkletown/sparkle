@@ -3,11 +3,8 @@
 @use "scss/attendee/space";
 @use "scss/attendee/layer";
 
-// These are module private.
-// The container layer is basis for this module.
-// All the rest can be steps upward or downward relative to each other
-$-z-index--container: layer.above(0);
-$-z-index--header: layer.above($-z-index--container);
+// These is module private.
+$-z-index--header: layer.above(layer.$z-index--attendee);
 
 .attendeeHeader {
   display: flex;
