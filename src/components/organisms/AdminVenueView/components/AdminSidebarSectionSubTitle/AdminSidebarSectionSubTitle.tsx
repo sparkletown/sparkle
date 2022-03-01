@@ -5,7 +5,7 @@ import "./AdminSidebarSectionSubTitle.scss";
 export interface AdminSidebarSectionSubTitleProps {}
 
 /**
- * @deprecated Use FormSectionSubtitle component instead.
+ * @deprecated Use InputGroupSubtitle component instead.
  */
 export const AdminSidebarSectionSubTitle: React.FC<AdminSidebarSectionSubTitleProps> = ({
   children,

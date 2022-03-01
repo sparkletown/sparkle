@@ -21,6 +21,10 @@ export interface CheckboxProps
   ) => void;
 }
 
+/**
+ * @deprecated Please use the appropriate Checkbox
+ * @see src/components/admin/Checkbox
+ */
 export const Checkbox: React.FC<CheckboxProps> = ({
   label,
 

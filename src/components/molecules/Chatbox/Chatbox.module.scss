@@ -1,0 +1,25 @@
+@use "scss/attendee/space";
+
+.chatboxContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.chatboxMessages {
+  flex-grow: 1;
+  // Start tiny and grow so that the send box is always visible
+  flex-basis: 1px;
+  overflow-y: scroll;
+  padding: space.empty(1.5);
+}
+
+.messageScroller {
+  display: flex;
+  flex-direction: column-reverse;
+  // The infinite scrolling library that we use forces an inline style that
+  // creates a horizontal scrollbar. The horizontal scrollbar isn't desired.
+  // The only way to work around that is to (unfortunately) use an !important
+  // marker here.
+  overflow-x: hidden !important;
+}

@@ -1,0 +1,8 @@
+$-padding-horizontal: 0.75rem;
+$-padding-vertical: 0.5rem;
+
+// @debt delete this .module.scss file and move the props into the .tailwind.ts one
+.textarea {
+  padding: $-padding-vertical $-padding-horizontal;
+  border-width: 1px;
+}

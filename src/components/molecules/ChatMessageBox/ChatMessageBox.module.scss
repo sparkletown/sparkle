@@ -1,0 +1,51 @@
+@use "scss/attendee/border";
+@use "scss/attendee/space";
+@use "scss/attendee/theme";
+
+.chatMessageBoxForm {
+  padding: space.empty(1.5);
+  display: flex;
+  flex-direction: row;
+
+  > div:first-child {
+    flex-grow: 1;
+  }
+
+  input {
+    padding: space.empty(1);
+    // Additional space for the emoji picker
+    padding-right: space.empty(3.5);
+    background-color: theme.$c-chat-input-background;
+    color: theme.$c-default-text;
+    border: none;
+    border-top-left-radius: border.$radius--xs;
+    border-bottom-left-radius: border.$radius--xs;
+    width: 100%;
+    &:focus {
+      outline: none;
+    }
+  }
+  button {
+    color: theme.$c-default-text;
+  }
+  svg {
+    color: theme.$light--aux-text;
+    padding-right: space.empty(1);
+  }
+
+  button {
+    border: none;
+    border-top-right-radius: border.$radius--xs;
+    border-bottom-right-radius: border.$radius--xs;
+    background-color: theme.$c-chat-input-background;
+    padding: 0 space.empty(1);
+    cursor: pointer;
+  }
+}
+
+.separator {
+  width: 1px;
+  background: theme.$light--aux-text;
+  border-top: solid space.empty(0.5) theme.$c-chat-input-background;
+  border-bottom: solid space.empty(0.5) theme.$c-chat-input-background;
+}

@@ -6,7 +6,7 @@ import { WithId } from "utils/id";
 
 import { UserAvatar } from "components/atoms/UserAvatar";
 
-import "./OnlineUser.scss";
+import styles from "./OnlineUser.module.scss";
 
 export interface OnlineUserProps {
   user: WithId<User>;
@@ -15,9 +15,9 @@ export interface OnlineUserProps {
 
 export const OnlineUser: React.FC<OnlineUserProps> = ({ user, onClick }) => {
   return (
-    <div className="online-user" onClick={onClick}>
-      <UserAvatar user={user} showStatus size="small" />
-      <div className="online-user__name">{user.partyName}</div>
+    <div className={styles.onlineUserContainer} onClick={onClick}>
+      <UserAvatar user={user} size="medium" />
+      <div>{user.partyName}</div>
     </div>
   );
 };

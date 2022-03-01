@@ -1,7 +1,9 @@
 import React from "react";
+import { SpaceEditForm } from "components/admin/SpaceEditForm";
 
 import { BACKGROUND_IMG_TEMPLATES } from "settings";
 
+import { UserId, WorldSlug } from "types/id";
 import { AnyVenue } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
 
@@ -15,7 +17,6 @@ import { AdminSidebar } from "components/organisms/AdminVenueView/components/Adm
 
 import { PortalsTable } from "components/molecules/PortalsTable";
 import { ScreeningRoomVideosTable } from "components/molecules/ScreeningRoomVideosTable";
-import { SpaceEditForm } from "components/molecules/SpaceEditForm";
 
 import { AdminShowcase } from "../AdminShowcase";
 
@@ -28,7 +29,12 @@ interface SpacesProps {
 export const Spaces: React.FC<SpacesProps> = ({ venue: space }) => (
   <AdminPanel variant="bound" className="Spaces">
     <AdminSidebar>
-      <SpaceEditForm space={space} />
+      {/* @debt TODO: use userId and worldSlug here */}
+      <SpaceEditForm
+        space={space}
+        userId={"" as UserId}
+        worldSlug={"" as WorldSlug}
+      />
     </AdminSidebar>
     <AdminShowcase>
       {BACKGROUND_IMG_TEMPLATES.includes(space.template as VenueTemplate) && (

@@ -1,0 +1,15 @@
+.inputFieldWrapper {
+  position: relative;
+}
+
+.iconEnd {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  display: flex;
+
+  svg {
+    margin: auto 0;
+  }
+}

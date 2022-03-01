@@ -1,0 +1,19 @@
+@use "scss/attendee/font";
+@use "scss/attendee/space";
+
+.portalItemResultHeader {
+  cursor: pointer;
+  span {
+    @include font.core;
+    margin-left: space.$xs;
+  }
+}
+
+.portalItemResultSubtitle {
+  @include font.core;
+  margin-top: 0;
+}
+
+.portalItemResultTitle {
+  margin-bottom: 0;
+}

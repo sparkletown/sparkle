@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import { faSmile } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import classNames from "classnames";
 import { EmojiData } from "emoji-mart";
 
 import { ChatTypes, SendChatMessage, SendThreadMessageProps } from "types/chat";
@@ -19,9 +18,7 @@ import { EmojiPicker } from "components/molecules/EmojiPicker";
 
 import { InputField } from "components/atoms/InputField";
 
-import SendIcon from "assets/icons/send.svg";
-
-import "./ChatMessageBox.scss";
+import styles from "./ChatMessageBox.module.scss";
 
 const determineChatPlaceholder = (
   isPrivate: boolean,
@@ -120,20 +117,15 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
       : undefined
   );
 
-  const buttonClasses = classNames("Chatbox__submit-button", {
-    "Chatbox__submit-button--question": isQuestion,
-  });
-
   return (
     <>
       <form
-        className="Chatbox__form"
+        className={styles.chatMessageBoxForm}
         onSubmit={handleSubmit(
           hasChosenThread ? sendReplyToThread : sendMessageToChat
         )}
       >
         <InputField
-          inputClassName="Chatbox__input"
           register={register}
           name="message"
           rules={{ required: true }}
@@ -141,25 +133,26 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
           autoComplete="off"
           iconEnd={
             <FontAwesomeIcon
+              className={styles.emojiPickerIcon}
               icon={faSmile}
-              className="Chatbox__submit-button-icon"
               size="lg"
             />
           }
+          iconEndClassName={styles.inputIconEnd}
           onIconEndClick={toggleEmojiPicker}
         />
+        <div className={styles.separator} />
         <button
           aria-label="Send message"
-          className={buttonClasses}
           type="submit"
           disabled={!chatValue || isSendingMessage || isReplying}
         >
-          <img src={SendIcon} alt="sideward airplane" />
+          Send
         </button>
       </form>
 
       {isEmojiPickerVisible && (
-        <div className="Chatbox__emoji-picker">
+        <div>
           <EmojiPicker onSelect={addEmoji} />
         </div>
       )}
