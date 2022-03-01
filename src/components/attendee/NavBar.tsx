@@ -6,26 +6,23 @@ import firebase from "firebase/compat/app";
 
 import { DISABLED_DUE_TO_1142, SPARKLE_PHOTOBOOTH_URL } from "settings";
 
-import {
-  SpaceSlugLocation,
-  UserId,
-  UserWithId,
-  WorldAndSpaceIdLocation,
-  WorldWithId,
-} from "types/id";
 import { UpcomingEvent } from "types/UpcomingEvent";
-import { Profile } from "types/User";
 
 import { shouldScheduleBeShown } from "utils/schedule";
 import { enterSpace, isValidUrl } from "utils/url";
 
+import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
+import { useLiveProfile } from "hooks/user/useLiveProfile";
+import { useUserId } from "hooks/user/useUserId";
 import { useRadio } from "hooks/useRadio";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { NavBarSchedule } from "components/organisms/NavBarSchedule/NavBarSchedule";
 
-import { NormalRadio } from "components/molecules/NavBar/components/NormalRadio";
+import { NavBarLogin } from "components/molecules/NavBar/NavBarLogin";
+import { NormalRadio } from "components/molecules/NavBar/NormalRadio";
+import { SoundCloudRadio } from "components/molecules/NavBar/SoundCloudRadio";
 import { NavSearchBar } from "components/molecules/NavSearchBar";
 import { Popover } from "components/molecules/Popover";
 import { UpcomingTickets } from "components/molecules/UpcomingTickets";
@@ -33,11 +30,6 @@ import { VenuePartygoers } from "components/molecules/VenuePartygoers";
 
 import { BackButton } from "components/atoms/BackButton";
 import { UserAvatar } from "components/atoms/UserAvatar";
-
-import { NavBarLogin } from "./components/NavBarLogin";
-import { SoundCloudRadio } from "./components/SoundCloudRadio";
-
-import "./playa.scss";
 
 const TicketsPopover: React.FC<{ futureUpcoming: UpcomingEvent[] }> = ({
   futureUpcoming,
@@ -49,7 +41,7 @@ const TicketsPopover: React.FC<{ futureUpcoming: UpcomingEvent[] }> = ({
 
 const navBarScheduleClassName = "NavBar__schedule-dropdown";
 
-type Attributes = {
+type NavBarProps = {
   hasBackButton?: boolean;
   withSchedule?: boolean;
   withPhotobooth?: boolean;
@@ -58,23 +50,7 @@ type Attributes = {
   title?: string;
 };
 
-type HocProps = SpaceSlugLocation &
-  WorldAndSpaceIdLocation & {
-    profile: Profile;
-    userId: UserId;
-    userWithId?: UserWithId;
-    world: WorldWithId;
-  };
-
-type NavBarPropsType = Attributes & HocProps;
-
-export const NavBar: React.FC<NavBarPropsType> = ({
-  profile,
-  userId,
-  userWithId,
-  spaceId,
-  worldSlug,
-  world,
+export const NavBar: React.FC<NavBarProps> = ({
   hasBackButton,
   withSchedule,
   withPhotobooth,
@@ -82,6 +58,10 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   title,
   withHiddenLoginButton,
 }) => {
+  const { auth, userId } = useUserId();
+  const { profile, userWithId } = useLiveProfile({ auth });
+  const { worldSlug, world, spaceId } = useWorldAndSpaceByParams();
+
   const {
     currentVenue: relatedVenue,
     parentVenue,

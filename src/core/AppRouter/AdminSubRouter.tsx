@@ -89,9 +89,7 @@ export const AdminSubRouter: React.FC = () => (
     <Route path={[ADMIN_ROOT_URL, ADMIN_IA_WORLD_BASE_URL]}>
       <LoginRestricted>
         <AnalyticsCheck>
-          <Provided withRelatedVenues>
-            <WorldsDashboard />
-          </Provided>
+          <WorldsDashboard />
         </AnalyticsCheck>
       </LoginRestricted>
     </Route>

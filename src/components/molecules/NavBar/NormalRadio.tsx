@@ -9,8 +9,6 @@ import { Popover } from "components/molecules/Popover";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 
-import "./NormalRadio.scss";
-
 interface NormalRadioProps {
   volume: number;
   setVolume: (value: ((prevState: number) => number) | number) => void;

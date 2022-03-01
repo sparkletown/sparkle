@@ -281,11 +281,16 @@ export interface RelatedVenuesData extends RelatedVenuesContextState {
   parentVenueId?: string;
 }
 
-export function useRelatedVenues(props: RelatedVenuesProps): RelatedVenuesData;
-export function useRelatedVenues(): RelatedVenuesContextState;
+type UseRelatedVenues =
+  | ((props: RelatedVenuesProps) => RelatedVenuesData)
+  | (() => RelatedVenuesContextState);
 
-// eslint-disable-next-line func-style, prefer-arrow/prefer-arrow-functions
-export function useRelatedVenues(props?: RelatedVenuesProps) {
+/**
+ * @deprecated Please use an alternative that doesn't depend on RelatedVenuesContext.Provider
+ *
+ * @see src/hooks/spaces/useRelatedSpaces.ts
+ */
+export const useRelatedVenues: UseRelatedVenues = (props) => {
   const { currentVenueId } = props ?? {};
   const relatedVenuesState = useRelatedVenuesContext();
 
@@ -295,10 +300,11 @@ export function useRelatedVenues(props?: RelatedVenuesProps) {
     return findVenueInRelatedVenues({ spaceId: currentVenueId });
   }, [currentVenueId, findVenueInRelatedVenues]);
 
-  const parentVenue: WithId<AnyVenue> | undefined = useMemo(() => {
+  const parentVenue: SpaceWithId | undefined = useMemo(() => {
     if (!currentVenue) return;
 
-    return findVenueInRelatedVenues({ spaceId: currentVenue.parentId });
+    const result = findVenueInRelatedVenues({ spaceId: currentVenue.parentId });
+    return result as SpaceWithId;
   }, [currentVenue, findVenueInRelatedVenues]);
 
   const parentVenueId = parentVenue?.id;
@@ -308,4 +314,4 @@ export function useRelatedVenues(props?: RelatedVenuesProps) {
   }
 
   return { ...relatedVenuesState, currentVenue, parentVenue, parentVenueId };
-}
+};

@@ -32,17 +32,17 @@ import {
 import { createSlug } from "api/admin";
 import { updateVenueNG } from "api/venue";
 
-import { UserId, WorldSlug } from "types/id";
-import { AnyVenue } from "types/venues";
+import { SpaceWithId } from "types/id";
 import { VenueTemplate } from "types/VenueTemplate";
 
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
-import { WithId } from "utils/id";
 import { generateUrl } from "utils/url";
 
 import { spaceEditSchema } from "forms/spaceEditSchema";
 
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useFetchAssets } from "hooks/useFetchAssets";
+import { useUserId } from "hooks/user/useUserId";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { BackgroundSelect } from "pages/Admin/BackgroundSelect";
@@ -78,17 +78,13 @@ const HANDLED_ERRORS = [
   "columns",
 ];
 
-export interface SpaceEditFormProps {
-  space: WithId<AnyVenue>;
-  userId: UserId;
-  worldSlug: WorldSlug;
+interface SpaceEditFormProps {
+  space: SpaceWithId;
 }
 
-export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
-  space,
-  userId,
-  worldSlug,
-}) => {
+export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
+  const { userId } = useUserId();
+  const { worldSlug } = useSpaceParams();
   const spaceLogoImage =
     PORTAL_INFO_ICON_MAPPING[space.template] ?? DEFAULT_VENUE_LOGO;
 

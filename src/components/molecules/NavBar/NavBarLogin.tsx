@@ -12,8 +12,6 @@ import { generateUrl } from "utils/url";
 
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 
-import "./NavBarLogin.scss";
-
 export const NavBarLogin: FC = () => {
   const history = useHistory();
   const { worldSlug, spaceSlug } = useSpaceParams();
