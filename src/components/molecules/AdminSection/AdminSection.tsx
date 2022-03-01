@@ -12,8 +12,8 @@ export interface AdminSectionProps {
 }
 
 /**
- * @deprecated Use FormSection component instead.
- * @see src/components/admin/FormSection/
+ * @deprecated Use InputGroup component instead.
+ * @see src/components/admin/InputGroup/
  */
 export const AdminSection: React.FC<AdminSectionProps> = ({
   title,

@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 import { AdminRestrictedLoading } from "components/admin/AdminRestrictedLoading";
 import { AdminRestrictedMessage } from "components/admin/AdminRestrictedMessage";
+import { Header } from "components/admin/Header";
 import { HeaderButton } from "components/admin/HeaderButton";
 import { Section } from "components/admin/Section";
 import { SectionHeading } from "components/admin/SectionHeading";
@@ -21,8 +22,6 @@ import { useWorldsByOwner } from "hooks/worlds/useWorldsByOwner";
 import { AdminShowcaseTitle } from "components/organisms/AdminVenueView/components/AdminShowcaseTitle";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
-
-import { AdminHeader } from "components/atoms/AdminHeader";
 
 import { WorldsTable } from "./WorldsTable";
 
@@ -77,7 +76,7 @@ export const WorldsDashboard: React.FC = () => {
       >
         {hasWorlds ? (
           <>
-            <AdminHeader title="Switch World" />
+            <Header title="Switch World" />
             <FullWidthLayout>
               <Section>
                 <SectionHeading>

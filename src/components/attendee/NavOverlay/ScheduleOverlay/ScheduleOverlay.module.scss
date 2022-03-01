@@ -1,12 +1,14 @@
 @use "scss/attendee/space";
+@use "scss/attendee/theme";
 @use "scss/attendee/breakpoint";
+@use "scss/attendee/layout";
 
 .scheduleOverlayWrapper {
   height: 100%;
   width: 100%;
   display: flex;
   flex-direction: column;
-  max-width: 800px;
+  max-width: layout.$w-overlay--max;
   min-height: 100vh;
   margin: space.empty(10) auto 0 space.empty(5);
   padding: space.empty(4) space.empty(3);
@@ -34,8 +36,8 @@
   justify-content: center;
   background: transparent;
   border: none;
-  color: white;
   cursor: pointer;
+  color: theme.$c-default-text;
 }
 
 .scheduleOverlayBookmark {

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import cn from "classnames";
 
 import { SPACE_TAXON } from "settings";
@@ -6,16 +6,16 @@ import { SPACE_TAXON } from "settings";
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 
 import { ScheduleOverlay } from "./ScheduleOverlay/ScheduleOverlay";
+import { SearchOverlay } from "./SearchOverlay/SearchOverlay";
 
 import CN from "./NavOverlay.module.scss";
 
-type navOverlayProps = {
-  isShown: boolean;
+type NavOverlayProps = {
   onClose: () => void;
   type?: string;
 };
 
-export enum NavOverlayTab {
+export enum NavOverlayTabType {
   schedule = "schedule",
   search = "search",
   profile = "profile",
@@ -23,27 +23,23 @@ export enum NavOverlayTab {
   help = "help",
 }
 
-const navOverlayTypeMap: Readonly<Record<NavOverlayTab, String>> = {
-  [NavOverlayTab.schedule]: "Schedule",
-  [NavOverlayTab.search]: "Search",
-  [NavOverlayTab.profile]: "Profile settings",
-  [NavOverlayTab.info]: "What is Sparkle?",
-  [NavOverlayTab.help]: "Help",
+const navOverlayTypeMap: Readonly<Record<NavOverlayTabType, string>> = {
+  [NavOverlayTabType.schedule]: "Schedule",
+  [NavOverlayTabType.search]: "Search",
+  [NavOverlayTabType.profile]: "Profile settings",
+  [NavOverlayTabType.info]: "What is Sparkle?",
+  [NavOverlayTabType.help]: "Help",
 };
 
-export const NavOverlay: React.FC<navOverlayProps> = ({
-  isShown,
-  onClose,
-  type,
-}) => {
-  const [navOverlayType, setnavOverlay] = useState(
-    type ?? navOverlayTypeMap.schedule
-  );
+export const NavOverlay: React.FC<NavOverlayProps> = ({ onClose, type }) => {
+  const [navOverlayType, setNavOverlay] = useState(type);
   const { space } = useWorldAndSpaceByParams();
 
-  if (!isShown) {
-    return null;
-  }
+  useEffect(() => {
+    setNavOverlay(type);
+
+    return () => setNavOverlay("");
+  }, [type]);
 
   const spaceName = space?.name ?? SPACE_TAXON.lower;
 
@@ -67,14 +63,17 @@ export const NavOverlay: React.FC<navOverlayProps> = ({
                 CN.navigationButton
               )}
               key={key}
-              onClick={() => setnavOverlay(label)}
+              onClick={() => setNavOverlay(key)}
             >
               {label}
             </span>
           ))}
         </div>
         <div className={CN.navOverlayContent}>
-          {navOverlayType === "Schedule" && <ScheduleOverlay />}
+          {navOverlayType === NavOverlayTabType.schedule && <ScheduleOverlay />}
+          {navOverlayType === NavOverlayTabType.search && (
+            <SearchOverlay onClose={onClose} />
+          )}
         </div>
       </div>
     </div>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { AttendeeFooter } from "components/attendee/AttendeeFooter";
+import { AttendeeHeader } from "components/attendee/AttendeeHeader";
 import { ChatContainer } from "components/attendee/ChatContainer";
-import { AttendeeHeader } from "components/attendee/Header/AttendeeHeader";
 import { VideoCommsProvider } from "components/attendee/VideoComms/VideoCommsProvider";
 import { HuddleProvider } from "components/attendee/VideoHuddle/HuddleProvider";
 import { VideoHuddle } from "components/attendee/VideoHuddle/VideoHuddle";

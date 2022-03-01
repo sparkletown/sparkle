@@ -271,10 +271,6 @@ export const useRelatedVenuesContext = (): RelatedVenuesContextState => {
   return relatedVenuesState;
 };
 
-export interface RelatedVenuesProps {
-  currentVenueId?: string;
-}
-
 export interface RelatedVenuesData extends RelatedVenuesContextState {
   parentVenue?: SpaceWithId;
   currentVenue?: WithId<AnyVenue>;
@@ -282,7 +278,7 @@ export interface RelatedVenuesData extends RelatedVenuesContextState {
 }
 
 type UseRelatedVenues =
-  | ((props: RelatedVenuesProps) => RelatedVenuesData)
+  | ((options: { currentVenueId?: string }) => RelatedVenuesData)
   | (() => RelatedVenuesContextState);
 
 /**

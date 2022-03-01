@@ -1,11 +1,12 @@
 import React from "react";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { AdminRestrictedLoading } from "components/admin/AdminRestrictedLoading";
 import { AdminRestrictedMessage } from "components/admin/AdminRestrictedMessage";
+import { Header } from "components/admin/Header";
+import { WorldNav } from "components/admin/WorldNav";
 import { AdminLayout } from "components/layouts/AdminLayout";
 import { WithPermission } from "components/shared/WithPermission";
 
-import { ADMIN_IA_WORLD_BASE_URL } from "settings";
+import { ALWAYS_EMPTY_ARRAY } from "settings";
 
 import { WorldNavTab } from "types/world";
 
@@ -16,14 +17,7 @@ import { WorldEditorAdvancedPanel } from "pages/WorldEditor/WorldEditorAdvancedP
 import { WorldEditorEntrancePanel } from "pages/WorldEditor/WorldEditorEntrancePanel";
 import { WorldEditorGeneralPanel } from "pages/WorldEditor/WorldEditorGeneralPanel";
 
-import { WithNavigationBar } from "components/organisms/WithNavigationBar";
-
-import { AdminTitle } from "components/molecules/AdminTitle";
-import { AdminTitleBar } from "components/molecules/AdminTitleBar";
 import { LoadingPage } from "components/molecules/LoadingPage";
-import { WorldNav } from "components/molecules/WorldNav";
-
-import { ButtonNG } from "components/atoms/ButtonNG";
 
 import "./WorldEditor.scss";
 
@@ -32,6 +26,8 @@ const PANEL_MAP = Object.freeze({
   [WorldNavTab.entrance]: WorldEditorEntrancePanel,
   [WorldNavTab.advanced]: WorldEditorAdvancedPanel,
 });
+
+const createModeCrumbtrail = [{ name: "Switch World", href: "switch-world" }];
 
 export const WorldEditor: React.FC = () => {
   const { worldSlug, selectedTab } = useWorldParams();
@@ -42,34 +38,24 @@ export const WorldEditor: React.FC = () => {
   }
 
   const editMode = !!world?.id;
-  const worldName = world?.name ?? "";
-  const adminTitle = editMode
-    ? worldName
-      ? `${worldName} settings`
-      : "Settings"
-    : "Create a new world";
+  const adminTitle = editMode ? "Settings" : "Create world";
 
   const WorldEditorPanel = PANEL_MAP[selectedTab] ?? <></>;
+
+  const crumbtrail = editMode ? ALWAYS_EMPTY_ARRAY : createModeCrumbtrail;
 
   return (
     <AdminLayout>
       <div className="WorldEditor">
-        <WithNavigationBar title={worldName}>
-          <WithPermission
-            check="world"
-            loading={<AdminRestrictedLoading />}
-            fallback={<AdminRestrictedMessage />}
-          >
-            <AdminTitleBar variant="two-rows">
-              <ButtonNG linkTo={ADMIN_IA_WORLD_BASE_URL} iconName={faArrowLeft}>
-                Back to Dashboard
-              </ButtonNG>
-              <AdminTitle>{adminTitle}</AdminTitle>
-            </AdminTitleBar>
-            {editMode && <WorldNav />}
-            <WorldEditorPanel worldSlug={worldSlug} />
-          </WithPermission>
-        </WithNavigationBar>
+        <WithPermission
+          check="world"
+          loading={<AdminRestrictedLoading />}
+          fallback={<AdminRestrictedMessage />}
+        >
+          <Header crumbtrail={crumbtrail} title={adminTitle} />
+          {editMode && <WorldNav />}
+          <WorldEditorPanel worldSlug={worldSlug} />
+        </WithPermission>
       </div>
     </AdminLayout>
   );

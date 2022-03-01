@@ -104,17 +104,33 @@ export const useRelatedSpaces = (options?: MaybeWorldAndSpaceIdLocation) => {
 
   const rootId = root?.id as SpaceId | undefined;
 
-  return {
-    ...extra,
-    worldId,
-    spaceId,
-    space,
-    spaces,
-    parent,
-    parentId,
-    root,
-    rootId,
-    descendantIds,
-    error: spacesError || rootError || undefined,
-  };
+  return useMemo(
+    () => ({
+      ...extra,
+      worldId,
+      spaceId,
+      space,
+      spaces: spaces ?? ALWAYS_EMPTY_ARRAY,
+      parent,
+      parentId,
+      root,
+      rootId,
+      descendantIds,
+      error: spacesError || rootError || undefined,
+    }),
+    [
+      extra,
+      worldId,
+      spaceId,
+      space,
+      spaces,
+      parent,
+      parentId,
+      root,
+      rootId,
+      descendantIds,
+      spacesError,
+      rootError,
+    ]
+  );
 };

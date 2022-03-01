@@ -1,4 +1,5 @@
 import React from "react";
+import { SpaceEditForm } from "components/admin/SpaceEditForm";
 
 import { BACKGROUND_IMG_TEMPLATES } from "settings";
 
@@ -13,7 +14,6 @@ import { AdminSidebar } from "components/organisms/AdminVenueView/components/Adm
 
 import { PortalsTable } from "components/molecules/PortalsTable";
 import { ScreeningRoomVideosTable } from "components/molecules/ScreeningRoomVideosTable";
-import { SpaceEditForm } from "components/molecules/SpaceEditForm";
 
 import { AdminShowcase } from "../AdminShowcase";
 

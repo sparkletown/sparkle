@@ -1,7 +1,0 @@
-// @debt delete this .module.scss file and move the props into the .tailwind.ts one
-.header {
-  display: flex;
-  flex-direction: column;
-  background-color: white; // @debt use semantic name from color module
-  padding: 24px;
-}

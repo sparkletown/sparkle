@@ -12,8 +12,15 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
   children,
 }) => {
   const containerClasses = classNames(
-    "AdminSidebar",
+    "AdminSidebar xl:col-start-1 xl:col-span-1",
     `AdminSidebar--${variant}`
   );
-  return <div className={containerClasses}> {children}</div>;
+
+  return (
+    <section className={containerClasses}>
+      <div className="bg-white px-4 py-5 shadow sm:rounded-lg sm:px-6">
+        {children}
+      </div>
+    </section>
+  );
 };
