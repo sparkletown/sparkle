@@ -23,12 +23,12 @@ import { findSovereignVenue } from "utils/venue";
 
 import { useRefiCollection } from "hooks/fire/useRefiCollection";
 
-export type FindVenueInRelatedVenuesOptions = {
+type FindVenueInRelatedVenuesOptions = {
   spaceId?: string;
   spaceSlug?: SpaceSlug;
 };
 
-export interface RelatedVenuesContextState {
+interface RelatedVenuesContextState {
   isLoading: boolean;
 
   sovereignVenue?: WithId<AnyVenue>;
@@ -271,23 +271,21 @@ export const useRelatedVenuesContext = (): RelatedVenuesContextState => {
   return relatedVenuesState;
 };
 
-export interface RelatedVenuesData extends RelatedVenuesContextState {
+type UseRelatedVenues = (options?: {
+  currentVenueId?: string;
+}) => RelatedVenuesContextState & {
   parentVenue?: SpaceWithId;
   currentVenue?: WithId<AnyVenue>;
   parentVenueId?: string;
-}
-
-type UseRelatedVenues =
-  | ((options: { currentVenueId?: string }) => RelatedVenuesData)
-  | (() => RelatedVenuesContextState);
+};
 
 /**
  * @deprecated Please use an alternative that doesn't depend on RelatedVenuesContext.Provider
  *
  * @see src/hooks/spaces/useRelatedSpaces.ts
  */
-export const useRelatedVenues: UseRelatedVenues = (props) => {
-  const { currentVenueId } = props ?? {};
+export const useRelatedVenues: UseRelatedVenues = (options) => {
+  const { currentVenueId } = options ?? {};
   const relatedVenuesState = useRelatedVenuesContext();
 
   const { findVenueInRelatedVenues } = relatedVenuesState;
@@ -305,7 +303,7 @@ export const useRelatedVenues: UseRelatedVenues = (props) => {
 
   const parentVenueId = parentVenue?.id;
 
-  if (!props) {
+  if (!options) {
     return relatedVenuesState;
   }
 
