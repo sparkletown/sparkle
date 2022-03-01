@@ -1,4 +1,5 @@
 import React from "react";
+import { SidebarHeader } from "components/admin/SidebarHeader";
 import { ThreeColumnLayout } from "components/admin/ThreeColumnLayout";
 import { WorldGeneralForm } from "components/admin/WorldGeneralForm";
 import { WorldShowcase } from "components/admin/WorldShowcase";
@@ -29,6 +30,7 @@ export const WorldEditorGeneralPanel: React.FC<WorldEditorGeneralPanelProps> = (
     <AdminPanel variant="bound">
       <ThreeColumnLayout>
         <AdminSidebar>
+          <SidebarHeader>Configure your world</SidebarHeader>
           {isUpdatingWorld || isCreatingWorld ? (
             <WorldGeneralForm world={world} />
           ) : (

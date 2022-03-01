@@ -3,6 +3,8 @@ import { TestMessageParams } from "yup";
 
 import { createSlug } from "api/admin";
 
+import { WorldId } from "types/id";
+
 export const messageMustBeMinimum = (fieldName: string, min: number) =>
   `${fieldName} must be at least ${min} characters`;
 
@@ -25,7 +27,9 @@ export const testVenueByNameExists = async (value: unknown) => {
   return !snap.exists;
 };
 
-export const testWorldBySlugExists = async (value: unknown) => {
+export const testWorldBySlugExists = (worldId: WorldId) => async (
+  value: unknown
+) => {
   const slug = createSlug(value);
   if (!slug) return false;
 
@@ -35,6 +39,7 @@ export const testWorldBySlugExists = async (value: unknown) => {
     .collection("worlds")
     .where("slug", "==", slug)
     .where("isHidden", "==", false)
+    .where(firebase.firestore.FieldPath.documentId(), "!=", worldId)
     .get();
 
   return !snap.docs.length;

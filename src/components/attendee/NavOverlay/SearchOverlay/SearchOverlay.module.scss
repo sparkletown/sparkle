@@ -2,15 +2,14 @@
 @use "scss/attendee/space";
 @use "scss/attendee/theme";
 @use "scss/attendee/breakpoint";
-
-$overlayMaxWidth: 800px;
+@use "scss/attendee/layout";
 
 .searchOverlayWrapper {
   height: 100%;
   width: 100%;
   display: flex;
   flex-direction: column;
-  max-width: $overlayMaxWidth;
+  max-width: layout.$w-overlay--max;
   min-height: 100vh;
   margin: space.empty(10) auto 0 0;
   padding: space.empty(4) space.empty(3);
@@ -46,11 +45,10 @@ $overlayMaxWidth: 800px;
 .searchOverlaySearchInput {
   display: flex;
   align-items: center;
-  padding: 0 space.empty(1);
   height: space.$l3;
   border-radius: space.$xs;
   box-sizing: border-box;
-  padding-right: 5em;
+  padding: 0 5em 0 space.empty(1);
   width: 100%;
 }
 

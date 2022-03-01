@@ -1,12 +1,14 @@
 import React from "react";
+import { SidebarHeader } from "components/admin/SidebarHeader";
+import { ThreeColumnLayout } from "components/admin/ThreeColumnLayout";
+import { WorldEntranceForm } from "components/admin/WorldEntranceForm";
+import { WorldShowcase } from "components/admin/WorldShowcase";
 
 import { useWorldBySlug } from "hooks/worlds/useWorldBySlug";
 
 import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
 import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
 import { AdminSidebar } from "components/organisms/AdminVenueView/components/AdminSidebar";
-import { AdminSidebarTitle } from "components/organisms/AdminVenueView/components/AdminSidebarTitle";
-import { WorldEntranceForm } from "components/organisms/WorldEntranceForm";
 
 import { Loading } from "components/molecules/Loading";
 
@@ -21,20 +23,24 @@ export const WorldEditorEntrancePanel: React.FC<WorldEditorEntrancePanelProps> =
 
   return (
     <AdminPanel variant="bound">
-      <AdminSidebar>
-        <AdminSidebarTitle>Entrance Experience</AdminSidebarTitle>
-        {isLoaded ? (
-          world ? (
-            <WorldEntranceForm world={world} />
+      <ThreeColumnLayout>
+        <AdminSidebar>
+          <SidebarHeader>Entrance Experience</SidebarHeader>
+          {isLoaded ? (
+            world ? (
+              <WorldEntranceForm world={world} />
+            ) : (
+              // TODO: Display not found component
+              "World Not Found"
+            )
           ) : (
-            // TODO: Display not found component
-            "World Not Found"
-          )
-        ) : (
-          <Loading />
-        )}
-      </AdminSidebar>
-      <AdminShowcase />
+            <Loading />
+          )}
+        </AdminSidebar>
+        <AdminShowcase>
+          <WorldShowcase world={world} />
+        </AdminShowcase>
+      </ThreeColumnLayout>
     </AdminPanel>
   );
 };

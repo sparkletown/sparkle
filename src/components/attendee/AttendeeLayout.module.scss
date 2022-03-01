@@ -33,22 +33,23 @@ $-z-index--ui: layer.above($-z-index--space);
 }
 
 .LayerUi {
-  position: sticky;
-  bottom: 0;
+  position: fixed;
+  top: 0;
+  height: 100%;
   width: 100%;
   z-index: $-z-index--ui;
   @include sparkle.panel--normal;
+  background: transparent;
+  pointer-events: none;
 
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
 
   &[open] {
     height: 45vh;
   }
 
-  @media (min-width: breakpoint.$md) {
-    position: fixed;
-    padding: 0 space.empty(1);
-    background: transparent;
+  > * {
+    pointer-events: all;
   }
 }

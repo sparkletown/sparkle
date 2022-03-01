@@ -5,7 +5,7 @@ import { Loading } from "components/molecules/Loading";
 
 import * as TW from "./Button.tailwind";
 
-export type ButtonVariant = "primary" | "secondary";
+export type ButtonVariant = "primary" | "secondary" | "danger";
 export type ButtonBorders = "regular" | "rounded";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -21,13 +21,14 @@ export const Button: React.FC<ButtonProps> = ({
   borders = "regular",
   loading = false,
   forwardRef,
+  type = "button",
   ...extraParams
 }) => (
   <button
-    type="button"
+    {...extraParams}
+    type={type}
     className={cn("Button", TW.general, TW[variant], TW[borders])}
     ref={forwardRef}
-    {...extraParams}
   >
     {loading && <Loading />}
     {children}

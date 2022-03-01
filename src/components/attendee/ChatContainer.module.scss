@@ -14,15 +14,15 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  order: 2;
+  @include sparkle.panel--normal;
 
   @media (min-width: breakpoint.$md) {
     padding: 0;
-    position: fixed;
-    right: 0;
-    bottom: 0;
     width: layout.$w-sidebar;
+    margin-left: auto;
+    flex-shrink: 0;
 
-    @include sparkle.panel--normal;
     @include rounded.topleft;
   }
 
@@ -56,17 +56,16 @@
 }
 
 .chatSidebar {
-  position: absolute;
-  bottom: layout.$h-chat-controls;
-  right: 0;
-  height: calc(100vh - layout.$h-chat-controls - layout.$h-top-nav);
-  @media (min-width: breakpoint.$md) {
-    top: -100vh;
-    height: calc(100vh - layout.$h-chat-controls);
-    bottom: unset;
-    width: 100%;
-  }
+  order: 3;
+  margin-left: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
   max-width: layout.$w-sidebar;
+  margin-top: calc(layout.$h-top-nav);
+
+  @media (min-width: breakpoint.$md) {
+    margin-top: 0;
+  }
 
   @include sparkle.panel--glass;
 }
