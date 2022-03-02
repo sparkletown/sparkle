@@ -6,6 +6,8 @@ import { VideoCommsProvider } from "components/attendee/VideoComms/VideoCommsPro
 import { HuddleProvider } from "components/attendee/VideoHuddle/HuddleProvider";
 import { VideoHuddle } from "components/attendee/VideoHuddle/VideoHuddle";
 
+import { POPOVER_CONTAINER_ID } from "settings";
+
 import { SpaceWithId } from "types/id";
 
 import { VenuePage } from "pages/VenuePage";
@@ -37,6 +39,8 @@ export const AttendeeLayout: React.FC = () => {
           </div>
         </main>
         <AttendeeFooter />
+        {/* Used by popovers to ensure z-index is handled properly */}
+        <div id={POPOVER_CONTAINER_ID} className={styles.popoverContainer} />
       </HuddleProvider>
     </VideoCommsProvider>
   );

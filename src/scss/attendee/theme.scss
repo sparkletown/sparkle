@@ -10,6 +10,7 @@
 
   --panel-background: rgb(255, 255, 255);
   --glass-panel-background: rgba(255, 255, 255, 0.4);
+  --color-glass-panel-background: rgba(99, 42, 199, 0.7);
 
   --sparkle--bg: rgb(99, 42, 199);
   --sparkle--border: rgba(130, 130, 130, 0.3);
@@ -41,6 +42,7 @@ $sparkle--border: var(--sparkle--border); // previously named $sparkle-border
 $c-panel-background: var(--panel-background);
 $c-glass-panel-background: var(--glass-panel-background);
 $c-glass-panel-text: var(--glass-panel-text);
+$c-color-glass-panel-background: var(--color-glass-panel-background);
 
 $c-button-fg: var(--button-fg);
 $c-button-bg: var(--button-bg);

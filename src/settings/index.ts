@@ -613,3 +613,10 @@ export const DEFAULT_SHOW_MORE_SETTINGS = {
   truncatedEndingComponent: "... ",
 };
 export const DEFAULT_MISSING_PLACEHOLDER = "Placeholder";
+
+export const POPOVER_CONTAINER_ID = "popoverContainer";
+export const DEFAULT_SAFE_ZONE = { width: 1.0, height: 1.0 };
+Object.freeze(DEFAULT_SAFE_ZONE);
+
+// Allow 70px for the top and bottom UI. Ideally, this would come from CSS
+export const PARTY_MAP_VERTICAL_PAD = 140;
