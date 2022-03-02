@@ -27,7 +27,7 @@ export const RoomAttendance: React.FC<RoomAttendanceProps> = ({ room }) => {
   }
 
   return (
-    <div className={styles.RoomAttendance}>
+    <div className={styles.roomAttendance}>
       <FontAwesomeIcon aria-hidden="true" icon={faUsers} />
       {numberOfUsersInRoom}
     </div>

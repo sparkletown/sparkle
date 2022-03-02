@@ -1,7 +1,11 @@
 import React, { useMemo } from "react";
 import { useWindowSize } from "react-use";
 
-import { DEFAULT_MAP_BACKGROUND } from "settings";
+import {
+  DEFAULT_MAP_BACKGROUND,
+  DEFAULT_SAFE_ZONE,
+  PARTY_MAP_VERTICAL_PAD,
+} from "settings";
 
 import { RefiAuthUser } from "types/fire";
 import { Room } from "types/rooms";
@@ -58,6 +62,10 @@ type CalculateImageDimensionsOptions = {
  * Calculates the size that the background should be rendered at as well as
  * where the "safe zone" is after image resizing - this can then be used to
  * place portals in the right place.
+ *
+ * @debt It would be good if this could all live in CSS. However, there isn't
+ * an obvious way to do this so it's done in JS. Performance isn't a concern
+ * as calculation is only done on resize events.
  */
 const calculateImageDimensions = ({
   browserWidth,
@@ -66,15 +74,8 @@ const calculateImageDimensions = ({
   imageHeight,
   venue,
 }: CalculateImageDimensionsOptions) => {
-  const { width: safeWidthPerc, height: safeHeightPerc } = venue.config
-    ?.safeZone || {
-    width: 1.0,
-    height: 1.0,
-  };
-
-  // @debt this should probably come from elsewhere.
-  // This is the pad to allow for the top and bottom controls.
-  const verticalPad = 140; // 70px for top and bottom
+  const { width: safeWidthPerc, height: safeHeightPerc } =
+    venue.config?.safeZone || DEFAULT_SAFE_ZONE;
 
   // Decide whether the image needs to be rescaled using the width or the
   // height as the constraint - otherwise part of the safe zone will end up
@@ -86,7 +87,7 @@ const calculateImageDimensions = ({
   // These are what the width/height would be if the width/height was used as
   // the restricting factor for scale
   const scaledWidth =
-    safeZoneWidth * ((browserHeight - verticalPad) / safeZoneHeight);
+    safeZoneWidth * ((browserHeight - PARTY_MAP_VERTICAL_PAD) / safeZoneHeight);
   const scaledHeight = safeZoneHeight * (browserWidth / safeZoneWidth);
 
   let desiredSafezoneWidth;
@@ -100,7 +101,7 @@ const calculateImageDimensions = ({
   } else {
     // As above, but for width.
     desiredSafezoneWidth = scaledWidth;
-    desiredSafezoneHeight = browserHeight - verticalPad;
+    desiredSafezoneHeight = browserHeight - PARTY_MAP_VERTICAL_PAD;
   }
 
   // Now that we know what we want the safe zone to be in terms of width/height
@@ -169,23 +170,22 @@ export const Map: React.FC<MapProps> = ({ user, venue, selectRoom }) => {
     { width: imageWidth, height: imageHeight, isLoading: isImageLoading },
   ] = useValidImage(venue?.mapBackgroundImageUrl, DEFAULT_MAP_BACKGROUND);
 
-  const { width: _browserWidth, height: browserHeight } = useWindowSize();
+  const { width: windowWidth, height: browserHeight } = useWindowSize();
 
   const browserWidth = useMemo(() => {
     return document.body.clientWidth;
     // This is intentinonally recalculated when the browser resizes
     // This allows for optional horizontal scrollbar sizes
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [_browserWidth]);
+  }, [windowWidth]);
 
   if (!user || !venue || isImageLoading) {
     return <>Loading map...</>;
   }
 
   if (!imageWidth || !imageHeight) {
-    // TODO Tidy thisup
     console.error("Failed to get image width/height");
-    return <>Error</>;
+    return <>Failed to get image width/height</>;
   }
 
   const {

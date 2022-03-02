@@ -268,6 +268,7 @@ export interface VenueConfig {
   tables?: Table[];
   // See PartyMap for what safe zone means
   // These are expressed as a percentage of the total image width/height.
+  // Expected range: 0.0 to 1.0.
   safeZone?: {
     width: number;
     height: number;

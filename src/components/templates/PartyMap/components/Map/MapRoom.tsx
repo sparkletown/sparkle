@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import { usePopper } from "react-popper";
 import { useToggle } from "react-use";
 
-import { COVERT_ROOM_TYPES } from "settings";
+import { COVERT_ROOM_TYPES, POPOVER_CONTAINER_ID } from "settings";
 
 import { Room, RoomType } from "types/rooms";
 import { RoomVisibility } from "types/RoomVisibility";
@@ -81,7 +81,9 @@ export const MapRoom: React.FC<MapRoomProps> = ({
     popperElement
   );
 
-  const popoverContainerElement = document.querySelector("#popoverContainer");
+  const popoverContainerElement = document.querySelector(
+    `#${POPOVER_CONTAINER_ID}`
+  );
 
   return (
     <div className={styles.MapRoom} style={roomInlineStyles}>
