@@ -1,0 +1,24 @@
+@use "scss/attendee/space";
+@use "scss/attendee/theme";
+
+.seatsRow {
+  display: block;
+  margin: 0 auto;
+  > div {
+    display: inline-block;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border-color: theme.$sparkle--border;
+    border-width: 1px;
+    border-style: solid;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 42px;
+    margin: space.empty(0.5);
+  }
+}
+
+.seat {
+  cursor: pointer;
+}
