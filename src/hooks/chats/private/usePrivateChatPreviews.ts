@@ -1,6 +1,5 @@
 import { useMemo } from "react";
-import { useFirestore } from "reactfire";
-import { collection, query } from "firebase/firestore";
+import { collection, getFirestore, query } from "firebase/firestore";
 
 import { PreviewChatMessageMap, PrivateChatMessage } from "types/chat";
 
@@ -13,7 +12,7 @@ import { useUser } from "hooks/useUser";
 
 export const usePrivateChatPreviews = () => {
   const { userId } = useUser();
-  const firestore = useFirestore();
+  const firestore = getFirestore();
 
   const [
     privateChatMessages,

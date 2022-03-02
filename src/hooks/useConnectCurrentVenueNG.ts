@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { orderBy, where } from "firebase/firestore";
 
 import {
+  ALWAYS_EMPTY_ARRAY,
   COLLECTION_SPACES,
   COLLECTION_WORLD_EVENTS,
   FIELD_WORLD_ID,
@@ -12,8 +13,8 @@ import { AnyVenue } from "types/venues";
 
 import { convertToFirestoreKey, WithId } from "utils/id";
 
-import { useRefiCollection } from "hooks/fire/useRefiCollection";
-import { useRefiDocument } from "hooks/fire/useRefiDocument";
+import { useLiveCollection } from "./fire/useLiveCollection";
+import { useLiveDocument } from "./fire/useLiveDocument";
 
 type UseConnectCurrentVenueNG = ({
   worldId,
@@ -33,12 +34,12 @@ export const useConnectCurrentVenueNG: UseConnectCurrentVenueNG = ({
   const {
     data: space,
     isLoaded: isCurrentVenueLoaded,
-  } = useRefiDocument<AnyVenue>([COLLECTION_SPACES, spaceKey]);
+  } = useLiveDocument<AnyVenue>([COLLECTION_SPACES, spaceKey]);
 
   const {
     data: currentVenueEvents,
     isLoaded: isCurrentVenueEventsLoaded,
-  } = useRefiCollection<WorldEventWithId>({
+  } = useLiveCollection<WorldEventWithId>({
     path: [COLLECTION_WORLD_EVENTS],
     constraints: [
       where(FIELD_WORLD_ID, "==", convertToFirestoreKey(worldId)),
@@ -53,7 +54,7 @@ export const useConnectCurrentVenueNG: UseConnectCurrentVenueNG = ({
     () => ({
       currentVenue,
       isCurrentVenueLoaded,
-      currentVenueEvents,
+      currentVenueEvents: currentVenueEvents ?? ALWAYS_EMPTY_ARRAY,
       isCurrentVenueEventsLoaded,
     }),
     [

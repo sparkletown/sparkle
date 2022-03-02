@@ -3,7 +3,7 @@ import { omit } from "lodash/fp";
 
 import { COLLECTION_USERS } from "settings";
 
-import { FireAuthUser, LoadStatus, RefiAuthUser } from "types/fire";
+import { FireAuthUser, LoadStatus } from "types/fire";
 import { UserId, UserWithId } from "types/id";
 import { Profile, UserLocation, UserWithLocation } from "types/User";
 
@@ -13,9 +13,9 @@ import { extractLocationFromUser, omitLocationFromUser } from "utils/user";
 import { useLiveDocument } from "hooks/fire/useLiveDocument";
 
 type UseLiveProfile = (options: {
-  auth?: FireAuthUser | RefiAuthUser;
+  auth?: FireAuthUser;
 }) => LoadStatus & {
-  auth?: FireAuthUser | RefiAuthUser;
+  auth?: FireAuthUser;
   profile?: Profile;
   userLocation?: UserLocation;
   userWithId?: UserWithId;

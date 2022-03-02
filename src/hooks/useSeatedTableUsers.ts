@@ -2,17 +2,15 @@ import { ALWAYS_EMPTY_ARRAY, COLLECTION_SPACES } from "settings";
 
 import { TableSeatedUser } from "types/User";
 
-import { convertToFirestoreKey, WithId } from "utils/id";
+import { convertToFirestoreKey } from "utils/id";
 
-import { useRefiCollection } from "hooks/fire/useRefiCollection";
+import { useLiveCollection } from "hooks/fire/useLiveCollection";
 
-export const useSeatedTableUsers = (
-  spaceId: string | undefined
-): [WithId<TableSeatedUser>[], boolean] => {
+export const useSeatedTableUsers = (spaceId: string | undefined) => {
   const {
     data: seatedTableUsers,
     isLoaded,
-  } = useRefiCollection<TableSeatedUser>([
+  } = useLiveCollection<TableSeatedUser>([
     COLLECTION_SPACES,
     convertToFirestoreKey(spaceId),
     "seatedTableUsers",

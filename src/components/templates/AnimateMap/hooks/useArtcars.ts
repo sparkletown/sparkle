@@ -6,12 +6,12 @@ import { ArtCar } from "types/animateMap";
 
 import { convertToFirestoreKey } from "utils/id";
 
-import { useRefiCollection } from "hooks/fire/useRefiCollection";
+import { useLiveCollection } from "hooks/fire/useLiveCollection";
 
 export const useArtcars: (options: {
   animateMapId: string;
 }) => { artcars: ArtCar[] } = ({ animateMapId }) => {
-  const { data, isLoaded } = useRefiCollection<ArtCar>([
+  const { data, isLoaded } = useLiveCollection<ArtCar>([
     COLLECTION_SPACES,
     convertToFirestoreKey(animateMapId),
     "artcars",

@@ -1,12 +1,13 @@
+import { useMemo } from "react";
 import { where } from "firebase/firestore";
 
-import { ALWAYS_EMPTY_ARRAY, COLLECTION_WORLD_EVENTS } from "settings";
+import { ALWAYS_EMPTY_ARRAY, DEFERRED, PATH } from "settings";
 
 import { LoadStatus } from "types/fire";
 import { WorldId } from "types/id";
 import { WorldEvent } from "types/venues";
 
-import { useRefiCollection } from "hooks/fire/useRefiCollection";
+import { useLiveCollection } from "hooks/fire/useLiveCollection";
 
 type UseWorldEvents = (options: {
   worldId?: WorldId | string;
@@ -15,24 +16,25 @@ type UseWorldEvents = (options: {
 };
 
 export const useWorldEvents: UseWorldEvents = ({ worldId }) => {
-  const { data, status } = useRefiCollection<WorldEvent>({
-    path: [COLLECTION_WORLD_EVENTS],
-    constraints: [where("worldId", "==", worldId || "")],
+  const { data, ...loadStatus } = useLiveCollection<WorldEvent>({
+    path: PATH.worldEvents,
+    constraints: worldId ? [where("worldId", "==", worldId)] : DEFERRED,
   });
 
-  if (!worldId) {
-    return {
-      isLoaded: true,
-      isLoading: false,
-      events: ALWAYS_EMPTY_ARRAY,
-    };
-  }
-
-  return {
-    isLoaded: status !== "loading",
-    isLoading: status === "loading",
-    events: data,
-  };
+  return useMemo(
+    () =>
+      worldId
+        ? {
+            ...loadStatus,
+            events: data ?? ALWAYS_EMPTY_ARRAY,
+          }
+        : {
+            isLoaded: true,
+            isLoading: false,
+            events: ALWAYS_EMPTY_ARRAY,
+          },
+    [worldId, data, loadStatus]
+  );
 };
 
 type UseSpaceEvents = (options: {

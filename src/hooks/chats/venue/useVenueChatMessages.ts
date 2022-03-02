@@ -1,5 +1,4 @@
-import { useFirestore } from "reactfire";
-import { collection, limit, query } from "firebase/firestore";
+import { collection, getFirestore, limit, query } from "firebase/firestore";
 
 import { COLLECTION_SPACE_CHATS, COLLECTION_SPACES } from "settings";
 
@@ -13,12 +12,11 @@ import { useChatMessagesRaw } from "hooks/chats/common/useChatMessages";
 export const useVenueChatMessages = (
   spaceId: string,
   limitNumber?: number
-): WithId<MessageToDisplay<VenueChatMessage>>[] => {
-  const firestore = useFirestore();
-  return useChatMessagesRaw(
+): WithId<MessageToDisplay<VenueChatMessage>>[] =>
+  useChatMessagesRaw(
     query(
       collection(
-        firestore,
+        getFirestore(),
         COLLECTION_SPACES,
         convertToFirestoreKey(spaceId),
         COLLECTION_SPACE_CHATS
@@ -26,4 +24,3 @@ export const useVenueChatMessages = (
       ...(limitNumber ? [limit(limitNumber)] : [])
     ).withConverter(identityConverter<VenueChatMessage>())
   )[0];
-};

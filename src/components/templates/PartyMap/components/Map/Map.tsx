@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 
 import { DEFAULT_MAP_BACKGROUND } from "settings";
 
-import { RefiAuthUser } from "types/fire";
+import { FireAuthUser } from "types/fire";
 import { Room } from "types/rooms";
 import { PartyMapVenue } from "types/venues";
 
@@ -51,7 +51,7 @@ const Portals: React.FC<PortalsProps> = ({ space, selectPortal, portals }) => {
 };
 
 interface MapProps {
-  user: RefiAuthUser;
+  user: FireAuthUser;
   venue: PartyMapVenue;
   selectRoom: (room: Room) => void;
 }

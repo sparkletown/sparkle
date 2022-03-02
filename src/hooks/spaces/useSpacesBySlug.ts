@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import Bugsnag from "@bugsnag/js";
 import { where } from "firebase/firestore";
 
-import { COLLECTION_SPACES, FIELD_SLUG, FIELD_WORLD_ID } from "settings";
+import { ALWAYS_EMPTY_ARRAY, FIELD_SLUG, FIELD_WORLD_ID, PATH } from "settings";
 
 import {
   MaybeWorldIdLocation,
@@ -13,7 +13,7 @@ import {
 
 import { convertToFirestoreKey } from "utils/id";
 
-import { useRefiCollection } from "hooks/fire/useRefiCollection";
+import { useLiveCollection } from "hooks/fire/useLiveCollection";
 
 export const useSpacesBySlug = ({
   spaceSlug,
@@ -30,12 +30,12 @@ export const useSpacesBySlug = ({
   }, [spaceSlug, worldId]);
 
   const {
-    data: spaces,
+    data: spaces = ALWAYS_EMPTY_ARRAY,
     isLoading,
     isLoaded,
     error,
-  } = useRefiCollection<SpaceWithId>({
-    path: [COLLECTION_SPACES],
+  } = useLiveCollection<SpaceWithId>({
+    path: PATH.spaces,
     constraints,
   });
 

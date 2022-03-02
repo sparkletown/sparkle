@@ -21,7 +21,7 @@ import { convertToFirestoreKey, WithId } from "utils/id";
 import { isDefined } from "utils/types";
 import { findSovereignVenue } from "utils/venue";
 
-import { useRefiCollection } from "hooks/fire/useRefiCollection";
+import { useLiveCollection } from "hooks/fire/useLiveCollection";
 
 type FindVenueInRelatedVenuesOptions = {
   spaceId?: string;
@@ -53,7 +53,7 @@ const LegacyRelatedVenuesProvider: React.FC<WorldAndSpaceIdLocation> = ({
   worldId,
   children,
 }) => {
-  const { data, isLoading } = useRefiCollection<SpaceWithId>({
+  const { data, isLoading } = useLiveCollection<SpaceWithId>({
     path: [COLLECTION_SPACES],
     constraints: [where(FIELD_WORLD_ID, "==", convertToFirestoreKey(worldId))],
   });
@@ -150,7 +150,7 @@ const WorldSpacesProvider: React.FC<WorldIdLocation> = ({
   worldId,
   children,
 }) => {
-  const { data, isLoading } = useRefiCollection<SpaceWithId>({
+  const { data, isLoading } = useLiveCollection<SpaceWithId>({
     path: [COLLECTION_SPACES],
     constraints: [where(FIELD_WORLD_ID, "==", convertToFirestoreKey(worldId))],
   });

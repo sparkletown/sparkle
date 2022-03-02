@@ -9,7 +9,7 @@ import { WorldEvent } from "types/venues";
 import { convertToFirestoreKey, WithId } from "utils/id";
 import { oneHourAfterTimestamp } from "utils/time";
 
-import { useRefiCollection } from "hooks/fire/useRefiCollection";
+import { useLiveCollection } from "hooks/fire/useLiveCollection";
 
 type UseConnectCurrentEvent = ({
   worldId,
@@ -25,7 +25,7 @@ export const useConnectCurrentEvent: UseConnectCurrentEvent = ({
 }) => {
   const [currentTimestamp] = useState(Date.now() / 1000);
 
-  const { data, isLoaded } = useRefiCollection<WorldEvent>({
+  const { data, isLoaded } = useLiveCollection<WorldEvent>({
     path: [COLLECTION_WORLD_EVENTS],
     constraints: [
       where("startUtcSeconds", "<=", oneHourAfterTimestamp(currentTimestamp)),
