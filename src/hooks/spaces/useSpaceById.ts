@@ -5,7 +5,7 @@ import { SpaceId, SpaceWithId, WorldId } from "types/id";
 
 import { convertToFirestoreKey } from "utils/id";
 
-import { useRefiDocument } from "hooks/fire/useRefiDocument";
+import { useLiveDocument } from "hooks/fire/useLiveDocument";
 
 type UseSpaceById = (options: {
   spaceId?: SpaceId;
@@ -17,7 +17,7 @@ type UseSpaceById = (options: {
 };
 
 export const useSpaceById: UseSpaceById = (options) => {
-  const { data: space, isLoading, isLoaded } = useRefiDocument<SpaceWithId>([
+  const { data: space, isLoading, isLoaded } = useLiveDocument<SpaceWithId>([
     COLLECTION_SPACES,
     convertToFirestoreKey(options?.spaceId),
   ]);

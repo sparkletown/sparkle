@@ -19,7 +19,7 @@ import { ExperimentalVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
-import { useRefiDocument } from "hooks/fire/useRefiDocument";
+import { useLiveDocument } from "hooks/fire/useLiveDocument";
 import { useProfileById } from "hooks/user/useProfileById";
 
 import { Dropdown } from "components/atoms/Dropdown";
@@ -49,6 +49,7 @@ interface UserTracknameProps {
   track: VideoTrack;
   participant: Participant;
 }
+
 const UserTrackname: React.FC<UserTracknameProps> = ({
   track,
   participant,
@@ -96,7 +97,7 @@ const _ExperimentalSpace: React.FC<ExperimentalSpaceProps> = ({
     [huddleId]
   );
 
-  const { data: projectionData } = useRefiDocument<ProjectionData>(queryPath);
+  const { data: projectionData } = useLiveDocument<ProjectionData>(queryPath);
 
   useEffect(() => {
     return () => {

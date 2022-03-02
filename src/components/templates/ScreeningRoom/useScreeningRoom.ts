@@ -12,11 +12,11 @@ import { ScreeningRoomVideo } from "types/screeningRoom";
 import { convertToFirestoreKey } from "utils/id";
 import { isTruthy } from "utils/types";
 
-import { useRefiCollection } from "hooks/fire/useRefiCollection";
+import { useLiveCollection } from "hooks/fire/useLiveCollection";
 import { useDebounceSearch } from "hooks/useDebounceSearch";
 
 export const useScreeningRoomVideos = (screeningRoomVenueId: string) => {
-  const { data, isLoaded } = useRefiCollection<ScreeningRoomVideo>([
+  const { data, isLoaded } = useLiveCollection<ScreeningRoomVideo>([
     COLLECTION_SPACES,
     convertToFirestoreKey(screeningRoomVenueId),
     "screeningRoomVideos",

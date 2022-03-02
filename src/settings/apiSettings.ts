@@ -30,6 +30,8 @@ export const FIELD_WORLD_ID = "worldId";
 // please name them as they're found in DB and sort them alphabetically
 export const PATH = {
   rolesAdmin: [COLLECTION_ROLES, "admin"],
+  spaces: [COLLECTION_SPACES],
+  worldEvents: [COLLECTION_WORLD_EVENTS],
   worlds: [COLLECTION_WORLDS],
 };
 

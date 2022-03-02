@@ -57,6 +57,8 @@ export const VideoCommsProvider: React.FC = ({ children }) => {
     window.addEventListener("beforeunload", (event) => {
       twilio.disconnect();
     });
+
+    // @debt missing unsubscribe function to stop the event listener and React console error on reloading page
   }, [twilio]);
 
   const contextState: VideoCommsContextType = {
