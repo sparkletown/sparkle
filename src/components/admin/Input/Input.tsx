@@ -1,9 +1,16 @@
 import React, { ReactNode } from "react";
-import { FieldErrors, FieldValues, UseFormRegister } from "react-hook-form";
+import {
+  FieldErrors,
+  FieldValues,
+  RegisterOptions,
+  UseFormRegister,
+} from "react-hook-form";
 import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { get } from "lodash";
+
+import { ALWAYS_EMPTY_OBJECT } from "settings";
 
 import { AnyForm } from "types/utility";
 
@@ -16,6 +23,7 @@ export interface InputProps
   name: string;
   subtext?: ReactNode | string;
   register: UseFormRegister<AnyForm>;
+  rules?: RegisterOptions;
   description?: ReactNode | string;
   errors?: FieldErrors<FieldValues>;
   hidden?: boolean;
@@ -25,6 +33,7 @@ export const Input: React.FC<InputProps> = ({
   name,
   subtext,
   register,
+  rules = ALWAYS_EMPTY_OBJECT,
   errors,
   hidden,
   description,
@@ -45,7 +54,7 @@ export const Input: React.FC<InputProps> = ({
   return hidden ? (
     <input
       {...inputProps}
-      {...register(name)}
+      {...register(name, rules)}
       className={hiddenClasses}
       name={name}
       type="hidden"
@@ -55,7 +64,7 @@ export const Input: React.FC<InputProps> = ({
       <div className={parentClasses}>
         <input
           {...inputProps}
-          {...register(name)}
+          {...register(name, rules)}
           className={inputClasses}
           name={name}
           aria-invalid={!!error}

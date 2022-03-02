@@ -13,7 +13,7 @@ import {
   ADMIN_IA_WORLD_CREATE_URL,
   ADMIN_IA_WORLD_EDIT_PARAM_URL,
   ADMIN_IA_WORLD_PARAM_URL,
-  ADMIN_IA_WORLD_TOOLS_PARAM_URL,
+  ADMIN_IA_WORLD_REPORTS,
   ADMIN_ROOT_URL,
 } from "settings";
 
@@ -68,7 +68,7 @@ export const AdminSubRouter: React.FC = () => (
       </LoginRestricted>
     </Route>
 
-    <Route path={[ADMIN_IA_WORLD_TOOLS_PARAM_URL]}>
+    <Route path={[ADMIN_IA_WORLD_REPORTS]}>
       <LoginRestricted>
         <Provided withRelatedVenues>
           <ToolsPage />
