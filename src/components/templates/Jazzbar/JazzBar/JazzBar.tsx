@@ -61,7 +61,7 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
 
       <TableGrid
         venueId={venue.id}
-        joinMessage={!venue.hideVideo ?? true}
+        joinMessage={false}
         customTables={jazzbarTables}
         venue={venue}
         defaultTables={JAZZBAR_TABLES}
