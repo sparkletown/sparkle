@@ -126,8 +126,8 @@ export const useWorldAndSpaceBySlug: UseWorldAndSpaceBySlug = ({
 
   if (!space) {
     return {
-      world: undefined,
-      worldId: undefined,
+      world: world as WorldWithId,
+      worldId: world.id as WorldId,
       space: undefined,
       spaceId: undefined,
       isLoaded: true,
