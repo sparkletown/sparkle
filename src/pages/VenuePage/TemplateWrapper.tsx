@@ -30,9 +30,9 @@ import { ScreeningRoom } from "components/templates/ScreeningRoom";
 import styles from "./TemplateWrapper.module.scss";
 
 const AnimateMap = lazy(() =>
-  tracePromise("TemplateWrapper::lazy-import::AnimateMap", () =>
-    import("components/templates/AnimateMap").then(({ AnimateMap }) => ({
-      default: AnimateMap,
+  tracePromise("TemplateWrapper::lazy-import::AnimateMapWrapper", () =>
+    import("components/templates/AnimateMapWrapper").then(({ AnimateMapWrapper }) => ({
+      default: AnimateMapWrapper,
     }))
   )
 );
