@@ -5,13 +5,16 @@ import { faClock, faPlayCircle } from "@fortawesome/free-regular-svg-icons";
 import { faArrowLeft, faBorderNone } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
-import { AdminRestrictedLoading } from "components/admin/AdminRestrictedLoading";
-import { AdminRestrictedMessage } from "components/admin/AdminRestrictedMessage";
-import { WithPermission } from "components/shared/WithPermission";
 
 import { ADMIN_IA_WORLD_PARAM_URL, SPACE_TAXON } from "settings";
 
-import { SpaceSlug, WorldSlug } from "types/id";
+import {
+  SpaceId,
+  SpaceSlug,
+  SpaceWithId,
+  WorldSlug,
+  WorldWithId,
+} from "types/id";
 
 import {
   adminNGVenueUrl,
@@ -19,7 +22,6 @@ import {
   generateUrl,
 } from "utils/url";
 
-import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useShowHide } from "hooks/useShowHide";
 
 import VenueDeleteModal from "pages/Admin/Venue/VenueDeleteModal";
@@ -28,8 +30,8 @@ import { SpaceTimingPanel } from "components/organisms/AdminVenueView/components
 
 import { AdminTitle } from "components/molecules/AdminTitle";
 import { AdminTitleBar } from "components/molecules/AdminTitleBar";
-import { LoadingPage } from "components/molecules/LoadingPage";
 
+import { AdminRestricted } from "components/atoms/AdminRestricted";
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { NotFound } from "components/atoms/NotFound";
 
@@ -64,8 +66,17 @@ const tabIcons = {
   [AdminVenueTab.run]: faPlayCircle,
 };
 
-export const AdminVenueView: React.FC = () => {
-  const { spaceId, space, world, isLoading } = useWorldAndSpaceByParams();
+type AdminVenueViewProps = {
+  space: SpaceWithId;
+  spaceId: SpaceId;
+  world: WorldWithId;
+};
+
+export const AdminVenueView: React.FC<AdminVenueViewProps> = ({
+  spaceId,
+  space,
+  world,
+}) => {
   const history = useHistory();
   const {
     worldSlug,
@@ -111,20 +122,12 @@ export const AdminVenueView: React.FC = () => {
 
   const navBarTitle = `${world?.name ?? ""}`;
 
-  if (isLoading) {
-    return <LoadingPage />;
-  }
-
   if (!space) {
     return (
       <WithNavigationBar withSchedule withHiddenLoginButton title={navBarTitle}>
-        <WithPermission
-          check="space"
-          loading={<AdminRestrictedLoading />}
-          fallback={<AdminRestrictedMessage />}
-        >
+        <AdminRestricted>
           <NotFound />
-        </WithPermission>
+        </AdminRestricted>
       </WithNavigationBar>
     );
   }
@@ -135,11 +138,7 @@ export const AdminVenueView: React.FC = () => {
       variant="internal-scroll"
       title={navBarTitle}
     >
-      <WithPermission
-        check="space"
-        loading={<AdminRestrictedLoading />}
-        fallback={<AdminRestrictedMessage />}
-      >
+      <AdminRestricted>
         <div className="AdminVenueView">
           <AdminTitleBar variant="grid-with-tools">
             <ButtonNG onClick={navigateToHome} iconName={faArrowLeft}>
@@ -184,7 +183,7 @@ export const AdminVenueView: React.FC = () => {
             onCancel={closeDeleteModal}
           />
         </div>
-      </WithPermission>
+      </AdminRestricted>
     </WithNavigationBar>
   );
 };

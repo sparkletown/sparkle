@@ -5,6 +5,8 @@ import { generateId } from "utils/string";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 
+import "./SoundCloudRadio.scss";
+
 export type SoundCloudRadioProps = {
   station: string | undefined;
   volume: number;

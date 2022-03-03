@@ -28,6 +28,7 @@ import styles from "./scss/Login.module.scss";
 export interface LoginProps {
   formType?: "initial" | "login" | "register" | "passwordReset";
   spaceId: SpaceId;
+  space: SpaceWithId;
   sovereignSpace?: SpaceWithId;
   analytics?: UseAnalyticsResult;
 }
@@ -35,6 +36,7 @@ export interface LoginProps {
 export const Login: React.FC<LoginProps> = ({
   formType = "initial",
   spaceId,
+  space,
   sovereignSpace,
   analytics,
 }) => {
