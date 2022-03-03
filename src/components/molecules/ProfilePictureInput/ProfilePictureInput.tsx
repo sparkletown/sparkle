@@ -7,7 +7,7 @@ import { UserId } from "types/id";
 
 import { determineAvatar } from "utils/image";
 
-import { useUserId } from "hooks/user/useUserId";
+import { useLoginCheck } from "hooks/user/useLoginCheck";
 import { useUploadProfilePictureHandler } from "hooks/useUploadProfilePictureHandler";
 
 import { ProfileFormData } from "pages/Account/Profile";
@@ -34,7 +34,7 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
   const [isPictureUploading, setIsPictureUploading] = useState(false);
   const [error, setError] = useState("");
   const uploadRef = useRef<HTMLInputElement>(null);
-  const { auth: userInfo } = useUserId();
+  const { user } = useLoginCheck();
 
   const uploadProfilePictureHandler = useUploadProfilePictureHandler(
     setError,
@@ -72,7 +72,7 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
 
   const { src: pictureSrc, onError: onPictureSrcError } = determineAvatar({
     pictureUrl,
-    userInfo,
+    userInfo: user,
   });
 
   return (

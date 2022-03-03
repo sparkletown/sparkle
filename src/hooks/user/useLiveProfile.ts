@@ -1,9 +1,9 @@
 import { useMemo } from "react";
 import { omit } from "lodash/fp";
 
-import { COLLECTION_USERS, DEFERRED } from "settings";
+import { COLLECTION_USERS } from "settings";
 
-import { FireAuthUser, LoadStatus } from "types/fire";
+import { FireAuthUser, LoadStatus, RefiAuthUser } from "types/fire";
 import { UserId, UserWithId } from "types/id";
 import { Profile, UserLocation, UserWithLocation } from "types/User";
 
@@ -13,9 +13,9 @@ import { extractLocationFromUser, omitLocationFromUser } from "utils/user";
 import { useLiveDocument } from "hooks/fire/useLiveDocument";
 
 type UseLiveProfile = (options: {
-  auth?: FireAuthUser;
+  auth?: FireAuthUser | RefiAuthUser;
 }) => LoadStatus & {
-  auth?: FireAuthUser;
+  auth?: FireAuthUser | RefiAuthUser;
   profile?: Profile;
   userLocation?: UserLocation;
   userWithId?: UserWithId;
@@ -27,9 +27,7 @@ export const useLiveProfile: UseLiveProfile = (props) => {
   const auth = props?.auth;
   const userId = auth?.uid as UserId | undefined;
 
-  const result = useLiveDocument<UserWithLocation>(
-    userId ? [COLLECTION_USERS, userId] : DEFERRED
-  );
+  const result = useLiveDocument<UserWithLocation>([COLLECTION_USERS, userId]);
   const data = result.data;
   const loadStatus: LoadStatus = omit("data", result);
 

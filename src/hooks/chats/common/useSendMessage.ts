@@ -1,10 +1,10 @@
 import { useCallback } from "react";
+import { useFirestore } from "reactfire";
 import firebase from "firebase/compat/app";
 import {
   CollectionReference,
   doc,
   DocumentData,
-  getFirestore,
   WriteBatch,
   writeBatch,
 } from "firebase/firestore";
@@ -79,7 +79,7 @@ export const useSendMessage = <
   processResultingBatch = noop,
 }: UseSendMessageProps<T, K>): SendChatMessage<K> => {
   const { userWithId } = useUser();
-  const firestore = getFirestore();
+  const firestore = useFirestore();
 
   return useCallback(
     async (props) => {

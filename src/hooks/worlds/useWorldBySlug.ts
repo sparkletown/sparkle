@@ -2,13 +2,13 @@ import { useMemo } from "react";
 import Bugsnag from "@bugsnag/js";
 import { where } from "firebase/firestore";
 
-import { ALWAYS_EMPTY_ARRAY, FIELD_HIDDEN, FIELD_SLUG, PATH } from "settings";
+import { COLLECTION_WORLDS, FIELD_HIDDEN, FIELD_SLUG } from "settings";
 
 import { WorldId, WorldSlug, WorldSlugLocation, WorldWithId } from "types/id";
 
 import { convertToFirestoreKey } from "utils/id";
 
-import { useLiveCollection } from "hooks/fire/useLiveCollection";
+import { useRefiCollection } from "hooks/fire/useRefiCollection";
 
 export const useWorldBySlug = (
   slugOrOptions?: WorldSlug | string | WorldSlugLocation
@@ -18,12 +18,12 @@ export const useWorldBySlug = (
   );
 
   const {
-    data: worlds = ALWAYS_EMPTY_ARRAY,
+    data: worlds,
     isLoaded,
     isLoading,
     error,
-  } = useLiveCollection<WorldWithId>({
-    path: PATH.worlds,
+  } = useRefiCollection<WorldWithId>({
+    path: [COLLECTION_WORLDS],
     constraints: [
       where(FIELD_SLUG, "==", slug),
       where(FIELD_HIDDEN, "==", false),

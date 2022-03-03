@@ -1,7 +1,8 @@
 import { useMemo } from "react";
 import { useAsync } from "react-use";
+import { useFirestore } from "reactfire";
 import { QueryConstraint } from "@firebase/firestore";
-import { collection, getDocs, getFirestore, query } from "firebase/firestore";
+import { collection, getDocs, query } from "firebase/firestore";
 
 import { withIdConverter } from "utils/converters";
 
@@ -15,7 +16,7 @@ type UseFireCollectionOptions =
 export const useFireCollection = <T extends object>(
   options: UseFireCollectionOptions
 ) => {
-  const firestore = getFirestore();
+  const firestore = useFirestore();
 
   const path = useMemo(
     () => (Array.isArray(options) ? options : options?.path) ?? [],

@@ -4,21 +4,6 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { FireAuthUser } from "types/fire";
 import { UserId } from "types/id";
 
-type WorkaroundSetter = (
-  newAuthUser: FireAuthUser | null
-) => (oldAuthUser: FireAuthUser | null) => FireAuthUser | null;
-
-const workaroundSetter: WorkaroundSetter = (newAuthUser) => (oldAuthUser) => {
-  // the user has logged out, time for a workaround
-  if (oldAuthUser && !newAuthUser) {
-    // Firestore SDK bug on re-login:  insufficient permissions' error because of old observers
-    // reloading the page clears the SDK cached observers attached to the window itself
-    // this prevents the error on the next login since we're starting fresh
-    window.location.reload();
-  }
-  return newAuthUser;
-};
-
 export const useUserId = () => {
   // @see https://firebase.google.com/docs/auth/web/start
   // @see https://firebase.google.com/docs/reference/js/firebase.User
@@ -36,7 +21,7 @@ export const useUserId = () => {
       getAuth(),
       (usr) => {
         if (!isMounted) return;
-        setAuthUser(workaroundSetter(usr));
+        setAuthUser(usr);
         setLoaded();
       },
       (err) => {
@@ -48,7 +33,7 @@ export const useUserId = () => {
 
     return () => {
       isMounted = false;
-      unsubscribe?.();
+      unsubscribe();
     };
   }, [setLoaded]);
 

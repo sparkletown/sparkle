@@ -1,25 +1,22 @@
-import { useMemo } from "react";
-
 import { ALWAYS_EMPTY_ARRAY, COLLECTION_SPACES } from "settings";
 
 import { TableSeatedUser } from "types/User";
 
-import { convertToFirestoreKey } from "utils/id";
+import { convertToFirestoreKey, WithId } from "utils/id";
 
-import { useLiveCollection } from "hooks/fire/useLiveCollection";
+import { useRefiCollection } from "hooks/fire/useRefiCollection";
 
-export const useSeatedTableUsers = (spaceId: string | undefined) => {
-  const result = useLiveCollection<TableSeatedUser>([
+export const useSeatedTableUsers = (
+  spaceId: string | undefined
+): [WithId<TableSeatedUser>[], boolean] => {
+  const {
+    data: seatedTableUsers,
+    isLoaded,
+  } = useRefiCollection<TableSeatedUser>([
     COLLECTION_SPACES,
     convertToFirestoreKey(spaceId),
     "seatedTableUsers",
   ]);
 
-  return useMemo(
-    () => ({
-      ...result,
-      seatedTableUsers: result.data ?? ALWAYS_EMPTY_ARRAY,
-    }),
-    [result]
-  );
+  return [seatedTableUsers ?? ALWAYS_EMPTY_ARRAY, isLoaded];
 };

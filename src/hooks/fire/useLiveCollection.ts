@@ -15,7 +15,6 @@ import { FireConstraint } from "types/fire";
 import { DeferredAction } from "types/id";
 
 import { withIdConverter } from "utils/converters";
-import { WithId } from "utils/id";
 import {
   createConstraintsError,
   createPathError,
@@ -67,10 +66,10 @@ const checkDeferred: CheckDeferred = (options) => {
   return path?.some(isDeferred) || constraints?.some(isDeferred);
 };
 
-export const useLiveCollection = <T extends object, ID extends string = string>(
+export const useLiveCollection = <T extends object>(
   options: UseLiveCollectionOptions
 ) => {
-  const [data, setData] = useState<WithId<T, ID>[]>();
+  const [data, setData] = useState<T[]>();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | undefined>();
 
@@ -103,7 +102,7 @@ export const useLiveCollection = <T extends object, ID extends string = string>(
         : query(
             collection(getFirestore(), first, ...rest),
             ...filteredConstraints
-          ).withConverter(withIdConverter<T, ID>()),
+          ).withConverter(withIdConverter<T>()),
     [
       filteredConstraints,
       first,
@@ -123,7 +122,7 @@ export const useLiveCollection = <T extends object, ID extends string = string>(
       return;
     }
 
-    const onNext = (snap: QuerySnapshot<WithId<T, ID>>) => {
+    const onNext = (snap: QuerySnapshot<T>) => {
       if (!isMounted) return;
       setData((oldData) => {
         // this check prevents endless re-renders
@@ -139,11 +138,7 @@ export const useLiveCollection = <T extends object, ID extends string = string>(
       setIsLoading(false);
     };
 
-    const unsubscribe = onSnapshot<WithId<T, ID>>(
-      memoizedQuery,
-      onNext,
-      onError
-    );
+    const unsubscribe = onSnapshot<T>(memoizedQuery, onNext, onError);
 
     return () => {
       isMounted = false;

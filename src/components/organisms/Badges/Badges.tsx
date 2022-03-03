@@ -1,12 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useFirestore } from "reactfire";
 import { User } from "@bugsnag/js";
-import {
-  collection,
-  getDocs,
-  getFirestore,
-  query,
-  where,
-} from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { chunk } from "lodash";
 
 import {
@@ -63,7 +58,7 @@ export const Badges: React.FC<{
   const [venues, setVenues] = useState<WithId<AnyVenue>[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const firestore = getFirestore();
+  const firestore = useFirestore();
 
   const fetchAllVenues = useCallback(async () => {
     const userSnapshot = await getUserRef(user.id).get();

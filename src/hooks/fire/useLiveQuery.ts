@@ -7,13 +7,9 @@ import {
 } from "firebase/firestore";
 import { isEqual } from "lodash";
 
-import { DeferredAction } from "types/id";
+import { dataWithId } from "utils/query";
 
-import { dataWithId, isDeferred } from "utils/query";
-
-export const useLiveQuery = <T extends object>(
-  query: Query<T> | DeferredAction
-) => {
+export const useLiveQuery = <T extends object>(query: Query<T>) => {
   const [data, setData] = useState<T[]>();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | undefined>();
@@ -21,11 +17,6 @@ export const useLiveQuery = <T extends object>(
   useEffect(() => {
     // prevents warning: Can't perform a React state update on an unmounted component.
     let isMounted = true;
-
-    if (isDeferred(query)) {
-      setIsLoading(false);
-      return;
-    }
 
     const onNext = (snap: QuerySnapshot<T>) => {
       if (!isMounted) return;

@@ -22,10 +22,10 @@ import {
   isNotValidSegment,
 } from "utils/query";
 
-export const useLiveDocument = <T extends object, ID extends string = string>(
+export const useLiveDocument = <T extends object>(
   path: FirePath | DeferredAction
 ) => {
-  const [data, setData] = useState<WithId<T, ID>>();
+  const [data, setData] = useState<WithId<T>>();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | undefined>();
 
@@ -55,10 +55,10 @@ export const useLiveDocument = <T extends object, ID extends string = string>(
     }
 
     const reference = doc(getFirestore(), first, ...rest).withConverter(
-      withIdConverter<T, ID>()
+      withIdConverter<T>()
     );
 
-    const onNext = (doc: DocumentSnapshot<WithId<T, ID>>) => {
+    const onNext = (doc: DocumentSnapshot<WithId<T>>) => {
       if (!isMounted) return;
       setData((oldData) => {
         // this check prevents endless re-renders
@@ -74,7 +74,7 @@ export const useLiveDocument = <T extends object, ID extends string = string>(
       setIsLoading(false);
     };
 
-    const unsubscribe = onSnapshot<WithId<T, ID>>(reference, onNext, onError);
+    const unsubscribe = onSnapshot(reference, onNext, onError);
 
     return () => {
       isMounted = false;

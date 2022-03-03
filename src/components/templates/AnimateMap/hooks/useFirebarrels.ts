@@ -6,14 +6,14 @@ import { Firebarrel } from "types/animateMap";
 
 import { convertToFirestoreKey } from "utils/id";
 
-import { useLiveCollection } from "hooks/fire/useLiveCollection";
+import { useRefiCollection } from "hooks/fire/useRefiCollection";
 
 type UseFirebarrels = (options: {
   animateMapId: string;
 }) => { firebarrels: Firebarrel[] };
 
 export const useFirebarrels: UseFirebarrels = ({ animateMapId }) => {
-  const { data, isLoaded } = useLiveCollection<Firebarrel>([
+  const { data, isLoaded } = useRefiCollection<Firebarrel>([
     COLLECTION_SPACES,
     convertToFirestoreKey(animateMapId),
     "firebarrels",

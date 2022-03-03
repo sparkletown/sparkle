@@ -7,7 +7,7 @@ import { UserId, UserWithId } from "types/id";
 
 import { convertToFirestoreKey } from "utils/id";
 
-import { useLiveDocument } from "hooks/fire/useLiveDocument";
+import { useRefiDocument } from "hooks/fire/useRefiDocument";
 
 type UseProfileById = (options: {
   userId: UserId;
@@ -18,11 +18,12 @@ type UseProfileById = (options: {
 
 export const useProfileById: UseProfileById = ({ userId }) => {
   const {
+    status,
     data: profile,
     error,
     isLoading,
     isLoaded,
-  } = useLiveDocument<UserWithId>([
+  } = useRefiDocument<UserWithId>([
     COLLECTION_USERS,
     convertToFirestoreKey(userId),
   ]);
@@ -36,8 +37,9 @@ export const useProfileById: UseProfileById = ({ userId }) => {
       isTester,
       isLoading,
       isLoaded,
+      status,
       error,
     }),
-    [profile, userId, isTester, isLoading, isLoaded, error]
+    [profile, userId, isTester, isLoading, isLoaded, status, error]
   );
 };

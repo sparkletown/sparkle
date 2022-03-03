@@ -8,7 +8,7 @@ import {
 
 import { Settings } from "types/settings";
 
-import { useLiveDocument } from "./fire/useLiveDocument";
+import { useRefiDocument } from "hooks/fire/useRefiDocument";
 
 type UseSettings = () => {
   isLoaded: boolean;
@@ -16,7 +16,7 @@ type UseSettings = () => {
 };
 
 export const useSettings: UseSettings = () => {
-  const { data, isLoaded } = useLiveDocument<Settings>([
+  const { data, isLoaded } = useRefiDocument<Settings>([
     COLLECTION_SETTINGS,
     "customizations",
   ]);
