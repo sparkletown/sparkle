@@ -13,7 +13,7 @@ export const AnalyticsOutput: React.FC<AnalyticsOutputProps> = ({
     <div>
       <p>
         Data report file can be downloaded by the following link:{STRING_SPACE}
-        <a className={TW.a} href={dataReportFileUrl}>
+        <a className={TW.link} href={dataReportFileUrl}>
           Download
         </a>
       </p>
