@@ -1,14 +1,15 @@
 import { ChatTypes } from "types/chat";
 
 import { useChatSidebarControls } from "hooks/chats/util/useChatSidebarControls";
-import { useNumberOfUnreadChats } from "hooks/chats/util/useChatSidebarInfo";
 
 import { ChatSidebar } from "components/organisms/ChatSidebar";
 
 import styles from "./ChatContainer.module.scss";
 
 export const ChatContainer: React.FC = () => {
-  const numberOfUnreadMessages = useNumberOfUnreadChats();
+  // TODO Fix this - it should call useNumberOfUnreadChats
+  // However, that is currently broken due to a query timing issue
+  const numberOfUnreadMessages = 0; // useNumberOfUnreadChats();
   const {
     selectPrivateChat,
     selectVenueChat,

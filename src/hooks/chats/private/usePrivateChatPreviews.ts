@@ -8,10 +8,10 @@ import { withIdConverter } from "utils/converters";
 import { convertToFirestoreKey } from "utils/id";
 
 import { useChatMessagesRaw } from "hooks/chats/common/useChatMessages";
-import { useUser } from "hooks/useUser";
+import { useUserId } from "hooks/user/useUserId";
 
 export const usePrivateChatPreviews = () => {
-  const { userId } = useUser();
+  const { userId } = useUserId();
   const firestore = getFirestore();
 
   const [
