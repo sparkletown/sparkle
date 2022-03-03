@@ -6,14 +6,26 @@
 @use "scss/attendee/effects/atom";
 @use "scss/attendee/effects/rounded";
 @use "scss/attendee/layout";
+@use "scss/attendee/breakpoint";
+
+$-title-height: 42px;
 
 .MapRoom {
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  max-width: layout.$w-sidebar;
+  @media (max-width: calc(breakpoint.$md - 1px)) {
+    // Override inline styles. The code for this component calculates the width
+    // and height for the element for when the element is displayed on a
+    // non-mobile size screen. This needs to be ignored on mobile screens.
+    height: auto !important;
+    width: auto !important;
+    max-width: 100%;
+    margin: space.empty(1);
+  }
 
-  @media (min-width: 768px) {
+  @media (min-width: breakpoint.$md) {
+    flex-direction: column;
+    overflow: hidden;
+
+    display: flex;
     align-self: center;
     position: absolute;
     overflow: visible;
@@ -23,16 +35,35 @@
 }
 
 .PortalImage {
-  position: relative;
-  display: block;
   cursor: pointer;
-  width: 100%;
-
   img {
-    position: relative;
+    display: block;
+    max-width: 90vw;
+    margin: 0 auto;
+    max-height: 50vh;
+  }
+  @media (min-width: breakpoint.$md) {
+    position: absolute;
     width: 100%;
     height: 100%;
-    object-fit: cover;
+
+    img {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      max-width: unset;
+      max-height: unset;
+    }
+  }
+}
+
+.portalInfo {
+  width: fit-content;
+  margin: 0 auto;
+
+  @media (min-width: breakpoint.$md) {
+    position: absolute;
+    top: 100%;
   }
 }
 
@@ -41,30 +72,13 @@
   @include rounded.normal;
   @include sparkle.color--glass;
 
-  &:hover {
-    @include sparkle.color--normal;
-  }
-
   white-space: nowrap;
-
-  & > span {
-    display: flex;
-    padding-left: space.empty(0.5);
-    opacity: opacity.$md;
-
-    span {
-      @include atom.icon;
-      background-image: url(/assets/icons/icon-users.svg);
-      position: relative;
-      filter: invert(1);
-      margin-right: space.empty(0.5);
-      top: -2px;
-    }
-  }
 }
 
 .PortalOnMap {
-  display: flex;
+  @media (min-width: breakpoint.$md) {
+    display: flex;
+  }
 }
 
 .InfoButton {
@@ -74,6 +88,7 @@
   border-left: 1px solid theme.$sparkle--border;
   border-radius: 0;
   padding-right: 0;
+  margin-left: auto;
 
   span {
     @include atom.icon;
@@ -84,16 +99,10 @@
 }
 
 .PortalPopupInfo {
-  position: absolute;
   @include sparkle.panel--glass;
   @include rounded.normal;
   border: 1px solid theme.$sparkle--border;
   box-sizing: border-box;
-  left: 50%;
-  top: space.button(1) + space.empty(1);
-  $portal-info-panel-width: 200px;
-  width: $portal-info-panel-width;
-  margin-left: $portal-info-panel-width * -0.5;
   z-index: 100;
 
   h3 {
@@ -113,4 +122,5 @@
   @include rounded.bottom;
   @include sparkle.color--normal;
   justify-content: center;
+  cursor: pointer;
 }

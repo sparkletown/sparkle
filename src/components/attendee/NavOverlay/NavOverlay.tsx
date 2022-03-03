@@ -16,7 +16,7 @@ type navOverlayProps = {
   type?: string;
 };
 
-export enum NavOverlayTab {
+export enum NavOverlayTabType {
   schedule = "schedule",
   search = "search",
   profile = "profile",
@@ -24,12 +24,12 @@ export enum NavOverlayTab {
   help = "help",
 }
 
-const navOverlayTypeMap: Readonly<Record<NavOverlayTab, String>> = {
-  [NavOverlayTab.schedule]: "Schedule",
-  [NavOverlayTab.search]: "Search",
-  [NavOverlayTab.profile]: "Profile settings",
-  [NavOverlayTab.info]: "What is Sparkle?",
-  [NavOverlayTab.help]: "Help",
+const navOverlayTypeMap: Readonly<Record<NavOverlayTabType, string>> = {
+  [NavOverlayTabType.schedule]: "Schedule",
+  [NavOverlayTabType.search]: "Search",
+  [NavOverlayTabType.profile]: "Profile settings",
+  [NavOverlayTabType.info]: "What is Sparkle?",
+  [NavOverlayTabType.help]: "Help",
 };
 
 export const NavOverlay: React.FC<navOverlayProps> = ({ onClose, type }) => {
@@ -90,11 +90,13 @@ export const NavOverlay: React.FC<navOverlayProps> = ({ onClose, type }) => {
         )}
         {!(isMenuPaged && isMenuShown) && (
           <div className={CN.navOverlayContent}>
-            {navOverlayType === NavOverlayTab.schedule && <ScheduleOverlay />}
-            {navOverlayType === NavOverlayTab.search && (
+            {navOverlayType === NavOverlayTabType.schedule && (
+              <ScheduleOverlay />
+            )}
+            {navOverlayType === NavOverlayTabType.search && (
               <SearchOverlay onClose={onClose} />
             )}
-            {navOverlayType === NavOverlayTab.profile && <ProfileOverlay />}
+            {navOverlayType === NavOverlayTabType.profile && <ProfileOverlay />}
           </div>
         )}
       </div>

@@ -1,0 +1,50 @@
+@use "scss/attendee/theme";
+@use "scss/attendee/space";
+
+.Attendance {
+  display: flex;
+  align-items: center;
+  margin-right: auto;
+  margin-left: space.empty(1);
+
+  &__avatarsContainer {
+    width: auto;
+    display: flex;
+    flex-grow: 1;
+    overflow: hidden;
+    padding-left: 10px;
+  }
+
+  &__userAvatar {
+    position: relative;
+    overflow: visible;
+    height: 30px;
+    width: 30px;
+    float: left;
+    margin-left: -10px;
+  }
+
+  &__userAvatarImage {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+    border-radius: 50%;
+    object-fit: cover;
+
+    img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+  }
+
+  &__totalUsersCountText {
+    margin-left: 5px;
+    color: theme.$c-default-text;
+    white-space: nowrap;
+  }
+}

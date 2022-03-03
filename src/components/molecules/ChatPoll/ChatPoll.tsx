@@ -133,7 +133,7 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
         </div>
       </div>
 
-      <ChatMessageInfo message={message} reversed={isMine} />
+      <ChatMessageInfo message={message} />
     </div>
   );
 };

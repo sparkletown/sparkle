@@ -1,7 +1,9 @@
 import { ChangeEvent, useCallback, useMemo, useState } from "react";
+import { Hit } from "@algolia/client-search";
+import { Input } from "components/attendee/Input";
 
 import {
-  ALWAYS_NOOP_FUNCTION,
+  ALWAYS_EMPTY_ARRAY,
   COVERT_ROOM_TYPES,
   DEFAULT_PARTY_NAME,
   PERSON_TAXON,
@@ -10,29 +12,26 @@ import {
 
 import { AlgoliaSearchIndex } from "types/algolia";
 import { Room } from "types/rooms";
+import { UserWithLocation } from "types/User";
 
 import { isDefined } from "utils/types";
 
 import { useAlgoliaSearch } from "hooks/algolia/useAlgoliaSearch";
-import { useSpaceParams } from "hooks/spaces/useSpaceParams";
-import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
+import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useDebounceSearch } from "hooks/useDebounceSearch";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { Loading } from "components/molecules/Loading";
 
-import { InputField } from "components/atoms/InputField";
-
 import { PortalItem } from "./PortalItem/PortalItem";
 
-import styles from "./SearchOverlay.module.scss";
+import CN from "./SearchOverlay.module.scss";
 
 type SearchOverlayProps = {
   onClose: () => void;
 };
 export const SearchOverlay: React.FC<SearchOverlayProps> = ({ onClose }) => {
-  const { worldSlug, spaceSlug } = useSpaceParams();
-  const { space, worldId } = useWorldAndSpaceBySlug({ worldSlug, spaceSlug });
+  const { space, worldId } = useWorldAndSpaceByParams();
   const [searchValue, setSearchValue] = useState("");
 
   const { searchQuery, setSearchInputValue } = useDebounceSearch();
@@ -67,75 +66,77 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ onClose }) => {
     [relatedVenues]
   );
 
-  const foundPortals = useMemo<JSX.Element[]>(() => {
-    if (!searchQuery) return [];
+  const foundPortals = useMemo<Room[]>(() => {
+    if (!searchQuery) return ALWAYS_EMPTY_ARRAY;
 
     /* @debt we really shouldn't be using the index as part of the key here, it's unstable.. but portals don't have a unique identifier */
     return (
-      enabledRelatedPortals
-        .filter((portal) => portal.title.toLowerCase().includes(searchQuery))
-        .map((portal, index) => {
-          return (
-            <PortalItem
-              key={`portal-${portal.title}-${index}`}
-              portal={portal}
-              onClick={onClose}
-            />
-          );
-        }) ?? []
+      enabledRelatedPortals.filter((portal) =>
+        portal.title.toLowerCase().includes(searchQuery)
+      ) ?? []
     );
-  }, [searchQuery, enabledRelatedPortals, onClose]);
+  }, [searchQuery, enabledRelatedPortals]);
 
   const algoliaSearchState = useAlgoliaSearch(searchQuery, {
     sovereignVenueId: worldId as string,
   });
 
-  const foundUsers = useMemo<JSX.Element[]>(() => {
+  const foundUsers = useMemo<
+    Hit<
+      Pick<
+        UserWithLocation,
+        "partyName" | "pictureUrl" | "anonMode" | "enteredVenueIds"
+      >
+    >[]
+  >(() => {
     const usersResults = algoliaSearchState?.value?.[AlgoliaSearchIndex.USERS];
     if (!usersResults) return [];
 
-    return usersResults.hits.map((hit) => {
-      // const userFields = {
-      //   ...hit,
-      //   id: hit.objectID,
-      // };
-
-      return (
-        <div key={`user-${hit.objectID}`}>
-          <div className={styles.SearchOverlay__result_header}>
-            <h3>
-              {hit?.partyName ?? DEFAULT_PARTY_NAME}
-              <span>{PERSON_TAXON.title}</span>
-            </h3>
-          </div>
-        </div>
-      );
-    });
+    return usersResults.hits;
   }, [algoliaSearchState.value]);
 
+  const totalResultNumber = foundPortals.length + foundUsers.length;
+
   return (
-    <div className={styles.SearchOverlay__wrapper}>
-      <div className={styles.SearchOverlay__header}>
+    <div className={CN.searchOverlayWrapper}>
+      <div className={CN.searchOverlayHeader}>
         {`Search ${space?.name ?? SPACE_TAXON.title}`}
       </div>
-      <div className={styles.SearchOverlay__search}>
-        <InputField
+      <div className={CN.searchOverlaySearch}>
+        <Input
           value={searchValue}
-          inputClassName={styles.SearchOverlay__search_input}
+          inputClassName={CN.searchOverlaySearchInput}
           onChange={onSearchInputChange}
           onLabelClick={initiateSearch}
           label="Search"
           autoComplete="off"
-          register={ALWAYS_NOOP_FUNCTION}
         />
       </div>
-      <div className={styles.SearchOverlay__content}>
+      {!!totalResultNumber && (
+        <div className={CN.searchOverlayCount}>
+          {totalResultNumber} results for {`"${searchQuery}"`}
+        </div>
+      )}
+      <div className={CN.searchOverlayContent}>
         {isLoading ? (
           <Loading />
         ) : (
-          <div className="NavSearchBar__search-results">
-            {foundPortals}
-            {foundUsers}
+          <div className={CN.searchOverlayBody}>
+            {foundPortals.map((portal, index) => (
+              <div key={`portal-${portal.title}-${index}`}>
+                <PortalItem portal={portal} onClick={onClose} />
+              </div>
+            ))}
+            {foundUsers.map((user) => (
+              <div key={`user-${user.objectID}`}>
+                <div className={CN.searchOverlayResultHeader}>
+                  <h3>
+                    {user?.partyName ?? DEFAULT_PARTY_NAME}
+                    <span>{PERSON_TAXON.title}</span>
+                  </h3>
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </div>

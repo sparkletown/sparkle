@@ -8,7 +8,7 @@ import { useIsCurrentUser } from "hooks/useIsCurrentUser";
 
 import { UserAvatar } from "components/atoms/UserAvatar";
 
-import "./PrivateChatPreview.scss";
+import styles from "./PrivateChatPreview.module.scss";
 
 export interface PrivateChatPreviewProps {
   message: PreviewChatMessage;
@@ -25,21 +25,27 @@ export const PrivateChatPreview: React.FC<PrivateChatPreviewProps> = ({
 
   const timestampMillis = timestamp.toMillis();
 
-  const containerClasses = classNames("chat-preview", {
-    "chat-preview--highlight": !isRead && !isMine,
+  const containerClasses = classNames(styles.privateChatPreviewContainer, {
+    [styles.highlight]: !isRead && !isMine,
   });
 
   return (
     <div className={containerClasses} onClick={onClick}>
-      <UserAvatar user={counterPartyUser} showStatus size="small" />
-      <div className="chat-preview__content">
-        <div className="chat-preview__username">
-          {counterPartyUser.partyName}
+      <UserAvatar
+        containerClassName={styles.avatarContainer}
+        user={counterPartyUser}
+        size="medium"
+      />
+      <div className={styles.chatBodyContainer}>
+        <div className={styles.chatPreviewInfo}>
+          <div className={styles.chatPreviewInfoUsername}>
+            {counterPartyUser.partyName}
+          </div>
+          <div className={styles.chatPreviewInfoTime}>
+            {formatDistanceToNow(timestampMillis, { addSuffix: true })}
+          </div>
         </div>
-        <div className="chat-preview__text">{text}</div>
-      </div>
-      <div className="chat-preview__time">
-        {formatDistanceToNow(timestampMillis, { addSuffix: true })}
+        <div className={styles.chatPreviewText}>{text}</div>
       </div>
     </div>
   );

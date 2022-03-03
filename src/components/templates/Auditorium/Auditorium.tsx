@@ -1,28 +1,26 @@
 import React from "react";
-import { Route, Switch, useRouteMatch } from "react-router";
+import { MediaPlayer } from "components/attendee/MediaPlayer";
+import { useBackgroundGradient } from "components/attendee/useBackgroundGradient";
 
 import { AuditoriumVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
-import { AllSectionPreviews } from "./components/AllSectionPreviews";
-import { Section } from "./components/Section";
+import { SeatingBlock } from "./components/SeatingBlock";
 
 export interface AuditoriumProps {
   venue: WithId<AuditoriumVenue>;
 }
 
 export const Auditorium: React.FC<AuditoriumProps> = ({ venue }) => {
-  const match = useRouteMatch();
+  useBackgroundGradient();
 
   return (
-    <Switch>
-      <Route path={`${match.path}/section/:sectionId`}>
-        <Section venue={venue} />
-      </Route>
-      <Route path={`${match.path}`}>
-        <AllSectionPreviews venue={venue} />
-      </Route>
-    </Switch>
+    <>
+      {!venue.hideVideo && venue.iframeUrl && (
+        <MediaPlayer url={venue.iframeUrl} autoPlay={venue.autoPlay || false} />
+      )}
+      <SeatingBlock space={venue} />
+    </>
   );
 };

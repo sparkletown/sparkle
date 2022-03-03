@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from "react";
+import { AttendeeFooter } from "components/attendee/AttendeeFooter";
+import { AttendeeHeader } from "components/attendee/AttendeeHeader";
+import { ChatContainer } from "components/attendee/ChatContainer";
 import { withAuth } from "components/hocs/db/withAuth";
 import { withFallback } from "components/hocs/gate/withFallback";
 import { withRequired } from "components/hocs/gate/withRequired";
 import { compose } from "lodash/fp";
+
+import { POPOVER_CONTAINER_ID } from "settings";
 
 import { SpaceWithId } from "types/id";
 
@@ -12,12 +17,9 @@ import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { NotLoggedInFallback } from "components/atoms/NotLoggedInFallback";
 
-import { AttendeeHeader } from "./Header/AttendeeHeader";
 import { VideoCommsProvider } from "./VideoComms/VideoCommsProvider";
 import { HuddleProvider } from "./VideoHuddle/HuddleProvider";
 import { VideoHuddle } from "./VideoHuddle/VideoHuddle";
-import { AttendeeFooter } from "./AttendeeFooter";
-import { ChatContainer } from "./ChatContainer";
 
 import "scss/attendee/initial.scss";
 import styles from "./AttendeeLayout.module.scss";
@@ -51,6 +53,8 @@ const _AttendeeLayout: React.FC<_AttendeeLayoutProps> = ({ userId }) => {
         </main>
 
         <AttendeeFooter />
+        {/* Used by popovers to ensure z-index is handled properly */}
+        <div id={POPOVER_CONTAINER_ID} className={styles.popoverContainer} />
       </HuddleProvider>
     </VideoCommsProvider>
   );

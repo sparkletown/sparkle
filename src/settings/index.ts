@@ -5,7 +5,6 @@ import { VenueTemplate } from "types/VenueTemplate";
 import { generateTables } from "utils/table";
 import { FIVE_MINUTES_MS } from "utils/time";
 
-import { STRING_COPYRIGHT } from "./interpolationSettings";
 import {
   ROOM_TAXON,
   ROOMS_TAXON,
@@ -15,6 +14,7 @@ import {
 } from "./taxonomy";
 
 // NOTE: please keep these exports sorted alphabetically for faster visual scan
+export * from "./adminDesignSettings";
 export * from "./apiSettings";
 export * from "./dateSettings";
 export * from "./disableSettings";
@@ -79,7 +79,7 @@ export const SCHEDULE_SHOW_COPIED_TEXT_MS = 1000; // 1s
 export const LOC_UPDATE_FREQ_MS = FIVE_MINUTES_MS;
 
 export const WORLD_USERS_UPDATE_INTERVAL = 5000;
-export const VENUE_RECENT_SEATED_USERS_UPDATE_INTERVAL = 20 * 1000;
+export const VENUE_RECENT_SEATED_USERS_UPDATE_INTERVAL = 1000;
 
 // How often to increment user's timespent
 export const LOCATION_INCREMENT_SECONDS = 10;
@@ -614,8 +614,9 @@ export const DEFAULT_SHOW_MORE_SETTINGS = {
 };
 export const DEFAULT_MISSING_PLACEHOLDER = "Placeholder";
 
-export const CURRENT_YEAR = new Date().getFullYear();
-export const COPYRIGHT_TEXT = `${STRING_COPYRIGHT} Copyright SparkleVerse Inc & Contributors 2020 to ${CURRENT_YEAR}.`;
+export const POPOVER_CONTAINER_ID = "popoverContainer";
+export const DEFAULT_SAFE_ZONE = { width: 1.0, height: 1.0 };
+Object.freeze(DEFAULT_SAFE_ZONE);
 
-export const SPACE_CARD_HEADER_BACKGROUND =
-  "https://images.unsplash.com/photo-1517369611053-aecb0ca6971e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80";
+// Allow 70px for the top and bottom UI. Ideally, this would come from CSS
+export const PARTY_MAP_VERTICAL_PAD = 140;

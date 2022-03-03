@@ -10,7 +10,7 @@ import { AnyForm, ContainerClassName } from "types/utility";
 
 import { isDefined, isTruthy } from "utils/types";
 
-import "./InputField.scss";
+import styles from "./InputField.module.scss";
 
 const isJsxElement = (
   component: IconProp | JSX.Element
@@ -59,6 +59,11 @@ interface InputFieldProps
   label?: string;
 }
 
+/**
+ * @deprecated Please use the appropriate attendee or admin Input
+ * @see src/components/admin/Input
+ * @see src/components/attendee/Input
+ */
 export const InputField: React.FC<InputFieldProps> = ({
   containerClassName,
   inputClassName,
@@ -116,7 +121,7 @@ export const InputField: React.FC<InputFieldProps> = ({
         {iconEnd &&
           renderIcon(
             iconEnd,
-            classNames("InputField__icon--end", iconEndClassName),
+            classNames(styles.iconEnd, iconEndClassName),
             onIconEndClick
           )}
       </div>

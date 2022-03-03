@@ -1,4 +1,5 @@
 import React from "react";
+import { PortalStripForm } from "components/admin/PortalStripForm";
 
 import { ALWAYS_EMPTY_ARRAY } from "settings";
 
@@ -7,8 +8,6 @@ import { AnyVenue, isVenueWithRooms } from "types/venues";
 import { WithId } from "utils/id";
 
 import { useShowHide } from "hooks/useShowHide";
-
-import { PortalStripForm } from "components/organisms/PortalStripForm";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 

@@ -1,0 +1,8 @@
+@use "scss/attendee/space";
+
+.onlineUserContainer {
+  display: flex;
+  div {
+    margin-right: space.empty(0.5);
+  }
+}

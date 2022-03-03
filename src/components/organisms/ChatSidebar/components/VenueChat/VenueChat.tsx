@@ -14,8 +14,6 @@ import { WithId } from "utils/id";
 import { Chatbox } from "components/molecules/Chatbox";
 import { ChatboxContextProvider } from "components/molecules/Chatbox/components/context/ChatboxContext";
 
-import "./VenueChat.scss";
-
 type Attributes = {
   space: WithId<AnyVenue>;
 };
