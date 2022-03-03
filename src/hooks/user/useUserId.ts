@@ -13,29 +13,10 @@ export const useUserId = () => {
 
   const setLoaded = useCallback(() => setLoading(false), []);
 
-  useEffect(() => {
-    // prevents warning: Can't perform a React state update on an unmounted component.
-    let isMounted = true;
-
-    const unsubscribe = onAuthStateChanged(
-      getAuth(),
-      (usr) => {
-        if (!isMounted) return;
-        setAuthUser(usr);
-        setLoaded();
-      },
-      (err) => {
-        if (!isMounted) return;
-        setError(err);
-        setLoaded();
-      }
-    );
-
-    return () => {
-      isMounted = false;
-      unsubscribe();
-    };
-  }, [setLoaded]);
+  useEffect(
+    () => onAuthStateChanged(getAuth(), setAuthUser, setError, setLoaded),
+    [setLoaded]
+  );
 
   return useMemo(
     () => ({

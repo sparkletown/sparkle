@@ -7,7 +7,6 @@ import { WithId } from "utils/id";
 import { Branded } from "utils/types";
 
 // NOTE: add specific branded strings in alphabetical order
-export type DeferredAction = Branded<symbol, "DeferredAction">;
 export type SpaceId = Branded<string, "SpaceId">;
 export type SpaceSlug = Branded<string, "SpaceSlug">;
 export type UserId = Branded<string, "UserId">;
