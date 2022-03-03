@@ -22,7 +22,6 @@ export interface SectionProps {
 export const Section: React.FC<SectionProps> = ({ venue, sectionId }) => {
   const { id: venueId } = venue;
 
-  console.log("my section", sectionId);
   const {
     auditoriumSection,
     isAuditoriumSectionLoaded,

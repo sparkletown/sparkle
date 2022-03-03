@@ -18,6 +18,7 @@
   grid-template-columns: 1fr repeat(1, auto) 1fr;
   grid-column-gap: 5px;
   justify-items: center;
+  padding-bottom: space.empty(2);
 
   > *:nth-child(1) {
     grid-column-start: 2;
@@ -30,5 +31,12 @@
     margin: 0;
     font-weight: normal;
     font-size: font.$size--md;
+  }
+}
+
+.leaveButton {
+  color: theme.$c-subdued-text;
+  svg {
+    margin-left: space.empty(0.5);
   }
 }
