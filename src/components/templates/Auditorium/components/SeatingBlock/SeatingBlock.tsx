@@ -20,7 +20,7 @@ export const SeatingBlock: React.FC<SeatingBlockProps> = ({ space }) => {
   const { sectionId: urlSectionId } = useParams<{ sectionId: string }>();
 
   if (isLoading) {
-    return <></>;
+    return null;
   }
 
   // Sort the sections into a predictable order so that all clients get the
