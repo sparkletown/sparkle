@@ -10,16 +10,6 @@ import { AuditoriumVenue } from "types/venues";
 
 import { WithId } from "./id";
 
-export interface ConvertCoordinateProps {
-  index: number;
-  totalAmount: number;
-}
-
-export const convertToCartesianCoordinate = ({
-  index,
-  totalAmount,
-}: ConvertCoordinateProps) => index - Math.floor(totalAmount / 2);
-
 export const chooseAuditoriumSize = (sectionsCount: number) => {
   if (sectionsCount <= 4) return AuditoriumSize.EXTRASMALL;
 

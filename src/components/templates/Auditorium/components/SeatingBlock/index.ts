@@ -1,0 +1,1 @@
+export { SeatingBlock } from "./SeatingBlock";
