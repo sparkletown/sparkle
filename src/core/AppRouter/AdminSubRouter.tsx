@@ -2,7 +2,6 @@ import React from "react";
 import { Route, Switch } from "react-router-dom";
 import { LoginRestricted } from "components/shared/LoginRestricted";
 import { AnalyticsCheck } from "core/AnalyticsCheck";
-import { Provided } from "core/Provided";
 
 import {
   ADMIN_IA_SPACE_ADMIN_PARAM_URL,
@@ -16,6 +15,8 @@ import {
   ADMIN_IA_WORLD_TOOLS_PARAM_URL,
   ADMIN_ROOT_URL,
 } from "settings";
+
+import { RelatedVenuesProvider } from "hooks/useRelatedVenues";
 
 import { ToolsPage } from "pages/Admin/ToolsPage";
 import { VenueAdminPage } from "pages/Admin/Venue/VenueAdminPage";
@@ -31,9 +32,9 @@ export const AdminSubRouter: React.FC = () => (
     <Route path={ADMIN_IA_SPACE_ADMIN_PARAM_URL}>
       <LoginRestricted>
         <AnalyticsCheck>
-          <Provided withRelatedVenues>
+          <RelatedVenuesProvider>
             <VenueAdminPage />
-          </Provided>
+          </RelatedVenuesProvider>
         </AnalyticsCheck>
       </LoginRestricted>
     </Route>
@@ -41,9 +42,9 @@ export const AdminSubRouter: React.FC = () => (
     <Route path={ADMIN_IA_SPACE_EDIT_PARAM_URL}>
       <LoginRestricted>
         <AnalyticsCheck>
-          <Provided withRelatedVenues>
+          <RelatedVenuesProvider>
             <AdminVenueView />
-          </Provided>
+          </RelatedVenuesProvider>
         </AnalyticsCheck>
       </LoginRestricted>
     </Route>
@@ -51,9 +52,9 @@ export const AdminSubRouter: React.FC = () => (
     <Route path={ADMIN_IA_SPACE_CREATE_PARAM_URL}>
       <LoginRestricted>
         <AnalyticsCheck>
-          <Provided withRelatedVenues>
+          <RelatedVenuesProvider>
             <SpaceCreatePage />
-          </Provided>
+          </RelatedVenuesProvider>
         </AnalyticsCheck>
       </LoginRestricted>
     </Route>
@@ -61,27 +62,27 @@ export const AdminSubRouter: React.FC = () => (
     <Route path={[ADMIN_IA_WORLD_CREATE_URL, ADMIN_IA_WORLD_EDIT_PARAM_URL]}>
       <LoginRestricted>
         <AnalyticsCheck>
-          <Provided withRelatedVenues>
+          <RelatedVenuesProvider>
             <WorldEditor />
-          </Provided>
+          </RelatedVenuesProvider>
         </AnalyticsCheck>
       </LoginRestricted>
     </Route>
 
     <Route path={[ADMIN_IA_WORLD_TOOLS_PARAM_URL]}>
       <LoginRestricted>
-        <Provided withRelatedVenues>
+        <RelatedVenuesProvider>
           <ToolsPage />
-        </Provided>
+        </RelatedVenuesProvider>
       </LoginRestricted>
     </Route>
 
     <Route path={[ADMIN_IA_WORLD_PARAM_URL, ADMIN_IA_SPACE_BASE_PARAM_URL]}>
       <LoginRestricted>
         <AnalyticsCheck>
-          <Provided withRelatedVenues>
+          <RelatedVenuesProvider>
             <SpacesDashboard />
-          </Provided>
+          </RelatedVenuesProvider>
         </AnalyticsCheck>
       </LoginRestricted>
     </Route>

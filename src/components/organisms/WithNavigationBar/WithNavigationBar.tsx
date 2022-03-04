@@ -1,9 +1,8 @@
 import React, { lazy } from "react";
 
-import { SpaceId, SpaceWithId, WorldId } from "types/id";
-
 import { tracePromise } from "utils/performance";
 
+import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { RelatedVenuesProvider } from "hooks/useRelatedVenues";
 
 import { NewProfileModal } from "components/organisms/NewProfileModal";
@@ -30,9 +29,6 @@ interface WithNavigationBarProps {
   withHiddenLoginButton?: boolean;
   title?: string;
   variant?: "internal-scroll";
-  space: SpaceWithId;
-  spaceId: SpaceId;
-  worldId: WorldId;
 }
 
 export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
@@ -43,37 +39,37 @@ export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
   withRadio,
   title,
   variant,
-  space,
-  spaceId,
-  worldId,
   children,
-}) => (
-  <>
-    <RelatedVenuesProvider spaceId={spaceId} worldId={worldId}>
-      {/* @debt remove backButton from Navbar */}
-      <NavBar
-        hasBackButton={hasBackButton}
-        withSchedule={withSchedule}
-        withPhotobooth={withPhotobooth}
-        withHiddenLoginButton={withHiddenLoginButton}
-        withRadio={withRadio}
-        title={title}
-      />
-    </RelatedVenuesProvider>
+}) => {
+  const { space } = useWorldAndSpaceByParams();
+  return (
+    <>
+      <RelatedVenuesProvider>
+        {/* @debt remove backButton from Navbar */}
+        <NavBar
+          hasBackButton={hasBackButton}
+          withSchedule={withSchedule}
+          withPhotobooth={withPhotobooth}
+          withHiddenLoginButton={withHiddenLoginButton}
+          withRadio={withRadio}
+          title={title}
+        />
+      </RelatedVenuesProvider>
 
-    <MobileWarning />
+      <MobileWarning />
 
-    {variant === "internal-scroll" ? (
-      <div className="WithNavigationBar__wrapper WithNavigationBar__wrapper--internal-scroll">
-        <div className="WithNavigationBar__slider WithNavigationBar__slider--internal-scroll">
-          {children}
+      {variant === "internal-scroll" ? (
+        <div className="WithNavigationBar__wrapper WithNavigationBar__wrapper--internal-scroll">
+          <div className="WithNavigationBar__slider WithNavigationBar__slider--internal-scroll">
+            {children}
+          </div>
         </div>
-      </div>
-    ) : (
-      <div className="WithNavigationBar__wrapper">{children}</div>
-    )}
+      ) : (
+        <div className="WithNavigationBar__wrapper">{children}</div>
+      )}
 
-    <Footer />
-    <NewProfileModal space={space} />
-  </>
-);
+      <Footer />
+      <NewProfileModal space={space} />
+    </>
+  );
+};

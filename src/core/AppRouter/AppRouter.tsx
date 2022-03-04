@@ -7,7 +7,6 @@ import {
 } from "react-router-dom";
 import { LoginRestricted } from "components/shared/LoginRestricted";
 import { AnalyticsCheck } from "core/AnalyticsCheck";
-import { Provided } from "core/Provided";
 
 import {
   ACCOUNT_ROOT_URL,
@@ -33,6 +32,7 @@ import {
 } from "utils/url";
 
 import { useUserId } from "hooks/user/useUserId";
+import { RelatedVenuesProvider } from "hooks/useRelatedVenues";
 
 import { LoginWithCustomToken } from "pages/Account/LoginWithCustomToken";
 import { VersionPage } from "pages/VersionPage/VersionPage";
@@ -170,9 +170,9 @@ export const AppRouter: React.FC = () => {
             // Subs get their analytics treatment inside them
           }
           <Route path={ACCOUNT_ROOT_URL}>
-            <Provided withRelatedVenues>
+            <RelatedVenuesProvider>
               <SubAccount />
-            </Provided>
+            </RelatedVenuesProvider>
           </Route>
           <Route path={ADMIN_ROOT_URL}>
             <SubAdmin />
@@ -187,37 +187,37 @@ export const AppRouter: React.FC = () => {
             </AnalyticsCheck>
           </Route>
           <Route path={ATTENDEE_LANDING_URL}>
-            <Provided withRelatedVenues>
+            <RelatedVenuesProvider>
               <AnalyticsCheck>
                 <VenueLandingPage />
               </AnalyticsCheck>
-            </Provided>
+            </RelatedVenuesProvider>
           </Route>
           <Route path={ATTENDEE_STEPPING_PARAM_URL}>
             <LoginRestricted>
-              <Provided withRelatedVenues>
+              <RelatedVenuesProvider>
                 <AnalyticsCheck>
                   <VenueEntrancePage />
                 </AnalyticsCheck>
-              </Provided>
+              </RelatedVenuesProvider>
             </LoginRestricted>
           </Route>
           <Route path={ATTENDEE_INSIDE_URL}>
             <LoginRestricted>
-              <Provided withRelatedVenues>
+              <RelatedVenuesProvider>
                 <AnalyticsCheck>
                   <AttendeeLayout />
                 </AnalyticsCheck>
-              </Provided>
+              </RelatedVenuesProvider>
             </LoginRestricted>
           </Route>
           <Route path={ATTENDEE_EMERGENCY_PARAM_URL}>
             <LoginRestricted>
-              <Provided withRelatedVenues>
+              <RelatedVenuesProvider>
                 <AnalyticsCheck>
                   <EmergencyViewPage />
                 </AnalyticsCheck>
-              </Provided>
+              </RelatedVenuesProvider>
             </LoginRestricted>
           </Route>
           <Route path={VERSION_URL}>

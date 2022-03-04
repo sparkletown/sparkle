@@ -29,6 +29,7 @@ export type WorldAndSpaceSlugLocation = {
 
 // partials for cases where not all data is present
 export type MaybeSpaceIdLocation = Partial<SpaceIdLocation>;
+export type MaybeSpacesSlugLocation = Partial<SpacesSlugLocation>;
 export type MaybeWorldIdLocation = Partial<WorldIdLocation>;
 export type MaybeWorldSlugLocation = Partial<WorldSlugLocation>;
 export type MaybeWorldAndSpaceIdLocation = Partial<WorldAndSpaceIdLocation>;

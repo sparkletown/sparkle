@@ -4,11 +4,9 @@ import { where } from "firebase/firestore";
 import { ALWAYS_EMPTY_ARRAY, FIELD_WORLD_ID, PATH } from "settings";
 
 import {
-  SpaceId,
   SpaceSlug,
   SpaceWithId,
   WorldAndSpaceIdLocation,
-  WorldId,
   WorldIdLocation,
 } from "types/id";
 import { AnyVenue } from "types/venues";
@@ -18,6 +16,7 @@ import { isDefined } from "utils/types";
 import { findSovereignVenue } from "utils/venue";
 
 import { useLiveCollection } from "hooks/fire/useLiveCollection";
+import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 
 type FindVenueInRelatedVenuesOptions = {
   spaceId?: string;
@@ -218,10 +217,8 @@ const WorldSpacesProvider: React.FC<WorldIdLocation> = ({
   );
 };
 
-export const RelatedVenuesProvider: React.FC<{
-  spaceId?: SpaceId;
-  worldId?: WorldId;
-}> = ({ worldId, spaceId, children }) => {
+export const RelatedVenuesProvider: React.FC = ({ children }) => {
+  const { worldId, spaceId } = useWorldAndSpaceByParams();
   const defaultState: RelatedVenuesContextState = useMemo(
     () => ({
       isLoading: false,
