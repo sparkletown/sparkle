@@ -1,26 +1,29 @@
 import { collection, getFirestore, limit, query } from "firebase/firestore";
 
-import { COLLECTION_SPACE_CHATS, COLLECTION_SPACES } from "settings";
+import { COLLECTION_SPACE_CHATS, COLLECTION_SPACES, DEFERRED } from "settings";
 
 import { MessageToDisplay, VenueChatMessage } from "types/chat";
+import { SpaceId } from "types/id";
 
 import { identityConverter } from "utils/converters";
-import { convertToFirestoreKey, WithId } from "utils/id";
+import { WithId } from "utils/id";
 
 import { useChatMessagesRaw } from "hooks/chats/common/useChatMessages";
 
 export const useVenueChatMessages = (
-  spaceId: string,
+  spaceId?: SpaceId,
   limitNumber?: number
 ): WithId<MessageToDisplay<VenueChatMessage>>[] =>
   useChatMessagesRaw(
-    query(
-      collection(
-        getFirestore(),
-        COLLECTION_SPACES,
-        convertToFirestoreKey(spaceId),
-        COLLECTION_SPACE_CHATS
-      ),
-      ...(limitNumber ? [limit(limitNumber)] : [])
-    ).withConverter(identityConverter<VenueChatMessage>())
+    spaceId
+      ? query(
+          collection(
+            getFirestore(),
+            COLLECTION_SPACES,
+            spaceId,
+            COLLECTION_SPACE_CHATS
+          ),
+          ...(limitNumber ? [limit(limitNumber)] : [])
+        ).withConverter(identityConverter<VenueChatMessage>())
+      : DEFERRED
   )[0];

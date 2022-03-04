@@ -1,63 +1,50 @@
 import React from "react";
+import { isEqual } from "lodash";
 
+import { useRenderMessagesCount } from "hooks/chats/util/useRenderInfiniteScroll";
+import { useCanDeleteVenueChatMessages } from "hooks/chats/venue/useCanDeleteVenueChatMessages";
 import {
-  DeleteChatMessageProps,
-  MessageToDisplay,
-  SendChatMessageProps,
-  SendThreadMessageProps,
-  VenueChatMessage,
-} from "types/chat";
-import { AnyVenue } from "types/venues";
-
-import { WithId } from "utils/id";
+  useDeleteVenueChatMessage,
+  useDeleteVenueThreadMessage,
+  useSendVenueChatMessage,
+  useSendVenueThreadMessage,
+} from "hooks/chats/venue/useVenueChatActions";
+import { useVenueChatMessages } from "hooks/chats/venue/useVenueChatMessages";
+import { useVenueChatMessagesCount } from "hooks/chats/venue/useVenueChatMessagesCount";
+import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 
 import { Chatbox } from "components/molecules/Chatbox";
 import { ChatboxContextProvider } from "components/molecules/Chatbox/components/context/ChatboxContext";
 
-type Attributes = {
-  space: WithId<AnyVenue>;
+const SpaceChat: React.FC = () => {
+  const { world, space, spaceId } = useWorldAndSpaceByParams();
+
+  const [limit, increaseLimit] = useRenderMessagesCount();
+  const sendChatMessage = useSendVenueChatMessage(spaceId);
+  const sendThreadMessage = useSendVenueThreadMessage(spaceId);
+  const deleteChatMessage = useDeleteVenueChatMessage(spaceId);
+  const deleteThreadMessage = useDeleteVenueThreadMessage(spaceId);
+  const allChatMessagesCount = useVenueChatMessagesCount(spaceId);
+  const messages = useVenueChatMessages(spaceId, limit);
+  const canDeleteMessages = useCanDeleteVenueChatMessages({ space, world });
+
+  return (
+    <ChatboxContextProvider
+      venueId={spaceId}
+      sendChatMessage={sendChatMessage}
+      sendThreadMessage={sendThreadMessage}
+      deleteChatMessage={canDeleteMessages ? deleteChatMessage : undefined}
+      deleteThreadMessage={canDeleteMessages ? deleteThreadMessage : undefined}
+    >
+      <Chatbox
+        displayPollOption
+        messages={messages}
+        containerClassName="venue-chat"
+        hasMore={limit < allChatMessagesCount}
+        loadMore={increaseLimit}
+      />
+    </ChatboxContextProvider>
+  );
 };
 
-type HocProps = {
-  sendChatMessage: (sendMessageProps: SendChatMessageProps) => Promise<void>;
-  sendThreadMessage: (
-    sendMessageProps: SendThreadMessageProps
-  ) => Promise<void>;
-  deleteChatMessage: (props: DeleteChatMessageProps) => Promise<void>;
-  deleteThreadMessage: (props: DeleteChatMessageProps) => Promise<void>;
-  canDeleteMessages?: boolean;
-  limit: number;
-  increaseLimit: () => void;
-  messages: WithId<MessageToDisplay<VenueChatMessage>>[];
-  allChatMessagesCount: number;
-};
-type VenueChatProps = Attributes & HocProps;
-
-export const VenueChat: React.FC<VenueChatProps> = ({
-  sendChatMessage,
-  sendThreadMessage,
-  deleteChatMessage,
-  deleteThreadMessage,
-  canDeleteMessages,
-  limit,
-  increaseLimit,
-  messages,
-  allChatMessagesCount,
-  space,
-}) => (
-  <ChatboxContextProvider
-    venueId={space?.id}
-    sendChatMessage={sendChatMessage}
-    sendThreadMessage={sendThreadMessage}
-    deleteChatMessage={canDeleteMessages ? deleteChatMessage : undefined}
-    deleteThreadMessage={canDeleteMessages ? deleteThreadMessage : undefined}
-  >
-    <Chatbox
-      displayPollOption
-      messages={messages}
-      containerClassName="venue-chat"
-      hasMore={limit < allChatMessagesCount}
-      loadMore={increaseLimit}
-    />
-  </ChatboxContextProvider>
-);
+export const VenueChat: React.FC = React.memo(SpaceChat, isEqual);
