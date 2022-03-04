@@ -1,7 +1,14 @@
+import { useMemo } from "react";
 import Bugsnag from "@bugsnag/js";
 import { collection, getFirestore, query, where } from "firebase/firestore";
 
-import { COLLECTION_SPACES, COLLECTION_WORLDS, DEFERRED } from "settings";
+import {
+  COLLECTION_SPACES,
+  COLLECTION_WORLDS,
+  DEFERRED,
+  FIELD_HIDDEN,
+  FIELD_SLUG,
+} from "settings";
 
 import { World } from "api/world";
 
@@ -39,25 +46,38 @@ export const useWorldAndSpaceBySlug: UseWorldAndSpaceBySlug = ({
   worldSlug,
   spaceSlug,
 }) => {
-  const firestore = getFirestore();
   const { data: spaces, isLoaded: isSpaceLoaded } = useFireQuery<SpaceWithId>(
-    spaceSlug
-      ? query(
-          collection(firestore, COLLECTION_SPACES),
-          where("slug", "==", spaceSlug)
-        ).withConverter(withIdConverter<AnyVenue, SpaceId>())
-      : DEFERRED
+    useMemo(
+      () =>
+        spaceSlug
+          ? query(
+              collection(getFirestore(), COLLECTION_SPACES),
+              where(FIELD_SLUG, "==", spaceSlug)
+            ).withConverter(withIdConverter<AnyVenue, SpaceId>())
+          : DEFERRED,
+      [spaceSlug]
+    )
   );
 
   const { data: worlds, isLoaded: isWorldLoaded } = useFireQuery<WorldWithId>(
-    worldSlug
-      ? query(
-          collection(firestore, COLLECTION_WORLDS),
-          where("isHidden", "==", false),
-          where("slug", "==", worldSlug)
-        ).withConverter(withIdConverter<World, WorldId>())
-      : DEFERRED
+    useMemo(
+      () =>
+        worldSlug
+          ? query(
+              collection(getFirestore(), COLLECTION_WORLDS),
+              where(FIELD_HIDDEN, "==", false),
+              where(FIELD_SLUG, "==", worldSlug)
+            ).withConverter(withIdConverter<World, WorldId>())
+          : DEFERRED,
+      [worldSlug]
+    )
   );
+
+  const world = worlds?.[0];
+  const worldId = world?.id;
+  const matchingSpaces = spaces?.filter((space) => space.worldId === worldId);
+  const space = matchingSpaces?.[0];
+  const spaceId = space?.id;
 
   if (worlds && worlds.length > 1) {
     Bugsnag.notify(
@@ -71,37 +91,6 @@ export const useWorldAndSpaceBySlug: UseWorldAndSpaceBySlug = ({
       }
     );
   }
-
-  if (!isWorldLoaded || !isSpaceLoaded) {
-    return {
-      world: undefined,
-      worldId: undefined,
-      space: undefined,
-      spaceId: undefined,
-      isLoaded: false,
-      isLoading: true,
-    };
-  }
-
-  const world = worlds?.[0];
-
-  if (!world) {
-    return {
-      world: undefined,
-      worldId: undefined,
-      space: undefined,
-      spaceId: undefined,
-      isLoaded: true,
-      isLoading: false,
-      error: new SparkleHookError(
-        `World with the following slug: ${worldSlug} does not exist.`
-      ),
-    };
-  }
-
-  const matchingSpaces = spaces?.filter(
-    (candidateSpace) => candidateSpace.worldId === world.id
-  );
 
   if (matchingSpaces && matchingSpaces?.length > 1) {
     Bugsnag.notify(
@@ -117,28 +106,37 @@ export const useWorldAndSpaceBySlug: UseWorldAndSpaceBySlug = ({
     );
   }
 
-  const space = matchingSpaces?.[0];
+  return useMemo(() => {
+    const error = !world
+      ? new SparkleHookError(
+          `World with the following slug: ${worldSlug} does not exist.`
+        )
+      : !space
+      ? new SparkleHookError(
+          `Space with the following slug: ${spaceSlug} does not exist.`
+        )
+      : undefined;
 
-  if (!space) {
+    const isLoaded = isSpaceLoaded && isWorldLoaded;
+    const isLoading = !isLoaded;
+
     return {
+      space,
+      spaceId,
       world,
-      worldId: world?.id,
-      space: undefined,
-      spaceId: undefined,
-      isLoaded: true,
-      isLoading: false,
-      error: new SparkleHookError(
-        `Space with the following slug: ${spaceSlug} does not exist.`
-      ),
+      worldId,
+      isLoaded,
+      isLoading,
+      error,
     };
-  }
-
-  return {
+  }, [
     world,
     space,
-    worldId: world?.id,
-    spaceId: space?.id,
-    isLoaded: true,
-    isLoading: false,
-  };
+    worldId,
+    spaceId,
+    worldSlug,
+    spaceSlug,
+    isWorldLoaded,
+    isSpaceLoaded,
+  ]);
 };

@@ -2,11 +2,24 @@ import { NotifiableError } from "@bugsnag/js";
 import { HttpResponse } from "firebase-admin/lib/utils/api-request";
 
 // NOTE: keep this one private as to only create subclasses for specific uses
-class SparkleError extends Error {}
+class SparkleError extends Error {
+  constructor(name?: string, message?: string) {
+    super(message);
+    this.name = name || "SparkleError";
+  }
+}
 
-export class SparkleQueryError extends SparkleError {}
+export class SparkleQueryError extends SparkleError {
+  constructor(message?: string) {
+    super("SparkleQueryError", message);
+  }
+}
 
-export class SparkleHookError extends SparkleError {}
+export class SparkleHookError extends SparkleError {
+  constructor(message?: string) {
+    super("SparkleHookError", message);
+  }
+}
 
 type AssertUnreachable = (_: never) => void;
 export const assertUnreachable: AssertUnreachable = () => {

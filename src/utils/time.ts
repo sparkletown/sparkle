@@ -341,3 +341,7 @@ export const formatDayLabel = (
       format(dateOrTimestamp, DATEFNS_DAY_FORMAT),
   });
 };
+
+export const currentMilliseconds = () => new Date().getTime();
+export const currentIso = () => new Date().toISOString();
+export const currentUtc = () => new Date().toUTCString();

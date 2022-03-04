@@ -1,3 +1,5 @@
+import { useMemo } from "react";
+
 import { LoadStatus } from "types/fire";
 
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
@@ -12,8 +14,11 @@ export const useWorldAndSpaceByParams: UseWorldAndSpaceByParams = () => {
   const params = useSpaceParams();
   const result = useWorldAndSpaceBySlug(params);
 
-  return {
-    ...params,
-    ...result,
-  };
+  return useMemo(
+    () => ({
+      ...params,
+      ...result,
+    }),
+    [params, result]
+  );
 };
