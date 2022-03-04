@@ -47,9 +47,10 @@ export const useAllAuditoriumSections = (venue: WithId<AuditoriumVenue>) => {
     limit(fetchSectionsCount)
   ).withConverter(withIdConverter<AuditoriumSection>());
 
-  const { data: sections = ALWAYS_EMPTY_ARRAY } = useFirestoreCollectionData(
-    sectionsRef
-  );
+  const {
+    data: sections = ALWAYS_EMPTY_ARRAY,
+    status,
+  } = useFirestoreCollectionData(sectionsRef);
 
   const enterSection = useCallback(
     (sectionId: string) => {
@@ -83,6 +84,8 @@ export const useAllAuditoriumSections = (venue: WithId<AuditoriumVenue>) => {
       availableSections: availableSections ?? ALWAYS_EMPTY_ARRAY,
       toggleFullAuditoriums,
       enterSection,
+      allSections: sections,
+      isLoading: status === "loading",
     }),
     [
       isFullAuditoriumsHidden,
@@ -92,6 +95,7 @@ export const useAllAuditoriumSections = (venue: WithId<AuditoriumVenue>) => {
       loadMore,
       toggleFullAuditoriums,
       enterSection,
+      status,
     ]
   );
 };

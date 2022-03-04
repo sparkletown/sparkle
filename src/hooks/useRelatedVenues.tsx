@@ -23,12 +23,12 @@ import { findSovereignVenue } from "utils/venue";
 
 import { useRefiCollection } from "hooks/fire/useRefiCollection";
 
-type FindVenueInRelatedVenuesOptions = {
+export type FindVenueInRelatedVenuesOptions = {
   spaceId?: string;
   spaceSlug?: SpaceSlug;
 };
 
-interface RelatedVenuesContextState {
+export interface RelatedVenuesContextState {
   isLoading: boolean;
 
   sovereignVenue?: WithId<AnyVenue>;
@@ -271,21 +271,22 @@ export const useRelatedVenuesContext = (): RelatedVenuesContextState => {
   return relatedVenuesState;
 };
 
-type UseRelatedVenues = (options?: {
+export interface RelatedVenuesProps {
   currentVenueId?: string;
-}) => RelatedVenuesContextState & {
+}
+
+export interface RelatedVenuesData extends RelatedVenuesContextState {
   parentVenue?: SpaceWithId;
   currentVenue?: WithId<AnyVenue>;
   parentVenueId?: string;
-};
+}
 
-/**
- * @deprecated Please use an alternative that doesn't depend on RelatedVenuesContext.Provider
- *
- * @see src/hooks/spaces/useRelatedSpaces.ts
- */
-export const useRelatedVenues: UseRelatedVenues = (options) => {
-  const { currentVenueId } = options ?? {};
+export function useRelatedVenues(props: RelatedVenuesProps): RelatedVenuesData;
+export function useRelatedVenues(): RelatedVenuesContextState;
+
+// eslint-disable-next-line func-style, prefer-arrow/prefer-arrow-functions
+export function useRelatedVenues(props?: RelatedVenuesProps) {
+  const { currentVenueId } = props ?? {};
   const relatedVenuesState = useRelatedVenuesContext();
 
   const { findVenueInRelatedVenues } = relatedVenuesState;
@@ -294,18 +295,17 @@ export const useRelatedVenues: UseRelatedVenues = (options) => {
     return findVenueInRelatedVenues({ spaceId: currentVenueId });
   }, [currentVenueId, findVenueInRelatedVenues]);
 
-  const parentVenue: SpaceWithId | undefined = useMemo(() => {
+  const parentVenue: WithId<AnyVenue> | undefined = useMemo(() => {
     if (!currentVenue) return;
 
-    const result = findVenueInRelatedVenues({ spaceId: currentVenue.parentId });
-    return result as SpaceWithId;
+    return findVenueInRelatedVenues({ spaceId: currentVenue.parentId });
   }, [currentVenue, findVenueInRelatedVenues]);
 
   const parentVenueId = parentVenue?.id;
 
-  if (!options) {
+  if (!props) {
     return relatedVenuesState;
   }
 
   return { ...relatedVenuesState, currentVenue, parentVenue, parentVenueId };
-};
+}
