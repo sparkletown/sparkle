@@ -5,11 +5,11 @@ import {
   ALWAYS_EMPTY_ARRAY,
   COLLECTION_SPACES,
   DEFAULT_DISPLAYED_VIDEO_PREVIEW_COUNT,
+  DEFERRED,
 } from "settings";
 
 import { ScreeningRoomVideo } from "types/screeningRoom";
 
-import { convertToFirestoreKey } from "utils/id";
 import { isTruthy } from "utils/types";
 
 import { useLiveCollection } from "hooks/fire/useLiveCollection";
@@ -18,7 +18,7 @@ import { useDebounceSearch } from "hooks/useDebounceSearch";
 export const useScreeningRoomVideos = (screeningRoomVenueId: string) => {
   const { data, isLoaded } = useLiveCollection<ScreeningRoomVideo>([
     COLLECTION_SPACES,
-    convertToFirestoreKey(screeningRoomVenueId),
+    screeningRoomVenueId || DEFERRED,
     "screeningRoomVideos",
   ]);
 

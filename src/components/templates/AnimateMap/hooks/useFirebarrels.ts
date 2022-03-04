@@ -1,10 +1,8 @@
 import { useMemo } from "react";
 
-import { ALWAYS_EMPTY_ARRAY, COLLECTION_SPACES } from "settings";
+import { ALWAYS_EMPTY_ARRAY, COLLECTION_SPACES, DEFERRED } from "settings";
 
 import { Firebarrel } from "types/animateMap";
-
-import { convertToFirestoreKey } from "utils/id";
 
 import { useLiveCollection } from "hooks/fire/useLiveCollection";
 
@@ -15,7 +13,7 @@ type UseFirebarrels = (options: {
 export const useFirebarrels: UseFirebarrels = ({ animateMapId }) => {
   const { data, isLoaded } = useLiveCollection<Firebarrel>([
     COLLECTION_SPACES,
-    convertToFirestoreKey(animateMapId),
+    animateMapId || DEFERRED,
     "firebarrels",
   ]);
 

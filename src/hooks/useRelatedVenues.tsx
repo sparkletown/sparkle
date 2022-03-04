@@ -1,7 +1,7 @@
 import React, { createContext, useCallback, useContext, useMemo } from "react";
 import { where } from "firebase/firestore";
 
-import { ALWAYS_EMPTY_ARRAY, FIELD_WORLD_ID, PATH } from "settings";
+import { ALWAYS_EMPTY_ARRAY, DEFERRED, FIELD_WORLD_ID, PATH } from "settings";
 
 import {
   SpaceSlug,
@@ -11,7 +11,7 @@ import {
 } from "types/id";
 import { AnyVenue } from "types/venues";
 
-import { convertToFirestoreKey, WithId } from "utils/id";
+import { WithId } from "utils/id";
 import { isDefined } from "utils/types";
 import { findSovereignVenue } from "utils/venue";
 
@@ -48,10 +48,14 @@ const LegacyRelatedVenuesProvider: React.FC<WorldAndSpaceIdLocation> = ({
   worldId,
   children,
 }) => {
-  const { data, isLoading } = useLiveCollection<SpaceWithId>({
-    path: PATH.spaces,
-    constraints: [where(FIELD_WORLD_ID, "==", convertToFirestoreKey(worldId))],
-  });
+  const { data, isLoading } = useLiveCollection<SpaceWithId>(
+    worldId
+      ? {
+          path: PATH.spaces,
+          constraints: [where(FIELD_WORLD_ID, "==", worldId)],
+        }
+      : DEFERRED
+  );
 
   const relatedVenues = data ?? ALWAYS_EMPTY_ARRAY;
 
@@ -145,10 +149,14 @@ const WorldSpacesProvider: React.FC<WorldIdLocation> = ({
   worldId,
   children,
 }) => {
-  const { data, isLoading } = useLiveCollection<SpaceWithId>({
-    path: PATH.spaces,
-    constraints: [where(FIELD_WORLD_ID, "==", convertToFirestoreKey(worldId))],
-  });
+  const { data, isLoading } = useLiveCollection<SpaceWithId>(
+    worldId
+      ? {
+          path: PATH.spaces,
+          constraints: [where(FIELD_WORLD_ID, "==", worldId)],
+        }
+      : DEFERRED
+  );
 
   const relatedVenues = data?.filter(isDefined) ?? ALWAYS_EMPTY_ARRAY;
 

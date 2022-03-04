@@ -12,7 +12,6 @@ import { useUser } from "hooks/useUser";
 
 export const usePrivateChatPreviews = () => {
   const { userId } = useUser();
-  const firestore = getFirestore();
 
   const [
     privateChatMessages,
@@ -20,7 +19,7 @@ export const usePrivateChatPreviews = () => {
   ] = useChatMessagesRaw<PrivateChatMessage>(
     query<PrivateChatMessage>(
       collection(
-        firestore,
+        getFirestore(),
         "privatechats",
         convertToFirestoreKey(userId),
         "chats"

@@ -14,20 +14,17 @@ import { useUser } from "hooks/useUser";
 
 export const useRecipientChatMessages = (recipient: WithId<DisplayUser>) => {
   const { userId } = useUser();
-  const firestore = getFirestore();
-
-  const messagesRef = collection(
-    firestore,
-    "privatechats",
-    convertToFirestoreKey(userId),
-    "chats"
-  ) as CollectionReference<PrivateChatMessage>;
 
   const [
     messagesToDisplay,
     replies,
   ] = useChatMessagesForDisplay<PrivateChatMessage>(
-    messagesRef,
+    collection(
+      getFirestore(),
+      "privatechats",
+      convertToFirestoreKey(userId),
+      "chats"
+    ) as CollectionReference<PrivateChatMessage>,
     (message) =>
       message.toUser.id === recipient.id || message.fromUser.id === recipient.id
   );
