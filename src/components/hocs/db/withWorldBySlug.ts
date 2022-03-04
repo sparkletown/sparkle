@@ -21,7 +21,7 @@ export const withWorldBySlug = <T extends Attributes>(
   Component: React.FC<Props<T>>
 ) => {
   const WithWorldBySlug = (props: Props<T>) => {
-    const { world, isLoading, isLoaded } = useWorldBySlug(props.worldSlug);
+    const { world, isLoading, isLoaded } = useWorldBySlug(props);
     return React.createElement(Component, {
       ...props,
       world,

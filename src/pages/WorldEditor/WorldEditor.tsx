@@ -10,6 +10,7 @@ import { ALWAYS_EMPTY_ARRAY } from "settings";
 
 import { WorldNavTab } from "types/world";
 
+import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useWorldBySlug } from "hooks/worlds/useWorldBySlug";
 import { useWorldParams } from "hooks/worlds/useWorldParams";
 
@@ -31,7 +32,8 @@ const createModeCrumbtrail = [{ name: "Switch World", href: "switch-world" }];
 
 export const WorldEditor: React.FC = () => {
   const { worldSlug, selectedTab } = useWorldParams();
-  const { world, isLoaded } = useWorldBySlug(worldSlug);
+  const { world, isLoaded } = useWorldBySlug({ worldSlug });
+  useWorldAndSpaceByParams();
 
   if (!isLoaded) {
     return <LoadingPage />;

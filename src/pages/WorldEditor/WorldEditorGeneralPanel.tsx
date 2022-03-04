@@ -4,6 +4,8 @@ import { ThreeColumnLayout } from "components/admin/ThreeColumnLayout";
 import { WorldGeneralForm } from "components/admin/WorldGeneralForm";
 import { WorldShowcase } from "components/admin/WorldShowcase";
 
+import { WorldSlug } from "types/id";
+
 import { useWorldBySlug } from "hooks/worlds/useWorldBySlug";
 
 import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
@@ -15,13 +17,13 @@ import { Loading } from "components/molecules/Loading";
 import "./WorldEditorGeneralPanel.scss";
 
 export interface WorldEditorGeneralPanelProps {
-  worldSlug?: string;
+  worldSlug?: WorldSlug;
 }
 
 export const WorldEditorGeneralPanel: React.FC<WorldEditorGeneralPanelProps> = ({
   worldSlug,
 }) => {
-  const { isLoaded, world } = useWorldBySlug(worldSlug);
+  const { isLoaded, world } = useWorldBySlug({ worldSlug });
 
   const isUpdatingWorld = isLoaded && worldSlug && world;
   const isCreatingWorld = isLoaded && !world && !worldSlug;

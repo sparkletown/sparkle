@@ -25,7 +25,7 @@ import CN from "./SpaceCreatePage.module.scss";
 
 export const SpaceCreatePage: React.FC = () => {
   const { worldSlug } = useSpaceParams();
-  const { isLoaded: isWorldLoaded, worldId } = useWorldBySlug(worldSlug);
+  const { isLoaded: isWorldLoaded, worldId } = useWorldBySlug({ worldSlug });
   const selectedItem = useSelector(spaceCreateItemSelector);
   const subtitle = [{ text: selectedItem?.text ?? "Select a template" }];
   const crumbtrail = [
