@@ -4,8 +4,8 @@ import { orderBy, where } from "firebase/firestore";
 import {
   ALWAYS_EMPTY_ARRAY,
   COLLECTION_SPACES,
-  COLLECTION_WORLD_EVENTS,
   FIELD_WORLD_ID,
+  PATH,
 } from "settings";
 
 import { WorldAndSpaceIdLocation, WorldEventWithId } from "types/id";
@@ -40,7 +40,7 @@ export const useConnectCurrentVenueNG: UseConnectCurrentVenueNG = ({
     data: currentVenueEvents,
     isLoaded: isCurrentVenueEventsLoaded,
   } = useLiveCollection<WorldEventWithId>({
-    path: [COLLECTION_WORLD_EVENTS],
+    path: PATH.worldEvents,
     constraints: [
       where(FIELD_WORLD_ID, "==", convertToFirestoreKey(worldId)),
       where(FIELD_WORLD_ID, "==", convertToFirestoreKey(spaceId)),

@@ -3,7 +3,10 @@ import { HttpResponse } from "firebase-admin/lib/utils/api-request";
 
 // NOTE: keep this one private as to only create subclasses for specific uses
 class SparkleError extends Error {}
+
 export class SparkleQueryError extends SparkleError {}
+
+export class SparkleHookError extends SparkleError {}
 
 type AssertUnreachable = (_: never) => void;
 export const assertUnreachable: AssertUnreachable = () => {

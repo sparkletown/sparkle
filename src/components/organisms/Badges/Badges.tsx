@@ -63,8 +63,6 @@ export const Badges: React.FC<{
   const [venues, setVenues] = useState<WithId<AnyVenue>[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const firestore = getFirestore();
-
   const fetchAllVenues = useCallback(async () => {
     const userSnapshot = await getUserRef(user.id).get();
     const visitsSnapshot = await userSnapshot.ref.collection("visits").get();
@@ -84,7 +82,7 @@ export const Badges: React.FC<{
     ).map((visitChunk) =>
       getDocs(
         query(
-          collection(firestore, COLLECTION_SPACES),
+          collection(getFirestore(), COLLECTION_SPACES),
           where(
             "name",
             "in",
@@ -116,7 +114,7 @@ export const Badges: React.FC<{
 
     setVenues(venues);
     setVisits(visits);
-  }, [firestore, user.id, setVenues, setVisits]);
+  }, [user.id, setVenues, setVisits]);
 
   useEffect(() => {
     setIsLoading(true);

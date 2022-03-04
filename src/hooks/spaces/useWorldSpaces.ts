@@ -1,5 +1,4 @@
-import { useFirestore, useFirestoreCollectionData } from "reactfire";
-import { collection, query, where } from "firebase/firestore";
+import { collection, getFirestore, query, where } from "firebase/firestore";
 
 import { ALWAYS_EMPTY_ARRAY, COLLECTION_SPACES } from "settings";
 
@@ -7,23 +6,19 @@ import { SpaceId, SpaceWithId, SpaceWithoutId, WorldId } from "types/id";
 
 import { withIdConverter } from "utils/converters";
 
+import { useFireQuery } from "hooks/fire/useFireQuery";
+
 type UseWorldSpaces = (options: {
   worldId: WorldId;
 }) => { spaces: SpaceWithId[] };
 
 export const useWorldSpaces: UseWorldSpaces = ({ worldId }) => {
-  const firestore = useFirestore();
-  const worldSpacesRef = query(
-    collection(firestore, COLLECTION_SPACES),
-    where("worldId", "==", worldId)
-  ).withConverter(withIdConverter<SpaceWithoutId, SpaceId>());
-
-  const { data: worldSpaces } = useFirestoreCollectionData<SpaceWithId>(
-    worldSpacesRef,
-    {
-      initialData: ALWAYS_EMPTY_ARRAY,
-    }
+  const { data = ALWAYS_EMPTY_ARRAY } = useFireQuery<SpaceWithId>(
+    query(
+      collection(getFirestore(), COLLECTION_SPACES),
+      where("worldId", "==", worldId)
+    ).withConverter(withIdConverter<SpaceWithoutId, SpaceId>())
   );
 
-  return { spaces: worldSpaces };
+  return { spaces: data };
 };

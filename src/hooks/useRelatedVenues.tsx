@@ -1,11 +1,7 @@
 import React, { createContext, useCallback, useContext, useMemo } from "react";
 import { where } from "firebase/firestore";
 
-import {
-  ALWAYS_EMPTY_ARRAY,
-  COLLECTION_SPACES,
-  FIELD_WORLD_ID,
-} from "settings";
+import { ALWAYS_EMPTY_ARRAY, FIELD_WORLD_ID, PATH } from "settings";
 
 import {
   SpaceId,
@@ -54,7 +50,7 @@ const LegacyRelatedVenuesProvider: React.FC<WorldAndSpaceIdLocation> = ({
   children,
 }) => {
   const { data, isLoading } = useLiveCollection<SpaceWithId>({
-    path: [COLLECTION_SPACES],
+    path: PATH.spaces,
     constraints: [where(FIELD_WORLD_ID, "==", convertToFirestoreKey(worldId))],
   });
 
@@ -151,7 +147,7 @@ const WorldSpacesProvider: React.FC<WorldIdLocation> = ({
   children,
 }) => {
   const { data, isLoading } = useLiveCollection<SpaceWithId>({
-    path: [COLLECTION_SPACES],
+    path: PATH.spaces,
     constraints: [where(FIELD_WORLD_ID, "==", convertToFirestoreKey(worldId))],
   });
 

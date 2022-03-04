@@ -1,36 +1,31 @@
-import { useFirestore, useFirestoreCollectionData } from "reactfire";
-import { collection, query, where } from "firebase/firestore";
+import { where } from "firebase/firestore";
 
-import { ALWAYS_EMPTY_ARRAY, COLLECTION_WORLDS } from "settings";
+import { ALWAYS_EMPTY_ARRAY, DEFERRED, PATH } from "settings";
 
 import { LoadStatus } from "types/fire";
-import { WorldId, WorldWithId } from "types/id";
+import { WorldWithId } from "types/id";
 
-import { withIdConverter } from "utils/converters";
+import { useFireCollection } from "hooks/fire/useFireCollection";
 
 type UseOwnWorlds = (options: {
   userId: string;
 }) => LoadStatus & { ownWorlds: WorldWithId[] };
 
 export const useOwnWorlds: UseOwnWorlds = ({ userId }) => {
-  const firestore = useFirestore();
-
-  const ownWorldsRef = query(
-    collection(firestore, COLLECTION_WORLDS),
-    where("isHidden", "==", false),
-    where("owners", "array-contains", userId)
-  ).withConverter(withIdConverter<WorldWithId, WorldId>());
-
   const {
-    data: ownWorlds,
-    status,
+    data: ownWorlds = ALWAYS_EMPTY_ARRAY,
+    isLoaded,
+    isLoading,
     error,
-  } = useFirestoreCollectionData<WorldWithId>(ownWorldsRef, {
-    initialData: ALWAYS_EMPTY_ARRAY,
+  } = useFireCollection<WorldWithId>({
+    path: PATH.worlds,
+    constraints: userId
+      ? [
+          where("isHidden", "==", false),
+          where("owners", "array-contains", userId),
+        ]
+      : DEFERRED,
   });
-
-  const isLoading = status === "loading";
-  const isLoaded = status === "success";
 
   return { ownWorlds, isLoading, isLoaded, error };
 };

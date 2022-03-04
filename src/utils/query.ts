@@ -1,7 +1,7 @@
 import { QueryConstraint } from "@firebase/firestore";
 import { QueryDocumentSnapshot } from "firebase/firestore";
 
-import { DEFERRED } from "settings";
+import { ALWAYS_EMPTY_ARRAY, DEFERRED } from "settings";
 
 import { FireConstraint, FirePath } from "types/fire";
 import { DeferredAction } from "types/id";
@@ -47,3 +47,80 @@ export const isNotValidConstraint = (
   constraint: QueryConstraint | DeferredAction | null | undefined
 ): constraint is QueryConstraint =>
   constraint === null || constraint === undefined;
+
+export type CollectionQueryOptions =
+  | DeferredAction
+  | string[]
+  | {
+      path: string[] | DeferredAction;
+      constraints?: FireConstraint[] | DeferredAction;
+    };
+
+type OptionsToPath = (options: CollectionQueryOptions) => string[];
+
+const optionsToPath: OptionsToPath = (options) => {
+  if (Array.isArray(options)) return options;
+  if (isDeferred(options)) return ALWAYS_EMPTY_ARRAY;
+  if (isDeferred(options.path)) return ALWAYS_EMPTY_ARRAY;
+  return options.path ?? ALWAYS_EMPTY_ARRAY;
+};
+
+type OptionsToConstraints = (
+  options: CollectionQueryOptions
+) => FireConstraint[];
+const optionsToConstraints: OptionsToConstraints = (options) => {
+  if (Array.isArray(options)) return ALWAYS_EMPTY_ARRAY;
+  if (isDeferred(options)) return ALWAYS_EMPTY_ARRAY;
+  if (isDeferred(options.constraints)) return ALWAYS_EMPTY_ARRAY;
+  return options.constraints ?? ALWAYS_EMPTY_ARRAY;
+};
+
+type CheckDeferred = (options: CollectionQueryOptions) => boolean | undefined;
+
+const checkDeferred: CheckDeferred = (options) => {
+  if (isDeferred(options)) return true;
+  if (Array.isArray(options)) return options?.some(isDeferred);
+
+  const path = options.path;
+  const constraints = options.constraints;
+  if (isDeferred(path)) return true;
+  if (isDeferred(constraints)) return true;
+
+  return path?.some(isDeferred) || constraints?.some(isDeferred);
+};
+
+export const parseCollectionQueryOptions = (
+  options: CollectionQueryOptions
+) => {
+  const hasDeferred = checkDeferred(options);
+  const path = optionsToPath(options);
+  const constraints = optionsToConstraints(options);
+
+  const filteredPath = path.filter(isGoodSegment);
+  const filteredConstraints = constraints.filter(isGoodConstraint);
+
+  // Some quality of life and input sanity checks follow, like
+  // Firestore API requires at least two defined arguments for it to not throw an error
+
+  const [first, ...rest] = filteredPath;
+  const shortPath = !rest?.length;
+  const incompletePath = !first;
+  const noConstraints = !filteredConstraints.length;
+  const invalidPath = path?.some(isNotValidSegment);
+  const invalidConstraints = constraints?.some(isNotValidConstraint);
+
+  const hasPathError = incompletePath || invalidPath;
+  const hasConstraintsError =
+    (shortPath && noConstraints) || invalidConstraints;
+
+  return {
+    hasDeferred,
+    path,
+    first,
+    rest,
+    hasPathError,
+    hasConstraintsError,
+    constraints,
+    filteredConstraints,
+  };
+};

@@ -1,12 +1,7 @@
 import { useMemo } from "react";
 import { where } from "firebase/firestore";
 
-import {
-  ALWAYS_EMPTY_ARRAY,
-  COLLECTION_SPACES,
-  DEFERRED,
-  FIELD_WORLD_ID,
-} from "settings";
+import { ALWAYS_EMPTY_ARRAY, DEFERRED, FIELD_WORLD_ID, PATH } from "settings";
 
 import {
   MaybeSpaceIdLocation,
@@ -85,7 +80,7 @@ export const useRelatedSpaces = (options?: MaybeWorldAndSpaceIdLocation) => {
     data: spaces,
     ...extra
   } = useLiveCollection<SpaceWithId>({
-    path: [COLLECTION_SPACES],
+    path: PATH.spaces,
     constraints: [worldId ? where(FIELD_WORLD_ID, "==", worldId) : DEFERRED],
   });
 

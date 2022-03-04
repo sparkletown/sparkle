@@ -9,91 +9,33 @@ import {
 } from "firebase/firestore";
 import { isEqual } from "lodash";
 
-import { ALWAYS_EMPTY_ARRAY } from "settings";
-
-import { FireConstraint } from "types/fire";
-import { DeferredAction } from "types/id";
-
 import { withIdConverter } from "utils/converters";
 import { WithId } from "utils/id";
 import {
+  CollectionQueryOptions,
   createConstraintsError,
   createPathError,
   dataWithId,
-  isDeferred,
-  isGoodConstraint,
-  isGoodSegment,
-  isNotValidConstraint,
-  isNotValidSegment,
+  parseCollectionQueryOptions,
 } from "utils/query";
 
-type UseLiveCollectionOptions =
-  | DeferredAction
-  | string[]
-  | {
-      path: string[] | DeferredAction;
-      constraints?: FireConstraint[] | DeferredAction;
-    };
-
-type OptionsToPath = (options: UseLiveCollectionOptions) => string[];
-type OptionsToConstraints = (
-  options: UseLiveCollectionOptions
-) => FireConstraint[];
-type CheckDeferred = (options: UseLiveCollectionOptions) => boolean | undefined;
-
-const optionsToPath: OptionsToPath = (options) => {
-  if (Array.isArray(options)) return options;
-  if (isDeferred(options)) return ALWAYS_EMPTY_ARRAY;
-  if (isDeferred(options.path)) return ALWAYS_EMPTY_ARRAY;
-  return options.path ?? ALWAYS_EMPTY_ARRAY;
-};
-
-const optionsToConstraints: OptionsToConstraints = (options) => {
-  if (Array.isArray(options)) return ALWAYS_EMPTY_ARRAY;
-  if (isDeferred(options)) return ALWAYS_EMPTY_ARRAY;
-  if (isDeferred(options.constraints)) return ALWAYS_EMPTY_ARRAY;
-  return options.constraints ?? ALWAYS_EMPTY_ARRAY;
-};
-
-const checkDeferred: CheckDeferred = (options) => {
-  if (isDeferred(options)) return true;
-  if (Array.isArray(options)) return options?.some(isDeferred);
-
-  const path = options.path;
-  const constraints = options.constraints;
-  if (isDeferred(path)) return true;
-  if (isDeferred(constraints)) return true;
-
-  return path?.some(isDeferred) || constraints?.some(isDeferred);
-};
-
 export const useLiveCollection = <T extends object, ID extends string = string>(
-  options: UseLiveCollectionOptions
+  options: CollectionQueryOptions
 ) => {
   const [data, setData] = useState<WithId<T, ID>[]>();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | undefined>();
 
-  const hasDeferred = checkDeferred(options);
-  const path = optionsToPath(options);
-  const constraints = optionsToConstraints(options);
-
-  const filteredPath = path.filter(isGoodSegment);
-  const filteredConstraints = constraints.filter(isGoodConstraint);
-
-  // Some quality of life and input sanity checks follow, like
-  // Firestore API requires at least two defined arguments for it to not throw an error
-
-  const [first, ...rest] = filteredPath;
-  const shortPath = !rest?.length;
-  const incompletePath = !first;
-  const noConstraints = !filteredConstraints.length;
-  const invalidPath = path?.some(isNotValidSegment);
-  const invalidConstraints = constraints?.some(isNotValidConstraint);
-
-  const hasPathError = incompletePath || invalidPath;
-  const hasConstraintsError =
-    (shortPath && noConstraints) || invalidConstraints;
+  const {
+    path,
+    first,
+    rest,
+    hasPathError,
+    hasConstraintsError,
+    hasDeferred,
+    constraints,
+    filteredConstraints,
+  } = parseCollectionQueryOptions(options);
 
   // construction of the query is where the Firestore SDK may break if invalid values are given
   const memoizedQuery = useMemo(

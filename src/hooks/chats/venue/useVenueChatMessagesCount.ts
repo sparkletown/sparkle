@@ -1,19 +1,35 @@
-import { useFirestoreDocData } from "reactfire";
-import { doc, DocumentReference } from "firebase/firestore";
+import { useAsync } from "react-use";
+import { doc, getDoc } from "firebase/firestore";
 
 import { getVenueRef } from "api/venue";
 
-import { DistributedCounterValue } from "types/Firestore";
+import {
+  DistributedCounterValue,
+  InterimDocumentData,
+  InterimQueryDocumentSnapshot,
+} from "types/Firestore";
+import { SpaceId } from "types/id";
 
-import { CONVERTER_DISTRIBUTED_COUNTER_VALUE } from "utils/converters";
+const CONVERTER = {
+  fromFirestore: (
+    snapshot: InterimQueryDocumentSnapshot<InterimDocumentData>
+  ): DistributedCounterValue => ({ value: snapshot.data().value }),
+  toFirestore: ({ value }: DistributedCounterValue): InterimDocumentData => ({
+    value,
+  }),
+};
 
-export const useVenueChatMessagesCount = (venueId: string) => {
-  const venueRef = (getVenueRef(venueId) as unknown) as DocumentReference;
-  return (
-    useFirestoreDocData<DistributedCounterValue>(
-      doc(venueRef, "chatMessagesCounter", "sum").withConverter(
-        CONVERTER_DISTRIBUTED_COUNTER_VALUE
-      )
-    )?.data?.value ?? Number.MAX_VALUE
+export const useVenueChatMessagesCount = (venueId: SpaceId | string) => {
+  const { value } = useAsync(
+    async () =>
+      (
+        await getDoc(
+          doc(getVenueRef(venueId), "chatMessagesCounter", "sum").withConverter(
+            CONVERTER
+          )
+        )
+      )?.data()?.value
   );
+
+  return value ?? Number.MAX_VALUE;
 };

@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { limit, orderBy, where } from "firebase/firestore";
 
-import { ALWAYS_EMPTY_ARRAY, COLLECTION_WORLD_EVENTS } from "settings";
+import { ALWAYS_EMPTY_ARRAY, PATH } from "settings";
 
 import { WorldAndSpaceIdLocation } from "types/id";
 import { WorldEvent } from "types/venues";
@@ -26,7 +26,7 @@ export const useConnectCurrentEvent: UseConnectCurrentEvent = ({
   const [currentTimestamp] = useState(Date.now() / 1000);
 
   const { data, isLoaded } = useLiveCollection<WorldEvent>({
-    path: [COLLECTION_WORLD_EVENTS],
+    path: PATH.worldEvents,
     constraints: [
       where("startUtcSeconds", "<=", oneHourAfterTimestamp(currentTimestamp)),
       where("worldId", "==", convertToFirestoreKey(worldId)),
