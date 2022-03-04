@@ -105,7 +105,6 @@ export const WorldSchedule: React.FC<WorldScheduleProps> = ({ world }) => {
     <AdminLayout>
       <Header title="World Schedule">
         <HeaderButton
-          to={"#"}
           name="Create new experience"
           variant="multicolor"
           onClick={showCreateEventModal}

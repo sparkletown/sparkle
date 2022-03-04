@@ -20,14 +20,13 @@ import { findSpaceBySlug } from "api/space";
 import { SpaceSlug } from "types/id";
 import { PortalInput, Room, RoomInput } from "types/rooms";
 import { ScreeningRoomVideo } from "types/screeningRoom";
+import { SpaceType } from "types/spaces";
 import { Table } from "types/Table";
 import { VenueAdvancedConfig, VenuePlacement, WorldEvent } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
 
 import { WithId, WithoutId, WithWorldId } from "utils/id";
 import { generateAttendeeInsideUrl } from "utils/url";
-
-import { SpaceType } from "components/organisms/TimingEventModal/TimingEventModal";
 
 import { fetchVenue } from "./venue";
 import { fetchWorld } from "./world";

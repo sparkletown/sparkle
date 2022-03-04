@@ -11,6 +11,7 @@ import { DAYJS_INPUT_DATE_FORMAT, DAYJS_INPUT_TIME_FORMAT } from "settings";
 import { createEvent, EventInput, updateEvent } from "api/admin";
 
 import { WorldId } from "types/id";
+import { SpaceType } from "types/spaces";
 import { AnyVenue, WorldEvent } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
 
@@ -21,16 +22,12 @@ import { eventEditSchema } from "forms/eventEditSchema";
 import { useOwnedVenues } from "hooks/useOwnedVenues";
 import { useUser } from "hooks/useUser";
 
+import { LoadingPage } from "components/molecules/LoadingPage";
 import { Modal } from "components/molecules/Modal";
 
 import { Dropdown } from "components/atoms/Dropdown";
 
 import "./TimingEventModal.scss";
-
-export type SpaceType = {
-  id?: string;
-  name?: string;
-};
 
 export type TimingEventModalProps = {
   show: boolean;
@@ -42,7 +39,6 @@ export type TimingEventModalProps = {
   worldId: WorldId | string;
 };
 
-// Dispatch<SetStateAction<WithId<Experience> | undefined>>
 export const TimingEventModal: React.FC<TimingEventModalProps> = ({
   show,
   onHide,
@@ -157,7 +153,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
   );
 
   if (isSpacesLoading) {
-    return <div>loading</div>;
+    return <LoadingPage />;
   }
 
   return (

@@ -67,7 +67,7 @@ export const AdminSubRouter: React.FC = () => (
       </Provided>
     </Route>
 
-    <Route path={[ADMIN_IA_WORLD_SCHEDULE]}>
+    <Route path={ADMIN_IA_WORLD_SCHEDULE}>
       <Provided withRelatedVenues>
         <WorldSchedule />
       </Provided>

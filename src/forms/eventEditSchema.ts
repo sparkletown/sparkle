@@ -4,7 +4,7 @@ import { START_DATE_FORMAT_RE } from "settings";
 
 import { EventInput } from "api/admin";
 
-import { SpaceType } from "components/organisms/TimingEventModal/TimingEventModal";
+import { SpaceType } from "types/spaces";
 
 export const eventEditSchema = Yup.object().shape<EventInput>({
   space: Yup.object()

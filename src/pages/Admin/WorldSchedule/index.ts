@@ -8,6 +8,7 @@ import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { WorldSchedule as _WorldSchedule } from "./WorldSchedule";
 
+// @debt replace this compose() with new useLive* and useFire* hooks once they're ready for use
 export const WorldSchedule = compose(
   withAuth,
   withSlugs,
