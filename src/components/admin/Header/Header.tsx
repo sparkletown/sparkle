@@ -25,8 +25,8 @@ interface HeaderProps {
   crumbtrail?: Crumb[];
   subtitleItems?: Subtitle[];
   children?:
-  | React.ReactElement<HeaderButtonProps>
-  | React.ReactElement<HeaderButtonProps>[];
+    | React.ReactElement<HeaderButtonProps>
+    | React.ReactElement<HeaderButtonProps>[];
 }
 
 export const Header: React.FC<HeaderProps> = ({
