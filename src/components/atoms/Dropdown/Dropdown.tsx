@@ -60,14 +60,5 @@ export const Dropdown: React.FC<DropdownProps> = ({ title, children }) => {
   const value = remap(title);
   const options = React.Children.map(children, remap) ?? ALWAYS_EMPTY_ARRAY;
 
-  return (
-    <Select
-      className={
-        "z-10 w-44 text-base list-none bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600"
-      }
-      value={value}
-      placeholder={value}
-      options={options}
-    />
-  );
+  return <Select value={value} placeholder={value} options={options} />;
 };

@@ -4,6 +4,7 @@ import { useAsyncFn } from "react-use";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button } from "components/admin/Button";
 import { EventsPanel } from "components/admin/EventsPanel";
+import { Header } from "components/admin/Header";
 import { HeaderButton } from "components/admin/HeaderButton";
 import { Input } from "components/admin/Input";
 import { AdminLayout } from "components/layouts/AdminLayout";
@@ -23,8 +24,6 @@ import { useWorldSpaces } from "hooks/spaces/useWorldSpaces";
 import { useShowHide } from "hooks/useShowHide";
 
 import { TimingEventModal } from "components/organisms/TimingEventModal";
-
-import { AdminHeader } from "components/atoms/AdminHeader";
 
 import * as TW from "./WorldSchedule.tailwind";
 
@@ -46,8 +45,6 @@ export const WorldSchedule: React.FC<WorldScheduleProps> = ({ world }) => {
     hide: hideCreateEventModal,
   } = useShowHide();
 
-  // const { worldSlug } = useWorldParams();
-  // const { isLoaded, world } = useWorldBySlug(worldSlug);
   const { spaces } = useWorldSpaces({ worldId: world.id });
 
   const defaultValues = useMemo<WorldScheduleFormInput>(() => {
@@ -106,14 +103,14 @@ export const WorldSchedule: React.FC<WorldScheduleProps> = ({ world }) => {
 
   return (
     <AdminLayout>
-      <AdminHeader title="World Schedule">
+      <Header title="World Schedule">
         <HeaderButton
           to={"#"}
           name="Create new experience"
           variant="multicolor"
           onClick={showCreateEventModal}
         />
-      </AdminHeader>
+      </Header>
       <div className={TW.content}>
         <div className={TW.formSection}>
           <form onSubmit={handleSubmit(submit)}>
@@ -150,9 +147,6 @@ export const WorldSchedule: React.FC<WorldScheduleProps> = ({ world }) => {
                 </div>
               </div>
             </section>
-
-            {/* <FormErrors omitted={HANDLED_ERRORS} />
-            <SubmitError error={error} /> */}
 
             <Button variant="secondary">Cancel</Button>
 

@@ -49,7 +49,9 @@ export const Modal: React.FC<ModalProps> = ({
       }
     >
       <div
-        className={"relative px-4 w-full max-w-2xl h-full md:h-auto"}
+        className={
+          "max-h-screen relative px-4 w-full max-w-2xl h-full md:h-auto"
+        }
         ref={containerRef}
       >
         <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">

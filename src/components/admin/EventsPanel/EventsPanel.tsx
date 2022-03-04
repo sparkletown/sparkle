@@ -10,7 +10,7 @@ import { TimingSpace } from "components/organisms/TimingSpace";
 
 import { Loading } from "components/molecules/Loading";
 
-import { Toggle } from "../Checkbox";
+import { Checkbox } from "components/atoms/Checkbox";
 
 type EventsPanelProps = {
   worldId: WorldId;
@@ -85,7 +85,7 @@ export const EventsPanel: React.FC<EventsPanelProps> = ({
     <div className="space-y-6 lg:col-start-2 lg:col-span-2 ">
       <div className="px-4 sm:px-0">
         <div className="flex justify-end">
-          <Toggle
+          <Checkbox
             checked={showSplittedEvents}
             onChange={toggleSplittedEvents}
             label="Split by space"

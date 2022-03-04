@@ -74,9 +74,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
   });
 
   const { errors } = useFormState({ control });
-
   const eventSpace = venue;
-
   useEffect(() => {
     if (event?.id) {
       reset({
@@ -98,7 +96,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
   const { userId } = useUser();
   const { ownedVenues, isLoading: isSpacesLoading } = useOwnedVenues({
     worldId,
-    userId,
+    userId: userId ?? "",
   });
 
   const spacesMap: SpaceType[] = ownedVenues.map((venue) => ({
@@ -110,11 +108,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
     () =>
       spacesMap.map((space) => {
         return (
-          <div
-            key={space.id}
-            className="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-            onClick={() => setSelectedSpace(space)}
-          >
+          <div key={space.id} onClick={() => setSelectedSpace(space)}>
             {space.name}
           </div>
         );
@@ -163,7 +157,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
   );
 
   if (isSpacesLoading) {
-    return null;
+    return <div>loading</div>;
   }
 
   return (
@@ -174,7 +168,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
           <p>Your experience is in {eventSpace?.name}</p>
 
           {!eventSpace?.name && (
-            <>
+            <div className="mb-6">
               <Dropdown title={selectedSpace?.name ?? "None"}>
                 {renderedSpaceIds}
               </Dropdown>
@@ -183,10 +177,10 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                   {errors.space.name?.message}
                 </span>
               )}
-            </>
+            </div>
           )}
 
-          <div className="TimingEventModal__input-group">
+          <div className="mb-6">
             <label htmlFor="name">Name your experience</label>
             <Input
               type="text"
@@ -197,16 +191,17 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
             />
           </div>
 
-          <div className="TimingEventModal__input-group">
+          <div className="mb-6">
             <label htmlFor="description">Describe your experience</label>
             <Textarea
               name="description"
               placeholder="Description"
+              errors={errors}
               register={register}
             />
           </div>
 
-          <div className="TimingEventModal__input-group">
+          <div className="mb-6">
             <label htmlFor="host">Host (people hosting the event)</label>
             <Input
               type="text"
@@ -217,7 +212,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
             />
           </div>
 
-          <div className="TimingEventModal__input-group">
+          <div className="mb-6">
             <label htmlFor="date">
               Start date and time (use your own time zone; it will be
               automatically localized)
@@ -248,24 +243,11 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                 />
               </div>
             </div>
-
-            <div className="TimingEventModal__container">
-              {errors.start_date && (
-                <span className="text-red-500">
-                  {errors.start_date.message}
-                </span>
-              )}
-              {errors.start_time && (
-                <span className="text-red-500">
-                  {errors.start_time.message}
-                </span>
-              )}
-            </div>
           </div>
 
-          <div className="TimingEventModal__input-group">
+          <div className="mb-6">
             <label>Duration</label>
-            <div className="TimingEventModal__duration_container">
+            <div className="flex flex-row">
               <Input
                 placeholder="hours"
                 errors={errors}
@@ -280,18 +262,6 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                 name="duration_minutes"
               />
               <label htmlFor="duration_minutes">minutes</label>
-            </div>
-            <div className="TimingEventModal__container">
-              {errors.duration_hours && (
-                <span className="text-red-500">
-                  {errors.duration_hours.message}
-                </span>
-              )}
-              {errors.duration_minutes && (
-                <span className="text-red-500">
-                  {errors.duration_minutes.message}
-                </span>
-              )}
             </div>
           </div>
 

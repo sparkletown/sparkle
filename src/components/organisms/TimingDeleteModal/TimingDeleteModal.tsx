@@ -93,6 +93,11 @@ export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
             <p>Duration: {eventDuration}</p>
             <p>Are you sure you wish to delete this event?</p>
           </div>
+
+          <Button onClick={onHide} variant="secondary">
+            Cancel
+          </Button>
+
           <Button
             type="submit"
             variant="primary"

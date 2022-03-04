@@ -6,9 +6,9 @@ import { SpaceCreateForm } from "components/admin/SpaceCreateForm";
 import { AdminLayout } from "components/layouts/AdminLayout";
 import { WithPermission } from "components/shared/WithPermission";
 
-import { ADMIN_IA_WORLD_PARAM_URL, SPACE_TAXON } from "settings";
+import { ADMIN_IA_WORLD_PARAM_URL } from "settings";
 
-import { spaceCreateItemSelector, spaceCreateItemSelector } from "utils/selectors";
+import { spaceCreateItemSelector } from "utils/selectors";
 import { generateUrl } from "utils/url";
 
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
