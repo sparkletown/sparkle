@@ -23,8 +23,10 @@ export const TimingSpace: React.FC<TimingSpaceProps> = ({
 
   const renderedSpaceEvents = useMemo(
     () =>
-      spaceEvents?.map((event) => <TimingEvent event={event} key={event.id} />),
-    [spaceEvents]
+      spaceEvents?.map((event) => (
+        <TimingEvent space={space} event={event} key={event.id} />
+      )),
+    [space, spaceEvents]
   );
 
   const spaceNameTitle = useMemo(() => {

@@ -71,42 +71,37 @@ export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
       )
     : "Unknown";
   const eventDuration = event
-    ? `${event.durationMinutes / 60} hours ${
+    ? `${(event.durationMinutes / 60).toFixed()} hours ${
         event.durationMinutes % 60
       } minutes`
     : "Unknown";
 
   return (
     <Modal show={show} onHide={onHide} centered autoHide>
-      <div className="TimingDeleteModal">
-        <h2>Delete event</h2>
-        <form
-          onSubmit={handleSubmit(deleteVenueEvent)}
-          className="TimingDeleteModal__container"
+      <h2 className="mb-4">Delete event</h2>
+      <form onSubmit={handleSubmit(deleteVenueEvent)}>
+        <div>
+          <p>Name: {event?.name}</p>
+          <RenderMarkdown text={`Description: ${event?.description ?? ""}`} />
+          <p>
+            Time: {eventStartTime}-{eventEndTime}
+          </p>
+          <p className="mb-4">Duration: {eventDuration}</p>
+          <p>Are you sure you wish to delete this event?</p>
+        </div>
+
+        <Button onClick={onHide} variant="secondary">
+          Cancel
+        </Button>
+
+        <Button
+          type="submit"
+          variant="primary"
+          disabled={formState.isSubmitting || isDeletingEvent}
         >
-          <div>
-            <p>Name: {event?.name}</p>
-            <RenderMarkdown text={`Description: ${event?.description ?? ""}`} />
-            <p>
-              Time: {eventStartTime}-{eventEndTime}
-            </p>
-            <p>Duration: {eventDuration}</p>
-            <p>Are you sure you wish to delete this event?</p>
-          </div>
-
-          <Button onClick={onHide} variant="secondary">
-            Cancel
-          </Button>
-
-          <Button
-            type="submit"
-            variant="primary"
-            disabled={formState.isSubmitting || isDeletingEvent}
-          >
-            Delete
-          </Button>
-        </form>
-      </div>
+          Delete
+        </Button>
+      </form>
     </Modal>
   );
 };

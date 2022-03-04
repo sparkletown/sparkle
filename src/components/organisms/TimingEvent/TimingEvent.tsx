@@ -4,9 +4,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { format } from "date-fns";
 
 import { SpaceWithId } from "types/id";
-import { WorldEvent } from "types/venues";
+import { AnyVenue, WorldEvent } from "types/venues";
 
 import { eventEndTime, eventStartTime } from "utils/event";
+import { WithId } from "utils/id";
 import { formatTimeLocalised } from "utils/time";
 
 import { useShowHide } from "hooks/useShowHide";
@@ -16,7 +17,7 @@ import { TimingEventModal } from "../TimingEventModal";
 
 export type TimingEventProps = {
   event: WorldEvent;
-  space?: SpaceWithId;
+  space?: SpaceWithId | WithId<AnyVenue>;
 };
 
 export const TimingEvent: React.FC<TimingEventProps> = ({ event, space }) => {

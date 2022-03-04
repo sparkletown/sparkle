@@ -168,16 +168,16 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
           <p>Your experience is in {eventSpace?.name}</p>
 
           {!eventSpace?.name && (
-            <div className="mb-6">
-              <Dropdown title={selectedSpace?.name ?? "None"}>
-                {renderedSpaceIds}
-              </Dropdown>
+            <>
+              <div className="mb-6">
+                <Dropdown title={"None"}>{renderedSpaceIds}</Dropdown>
+              </div>
               {errors.space && (
                 <span className="text-red-500">
                   {errors.space.name?.message}
                 </span>
               )}
-            </div>
+            </>
           )}
 
           <div className="mb-6">
@@ -254,14 +254,18 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                 register={register}
                 name="duration_hours"
               />
-              <label htmlFor="duration_hours">hour(s)</label>
+              <label className="self-center px-1" htmlFor="duration_hours">
+                hour(s)
+              </label>
               <Input
                 placeholder="minutes"
                 errors={errors}
                 register={register}
                 name="duration_minutes"
               />
-              <label htmlFor="duration_minutes">minutes</label>
+              <label className="self-center px-1" htmlFor="duration_minutes">
+                minutes
+              </label>
             </div>
           </div>
 
