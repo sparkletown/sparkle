@@ -1,6 +1,5 @@
-import React, { ReactElement, ReactNode } from "react";
-import Select, { MenuPlacement } from "react-select";
-import classNames from "classnames";
+import React, { ReactElement, ReactNode, useState } from "react";
+import { MenuPlacement } from "react-select";
 
 import {
   ALWAYS_EMPTY_ARRAY,
@@ -55,34 +54,71 @@ interface DropdownProps {
   className?: string;
   placement?: MenuPlacement;
   noArrow?: boolean;
+  onSelect?: (option: Option) => void;
 }
+
+export type Option = {
+  label: ReactNode;
+  value: string;
+};
 
 export const Dropdown: React.FC<DropdownProps> = ({
   title,
-  className,
-  placement,
-  noArrow,
   children,
+  onSelect,
 }) => {
-  const value = remap(title);
+  const [isOpened, setOpened] = useState<boolean>(false);
+  const [selectedOption, setSelectedOption] = useState<Option>();
+
   const options = React.Children.map(children, remap) ?? ALWAYS_EMPTY_ARRAY;
 
-  const containerClasses = classNames(
-    className,
-    "Dropdown",
-    noArrow ? "Dropdown--arrowless" : "Dropdown--arrowful"
-  );
+  const selectOption = (option: Option) => {
+    setSelectedOption(option);
+    setOpened(false);
+    onSelect?.(option);
+  };
 
   return (
-    <Select
-      className={containerClasses}
-      classNamePrefix="Select"
-      value={value}
-      placeholder={value}
-      options={options}
-      menuPlacement={placement}
-      styles={NO_INLINE_STYLES_PLEASE}
-      // menuIsOpen // NOTE: useful for dev, keep under comment
-    />
+    <>
+      <button
+        onClick={() => setOpened((value) => !value)}
+        className="text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:ring-indigo-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800"
+        type="button"
+      >
+        {selectedOption?.label ?? title}
+        <svg
+          className="ml-2 w-4 h-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M19 9l-7 7-7-7"
+          />
+        </svg>
+      </button>
+      <div
+        className={`${
+          !isOpened && "hidden"
+        } absolute z-10 w-44 text-base list-none bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700`}
+      >
+        <ul className="py-1">
+          {options.map((option) => (
+            <li key={option.value}>
+              <div
+                className="block py-2 px-4 text-sm cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                onClick={() => selectOption(option)}
+              >
+                {option.label}
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </>
   );
 };

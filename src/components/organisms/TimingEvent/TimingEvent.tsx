@@ -1,80 +1,107 @@
-import React, { useState } from "react";
-import { faPen } from "@fortawesome/free-solid-svg-icons";
+import React from "react";
+import { faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { format } from "date-fns";
 
+import { DAYJS_EVENT_TIME_FORMAT, STRING_SPACE } from "settings";
+
+import { SpaceWithId } from "types/id";
 import { WorldEvent } from "types/venues";
 
 import { eventEndTime, eventStartTime } from "utils/event";
 import { formatTimeLocalised } from "utils/time";
 
-import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { useShowHide } from "hooks/useShowHide";
+
+import { TimingDeleteModal } from "../TimingDeleteModal";
+import { TimingEventModal } from "../TimingEventModal";
 
 export type TimingEventProps = {
   event: WorldEvent;
-  setShowCreateEventModal: () => void;
-  setEditedEvent: (event: WorldEvent) => void;
+  space?: SpaceWithId;
 };
 
-export const TimingEvent: React.FC<TimingEventProps> = ({
-  event,
-  setShowCreateEventModal,
-  setEditedEvent,
-}) => {
-  const [display, setDisplay] = useState(false);
+export const TimingEvent: React.FC<TimingEventProps> = ({ event, space }) => {
+  const {
+    isShown: showDeleteEventModal,
+    show: setShowDeleteEventModal,
+    hide: setHideDeleteEventModal,
+  } = useShowHide();
 
-  const { findVenueInRelatedVenues } = useRelatedVenues();
-  const space = findVenueInRelatedVenues({ spaceId: event.spaceId });
-
-  const showButton = (e: React.MouseEvent) => {
-    e.preventDefault();
-    setDisplay(true);
-  };
-  const hideButton = (e: React.MouseEvent) => {
-    e.preventDefault();
-    setDisplay(false);
-  };
+  const {
+    isShown: isShownCreateEventModal,
+    show: showCreateEventModal,
+    hide: hideCreateEventModal,
+  } = useShowHide();
 
   return (
-    <div
-      key={event.id}
-      className="TimingEvent"
-      onMouseEnter={showButton}
-      onMouseLeave={hideButton}
-    >
-      <div className="TimingEvent__time">
-        <p>{format(eventStartTime({ event }), "do MMM")}</p>
-        <p className="TimingEvent__time-start">
-          {formatTimeLocalised(eventStartTime({ event }))}
-        </p>
-        <p>{formatTimeLocalised(eventEndTime({ event }))}</p>
-      </div>
-      <div className="TimingEvent__details">
-        <p>
-          <span className="TimingEvent__details-name">{event.name}</span> by{" "}
-          <span className="TimingEvent__details-host">{event.host}</span>
-        </p>
-        <p className="TimingEvent__details-description">{event.description}</p>
-        <p className="TimingEvent__details-room">
-          in <span className="event-details-room-name">{space?.name}</span>
-        </p>
-      </div>
+    <>
+      <div key={event.id} className="">
+        <div className="bg-white divide-y divide-gray-200">
+          <div className="flex justify-start items-start">
+            <div className="px-6 py-4 w-96">
+              <div className="text-sm font-medium text-gray-900">
+                {format(eventStartTime({ event }), DAYJS_EVENT_TIME_FORMAT)}
+              </div>
+              <div className="text-sm text-gray-500">
+                {formatTimeLocalised(eventStartTime({ event }))} -{STRING_SPACE}
+                {formatTimeLocalised(eventEndTime({ event }))}
+              </div>
+            </div>
+            <div className="px-6 py-4 grow w-full flex flex-col flex-auto">
+              <div className="text-sm text-gray-900">
+                <span className="font-medium">{event.name}</span> by
+                {STRING_SPACE}
+                <span className="font-medium">{event.host}</span>
+              </div>
+              <p className="TimingEvent__details-room">
+                in{STRING_SPACE}
+                <span className="event-details-room-name">{space?.name}</span>
+              </p>
+            </div>
+            <div className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex justify-end items-center gap-x-5">
+              <button
+                className="flex"
+                onClick={() => {
+                  showCreateEventModal();
+                }}
+              >
+                <FontAwesomeIcon icon={faPen} className="px-1" size="lg" />
 
-      {display && (
-        <button
-          className="TimingEvent__edit-button"
-          onClick={() => {
-            setShowCreateEventModal();
-            setEditedEvent(event);
-          }}
-        >
-          <FontAwesomeIcon
-            icon={faPen}
-            className="TimingEvent__edit-button__icon"
-            size="lg"
-          />
-        </button>
+                <div>Edit</div>
+              </button>
+            </div>
+            <div className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex justify-end items-center gap-x-5">
+              <button className="flex" onClick={setShowDeleteEventModal}>
+                <FontAwesomeIcon
+                  icon={faTrash}
+                  className="px-1 text-warning-red"
+                  size="lg"
+                />
+                <div className="text-warning-red">Delete</div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      {showDeleteEventModal && (
+        <TimingDeleteModal
+          show={showDeleteEventModal}
+          onHide={setHideDeleteEventModal}
+          event={event}
+        />
       )}
-    </div>
+      {isShownCreateEventModal && space && (
+        <TimingEventModal
+          show={isShownCreateEventModal}
+          onHide={hideCreateEventModal}
+          template={space.template}
+          venueId={space.id}
+          venue={space}
+          event={event}
+          worldId={space.worldId}
+        />
+      )}
+    </>
   );
 };

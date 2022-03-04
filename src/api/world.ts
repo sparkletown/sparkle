@@ -17,6 +17,7 @@ import {
   WorldAdvancedFormInput,
   WorldEntranceFormInput,
   WorldGeneralFormInput,
+  WorldScheduleSettings,
 } from "types/world";
 
 import { generateFirestoreId, WithId, withId } from "utils/id";
@@ -35,6 +36,7 @@ export interface World {
   };
   createdAt: Date;
   entrance?: EntranceStepConfig[];
+  endTimeUnix?: number;
   host: {
     icon: string;
   };
@@ -51,6 +53,7 @@ export interface World {
   showSchedule?: boolean;
   showUserStatus?: boolean;
   slug: WorldSlug;
+  startTimeUnix?: number;
   updatedAt: Date;
   userStatuses?: UserStatus[];
   hasSocialLoginEnabled?: boolean;
@@ -152,6 +155,18 @@ export const createFirestoreWorldAdvancedInput: (
   return { ...picked, radioStations };
 };
 
+export const createFirestoreWorldScheduleInput: (
+  input: WithId<WorldScheduleSettings>
+) => Promise<Partial<World>> = async (input) => {
+  const worldUpdateData: Partial<WithId<World>> = {
+    id: input.id,
+    startTimeUnix: input?.startTimeUnix,
+    endTimeUnix: input?.endTimeUnix,
+  };
+
+  return worldUpdateData;
+};
+
 export const createWorld: (
   world: WorldGeneralFormInput,
   user: firebase.UserInfo
@@ -232,6 +247,15 @@ export const updateWorldAdvancedSettings = async (
     FIREBASE.functions,
     "world-updateWorld"
   )(await createFirestoreWorldAdvancedInput(world, user));
+};
+
+export const updateWorldScheduleSettings = async (
+  world: WithId<WorldScheduleSettings>
+) => {
+  return await httpsCallable(
+    FIREBASE.functions,
+    "world-updateWorld"
+  )(await createFirestoreWorldScheduleInput(world));
 };
 
 export type FindWorldBySlugOptions = {
