@@ -27,7 +27,7 @@ $blur: 5px;
 @mixin color--glass {
   color: white;
   -webkit-font-smoothing: antialiased;
-  background-color: rgba(theme.$sparkle--bg, 0.7);
+  background-color: theme.$c-color-glass-panel-background;
   -webkit-backdrop-filter: blur($blur);
   backdrop-filter: blur($blur);
 }

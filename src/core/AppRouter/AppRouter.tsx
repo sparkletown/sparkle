@@ -5,7 +5,6 @@ import {
   Route,
   Switch,
 } from "react-router-dom";
-import { LoginRestricted } from "components/shared/LoginRestricted";
 import { AnalyticsCheck } from "core/AnalyticsCheck";
 import { Provided } from "core/Provided";
 
@@ -32,7 +31,7 @@ import {
   generateAttendeeSpaceLandingUrl,
 } from "utils/url";
 
-import { useUserId } from "hooks/user/useUserId";
+import { useUserNG } from "hooks/user/useUserNG";
 
 import { LoginWithCustomToken } from "pages/Account/LoginWithCustomToken";
 import { VersionPage } from "pages/VersionPage/VersionPage";
@@ -111,7 +110,7 @@ const TEMP_HONEYCOMB_INSIDE = `/in/${TEMP_HONEYCOMB_SLUG}`;
 /////////////////////////////////////////////////////////////////////////////////////
 
 export const AppRouter: React.FC = () => {
-  const { userId, isLoading } = useUserId();
+  const { auth, isLoading } = useUserNG();
 
   return (
     <Router basename="/">
@@ -194,31 +193,25 @@ export const AppRouter: React.FC = () => {
             </Provided>
           </Route>
           <Route path={ATTENDEE_STEPPING_PARAM_URL}>
-            <LoginRestricted>
-              <Provided withRelatedVenues>
-                <AnalyticsCheck>
-                  <VenueEntrancePage />
-                </AnalyticsCheck>
-              </Provided>
-            </LoginRestricted>
+            <Provided withRelatedVenues>
+              <AnalyticsCheck>
+                <VenueEntrancePage />
+              </AnalyticsCheck>
+            </Provided>
           </Route>
           <Route path={ATTENDEE_INSIDE_URL}>
-            <LoginRestricted>
-              <Provided withRelatedVenues>
-                <AnalyticsCheck>
-                  <AttendeeLayout />
-                </AnalyticsCheck>
-              </Provided>
-            </LoginRestricted>
+            <Provided withRelatedVenues>
+              <AnalyticsCheck>
+                <AttendeeLayout />
+              </AnalyticsCheck>
+            </Provided>
           </Route>
           <Route path={ATTENDEE_EMERGENCY_PARAM_URL}>
-            <LoginRestricted>
-              <Provided withRelatedVenues>
-                <AnalyticsCheck>
-                  <EmergencyViewPage />
-                </AnalyticsCheck>
-              </Provided>
-            </LoginRestricted>
+            <Provided withRelatedVenues>
+              <AnalyticsCheck>
+                <EmergencyViewPage />
+              </AnalyticsCheck>
+            </Provided>
           </Route>
           <Route path={VERSION_URL}>
             <AnalyticsCheck>
@@ -248,7 +241,7 @@ export const AppRouter: React.FC = () => {
                 return <LoadingPage />;
               }
 
-              if (userId) {
+              if (auth) {
                 return (
                   <AnalyticsCheck>
                     <NotFound />

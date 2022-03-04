@@ -11,11 +11,6 @@ import { WithId } from "utils/id";
 type UseRefiDocumentResult<T extends object> = LoadStatus &
   ObservableStatus<WithId<T>>;
 
-/**
- * @deprecated uses Reactfire and that library has bugs related to caching and users being logged out
- *
- * @see useLiveDocument hook as a replacement
- */
 export const useRefiDocument = <T extends object>(
   path: string[]
 ): UseRefiDocumentResult<T> => {

@@ -12,6 +12,6 @@ import { Login as _Login, LoginProps } from "./Login";
 export const Login = compose(
   withWorldOrSpace,
   withFallback(["isSpacesLoaded", "isWorldLoaded"], LoadingPage),
-  withFallback<LoginProps>(["spaceId", "world"], NotFoundFallback),
+  withFallback<LoginProps>(["spaceId", "space", "world"], NotFoundFallback),
   withAnalytics
 )(_Login);

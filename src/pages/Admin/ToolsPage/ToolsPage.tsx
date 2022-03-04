@@ -1,21 +1,18 @@
 import React, { useCallback, useState } from "react";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-
-import { ADMIN_IA_WORLD_PARAM_URL } from "settings";
-
-import { generateUrl } from "utils/url";
+import { Button } from "components/admin/Button";
+import { Header } from "components/admin/Header";
+import { SectionHeading } from "components/admin/SectionHeading";
+import { SectionTitle } from "components/admin/SectionTitle";
+import { AdminLayout } from "components/layouts/AdminLayout";
+import { FullWidthLayout } from "components/layouts/FullWidthLayout";
 
 import { useWorldParams } from "hooks/worlds/useWorldParams";
 
-import { WithNavigationBar } from "components/organisms/WithNavigationBar";
-
-import { ButtonNG } from "components/atoms/ButtonNG";
+import { AdminRestricted } from "components/atoms/AdminRestricted";
 
 import { Tool } from "./components/Tool";
 import * as tools from "./scripts";
 import { SelfServeScript } from "./types";
-
-import "./ToolsPage.scss";
 
 export const ToolsPage: React.FC = () => {
   const [chosenTool, setChosenTool] = useState<SelfServeScript>();
@@ -25,44 +22,36 @@ export const ToolsPage: React.FC = () => {
   const { worldSlug } = useWorldParams();
 
   return (
-    <WithNavigationBar>
+    <AdminLayout>
       <div className="ToolsPage">
-        {chosenTool ? (
-          <>
-            <div className="Tools__back">
-              <ButtonNG onClick={clearChosenTool} iconName={faArrowLeft}>
-                Back to Tools
-              </ButtonNG>
-            </div>
-            <Tool tool={chosenTool} worldSlug={worldSlug} />
-          </>
-        ) : (
-          <>
-            <div className="Tools__back">
-              <ButtonNG
-                isLink
-                linkTo={generateUrl({
-                  route: ADMIN_IA_WORLD_PARAM_URL,
-                  required: ["worldSlug"],
-                  params: { worldSlug },
-                })}
-                iconName={faArrowLeft}
-              >
-                Back to Dashboard
-              </ButtonNG>
-            </div>
-            {Object.values(tools).map((tool) => (
-              <ButtonNG
-                key={`${tool.name}-${tool.functionLocation}`}
-                onClick={() => setChosenTool(tool)}
-                variant="secondary"
-              >
-                {tool.name}
-              </ButtonNG>
-            ))}
-          </>
-        )}
+        <AdminRestricted>
+          <Header title="Reports" />
+          {chosenTool ? (
+            <>
+              <div className="Tools__back">
+                <Button onClick={clearChosenTool}>Back to Tools</Button>
+              </div>
+              <Tool tool={chosenTool} worldSlug={worldSlug} />
+            </>
+          ) : (
+            <FullWidthLayout>
+              <SectionHeading>
+                <SectionTitle>Tools</SectionTitle>
+              </SectionHeading>
+
+              {Object.values(tools).map((tool) => (
+                <Button
+                  key={`${tool.name}-${tool.functionLocation}`}
+                  onClick={() => setChosenTool(tool)}
+                  borders="rounded"
+                >
+                  {tool.name}
+                </Button>
+              ))}
+            </FullWidthLayout>
+          )}
+        </AdminRestricted>
       </div>
-    </WithNavigationBar>
+    </AdminLayout>
   );
 };

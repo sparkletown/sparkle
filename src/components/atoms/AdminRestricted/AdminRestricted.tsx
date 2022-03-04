@@ -1,45 +1,51 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn } from "react-use";
+import { WithSlugsProps } from "components/hocs/context/withSlugs";
+import { WithAuthProps } from "components/hocs/db/withAuth";
 import firebase from "firebase/compat/app";
 
 import {
-  ATTENDEE_INSIDE_URL,
-  ATTENDEE_LANDING_URL,
+  DEFAULT_SPACE_SLUG,
+  DEFAULT_WORLD_SLUG,
   DISABLED_DUE_TO_1324,
 } from "settings";
 
-import { generateUrl } from "utils/url";
+import {
+  generateAttendeeInsideUrl,
+  generateAttendeeSpaceLandingUrl,
+} from "utils/url";
 
-import { useSpaceParams } from "hooks/spaces/useSpaceParams";
-import { useUserId } from "hooks/user/useUserId";
+import { UseAdminRole } from "hooks/user/useAdminRole";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { SparkleLogo } from "components/atoms/SparkleLogo";
 
 import SHAPE_DENIED from "assets/images/access-forbidden.svg";
 
-export const AdminRestrictedMessage: React.FC = () => {
+import "./AdminRestricted.scss";
+
+type Props = WithAuthProps & WithSlugsProps & Partial<ReturnType<UseAdminRole>>;
+
+export const AdminRestricted: React.FC<Props> = ({
+  userId,
+  worldSlug,
+  spaceSlug,
+}) => {
   const history = useHistory();
-  const { worldSlug, spaceSlug } = useSpaceParams();
-  const { userId } = useUserId();
 
   const [{ loading: isLoggingOut }, logout] = useAsyncFn(async () => {
     await firebase.auth().signOut();
     history.push(
-      generateUrl({
-        route: ATTENDEE_LANDING_URL,
-        params: { worldSlug, spaceSlug },
-        fallback: "/",
-      })
+      spaceSlug ? generateAttendeeSpaceLandingUrl(worldSlug, spaceSlug) : "/"
     );
   }, [history, worldSlug, spaceSlug]);
 
   const redirectToDefaultRoute = () =>
     history.push(
-      generateUrl({
-        route: ATTENDEE_INSIDE_URL,
-        params: { worldSlug, spaceSlug },
+      generateAttendeeInsideUrl({
+        worldSlug: DEFAULT_WORLD_SLUG,
+        spaceSlug: DEFAULT_SPACE_SLUG,
       })
     );
 
