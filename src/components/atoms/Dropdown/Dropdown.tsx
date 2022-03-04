@@ -82,7 +82,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
     <>
       <button
         onClick={() => setOpened((value) => !value)}
-        className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+        className="text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:ring-indigo-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800"
         type="button"
       >
         {selectedOption?.label ?? title}
@@ -110,7 +110,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
           {options.map((option) => (
             <li key={option.value}>
               <div
-                className="block py-2 px-4 text-sm  hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                className="block py-2 px-4 text-sm cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                 onClick={() => selectOption(option)}
               >
                 {option.label}

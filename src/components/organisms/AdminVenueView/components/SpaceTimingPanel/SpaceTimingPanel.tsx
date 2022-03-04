@@ -8,7 +8,6 @@ import { AdminSidebar } from "components/organisms/AdminVenueView/components/Adm
 import { SpaceTimingForm } from "components/organisms/SpaceTimingForm";
 
 import { AdminSidebarSectionTitle } from "../AdminSidebarSectionTitle";
-import { EventsView } from "../EventsView";
 
 import "./SpaceTimingPanel.scss";
 
@@ -24,8 +23,6 @@ export const SpaceTimingPanel: React.FC<SpaceTimingPanelProps> = ({
       <AdminSidebarSectionTitle>Plan your event</AdminSidebarSectionTitle>
       <SpaceTimingForm venue={space} />
     </AdminSidebar>
-    <AdminShowcase>
-      <EventsView spaceId={space.id} space={space} />
-    </AdminShowcase>
+    <AdminShowcase></AdminShowcase>
   </AdminPanel>
 );

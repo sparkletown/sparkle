@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo } from "react";
+import { Toggle } from "components/admin/Toggle";
 
 import { SpaceWithId, WorldId } from "types/id";
 
@@ -9,8 +10,6 @@ import { TimingEvent } from "components/organisms/TimingEvent";
 import { TimingSpace } from "components/organisms/TimingSpace";
 
 import { Loading } from "components/molecules/Loading";
-
-import { Toggle } from "../Toggle";
 
 type EventsPanelProps = {
   worldId: WorldId;

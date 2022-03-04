@@ -1,8 +1,7 @@
 import React, { useMemo } from "react";
 
-import { AnyVenue, WorldEvent } from "types/venues";
-
-import { WithId } from "utils/id";
+import { SpaceWithId } from "types/id";
+import { WorldEvent } from "types/venues";
 
 import { useShowHide } from "hooks/useShowHide";
 
@@ -11,7 +10,7 @@ import { TimingEvent } from "components/organisms/TimingEvent";
 import "./TimingSpace.scss";
 
 export type TimingSpaceProps = {
-  space: WithId<AnyVenue>;
+  space: SpaceWithId;
   spaceEvents: WorldEvent[];
 };
 

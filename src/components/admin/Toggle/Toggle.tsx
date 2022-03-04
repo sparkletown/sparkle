@@ -2,13 +2,13 @@ import React from "react";
 
 import * as TW from "./Toggle.tailwind";
 
-export interface CheckboxProps {
+export interface ToggleProps {
   label: string;
   checked?: boolean;
   onChange?: () => void;
 }
 
-export const Toggle: React.FC<CheckboxProps> = ({
+export const Toggle: React.FC<ToggleProps> = ({
   label,
   checked = false,
   onChange,

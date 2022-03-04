@@ -6,10 +6,9 @@ import { format } from "date-fns";
 import { DAYJS_EVENT_TIME_FORMAT, STRING_SPACE } from "settings";
 
 import { SpaceWithId } from "types/id";
-import { AnyVenue, WorldEvent } from "types/venues";
+import { WorldEvent } from "types/venues";
 
 import { eventEndTime, eventStartTime } from "utils/event";
-import { WithId } from "utils/id";
 import { formatTimeLocalised } from "utils/time";
 
 import { useShowHide } from "hooks/useShowHide";
@@ -19,7 +18,7 @@ import { TimingEventModal } from "../TimingEventModal";
 
 export type TimingEventProps = {
   event: WorldEvent;
-  space?: SpaceWithId | WithId<AnyVenue>;
+  space?: SpaceWithId;
 };
 
 export const TimingEvent: React.FC<TimingEventProps> = ({ event, space }) => {
