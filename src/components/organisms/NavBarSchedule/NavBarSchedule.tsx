@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useState } from "react";
 import classNames from "classnames";
+import { Toggler } from "components/attendee/Toggler";
 import {
   addDays,
   format,
@@ -31,7 +32,6 @@ import { Breadcrumbs } from "components/molecules/Breadcrumbs";
 import { Schedule } from "components/molecules/Schedule";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
-import { Toggler } from "components/atoms/Toggler";
 
 import { prepareForSchedule } from "./utils";
 

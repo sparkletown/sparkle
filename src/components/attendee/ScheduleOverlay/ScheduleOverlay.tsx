@@ -4,6 +4,7 @@ import { faBookmark as solidBookmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { Button } from "components/attendee/Button";
+import { Toggler } from "components/attendee/Toggler";
 import {
   addDays,
   differenceInCalendarDays,
@@ -46,8 +47,6 @@ import { useUser } from "hooks/useUser";
 import useVenueScheduleEvents from "hooks/useVenueScheduleEvents";
 
 import { Loading } from "components/molecules/Loading";
-
-import { Toggler } from "components/atoms/Toggler";
 
 import CN from "./ScheduleOverlay.module.scss";
 

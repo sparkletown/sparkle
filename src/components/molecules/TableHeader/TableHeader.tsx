@@ -6,6 +6,7 @@ import {
   faPen,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Toggler } from "components/attendee/Toggler";
 import firebase from "firebase/compat/app";
 
 import { MAX_TABLE_CAPACITY } from "settings";
@@ -20,8 +21,6 @@ import { useExperience } from "hooks/useExperience";
 import { useSeatedTableUsers } from "hooks/useSeatedTableUsers";
 import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
-
-import { Toggler } from "components/atoms/Toggler";
 
 import { EditTableTitleModal } from "./components/EditTableTitleModal";
 

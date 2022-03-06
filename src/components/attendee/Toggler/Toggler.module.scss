@@ -1,14 +1,17 @@
-.Toggler {
+@use "scss/attendee/space";
+@use "scss/attendee/theme";
+
+.toggler {
   position: relative;
   display: flex;
   width: auto;
-  height: 34px;
+  height: space.empty(2.66);
 
   .switch {
     position: relative;
     display: inline-block;
-    width: 54px;
-    height: 30px;
+    width: space.item(1.3);
+    height: space.empty(2.5);
   }
 
   .switch input {
@@ -24,7 +27,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(255, 255, 255, 0.1);
+    background: theme.$c-glass-panel-background-transparent;
     border: 1px solid #ffffff;
     -webkit-transition: 0.4s;
     transition: 0.4s;
@@ -33,22 +36,18 @@
   .slider:before {
     position: absolute;
     content: "";
-    height: 24px;
-    width: 24px;
-    left: 2px;
+    height: space.empty(2);
+    width: space.empty(2);
     bottom: 2px;
-    background-color: rgba(255, 255, 255, 0.3);
+    left: 2px;
+    background-color: theme.$c-glass-panel-background;
     -webkit-transition: 0.4s;
     transition: 0.4s;
   }
 
   input:checked + .slider:before {
-    background-color: rgba(255, 255, 255, 1);
+    background-color: theme.$c-panel-background;
   }
-
-  // input:focus + .slider {
-  //   box-shadow: 0 0 1px #2196f3;
-  // }
 
   input:checked + .slider:before {
     -webkit-transform: translateX(24px);
@@ -57,11 +56,11 @@
   }
 
   /* Rounded sliders */
-  .slider.round {
-    border-radius: 34px;
+  .sliderRound {
+    border-radius: space.empty(2.66);
   }
 
-  .slider.round:before {
+  .sliderRound:before {
     border-radius: 50%;
   }
 }

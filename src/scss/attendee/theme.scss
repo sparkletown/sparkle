@@ -9,6 +9,8 @@
   --subdued-text: rgb(142, 142, 142);
   --chat-input-background: rgb(230, 230, 230);
 
+  --glass-panel-background-transparent: rgba(255, 255, 255, 0.1);
+
   --panel-background: rgb(255, 255, 255);
   --glass-panel-background: rgba(255, 255, 255, 0.4);
   --color-glass-panel-background: rgba(99, 42, 199, 0.7);
@@ -44,6 +46,9 @@ $sparkle--border: var(--sparkle--border); // previously named $sparkle-border
 
 $c-panel-background: var(--panel-background);
 $c-glass-panel-background: var(--glass-panel-background);
+$c-glass-panel-background-transparent: var(
+  --glass-panel-background-transparent
+);
 $c-glass-panel-text: var(--glass-panel-text);
 $c-color-glass-panel-background: var(--color-glass-panel-background);
 

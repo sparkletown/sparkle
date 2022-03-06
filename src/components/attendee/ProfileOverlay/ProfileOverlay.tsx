@@ -6,7 +6,10 @@ import {
   useFormState,
 } from "react-hook-form";
 import { useAsyncFn } from "react-use";
+import { ProfileModalEditBasicInfo } from "components/attendee/BasicInfo/ProfileModalEditBasicInfo";
 import { Button } from "components/attendee/Button/Button";
+import { ProfileModalEditLinks } from "components/attendee/Links/ProfileModalEditLinks";
+import { ProfileModalChangePassword } from "components/attendee/Password/ProfileModalChangePassword";
 import firebase from "firebase/compat/app";
 import { pick, uniq } from "lodash";
 
@@ -22,10 +25,6 @@ import { useCheckOldPassword } from "hooks/useCheckOldPassword";
 import { useProfileModalFormDefaultValues } from "hooks/useProfileModalFormDefaultValues";
 
 import { updateUserProfile } from "pages/Account/helpers";
-
-import { ProfileModalEditBasicInfo } from "./BasicInfo/ProfileModalEditBasicInfo";
-import { ProfileModalEditLinks } from "./Links/ProfileModalEditLinks";
-import { ProfileModalChangePassword } from "./Password/ProfileModalChangePassword";
 
 import styles from "./ProfileOverlay.module.scss";
 

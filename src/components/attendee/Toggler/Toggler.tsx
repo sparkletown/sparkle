@@ -1,7 +1,7 @@
 import React from "react";
 import classNames from "classnames";
 
-import "./Toggler.scss";
+import CN from "./Toggler.module.scss";
 
 export interface TogglerProps {
   toggled?: boolean;
@@ -19,10 +19,10 @@ export const Toggler: React.FC<TogglerProps> = ({
   name,
   ...extraProps
 }) => {
-  const containerClasses = classNames("Toggler", containerClassName);
+  const containerClasses = classNames(CN.toggler, containerClassName);
   return (
     <div className={containerClasses}>
-      <label className="switch">
+      <label className={CN.switch}>
         <input
           type="checkbox"
           checked={toggled}
@@ -30,7 +30,7 @@ export const Toggler: React.FC<TogglerProps> = ({
           onClick={onChange}
           {...extraProps}
         />
-        <span className="slider round"></span>
+        <span className={`${CN.slider} ${CN.sliderRound}`}></span>
       </label>
       {title && <label>{title}</label>}
     </div>
