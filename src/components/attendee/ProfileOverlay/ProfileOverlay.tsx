@@ -54,11 +54,24 @@ export const ProfileOverlay: React.FC<ProfileOverlayProps> = ({ profile }) => {
     getValues,
     setValue,
     control,
+    reset,
   } = useForm<UserProfileModalFormData>({
     mode: "onBlur",
     reValidateMode: "onChange",
     defaultValues,
     shouldUnregister: true,
+  });
+
+  const values = getValues();
+
+  useEffect(() => {
+    // needed to reset form values if default values served for the first time are incorrect
+    if (
+      defaultValues.partyName !== values?.partyName &&
+      values?.partyName === ""
+    ) {
+      reset(defaultValues);
+    }
   });
 
   const { errors, dirtyFields } = useFormState<UserProfileModalFormData>({

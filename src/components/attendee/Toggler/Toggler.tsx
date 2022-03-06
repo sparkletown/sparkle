@@ -20,14 +20,15 @@ export const Toggler: React.FC<TogglerProps> = ({
   ...extraProps
 }) => {
   const containerClasses = classNames(CN.toggler, containerClassName);
+
   return (
     <div className={containerClasses}>
       <label className={CN.switch}>
         <input
           type="checkbox"
-          checked={toggled}
           name={name}
-          onClick={onChange}
+          onChange={onChange}
+          checked={toggled}
           {...extraProps}
         />
         <span className={`${CN.slider} ${CN.sliderRound}`}></span>

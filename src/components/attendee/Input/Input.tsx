@@ -34,6 +34,7 @@ export const Input: React.ForwardRefRenderFunction<
 }) => {
   const inputClassNames = classNames(CN.inputField, inputClassName);
   const registerProps = name && register ? register(name, rules) : {};
+
   return (
     <div className={CN.input}>
       {label ? (

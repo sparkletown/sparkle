@@ -7,6 +7,10 @@
   width: auto;
   height: space.empty(2.66);
 
+  label {
+    margin-left: space.gap(2);
+  }
+
   .switch {
     position: relative;
     display: inline-block;
@@ -38,8 +42,8 @@
     content: "";
     height: space.empty(2);
     width: space.empty(2);
-    bottom: 2px;
-    left: 2px;
+    bottom: space.gap(1);
+    left: space.gap(1);
     background-color: theme.$c-glass-panel-background;
     -webkit-transition: 0.4s;
     transition: 0.4s;
