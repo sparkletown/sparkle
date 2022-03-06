@@ -1,21 +1,21 @@
-@use "scss/attendee/variables.scss"as *;
+@use "scss/attendee/space";
+@use "scss/attendee/font";
 
-.Select {
-  &__wrapper {
-    display: flex;
-    width: 100%;
-    align-items: center;
-    width: 100%;
-    font-size: 14px;
-    padding: 4px 0px;
-  }
+.wrapper {
+  @include font.core;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  width: 100%;
+  padding: space.empty(0.33) 0px;
+}
 
-  &__select {
-    padding: 4px 4px 4px 16px;
-    height: 42px;
-    border-radius: 0px 4px 4px 0px;
-    box-sizing: border-box;
-    width: 100%;
-    border: none;
-  }
+.selectField {
+  height: space.item(1);
+  padding: space.empty(0.33) space.empty(0.33) space.empty(0.33)
+    space.empty(1.33);
+  border-radius: 0px space.empty(0.33) space.empty(0.33) 0px;
+  box-sizing: border-box;
+  width: 100%;
+  border: none;
 }

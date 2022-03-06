@@ -6,6 +6,7 @@ import {
   UseFormWatch,
 } from "react-hook-form";
 import classNames from "classnames";
+import { Input } from "components/attendee/Input";
 
 import { DISPLAY_NAME_MAX_CHAR_COUNT } from "settings";
 
@@ -14,8 +15,6 @@ import { User } from "types/User";
 import { ContainerClassName } from "types/utility";
 
 import { WithId } from "utils/id";
-
-import { InputField } from "components/atoms/InputField";
 
 import { ProfileModalAvatar } from "./ProfileModalAvatar";
 
@@ -67,7 +66,7 @@ export const ProfileModalEditBasicInfo: React.FC<ProfileModalEditBasicInfoProps>
       <div className={styles.ProfileModalEditBasicInfo__content}>
         <span>Change your Sparkle username</span>
         {register && (
-          <InputField
+          <Input
             placeholder="Display Name"
             error={partyNameError}
             name="partyName"

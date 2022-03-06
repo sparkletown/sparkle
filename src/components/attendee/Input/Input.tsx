@@ -1,8 +1,8 @@
-import React, { forwardRef } from "react";
-import { FieldError } from "react-hook-form";
+import React from "react";
+import { FieldError, RegisterOptions, UseFormRegister } from "react-hook-form";
 import classNames from "classnames";
 
-import { ContainerClassName } from "types/utility";
+import { AnyForm, ContainerClassName } from "types/utility";
 
 import CN from "./Input.module.scss";
 
@@ -13,36 +13,45 @@ interface InputProps
   error?: FieldError;
   onLabelClick?: () => void;
   label?: string;
+  name?: string;
+  register?: UseFormRegister<AnyForm> | (() => void);
+  rules?: RegisterOptions;
 }
 
-export const _Input: React.ForwardRefRenderFunction<
+export const Input: React.ForwardRefRenderFunction<
   HTMLInputElement,
   InputProps
-> = (
-  {
-    containerClassName,
-    inputClassName,
-    onLabelClick,
-    error,
-    label,
-    ...extraInputProps
-  },
-  ref
-) => {
+> = ({
+  containerClassName,
+  inputClassName,
+  onLabelClick,
+  error,
+  label,
+  register,
+  rules,
+  name,
+  ...extraInputProps
+}) => {
   const inputClassNames = classNames(CN.inputField, inputClassName);
-
+  const registerProps = name && register ? register(name, rules) : {};
   return (
     <div className={CN.input}>
       {label ? (
         <label data-label={label} onClick={onLabelClick}>
-          <input ref={ref} className={inputClassNames} {...extraInputProps} />
+          <input
+            {...registerProps}
+            className={inputClassNames}
+            {...extraInputProps}
+          />
         </label>
       ) : (
-        <input ref={ref} className={inputClassNames} {...extraInputProps} />
+        <input
+          {...registerProps}
+          className={inputClassNames}
+          {...extraInputProps}
+        />
       )}
       {error && <span className={CN.inputError}>{error.message}</span>}
     </div>
   );
 };
-
-export const Input = forwardRef(_Input);

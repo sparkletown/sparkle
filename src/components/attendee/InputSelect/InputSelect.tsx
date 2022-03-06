@@ -45,29 +45,26 @@ export const InputSelect: React.FC<InputSelectProps> = ({
   selectRules,
 }) => {
   const containerClassNames = classNames(
-    styles.InputSelect,
+    styles.inputSelect,
     {
-      [styles.InputSelect__invalid]: isDefined(error),
+      [styles.invalid]: isDefined(error),
     },
     containerClassName
   );
   const selectContainerClassNames = classNames(
-    styles.InputSelect,
+    styles.inputSelect,
     {
-      [styles.InputSelect__invalid]: isDefined(error),
+      [styles.invalid]: isDefined(error),
     },
     containerClassName
   );
 
-  const inputClassNames = classNames(styles.InputSelect__input, inputClassName);
-  const selectClassNames = classNames(
-    styles.InputSelect__select,
-    selectContainerClassNames
-  );
+  const inputClassNames = classNames(styles.input, inputClassName);
+  const selectClassNames = classNames(styles.select, selectContainerClassNames);
 
   return (
     <div className={containerClassNames}>
-      <div className={styles.InputSelect__wrapper}>
+      <div className={styles.wrapper}>
         <input
           className={inputClassNames}
           placeholder={inputPlaceholder}
@@ -89,7 +86,7 @@ export const InputSelect: React.FC<InputSelectProps> = ({
         </select>
       </div>
       {error && (
-        <span className={classNames("InputSelect__error", errorTextClassName)}>
+        <span className={classNames("error", errorTextClassName)}>
           {error.message}
         </span>
       )}

@@ -70,16 +70,16 @@ export const ProfileModalAvatar: React.FC<ProfileModalAvatarProps> = ({
   );
 
   return (
-    <div className={classNames(styles.ProfileModalAvatar, containerClassName)}>
+    <div className={classNames(styles.profileModalAvatar, containerClassName)}>
       <div onClick={uploadProfilePic}>
         <UserAvatar
-          imageClassName={styles.ProfileModalAvatar__image}
+          imageClassName={styles.image}
           user={userWithOverriddenPictureUrl}
           size="full"
           showStatus
         />
         {editMode && (
-          <div className={styles.ProfileModalAvatar__text}>
+          <div className={styles.text}>
             <ImageOverlay disabled={uploadingState.loading}>
               {uploadingState.loading ? "Uploading..." : "Change"}
             </ImageOverlay>
@@ -91,13 +91,10 @@ export const ProfileModalAvatar: React.FC<ProfileModalAvatarProps> = ({
         onChange={handleFileChange}
         accept={ACCEPTED_IMAGE_TYPES}
         ref={uploadRef}
-        className={styles.ProfileModalAvatar__input}
+        className={styles.input}
       />
       {register && (
-        <input
-          className={styles.ProfileModalAvatar__input}
-          {...register("pictureUrl")}
-        />
+        <input className={styles.input} {...register("pictureUrl")} />
       )}
       {error && <div>{error}</div>}
     </div>

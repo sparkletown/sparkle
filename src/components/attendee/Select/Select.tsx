@@ -36,28 +36,28 @@ export const Select: React.FC<SelectProps> = ({
   register,
 }) => {
   const containerClassNames = classNames(
-    styles.Select,
+    styles.select,
     {
-      [styles.Select__invalid]: isDefined(error),
+      [styles.invalid]: isDefined(error),
     },
     containerClassName
   );
   const selectContainerClassNames = classNames(
-    styles.Select,
+    styles.select,
     {
-      [styles.Select__invalid]: isDefined(error),
+      [styles.invalid]: isDefined(error),
     },
     containerClassName
   );
 
   const selectClassNames = classNames(
-    styles.Select__select,
+    styles.selectField,
     selectContainerClassNames
   );
 
   return (
     <div className={containerClassNames}>
-      <div className={styles.Select__wrapper}>
+      <div className={styles.wrapper}>
         {label && <label>{label}</label>}
         <select
           className={selectClassNames}
@@ -75,7 +75,7 @@ export const Select: React.FC<SelectProps> = ({
         </select>
       </div>
       {error && (
-        <span className={classNames("Select__error", errorTextClassName)}>
+        <span className={classNames(styles.error, errorTextClassName)}>
           {error.message}
         </span>
       )}

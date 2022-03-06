@@ -2,7 +2,7 @@ import React, { useEffect, useMemo } from "react";
 import { FieldErrors, UseFormRegister } from "react-hook-form";
 import classNames from "classnames";
 import { Button } from "components/attendee/Button/Button";
-import { ProfileModalEditLink } from "components/attendee/NavOverlay/ProfileOverlay/Links/ProfileModalEditLink";
+import { ProfileModalEditLink } from "components/attendee/ProfileOverlay/Links/ProfileModalEditLink";
 
 import { UserProfileModalFormData } from "types/profileModal";
 import { ProfileLink } from "types/User";

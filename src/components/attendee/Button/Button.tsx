@@ -3,14 +3,10 @@ import classNames from "classnames";
 
 import CN from "./Button.module.scss";
 
-enum ButtonVariant {
-  primary = "primary",
-  alternative = "alternative",
-  alternativeBorder = "alternativeBorder",
-}
+type ButtonVariant = "primary" | "alternative" | "alternativeBorder";
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   onClick?: () => void;
-  variant?: "primary" | "alternative" | "alternativeBorder";
+  variant?: ButtonVariant;
   className?: string;
 }
 
@@ -22,9 +18,9 @@ export const Button: React.FC<ButtonProps> = ({
   ...rest
 }) => {
   const buttonClasses = classNames(`${CN.button} ${className}`, {
-    [CN.buttonPrimary]: variant === ButtonVariant.primary,
-    [CN.buttonAlternative]: variant === ButtonVariant.alternative,
-    [CN.buttonAlternativeBorder]: variant === ButtonVariant.alternativeBorder,
+    [CN.buttonPrimary]: variant === "primary",
+    [CN.buttonAlternative]: variant === "alternative",
+    [CN.buttonAlternativeBorder]: variant === "alternativeBorder",
   });
 
   return (

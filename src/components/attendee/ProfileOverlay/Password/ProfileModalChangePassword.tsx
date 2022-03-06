@@ -4,11 +4,10 @@ import {
   UseFormGetValues,
   UseFormRegister,
 } from "react-hook-form";
+import { Input } from "components/attendee/Input";
 
 import { UserProfileModalFormData } from "types/profileModal";
 import { ContainerClassName } from "types/utility";
-
-import { InputField } from "components/atoms/InputField";
 
 import styles from "./ProfileModalChangePassword.module.scss";
 
@@ -60,7 +59,7 @@ export const ProfileModalChangePassword: React.FC<ProfileModalChangePasswordProp
         <span className={styles.ProfileModalChangePassword__title}>
           Old Password
         </span>
-        <InputField
+        <Input
           placeholder={"••••••••••"}
           name="oldPassword"
           register={register}
@@ -73,7 +72,7 @@ export const ProfileModalChangePassword: React.FC<ProfileModalChangePasswordProp
         <span className={styles.ProfileModalChangePassword__title}>
           New Password
         </span>
-        <InputField
+        <Input
           name="newPassword"
           inputClassName={styles.ProfileModalChangePassword__field}
           error={errors?.newPassword}
@@ -86,7 +85,7 @@ export const ProfileModalChangePassword: React.FC<ProfileModalChangePasswordProp
         <span className={styles.ProfileModalChangePassword__title}>
           Confirm New Password
         </span>
-        <InputField
+        <Input
           name="confirmNewPassword"
           inputClassName={styles.ProfileModalChangePassword__field}
           error={errors?.confirmNewPassword}

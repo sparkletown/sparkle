@@ -8,6 +8,7 @@ import { Loading } from "components/molecules/Loading";
 import { ProfileOverlay as _ProfileOverlay } from "./ProfileOverlay";
 
 export const ProfileOverlay = compose(
+  // @debt replace this compose with newer useLife and useFire hooks once they're ready for use
   withCurrentUserId,
   withProfileById,
   withFallback(["isProfileByIdLoaded"], Loading)

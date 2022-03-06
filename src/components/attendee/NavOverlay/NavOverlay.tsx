@@ -5,13 +5,13 @@ import { SPACE_TAXON } from "settings";
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useMediaQuery } from "hooks/viewport/useMediaQuery";
 
-import { ScheduleOverlay } from "./ScheduleOverlay/ScheduleOverlay";
-import { SearchOverlay } from "./SearchOverlay/SearchOverlay";
-import { ProfileOverlay } from "./ProfileOverlay";
+import { ProfileOverlay } from "../ProfileOverlay";
+import { ScheduleOverlay } from "../ScheduleOverlay/ScheduleOverlay";
+import { SearchOverlay } from "../SearchOverlay/SearchOverlay";
 
 import CN from "./NavOverlay.module.scss";
 
-type navOverlayProps = {
+type NavOverlayProps = {
   onClose: () => void;
   type?: string;
 };
@@ -32,7 +32,7 @@ const navOverlayTypeMap: Readonly<Record<NavOverlayTabType, string>> = {
   [NavOverlayTabType.help]: "Help",
 };
 
-export const NavOverlay: React.FC<navOverlayProps> = ({ onClose, type }) => {
+export const NavOverlay: React.FC<NavOverlayProps> = ({ onClose, type }) => {
   const [navOverlayType, setNavOverlay] = useState(type);
   const [isMenuShown, setMenuShown] = useState(true);
   const { isTablet, isMobile } = useMediaQuery();

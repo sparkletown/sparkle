@@ -7,14 +7,17 @@ import { Button } from "components/attendee/Button";
 import {
   addDays,
   differenceInCalendarDays,
-  format,
   fromUnixTime,
   isToday,
   startOfDay,
   startOfToday,
 } from "date-fns";
 
-import { ALWAYS_EMPTY_ARRAY, ALWAYS_EMPTY_OBJECT } from "settings";
+import {
+  ALWAYS_EMPTY_ARRAY,
+  ALWAYS_EMPTY_OBJECT,
+  STRING_SPACE,
+} from "settings";
 
 import {
   addEventToPersonalizedSchedule,
@@ -31,7 +34,11 @@ import {
   isEventWithinDateAndNotFinished,
 } from "utils/event";
 import { range } from "utils/range";
-import { formatDateRelativeToNow, formatTimeLocalised } from "utils/time";
+import {
+  formatDateRelativeToNow,
+  formatDayLabel,
+  formatTimeLocalised,
+} from "utils/time";
 
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useShowHide } from "hooks/useShowHide";
@@ -82,17 +89,6 @@ export const ScheduleOverlay: React.FC = () => {
   const isScheduleTimeshifted = !isToday(firstDayOfSchedule);
 
   const weekdays = useMemo(() => {
-    const formatDayLabel = (day: Date | number) => {
-      if (isScheduleTimeshifted) {
-        return format(day, "do");
-      } else {
-        return formatDateRelativeToNow(day, {
-          formatOtherDate: (dateOrTimestamp) => format(dateOrTimestamp, "do"),
-          formatTomorrow: (dateOrTimestamp) => format(dateOrTimestamp, "do"),
-        });
-      }
-    };
-
     if (dayDifference <= 0) return ALWAYS_EMPTY_ARRAY;
 
     return range(dayDifference).map((dayIndex) => {
@@ -102,7 +98,7 @@ export const ScheduleOverlay: React.FC = () => {
         isEventWithinDateAndNotFinished(day)
       );
 
-      const formattedDay = formatDayLabel(day);
+      const formattedDay = formatDayLabel(day, isScheduleTimeshifted);
 
       const buttonClasses = classNames(CN.scheduleButton, {
         [CN.scheduleButtonActive]: dayIndex === selectedDayIndex,
@@ -207,7 +203,8 @@ export const ScheduleOverlay: React.FC = () => {
               <span>{isCurrentEventLive && "until "}</span>
               <span>
                 {showDate && formatDateRelativeToNow(eventEndTime({ event }))}
-              </span>{" "}
+              </span>
+              {STRING_SPACE}
               <span>{formatTimeLocalised(eventEndTime({ event }))}</span>
               <span> in {event.spaceId}</span>
             </div>

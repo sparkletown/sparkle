@@ -1,9 +1,10 @@
+import { UseFormRegister } from "react-hook-form";
 import { Select } from "components/attendee/Select";
 
-import { FormFieldProps } from "types/forms";
+import { UserProfileModalFormData } from "types/profileModal";
 
 type AudioSettingsProps = {
-  register: FormFieldProps["register"];
+  register: UseFormRegister<UserProfileModalFormData>;
 };
 export const AudioSettings: React.FC<AudioSettingsProps> = ({ register }) => {
   return (

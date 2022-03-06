@@ -3,6 +3,8 @@
 @use "scss/attendee/theme";
 
 .input {
+  border: none;
+
   label::after {
     content: attr(data-label);
     position: absolute;
@@ -14,7 +16,7 @@
     color: theme.$c-glass-panel-text;
     right: space.empty(0.8);
     border-left: border.$radius--s3 solid theme.$sparkle--border;
-    color: theme.$c-default-text;
+    color: theme.$c-inverted-text;
     cursor: pointer;
   }
 }

@@ -1,10 +1,5 @@
 @use "scss/attendee/layout";
 
-.avatarContainer img {
-  width: 100%;
-  height: 100%;
-}
-
 @each $sizeName, $sizePixels in layout.$avatarSizes {
   .avatarContainer__#{$sizeName} {
     width: $sizePixels;
