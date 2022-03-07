@@ -1,4 +1,6 @@
+@use "scss/attendee/font";
 @use "scss/attendee/layout";
+@use "scss/attendee/space";
 @use "scss/attendee/theme";
 @use "scss/attendee/effects/sparkle";
 
@@ -6,6 +8,12 @@
   display: flex;
   flex-direction: row;
   position: relative;
+
+  &:hover {
+    .userName {
+      display: block;
+    }
+  }
 }
 
 .trackContainer {
@@ -19,14 +27,16 @@
   bottom: 0;
   display: flex;
   flex-direction: row-reverse;
-  font-size: 22px;
+  font-size: font.$size--lg;
   color: theme.$c-light-text-on-dark;
   background: rgba(0, 0, 0, 0.5);
   border-top-left-radius: 4px;
+  padding-left: space.$md;
 
   span {
-    margin: 2px 7px;
+    margin: space.$sm space.$md space.$sm 0;
   }
+
   &__darkButtons {
     color: theme.$c-default-text;
     background: none;
@@ -51,4 +61,16 @@
 .userName {
   position: absolute;
   bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  color: theme.$c-light-text-on-dark;
+  padding: space.$s2 space.$xs space.$xs;
+  border-radius: 3px;
+  font-size: font.$size--sm;
+  display: block;
+
+  // media query for devices supporting hover
+  // @see https://stackoverflow.com/a/42363147
+  @media not all and (hover: none) {
+    display: none;
+  }
 }

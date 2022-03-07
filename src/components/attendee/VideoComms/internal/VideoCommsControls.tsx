@@ -1,13 +1,15 @@
 import {
   faBan,
+  faMicrophone,
+  faMicrophoneSlash,
   faVideo,
   faVideoSlash,
-  faVolumeMute,
-  faVolumeUp,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { VideoSource } from "../types";
+
+import styles from "./scss/VideoCommsControls.module.scss";
 
 interface VideoCommsControlsProps {
   startAudio?: () => void;
@@ -33,11 +35,14 @@ export const VideoCommsControls: React.FC<VideoCommsControlsProps> = ({
       {startAudio &&
         (audioEnabled ? (
           <span onClick={stopAudio}>
-            <FontAwesomeIcon icon={faVolumeUp} />
+            <FontAwesomeIcon icon={faMicrophone} />
           </span>
         ) : (
-          <span onClick={startAudio}>
-            <FontAwesomeIcon icon={faVolumeMute} />
+          <span onClick={startAudio} className="VideoCommsControls--disabled">
+            <FontAwesomeIcon
+              className={styles["VideoCommsControls--disabled"]}
+              icon={faMicrophoneSlash}
+            />
           </span>
         ))}
       {stopVideo && videoEnabled && (
@@ -49,7 +54,10 @@ export const VideoCommsControls: React.FC<VideoCommsControlsProps> = ({
       )}
       {startVideo && !videoEnabled && (
         <span onClick={startVideo}>
-          <FontAwesomeIcon icon={faVideoSlash} />
+          <FontAwesomeIcon
+            className={styles["VideoCommsControls--disabled"]}
+            icon={faVideoSlash}
+          />
         </span>
       )}
     </>
