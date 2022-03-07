@@ -3,8 +3,6 @@
 @use "scss/attendee/theme";
 
 .input {
-  border: none;
-
   label::after {
     content: attr(data-label);
     position: absolute;
@@ -21,6 +19,10 @@
   }
 }
 
-.inputField {
+.borderless {
   border: none;
+}
+
+.border {
+  border: border.$radius--s3 solid theme.$sparkle--border;
 }

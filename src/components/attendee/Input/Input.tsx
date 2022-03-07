@@ -16,6 +16,7 @@ interface InputProps
   name?: string;
   register?: UseFormRegister<AnyForm> | (() => void);
   rules?: RegisterOptions;
+  border?: "borderless" | "border";
 }
 
 export const Input: React.ForwardRefRenderFunction<
@@ -30,9 +31,10 @@ export const Input: React.ForwardRefRenderFunction<
   register,
   rules,
   name,
+  border = "borderless",
   ...extraInputProps
 }) => {
-  const inputClassNames = classNames(CN.inputField, inputClassName);
+  const inputClassNames = classNames(inputClassName, CN[border]);
   const registerProps = name && register ? register(name, rules) : {};
 
   return (

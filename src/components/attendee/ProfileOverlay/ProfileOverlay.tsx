@@ -8,10 +8,10 @@ import {
 import { useAsyncFn } from "react-use";
 import { ProfileModalEditBasicInfo } from "components/attendee/BasicInfo/ProfileModalEditBasicInfo";
 import { Button } from "components/attendee/Button/Button";
-import { ProfileModalEditLinks } from "components/attendee/Links/ProfileModalEditLinks";
 import { ProfileModalChangePassword } from "components/attendee/Password/ProfileModalChangePassword";
+import { ProfileModalEditLinks } from "components/attendee/ProfileModalEditLinks/ProfileModalEditLinks";
 import firebase from "firebase/compat/app";
-import { pick, uniq } from "lodash";
+import { omit, pick, uniq } from "lodash";
 
 import {
   UserProfileModalFormData,
@@ -20,6 +20,7 @@ import {
 import { User } from "types/User";
 
 import { WithId } from "utils/id";
+import { isShallowEqual } from "utils/object";
 
 import { useCheckOldPassword } from "hooks/useCheckOldPassword";
 import { useProfileModalFormDefaultValues } from "hooks/useProfileModalFormDefaultValues";
@@ -67,12 +68,13 @@ export const ProfileOverlay: React.FC<ProfileOverlayProps> = ({ profile }) => {
   useEffect(() => {
     // needed to reset form values if default values served for the first time are incorrect
     if (
-      defaultValues.partyName !== values?.partyName &&
-      values?.partyName === ""
+      !isShallowEqual(defaultValues, values) &&
+      !Object.values(omit(values, "profileLinks")).filter((value) => !!value)
+        .length
     ) {
       reset(defaultValues);
     }
-  });
+  }, [defaultValues, reset, values]);
 
   const { errors, dirtyFields } = useFormState<UserProfileModalFormData>({
     control,
