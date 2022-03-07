@@ -15,6 +15,7 @@ import { isTruthy } from "utils/types";
 import { useLiveCollection } from "hooks/fire/useLiveCollection";
 import { useDebounceSearch } from "hooks/useDebounceSearch";
 
+// @debt move to src/hooks/video or similar
 export const useScreeningRoomVideos = (screeningRoomVenueId: string) => {
   const { data, isLoaded } = useLiveCollection<ScreeningRoomVideo>([
     COLLECTION_SPACES,
@@ -31,6 +32,7 @@ export const useScreeningRoomVideos = (screeningRoomVenueId: string) => {
   );
 };
 
+// @debt move to src/hooks/video or similar
 export const useScreeningRoom = (screeningRoomVenueId: string) => {
   const {
     screeningRoomVideos,

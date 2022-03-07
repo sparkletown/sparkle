@@ -11,9 +11,10 @@ type WorkaroundSetter = (
 const workaroundSetter: WorkaroundSetter = (newAuthUser) => (oldAuthUser) => {
   // the user has logged out, time for a workaround
   if (oldAuthUser && !newAuthUser) {
-    // Firestore SDK bug on re-login:  insufficient permissions' error because of old observers
-    // reloading the page clears the SDK cached observers attached to the window itself
-    // this prevents the error on the next login since we're starting fresh
+    // Firestore SDK and/or Reactfire bug on re-login (at least when Reactfire used):
+    // insufficient permissions' error because of old observers.
+    // Reloading the page clears the cached observers attached to the window itself
+    // and prevents the error on the next login since we're window is starting fresh
     window.location.reload();
   }
   return newAuthUser;

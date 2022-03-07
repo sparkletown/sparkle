@@ -1,0 +1,42 @@
+@use "scss/attendee/font";
+@use "scss/attendee/space";
+@use "scss/attendee/theme";
+@use "scss/attendee/effects/rounded";
+@use "scss/attendee/effects/sparkle";
+
+.section {
+  @include sparkle.panel--normal;
+  @include rounded.normal;
+  width: fit-content;
+  margin: space.empty(2) auto;
+  padding: space.empty(2);
+  border: 1px solid theme.$sparkle--border;
+}
+
+.sectionHeader {
+  display: grid;
+  grid-template-columns: 1fr repeat(1, auto) 1fr;
+  grid-column-gap: 5px;
+  justify-items: center;
+  padding-bottom: space.empty(2);
+
+  > *:nth-child(1) {
+    grid-column-start: 2;
+  }
+  > *:nth-last-child(1) {
+    margin-left: auto;
+  }
+
+  h2 {
+    margin: 0;
+    font-weight: normal;
+    font-size: font.$size--md;
+  }
+}
+
+.leaveButton {
+  color: theme.$c-subdued-text;
+  svg {
+    margin-left: space.empty(0.5);
+  }
+}

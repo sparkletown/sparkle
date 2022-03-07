@@ -2,6 +2,9 @@ import React, { useCallback, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { faTicketAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { NavBarLogin } from "components/attendee/NavBarLogin";
+import { NormalRadio } from "components/attendee/NormalRadio";
+import { SoundCloudRadio } from "components/attendee/SoundCloudRadio";
 import firebase from "firebase/compat/app";
 
 import { DISABLED_DUE_TO_1142, SPARKLE_PHOTOBOOTH_URL } from "settings";
@@ -20,9 +23,6 @@ import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { NavBarSchedule } from "components/organisms/NavBarSchedule/NavBarSchedule";
 
-import { NavBarLogin } from "components/molecules/NavBar/NavBarLogin";
-import { NormalRadio } from "components/molecules/NavBar/NormalRadio";
-import { SoundCloudRadio } from "components/molecules/NavBar/SoundCloudRadio";
 import { NavSearchBar } from "components/molecules/NavSearchBar";
 import { Popover } from "components/molecules/Popover";
 import { UpcomingTickets } from "components/molecules/UpcomingTickets";

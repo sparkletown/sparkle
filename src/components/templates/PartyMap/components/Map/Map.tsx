@@ -17,6 +17,7 @@ import { useValidImage } from "hooks/useCheckImage";
 import { MapRoom } from "./MapRoom";
 
 import styles from "./Map.module.scss";
+
 interface PortalsProps {
   portals: Room[];
   space: PartyMapVenue;

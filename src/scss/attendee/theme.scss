@@ -6,6 +6,7 @@
 // variables to substitue them into the right place.
 :root {
   --default-text: rgb(0, 0, 0);
+  --subdued-text: rgb(142, 142, 142);
   --chat-input-background: rgb(230, 230, 230);
 
   --panel-background: rgb(255, 255, 255);
@@ -33,6 +34,8 @@
 
 // This is the colour that should be used for 90% of text
 $c-default-text: var(--default-text);
+// This is the colour for anything that is lower priority text
+$c-subdued-text: var(--subdued-text);
 // Used wherever we are putting text on to a light background
 $c-inverted-text: var(--inverted-text);
 

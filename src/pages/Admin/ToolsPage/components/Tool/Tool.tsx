@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import { useForm, useFormState } from "react-hook-form";
 import { useAsyncFn } from "react-use";
+import { Button } from "components/admin/Button";
+import { Input } from "components/admin/Input";
+import { InputGroup } from "components/admin/InputGroup";
+import { ThreeColumnLayout } from "components/admin/ThreeColumnLayout";
 import { FIREBASE } from "core/firebase";
 import { httpsCallable } from "firebase/functions";
 
@@ -8,12 +12,7 @@ import { WorldSlug } from "types/id";
 
 import { Loading } from "components/molecules/Loading";
 
-import { ButtonNG } from "components/atoms/ButtonNG";
-import { InputField } from "components/atoms/InputField";
-
 import { SelfServeScript } from "../../types";
-
-import "./Tool.scss";
 
 type ToolOptions = {
   tool: SelfServeScript;
@@ -43,26 +42,33 @@ export const Tool: React.FC<ToolOptions> = ({ tool, worldSlug }) => {
   );
 
   if (returnedData) {
-    return <tool.outputComponent {...returnedData} />;
+    return (
+      <ThreeColumnLayout>
+        <tool.outputComponent {...returnedData} />
+      </ThreeColumnLayout>
+    );
   }
 
-  return isLoading ? (
-    <Loading />
-  ) : (
-    <form className="Tool" onSubmit={handleSubmit(onSubmit)}>
-      {tool.arguments.map((argument) => (
-        <div key={argument.name} className="Tool__input">
-          <span className="Tool__input-label">{argument.title}</span>
-          <InputField
-            register={register}
-            rules={{ required: argument.isRequired }}
-            name={argument.name}
-            error={errors[argument.name]}
-          />
-        </div>
-      ))}
+  if (isLoading) return <Loading label="Loading..." />;
 
-      <ButtonNG type="submit">Run the tool</ButtonNG>
-    </form>
+  return (
+    <ThreeColumnLayout>
+      <form className="Tool" onSubmit={handleSubmit(onSubmit)}>
+        {tool.arguments.map((argument) => (
+          <div key={argument.name} className="Tool__input">
+            <InputGroup title={argument.title}>
+              <Input
+                register={register}
+                rules={{ required: argument.isRequired }}
+                name={argument.name}
+                errors={errors}
+              />
+            </InputGroup>
+          </div>
+        ))}
+
+        <Button type="submit">Run the tool</Button>
+      </form>
+    </ThreeColumnLayout>
   );
 };

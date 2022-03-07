@@ -62,7 +62,7 @@ const optionsToPath: OptionsToPath = (options): string[] => {
   if (isDeferred(options)) return ALWAYS_EMPTY_ARRAY;
 
   if (Array.isArray(options)) {
-    // TS still things options can have deferred even after .some(isDeferred)
+    // TS still thinks options can have deferred even after .some(isDeferred)
     return options.some(isDeferred)
       ? ALWAYS_EMPTY_ARRAY
       : (options as string[]);
@@ -71,7 +71,7 @@ const optionsToPath: OptionsToPath = (options): string[] => {
   if (isDeferred(options.path)) return ALWAYS_EMPTY_ARRAY;
   if (options.path?.some(isDeferred)) return ALWAYS_EMPTY_ARRAY;
 
-  // TS still things options.path can have deferred even after .some(isDeferred)
+  // TS still thinks options.path can have deferred even after .some(isDeferred)
   return (options.path as string[]) ?? ALWAYS_EMPTY_ARRAY;
 };
 

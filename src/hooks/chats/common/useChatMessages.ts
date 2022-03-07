@@ -80,9 +80,6 @@ export const useChatMessagesRaw = <T extends BaseChatMessage>(
       : query(messagesRef, orderBy("timestamp", "desc")).withConverter<
           WithId<T>
         >(withIdConverter())
-    // {
-    //   idField: "id",
-    // }
   );
 
   const chatMessages = useMemo(

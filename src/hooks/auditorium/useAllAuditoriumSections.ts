@@ -42,7 +42,7 @@ export const useAllAuditoriumSections = (venue: WithId<AuditoriumVenue>) => {
     setFetchSectionsCount((prev) => prev + SECTIONS_NEXT_FETCH_SIZE);
   }, []);
 
-  const { data: sections = ALWAYS_EMPTY_ARRAY } = useFireQuery(
+  const { data: sections = ALWAYS_EMPTY_ARRAY, isLoading } = useFireQuery(
     query(
       collection(
         getFirestore(),
@@ -86,6 +86,8 @@ export const useAllAuditoriumSections = (venue: WithId<AuditoriumVenue>) => {
       availableSections: availableSections ?? ALWAYS_EMPTY_ARRAY,
       toggleFullAuditoriums,
       enterSection,
+      allSections: sections,
+      isLoading,
     }),
     [
       isFullAuditoriumsHidden,
@@ -95,6 +97,7 @@ export const useAllAuditoriumSections = (venue: WithId<AuditoriumVenue>) => {
       loadMore,
       toggleFullAuditoriums,
       enterSection,
+      isLoading,
     ]
   );
 };

@@ -28,8 +28,6 @@ import { NotFound } from "components/atoms/NotFound";
 import { EmergencyViewPagePortals } from "./EmergencyViewPagePortals";
 import EmergencyViewTabs from "./EmergencyViewTabs";
 
-import "./EmergencyViewPage.scss";
-
 dayjs.extend(advancedFormat);
 
 const emptyPersonalizedSchedule = {};

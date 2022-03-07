@@ -98,7 +98,7 @@ export const WorldsDashboard: React.FC = () => {
                 name="Create new world"
                 to={ADMIN_IA_WORLD_CREATE_URL}
                 variant="primary"
-              />
+              ></HeaderButton>
               <img
                 alt="arrow pointing towards the Create a world button"
                 className="WorldsDashboard__arrow"

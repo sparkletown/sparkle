@@ -4,7 +4,43 @@ import { START_DATE_FORMAT_RE } from "settings";
 
 import { EventInput } from "api/admin";
 
+import { SpaceType } from "types/spaces";
+
 export const eventEditSchema = Yup.object().shape<EventInput>({
+  space: Yup.object()
+    .shape<SpaceType>({
+      id: Yup.string().when(
+        ["$eventSpaceId", "$selectedSpace"],
+        (
+          eventSpaceId: string,
+          selectedSpace: SpaceType,
+          schema: Yup.ObjectSchema<SpaceType>
+        ) =>
+          eventSpaceId
+            ? schema.notRequired()
+            : schema.test(
+                "space",
+                "Space id required",
+                () => !!selectedSpace.id
+              )
+      ),
+      name: Yup.string().when(
+        ["$eventSpaceId", "$selectedSpace"],
+        (
+          eventSpaceId: string,
+          selectedSpace: SpaceType,
+          schema: Yup.ObjectSchema<SpaceType>
+        ) =>
+          eventSpaceId
+            ? schema.notRequired()
+            : schema.test(
+                "space",
+                "Space name required",
+                () => !!selectedSpace.name
+              )
+      ),
+    })
+    .notRequired(),
   name: Yup.string().required("Name required"),
   description: Yup.string().required("Description required"),
   start_date: Yup.string()
