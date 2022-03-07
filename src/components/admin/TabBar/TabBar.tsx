@@ -30,5 +30,9 @@ export const TabBar: React.FC<TabBarProps> = ({ tabs, selectedTab }) => {
     });
   }, [selectedTab, tabs]);
 
-  return <div className="-mb-px flex bg-white shadow">{renderedTabs}</div>;
+  return (
+    <div className="-mb-px flex bg-white shadow px-4 sm:px-6">
+      {renderedTabs}
+    </div>
+  );
 };
