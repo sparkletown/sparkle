@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
-import cn from "classnames";
 
 import { SPACE_TAXON } from "settings";
 
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
+import { useMediaQuery } from "hooks/viewport/useMediaQuery";
 
-import { ScheduleOverlay } from "./ScheduleOverlay/ScheduleOverlay";
-import { SearchOverlay } from "./SearchOverlay/SearchOverlay";
+import { ProfileOverlay } from "../ProfileOverlay";
+import { ScheduleOverlay } from "../ScheduleOverlay/ScheduleOverlay";
+import { SearchOverlay } from "../SearchOverlay/SearchOverlay";
 
 import CN from "./NavOverlay.module.scss";
 
@@ -33,13 +34,22 @@ const navOverlayTypeMap: Readonly<Record<NavOverlayTabType, string>> = {
 
 export const NavOverlay: React.FC<NavOverlayProps> = ({ onClose, type }) => {
   const [navOverlayType, setNavOverlay] = useState(type);
+  const [isMenuShown, setMenuShown] = useState(true);
+  const { isTablet, isMobile } = useMediaQuery();
   const { space } = useWorldAndSpaceByParams();
+
+  const isMenuPaged = isTablet || isMobile;
 
   useEffect(() => {
     setNavOverlay(type);
 
     return () => setNavOverlay("");
   }, [type]);
+
+  const handleMenuItemSelect = (key: string) => {
+    setNavOverlay(key);
+    isMenuPaged && setMenuShown(false);
+  };
 
   const spaceName = space?.name ?? SPACE_TAXON.lower;
 
@@ -48,33 +58,47 @@ export const NavOverlay: React.FC<NavOverlayProps> = ({ onClose, type }) => {
     ...navOverlayTypeMap,
   };
 
+  const isTabletAndMenuHidden = isMenuPaged && !isMenuShown;
+
   return (
     <div className={CN.navOverlay}>
-      <div className={CN.navOverlayClose} onClick={onClose}>
-        Close
-        <span className={cn("NavOverlay__close-icon", CN.closeIcon)} />
+      <div className={CN.navOverlayHeader}>
+        {isTabletAndMenuHidden && (
+          <div className={CN.navOverlayBack} onClick={() => setMenuShown(true)}>
+            <span className={CN.navOverlayBackIcon} />
+            Back
+          </div>
+        )}
+        <div className={CN.navOverlayClose} onClick={onClose}>
+          Close
+          <span className={CN.closeIcon} />
+        </div>
       </div>
       <div className={CN.navOverlayContainer}>
-        <div className={CN.navOverlayNavigation}>
-          {Object.entries(navOverlayTypeList).map(([key, label]) => (
-            <span
-              className={cn(
-                "NavOverlay__navigation-button",
-                CN.navigationButton
-              )}
-              key={key}
-              onClick={() => setNavOverlay(key)}
-            >
-              {label}
-            </span>
-          ))}
-        </div>
-        <div className={CN.navOverlayContent}>
-          {navOverlayType === NavOverlayTabType.schedule && <ScheduleOverlay />}
-          {navOverlayType === NavOverlayTabType.search && (
-            <SearchOverlay onClose={onClose} />
-          )}
-        </div>
+        {!isTabletAndMenuHidden && (
+          <div className={CN.navOverlayNavigation}>
+            {Object.entries(navOverlayTypeList).map(([key, label]) => (
+              <span
+                className={CN.navigationButton}
+                key={key}
+                onClick={() => handleMenuItemSelect(key)}
+              >
+                {label}
+              </span>
+            ))}
+          </div>
+        )}
+        {!(isMenuPaged && isMenuShown) && (
+          <div className={CN.navOverlayContent}>
+            {navOverlayType === NavOverlayTabType.schedule && (
+              <ScheduleOverlay />
+            )}
+            {navOverlayType === NavOverlayTabType.search && (
+              <SearchOverlay onClose={onClose} />
+            )}
+            {navOverlayType === NavOverlayTabType.profile && <ProfileOverlay />}
+          </div>
+        )}
       </div>
     </div>
   );

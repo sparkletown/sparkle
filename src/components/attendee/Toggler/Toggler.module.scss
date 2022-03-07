@@ -1,0 +1,70 @@
+@use "scss/attendee/space";
+@use "scss/attendee/theme";
+
+.toggler {
+  position: relative;
+  display: flex;
+  width: auto;
+  height: space.empty(2.66);
+
+  label {
+    margin-left: space.gap(2);
+  }
+
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: space.item(1.3);
+    height: space.empty(2.5);
+  }
+
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: theme.$c-glass-panel-background-transparent;
+    border: 1px solid #ffffff;
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+  }
+
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: space.empty(2);
+    width: space.empty(2);
+    bottom: space.gap(1);
+    left: space.gap(1);
+    background-color: theme.$c-glass-panel-background;
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+  }
+
+  input:checked + .slider:before {
+    background-color: theme.$c-panel-background;
+  }
+
+  input:checked + .slider:before {
+    -webkit-transform: translateX(24px);
+    -ms-transform: translateX(24px);
+    transform: translateX(24px);
+  }
+
+  /* Rounded sliders */
+  .sliderRound {
+    border-radius: space.$l2;
+  }
+
+  .sliderRound:before {
+    border-radius: 50%;
+  }
+}

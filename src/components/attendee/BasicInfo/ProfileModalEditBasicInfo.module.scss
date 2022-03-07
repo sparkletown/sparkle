@@ -1,0 +1,23 @@
+.ProfileModalEditBasicInfo {
+  display: flex;
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-left: 10px;
+    justify-content: space-between;
+  }
+
+  &__input {
+    display: flex;
+    align-items: center;
+    padding: 4px 5em 4px 12px;
+    height: 42px;
+    border-radius: 4px;
+    box-sizing: border-box;
+    width: 100%;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+}

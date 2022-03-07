@@ -31,15 +31,43 @@
   width: 100%;
 }
 
-.scheduleOverlayButton {
+.eventWrapper {
   display: flex;
-  justify-content: center;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  color: theme.$c-default-text;
+  flex-direction: column;
+  font-size: 19px;
+  cursor: default;
+  padding: space.empty(1) 0;
 }
 
-.scheduleOverlayBookmark {
+.eventTitle {
+  display: flex;
+  font-size: 23px;
+  align-items: center;
+
+  span:first-child {
+    margin-right: 16px;
+  }
+}
+.scheduleDays {
+  width: 100%;
+  margin: 44px 0;
+
+  button:first-child {
+    padding-left: 0px;
+  }
+}
+.bookmarkIcon {
   cursor: pointer;
+}
+
+.scheduleButtonActive {
+  font-weight: 600;
+}
+
+.scheduleButtonDisabled {
+  color: gray;
+}
+
+.contentWrapper {
+  padding: 0 0 40px 0;
 }

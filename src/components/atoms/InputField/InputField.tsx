@@ -92,13 +92,13 @@ export const InputField: React.FC<InputFieldProps> = ({
 
   return (
     <div className={containerClassNames}>
-      <div className={styles.inputFieldWrapper}>
+      <div className="InputField__wrapper">
+        (
         <input
           className={inputClassNames}
           {...register(name, rules)}
           {...extraInputProps}
         />
-
         {iconStart &&
           renderIcon(
             iconStart,
