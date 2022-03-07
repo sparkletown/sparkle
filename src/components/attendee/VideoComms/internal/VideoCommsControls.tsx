@@ -32,19 +32,20 @@ export const VideoCommsControls: React.FC<VideoCommsControlsProps> = ({
 }) => {
   return (
     <>
-      {startAudio &&
-        (audioEnabled ? (
-          <span onClick={stopAudio}>
-            <FontAwesomeIcon icon={faMicrophone} />
-          </span>
-        ) : (
-          <span onClick={startAudio} className="VideoCommsControls--disabled">
-            <FontAwesomeIcon
-              className={styles["VideoCommsControls--disabled"]}
-              icon={faMicrophoneSlash}
-            />
-          </span>
-        ))}
+      {startAudio && audioEnabled && (
+        <span onClick={stopAudio}>
+          <FontAwesomeIcon icon={faMicrophone} />
+        </span>
+      )}
+      {!audioEnabled && (
+        <span onClick={startAudio}>
+          <FontAwesomeIcon
+            className={styles["VideoCommsControls--disabled"]}
+            icon={faMicrophoneSlash}
+          />
+        </span>
+      )}
+
       {stopVideo && videoEnabled && (
         <span onClick={stopVideo}>
           <FontAwesomeIcon
