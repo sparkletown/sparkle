@@ -1,6 +1,7 @@
 import { PortalBox, PortalInput } from "types/rooms";
 import { PortalTemplate, VenueTemplate } from "types/venues";
 
+import IconAnimateMap from "assets/icons/icon-room-animatemap.svg";
 import IconArtPiece from "assets/icons/icon-room-artpiece.svg";
 import IconAuditorium from "assets/icons/icon-room-auditorium.svg";
 import IconBurnBarrel from "assets/icons/icon-room-burnbarrel.svg";
@@ -10,6 +11,7 @@ import IconExperience from "assets/icons/icon-room-experience.svg";
 import IconExternalLink from "assets/icons/icon-room-externallink.svg";
 import IconMap from "assets/icons/icon-room-map.svg";
 import IconMusicBar from "assets/icons/icon-room-musicbar.svg";
+import IconPosterHall from "assets/icons/icon-room-posterhall.svg";
 import IconScreening from "assets/icons/icon-room-screening.svg";
 import IconViewingWindow from "assets/icons/icon-room-viewingwindow.svg";
 import PosterArtPiece from "assets/spaces/add-portal-artpiece.png";
@@ -61,19 +63,25 @@ export const SPACE_INFO_MAP: Record<VenueTemplate, SpaceInfoItem> = {
     text: "Poster hall",
     poster: "",
     description: "",
-    icon: "",
+    icon: IconPosterHall,
+    template: VenueTemplate.posterhall,
+    hidden: true,
   },
   [VenueTemplate.posterpage]: {
     text: "Poster page",
     poster: "",
     description: "",
-    icon: "",
+    icon: IconPosterHall,
+    template: VenueTemplate.posterpage,
+    hidden: true,
   },
   [VenueTemplate.animatemap]: {
     text: "Animated map",
     poster: "",
     description: "",
-    icon: "",
+    icon: IconAnimateMap,
+    template: VenueTemplate.animatemap,
+    hidden: true,
   },
   [VenueTemplate.conversationspace]: {
     text: "Conversation Space",
@@ -168,6 +176,9 @@ export const SPACE_INFO_LIST: SpaceInfoItem[] = [
   SPACE_INFO_MAP[VenueTemplate.viewingwindow],
   SPACE_INFO_MAP[VenueTemplate.embeddable],
   SPACE_INFO_MAP[VenueTemplate.screeningroom],
+  SPACE_INFO_MAP[VenueTemplate.posterhall],
+  SPACE_INFO_MAP[VenueTemplate.posterpage],
+  SPACE_INFO_MAP[VenueTemplate.animatemap],
 ];
 
 export const PORTAL_INFO_LIST: PortalInfoItem[] = [
