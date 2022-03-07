@@ -82,7 +82,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
     <>
       <button
         onClick={() => setOpened((value) => !value)}
-        className="text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:ring-indigo-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800"
+        className="bg-sparkle text-white hover:bg-sparkle-darker focus:ring-red-500 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800"
         type="button"
       >
         {selectedOption?.label ?? title}

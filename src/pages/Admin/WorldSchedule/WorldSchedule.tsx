@@ -25,6 +25,8 @@ import { useShowHide } from "hooks/useShowHide";
 
 import { TimingEventModal } from "components/organisms/TimingEventModal";
 
+import { AdminRestricted } from "components/atoms/AdminRestricted";
+
 import * as TW from "./WorldSchedule.tailwind";
 
 export interface WorldScheduleFormInput {
@@ -102,70 +104,80 @@ export const WorldSchedule: React.FC<WorldScheduleProps> = ({ world }) => {
   const isSaveLoading = isSubmitting || isSaving;
 
   return (
-    <AdminLayout>
-      <Header title="World Schedule">
-        <HeaderButton
-          name="Create new experience"
-          variant="multicolor"
-          onClick={showCreateEventModal}
-        />
-      </Header>
-      <div className={TW.content}>
-        <div className={TW.formSection}>
-          <form onSubmit={handleSubmit(submit)}>
-            <section className="xl:col-start-1 xl:col-span-1">
-              <div>
-                <h2 className="text-lg font-medium text-gray-900">
-                  Global starting time
-                </h2>
-                <p className="text-sm mt-2 mb-7">
-                  When does your event start? Use your local time zone, it will
-                  be automatically converted for anyone visiting from around the
-                  world.
-                </p>
-                <div className="flow-root">
-                  <div className="mb-6">
-                    <label className="block text-sm font-medium text-gray-700">
-                      Starting time for schedule
-                    </label>
-                    <div className="flex row justify-between">
-                      <Input type="date" name="startDate" register={register} />
-                      <Input type="time" name="startTime" register={register} />
+    <AdminRestricted>
+      <AdminLayout>
+        <Header title="World Schedule">
+          <HeaderButton
+            name="Create new experience"
+            variant="multicolor"
+            onClick={showCreateEventModal}
+          />
+        </Header>
+        <div className={TW.content}>
+          <div className={TW.formSection}>
+            <form onSubmit={handleSubmit(submit)}>
+              <section className="xl:col-start-1 xl:col-span-1">
+                <div>
+                  <h2 className="text-lg font-medium text-gray-900">
+                    Global starting time
+                  </h2>
+                  <p className="text-sm mt-2 mb-7">
+                    When does your event start? Use your local time zone, it
+                    will be automatically converted for anyone visiting from
+                    around the world.
+                  </p>
+                  <div className="flow-root">
+                    <div className="mb-6">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Starting time for schedule
+                      </label>
+                      <div className="flex row justify-between">
+                        <Input
+                          type="date"
+                          name="startDate"
+                          register={register}
+                        />
+                        <Input
+                          type="time"
+                          name="startTime"
+                          register={register}
+                        />
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="mb-6">
-                    <label className="block text-sm font-medium text-gray-700">
-                      Ending time for schedule
-                    </label>
-                    <div className="flex row justify-between">
-                      <Input type="date" name="endDate" register={register} />
-                      <Input type="time" name="endTime" register={register} />
+                    <div className="mb-6">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Ending time for schedule
+                      </label>
+                      <div className="flex row justify-between">
+                        <Input type="date" name="endDate" register={register} />
+                        <Input type="time" name="endTime" register={register} />
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </section>
+              </section>
 
-            <Button variant="secondary">Cancel</Button>
+              <Button variant="secondary">Cancel</Button>
 
-            <Button type="submit" disabled={isSaveLoading} variant="primary">
-              {isSaveLoading ? "Saving..." : "Save"}
-            </Button>
-          </form>
+              <Button type="submit" disabled={isSaveLoading} variant="primary">
+                {isSaveLoading ? "Saving..." : "Save"}
+              </Button>
+            </form>
+          </div>
+
+          <EventsPanel worldId={world.id} spaces={spaces} />
         </div>
-
-        <EventsPanel worldId={world.id} spaces={spaces} />
-      </div>
-      {isShownCreateEventModal && (
-        <TimingEventModal
-          show={isShownCreateEventModal}
-          onHide={() => {
-            hideCreateEventModal();
-          }}
-          worldId={world.id}
-        />
-      )}
-    </AdminLayout>
+        {isShownCreateEventModal && (
+          <TimingEventModal
+            show={isShownCreateEventModal}
+            onHide={() => {
+              hideCreateEventModal();
+            }}
+            worldId={world.id}
+          />
+        )}
+      </AdminLayout>
+    </AdminRestricted>
   );
 };
