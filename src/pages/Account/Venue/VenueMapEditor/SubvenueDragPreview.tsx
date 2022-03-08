@@ -1,27 +1,24 @@
 import React, { CSSProperties, useMemo } from "react";
 
+import styles from "./SubvenueDragPreview.module.scss";
+
 export interface PropsType {
   url: string;
-  containerStyle: CSSProperties;
   imageStyle: CSSProperties;
 }
 
 export const SubvenueDragPreview: React.FC<PropsType> = ({
   url,
   imageStyle,
-  containerStyle,
 }) => {
   return useMemo(
     () => (
-      <div
-        className="subvenue-drag-preview"
-        style={{ display: "flex", justifyContent: "flex-start" }}
-      >
-        <div style={containerStyle}>
+      <div className={styles.dragPreview}>
+        <div className={styles.container}>
           <img src={url} alt="subvenue-icon" style={imageStyle} />
         </div>
       </div>
     ),
-    [url, imageStyle, containerStyle]
+    [url, imageStyle]
   );
 };

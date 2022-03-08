@@ -3,28 +3,22 @@ import { useForm, useFormState } from "react-hook-form";
 import { useAsync, useAsyncFn } from "react-use";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Checkbox } from "components/admin/Checkbox";
 
 import { DEFAULT_PORTAL_IS_ENABLED, PORTAL_INFO_ICON_MAPPING } from "settings";
 
 import { upsertRoom } from "api/admin";
 import { fetchVenue } from "api/venue";
 
-import { WorldSlug } from "types/id";
 import { Room } from "types/rooms";
-import { AnyVenue } from "types/venues";
 
 import {
   convertClickabilityToPortalType,
   convertPortalTypeToClickability,
 } from "utils/portal";
-import { generateAttendeeInsideUrl, isExternalPortal } from "utils/url";
+import { isExternalPortal } from "utils/url";
 
-import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
-
-import { PrettyLink } from "components/organisms/AdminVenueView/components/PrettyLink";
 
 import { FormErrors } from "components/molecules/FormErrors";
 import { Loading } from "components/molecules/Loading";
@@ -33,27 +27,8 @@ import { SubmitError } from "components/molecules/SubmitError";
 
 import { PortalIcon } from "components/atoms/PortalIcon";
 
-type generateTargetUrlOptions = {
-  worldSlug: WorldSlug;
-  targetSpace?: AnyVenue;
-  portal: Room;
-};
-
-const generateTargetUrl = ({
-  worldSlug,
-  portal,
-  targetSpace,
-}: generateTargetUrlOptions) => {
-  if (targetSpace) {
-    return generateAttendeeInsideUrl({
-      worldSlug,
-      spaceSlug: targetSpace.slug,
-    });
-  } else {
-    return portal.url;
-  }
-};
-
+import { TablePanel } from "./TablePanel";
+import { Toggle } from "./Toggle";
 interface PortalStripFormProps {
   portal: Room;
   index: number;
@@ -65,14 +40,8 @@ export const PortalStripForm: React.FC<PortalStripFormProps> = ({
   index,
   spaceId,
 }) => {
-  const {
-    image_url: iconUrl,
-    template,
-    title,
-    spaceId: targetSpaceId,
-  } = portal;
+  const { image_url: iconUrl, title, spaceId: targetSpaceId } = portal;
 
-  const { worldSlug } = useSpaceParams();
   const { user } = useUser();
   const [updatingClickable, setUpdatingClickable] = useState(false);
   const [updatingEnabled, setUpdatingEnabled] = useState(false);
@@ -86,13 +55,13 @@ export const PortalStripForm: React.FC<PortalStripFormProps> = ({
     ? PORTAL_INFO_ICON_MAPPING["external"]
     : iconUrl;
 
-  const { value: targetSpace, loading: isSpaceLoading } = useAsync(async () => {
+  const { value: targetSpace } = useAsync(async () => {
     if (targetSpaceId) {
       return fetchVenue(targetSpaceId);
     }
   });
 
-  const { getValues, register, reset, control, handleSubmit } = useForm({
+  const { getValues, reset, control, handleSubmit } = useForm({
     mode: "onSubmit",
     reValidateMode: "onChange",
     defaultValues: {
@@ -175,53 +144,50 @@ export const PortalStripForm: React.FC<PortalStripFormProps> = ({
     [loading, updatingEnabled, values.isEnabled]
   );
 
-  const targetUrl = !isSpaceLoading
-    ? generateTargetUrl({ worldSlug, portal, targetSpace })
-    : "";
-
   return (
-    <>
-      <form className="PortalStripForm">
-        <div className="PortalStripForm__cell PortalStripForm__icon">
-          <PortalIcon src={portalIcon} />
-        </div>
-        <div className="PortalStripForm__cell PortalStripForm__info">
-          <div className="PortalStripForm__title">{title}</div>
-          <div className="PortalStripForm__type">{template}</div>
-          <div className="PortalStripForm__link">
-            {!isSpaceLoading && <PrettyLink to={targetUrl} title={targetUrl} />}
+    <TablePanel.Row>
+      <TablePanel.Cell>
+        <PortalIcon src={portalIcon} />
+        <div className="ml-4">
+          <div className="text-sm font-medium text-gray-900">{title}</div>
+          <div className="text-sm text-gray-900">
+            Destination {targetSpace?.name || "no linked space"}
           </div>
         </div>
-        <div className="PortalStripForm__cell PortalStripForm__visibility">
-          <Checkbox
-            variant="toggler"
-            name="isClickable"
-            register={register}
-            label={renderedClickableLabel}
-            onClick={handleClickable}
-          />
+      </TablePanel.Cell>
+      <TablePanel.ActionsCell>
+        <div className="flex items-center -mb-5 flex-row">
+          <div className="flex items-center mb-5">
+            <Toggle
+              name="isEnabled"
+              label={renderedEnabledLabel}
+              onChange={handleEnabled}
+              checked={values.isEnabled}
+            />
+          </div>
         </div>
-        <div className="PortalStripForm__cell PortalStripForm__clickability">
-          <Checkbox
-            variant="toggler"
-            name="isEnabled"
-            register={register}
-            label={renderedEnabledLabel}
-            onClick={handleEnabled}
-          />
+        <div className="flex items-center -mb-5 flex-row">
+          <div className="flex items-center mb-5">
+            {/* @debt For some reason this requires being double clicked.
+               Investigate when first pass is done. */}
+            <Toggle
+              name="isClickable"
+              label={renderedClickableLabel}
+              onChange={handleClickable}
+              checked={values.isClickable}
+            />
+          </div>
         </div>
-        <div
-          className="PortalStripForm__cell PortalStripForm__edit"
-          onClick={showModal}
-        >
-          <PrettyLink>
-            <FontAwesomeIcon icon={faPen} />
-            <span className="PortalStripForm__edit-text">Edit</span>
-          </PrettyLink>
+        <div className="flex items-center flex-row" onClick={showModal}>
+          <FontAwesomeIcon
+            icon={faPen}
+            className="flex-shrink-0 mr-1.5 h-5 w-5 text-black"
+          />
+          <span className="text-black text-sm hover:text-indigo-900">Edit</span>
         </div>
         <FormErrors errors={errors} />
         <SubmitError error={submitError} />
-      </form>
+      </TablePanel.ActionsCell>
       {isModalShown && (
         <PortalAddEditModal
           portal={portal}
@@ -230,6 +196,6 @@ export const PortalStripForm: React.FC<PortalStripFormProps> = ({
           portalIndex={index}
         />
       )}
-    </>
+    </TablePanel.Row>
   );
 };

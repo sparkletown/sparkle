@@ -1,17 +1,19 @@
-import React from "react";
+import React, { ReactNode } from "react";
 
 import * as TW from "./Toggle.tailwind";
 
 export interface ToggleProps {
-  label: string;
+  label: ReactNode;
   checked?: boolean;
-  onChange?: () => void;
+  onChange?: (ev: React.FormEvent<HTMLInputElement>) => void;
+  name?: string;
 }
 
 export const Toggle: React.FC<ToggleProps> = ({
   label,
   checked = false,
   onChange,
+  name,
 }) => {
   const toggleClassName = checked
     ? TW.checkedButtonClass
@@ -19,11 +21,14 @@ export const Toggle: React.FC<ToggleProps> = ({
   const dotClassName = checked ? TW.checkedLabelClass : TW.uncheckedLabelClass;
   return (
     <div className="flex justify-end w-full">
-      <label htmlFor="toggleB" className="flex items-center cursor-pointer">
+      <label
+        htmlFor={`toggle${name}`}
+        className="flex items-center cursor-pointer"
+      >
         <div className="relative">
           <input
             type="checkbox"
-            id="toggleB"
+            id={`toggle${name}`}
             onChange={onChange}
             className="sr-only "
           />
