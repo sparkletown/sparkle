@@ -1,6 +1,11 @@
+@use "scss/attendee/space";
+@use "scss/attendee/theme";
+@use "scss/attendee/font";
+@use "scss/attendee/border";
+
 .profileModalAvatar {
-  width: 84px;
-  height: 84px;
+  width: space.empty(7);
+  height: space.empty(7);
 }
 
 .input {
@@ -8,15 +13,18 @@
 }
 
 .image {
-  width: 84px;
-  height: 84px;
+  width: space.empty(7);
+  height: space.empty(7);
   border-radius: 50%;
   cursor: pointer;
 }
 
 .text {
-  font-size: 14px;
-  margin: -58px 0px 50px 0px;
+  @include font.core;
+  position: sticky;
+  margin: -(space.empty(5)) space.empty(1) 0 space.empty(1);
   cursor: pointer;
   text-align: center;
+  border-radius: border.$radius--xs;
+  background-color: theme.$c-glass-panel-background;
 }

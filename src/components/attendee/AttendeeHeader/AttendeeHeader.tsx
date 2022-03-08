@@ -100,23 +100,24 @@ export const AttendeeHeader: React.FC<AttendeeHeaderProps> = ({
   return (
     <header className={headerClassnames}>
       <div className={containerClasses}>
-        <div>
-          {backButtonSpace ? (
-            <Button onClick={goBack} variant="primaryAlternate">
-              <FontAwesomeIcon icon={faArrowLeft} /> Leave{STRING_SPACE}
-              {formatFullTimeLocalised(Date.now())}
-            </Button>
-          ) : (
-            <Button
-              variant={isNarrow ? "primaryAlternate" : "primary"}
-              onClick={() => handleOverlayOpen(space?.name || "")}
-            >
-              {space?.name ?? `This ${SPACE_TAXON.title}`}
-              {STRING_SPACE}
-              {formatFullTimeLocalised(Date.now())}
-            </Button>
-          )}
-        </div>
+        {backButtonSpace ? (
+          <Button
+            onClick={goBack}
+            variant={isNarrow ? "primaryAlternate" : "primary"}
+          >
+            <FontAwesomeIcon icon={faArrowLeft} /> Leave{STRING_SPACE}
+            {formatFullTimeLocalised(Date.now())}
+          </Button>
+        ) : (
+          <Button
+            variant={isNarrow ? "primaryAlternate" : "primary"}
+            onClick={() => handleOverlayOpen(space?.name || "")}
+          >
+            {space?.name ?? `This ${SPACE_TAXON.title}`}
+            {STRING_SPACE}
+            {formatFullTimeLocalised(Date.now())}
+          </Button>
+        )}
         <Attendance
           totalUsersCount={space?.recentUserCount}
           usersSample={space?.recentUsersSample}

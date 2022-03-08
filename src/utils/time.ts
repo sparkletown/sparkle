@@ -23,7 +23,7 @@ import {
 
 const DATEFNS_INPUT_TIME_FORMAT = "HH:mm";
 const DATEFNS_INPUT_DATE_FORMAT = "yyyy-MM-dd";
-const DATEFNS_DAY_FORMAT = "do";
+const DATEFNS_DAY_FORMAT = "MMM d";
 
 /**
  * @deprecated in favor of using date-fns functions

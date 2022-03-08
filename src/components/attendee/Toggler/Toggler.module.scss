@@ -1,9 +1,14 @@
 @use "scss/attendee/space";
 @use "scss/attendee/theme";
+@use "scss/attendee/font";
+
+$-toggler-off-color: rgba(255, 255, 255, 0.3);
 
 .toggler {
+  font-size: font.$size--lg;
   position: relative;
   display: flex;
+  align-items: center;
   width: auto;
   height: space.empty(2.66);
 
@@ -44,13 +49,13 @@
     width: space.empty(2);
     bottom: space.gap(1);
     left: space.gap(1);
-    background-color: theme.$c-glass-panel-background;
+    background-color: $-toggler-off-color;
     -webkit-transition: 0.4s;
     transition: 0.4s;
   }
 
   input:checked + .slider:before {
-    background-color: theme.$c-panel-background;
+    background-color: theme.$c-button-fg;
   }
 
   input:checked + .slider:before {

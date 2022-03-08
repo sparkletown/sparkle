@@ -1,8 +1,17 @@
 @use "scss/attendee/space";
 @use "scss/attendee/border";
+@use "scss/attendee/font";
 @use "scss/attendee/theme";
+@use "scss/attendee/effects/error";
 
 .input {
+  display: flex;
+  flex-direction: column;
+
+  label {
+    width: 100%;
+  }
+
   label::after {
     content: attr(data-label);
     position: absolute;
@@ -25,4 +34,26 @@
 
 .border {
   border: border.$radius--s3 solid theme.$sparkle--border;
+}
+
+.invalid {
+  @include error.input-error;
+}
+
+.errorIcon {
+  background-image: url(/assets/icons/input-error-icon.svg);
+  height: 18px;
+  width: 18px;
+  margin-left: -24px;
+}
+
+.inputWrapper {
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.inputError {
+  @include font.core;
+  margin-top: space.empty(0.5);
 }

@@ -42,10 +42,14 @@ export const MapRoom: React.FC<MapRoomProps> = ({
   const isCovertRoom = room.type && COVERT_ROOM_TYPES.includes(room.type);
   const shouldBeClickable = !isCovertRoom && !isUnclickable;
 
-  const left = safeZoneBounds.left + safeZoneBounds.width * room.x_percent;
-  const top = safeZoneBounds.top + safeZoneBounds.height * room.y_percent;
-  const width = safeZoneBounds.width * room.width_percent;
-  const height = safeZoneBounds.height * room.height_percent;
+  // All the percentages are stored as 0 to 100 in the database for historical
+  // reasons. We scale them back down here.
+  const left =
+    safeZoneBounds.left + (safeZoneBounds.width * room.x_percent) / 100;
+  const top =
+    safeZoneBounds.top + (safeZoneBounds.height * room.y_percent) / 100;
+  const width = (safeZoneBounds.width * room.width_percent) / 100;
+  const height = (safeZoneBounds.height * room.height_percent) / 100;
 
   const roomInlineStyles = useMemo(
     () => ({

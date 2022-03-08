@@ -26,12 +26,14 @@ export const SpaceInfo: React.FC = () => {
   const mapStyles = useCss({
     backgroundImage: `url(${mapBackground})`,
   });
-
+  console.log(space);
   return (
     <div className={CN.spaceWrapper}>
       <div className={`${CN.spaceImage} ${mapStyles}`}></div>
-      <h4>About {space?.name || "Space"}</h4>
-      <div className={CN.spaceDescription}>{space?.description ?? ""}</div>
+      <div>About {space?.name || "Space"}</div>
+      <div className={CN.spaceDescription}>
+        {space?.config?.landingPageConfig?.description ?? ""}
+      </div>
       <Link to={visitSpaceUrl} className={CN.spaceLink}>
         Go to homepage
       </Link>

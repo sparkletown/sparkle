@@ -35,7 +35,6 @@ export const InputSelect: React.FC<InputSelectProps> = ({
   inputClassName,
   errorTextClassName,
   error,
-  label,
   inputName,
   selectName,
   inputPlaceholder,
@@ -46,30 +45,27 @@ export const InputSelect: React.FC<InputSelectProps> = ({
 }) => {
   const containerClassNames = classNames(
     styles.inputSelect,
-    {
-      [styles.invalid]: isDefined(error),
-    },
-    containerClassName
-  );
-  const selectContainerClassNames = classNames(
-    styles.inputSelect,
-    {
-      [styles.invalid]: isDefined(error),
-    },
     containerClassName
   );
 
+  const wrapperClassNames = classNames(styles.inputWrapper, {
+    [styles.invalid]: isDefined(error),
+  });
+
   const inputClassNames = classNames(styles.input, inputClassName);
-  const selectClassNames = classNames(styles.select, selectContainerClassNames);
+  const selectClassNames = classNames(styles.select, containerClassNames);
 
   return (
     <div className={containerClassNames}>
       <div className={styles.wrapper}>
-        <input
-          className={inputClassNames}
-          placeholder={inputPlaceholder}
-          {...register(inputName, inputRules)}
-        />
+        <div className={wrapperClassNames}>
+          <input
+            className={inputClassNames}
+            placeholder={inputPlaceholder}
+            {...register(inputName, inputRules)}
+          />
+          {error && <span className={styles.errorIcon}></span>}
+        </div>
         <select
           className={selectClassNames}
           defaultValue={selectPlaceholder}
@@ -86,7 +82,7 @@ export const InputSelect: React.FC<InputSelectProps> = ({
         </select>
       </div>
       {error && (
-        <span className={classNames("error", errorTextClassName)}>
+        <span className={classNames(styles.error, errorTextClassName)}>
           {error.message}
         </span>
       )}

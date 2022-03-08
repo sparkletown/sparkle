@@ -184,30 +184,30 @@ export const ScheduleOverlay: React.FC = () => {
         );
 
         return (
-          <div key={event.id} className={CN.eventWrapper}>
-            <div className={CN.eventTitle}>
-              <span>{event.name}</span>
-              <FontAwesomeIcon
-                icon={event.isSaved ? solidBookmark : regularBookmark}
-                onClick={() => bookmarkEvent(event)}
-                className={CN.bookmarkIcon}
-              />
+          <div key={event.id} className={CN.eventContainer}>
+            <div className={CN.eventWrapper}>
+              <div className={CN.eventTitle}>
+                <span>{event.name}</span>
+                <FontAwesomeIcon
+                  icon={event.isSaved ? solidBookmark : regularBookmark}
+                  onClick={() => bookmarkEvent(event)}
+                  className={CN.bookmarkIcon}
+                />
+              </div>
+              <div>
+                <span>
+                  {formatTimeLocalised(eventStartTime({ event })) + " - "}
+                </span>
+                <span>
+                  {showDate && formatDateRelativeToNow(eventEndTime({ event }))}
+                </span>
+                {STRING_SPACE}
+                <span>{formatTimeLocalised(eventEndTime({ event }))}</span>
+                <span> in {event.spaceId}</span>
+              </div>
+              <div>{event.description}</div>
             </div>
-            <div>
-              <span>
-                {isCurrentEventLive
-                  ? "Live "
-                  : formatTimeLocalised(eventStartTime({ event })) + " - "}
-              </span>
-              <span>{isCurrentEventLive && "until "}</span>
-              <span>
-                {showDate && formatDateRelativeToNow(eventEndTime({ event }))}
-              </span>
-              {STRING_SPACE}
-              <span>{formatTimeLocalised(eventEndTime({ event }))}</span>
-              <span> in {event.spaceId}</span>
-            </div>
-            <div>{event.description}</div>
+            <div className={CN.liveEvent}>{isCurrentEventLive && "NOW"}</div>
           </div>
         );
       }),

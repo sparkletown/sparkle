@@ -14,6 +14,11 @@
   white-space: nowrap;
   cursor: pointer;
   border: none;
+
+  &:focus {
+    // removes blue highlighting on mobile tap
+    -webkit-tap-highlight-color: transparent;
+  }
 }
 
 .buttonPrimary {

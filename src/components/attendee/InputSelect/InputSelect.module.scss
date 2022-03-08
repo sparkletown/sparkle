@@ -1,6 +1,7 @@
 @use "scss/attendee/theme";
 @use "scss/attendee/space";
 @use "scss/attendee/font";
+@use "scss/attendee/effects/error";
 
 .wrapper {
   @include font.core;
@@ -16,7 +17,7 @@
   padding: space.empty(0.33) 5em space.empty(0.33) space.empty(1);
   border-radius: space.empty(0.33) 0px 0px space.empty(0.33);
   box-sizing: border-box;
-  width: 80%;
+  width: 100%;
   border: none;
   border-right: 1px solid theme.$c-glass-panel-background;
 }
@@ -29,4 +30,28 @@
   width: 20%;
   border: none;
   border-right: 5px solid transparent;
+}
+
+.errorIcon {
+  background-image: url(/assets/icons/input-error-icon.svg);
+  height: 18px;
+  width: 18px;
+  margin-left: -24px;
+}
+
+.inputWrapper {
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.invalid {
+  input {
+    @include error.input-error;
+  }
+}
+
+.error {
+  @include font.core;
+  margin-top: space.empty(0.5);
 }
