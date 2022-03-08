@@ -1,7 +1,10 @@
 @use "scss/attendee/theme";
 @use "scss/attendee/space";
 @use "scss/attendee/font";
+@use "scss/attendee/border";
 @use "scss/attendee/effects/error";
+
+$-error-icon-size: 18px;
 
 .wrapper {
   @include font.core;
@@ -19,7 +22,7 @@
   box-sizing: border-box;
   width: 100%;
   border: none;
-  border-right: 1px solid theme.$c-glass-panel-background;
+  border-right: border.$radius--s3 solid theme.$c-glass-panel-background;
 }
 
 .select {
@@ -29,14 +32,14 @@
   box-sizing: border-box;
   width: 20%;
   border: none;
-  border-right: 5px solid transparent;
+  border-right: border.$radius--xs solid transparent;
 }
 
 .errorIcon {
   background-image: url(/assets/icons/input-error-icon.svg);
-  height: 18px;
-  width: 18px;
-  margin-left: -24px;
+  height: $-error-icon-size;
+  width: $-error-icon-size;
+  margin-left: -(space.empty(2));
 }
 
 .inputWrapper {
