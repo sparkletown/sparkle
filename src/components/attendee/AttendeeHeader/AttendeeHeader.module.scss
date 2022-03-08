@@ -2,6 +2,7 @@
 @use "scss/attendee/layout";
 @use "scss/attendee/space";
 @use "scss/attendee/layer";
+@use "scss/attendee/effects/sparkle";
 
 // These is module private.
 $-z-index--header: layer.above(layer.$z-index--attendee);
@@ -10,7 +11,7 @@ $-z-index--header: layer.above(layer.$z-index--attendee);
   display: flex;
   position: fixed;
   z-index: $-z-index--header;
-  width: 100%;
+  width: 100vw;
   padding: space.empty(1);
 }
 
@@ -26,4 +27,8 @@ $-z-index--header: layer.above(layer.$z-index--attendee);
     width: calc(100% - #{layout.$w-sidebar});
     padding-right: space.empty(1);
   }
+}
+
+.narrow {
+  @include sparkle.color--glass;
 }

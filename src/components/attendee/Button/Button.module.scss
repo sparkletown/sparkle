@@ -28,3 +28,9 @@
   background: transparent;
   border: 1px solid white;
 }
+
+.buttonPrimaryAlternate {
+  @include sparkle.color--glass;
+  background: transparent;
+  backdrop-filter: none;
+}

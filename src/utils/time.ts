@@ -341,3 +341,7 @@ export const formatDayLabel = (
       format(dateOrTimestamp, DATEFNS_DAY_FORMAT),
   });
 };
+
+export const formatFullTimeLocalised = (
+  dateOrTimestamp: Date | number
+): string => format(dateOrTimestamp, DATEFNS_INPUT_TIME_FORMAT);

@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ProfileOverlay } from "components/attendee/ProfileOverlay";
+import { ScheduleOverlay } from "components/attendee/ScheduleOverlay/ScheduleOverlay";
+import { SearchOverlay } from "components/attendee/SearchOverlay/SearchOverlay";
+import { SpaceInfo } from "components/attendee/SpaceInfo";
 
 import { SPACE_TAXON } from "settings";
 
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useMediaQuery } from "hooks/viewport/useMediaQuery";
-
-import { ProfileOverlay } from "../ProfileOverlay";
-import { ScheduleOverlay } from "../ScheduleOverlay/ScheduleOverlay";
-import { SearchOverlay } from "../SearchOverlay/SearchOverlay";
 
 import CN from "./NavOverlay.module.scss";
 
@@ -65,7 +67,10 @@ export const NavOverlay: React.FC<NavOverlayProps> = ({ onClose, type }) => {
       <div className={CN.navOverlayHeader}>
         {isTabletAndMenuHidden && (
           <div className={CN.navOverlayBack} onClick={() => setMenuShown(true)}>
-            <span className={CN.navOverlayBackIcon} />
+            <FontAwesomeIcon
+              icon={faArrowLeft}
+              className={CN.navOverlayBackIcon}
+            />
             Back
           </div>
         )}
@@ -90,6 +95,7 @@ export const NavOverlay: React.FC<NavOverlayProps> = ({ onClose, type }) => {
         )}
         {!(isMenuPaged && isMenuShown) && (
           <div className={CN.navOverlayContent}>
+            {navOverlayType === space?.name && <SpaceInfo />}
             {navOverlayType === NavOverlayTabType.schedule && (
               <ScheduleOverlay />
             )}
