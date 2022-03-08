@@ -2,16 +2,19 @@ import React from "react";
 import { useForm, useFormState } from "react-hook-form";
 import firebase from "firebase/compat/app";
 
-import { SpaceWithId, WorldWithId } from "types/id";
 import { VenueAccessMode } from "types/VenueAcccess";
 
 import { errorMessage, errorStatus } from "utils/error";
 
+import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useSocialSignIn } from "hooks/useSocialSignIn";
 
 import { TicketCodeField } from "components/organisms/TicketCodeField";
 
+import { LoadingPage } from "components/molecules/LoadingPage";
+
 import { ButtonNG } from "components/atoms/ButtonNG";
+import { NotFoundFallback } from "components/atoms/NotFoundFallback";
 
 import fIcon from "assets/icons/facebook-social-icon.svg";
 import gIcon from "assets/icons/google-social-icon.svg";
@@ -23,8 +26,6 @@ export interface LoginFormProps {
   displayPasswordResetForm: () => void;
   closeAuthenticationModal?: () => void;
   afterUserIsLoggedIn?: (data?: LoginFormData) => void;
-  world: WorldWithId;
-  space: SpaceWithId;
 }
 
 export interface LoginFormData {
@@ -39,9 +40,8 @@ export const LoginForm: React.FC<LoginFormProps> = ({
   displayPasswordResetForm,
   closeAuthenticationModal,
   afterUserIsLoggedIn,
-  world,
-  space,
 }) => {
+  const { world, space, isLoading } = useWorldAndSpaceByParams();
   const { signInWithGoogle, signInWithFacebook } = useSocialSignIn();
 
   const {
@@ -129,6 +129,14 @@ export const LoginForm: React.FC<LoginFormProps> = ({
       setError("backend", { type: "firebase", message: "Error" });
     }
   };
+
+  if (isLoading) {
+    return <LoadingPage />;
+  }
+
+  if (!space || !world) {
+    return <NotFoundFallback />;
+  }
 
   return (
     <div className="form-container">

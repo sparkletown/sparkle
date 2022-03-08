@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { useSearchParam } from "react-use";
 
@@ -17,14 +18,24 @@ export const useSpaceParams = () => {
   const spaceSlugFromQuery = useSearchParam("spaceSlug") as SpaceSlug;
   const worldSlugFromQuery = useSearchParam("worldSlug") as WorldSlug;
 
-  return {
-    spaceSlug: spaceSlugFromParams ?? spaceSlugFromQuery ?? undefined,
-    worldSlug: worldSlugFromParams ?? worldSlugFromQuery ?? undefined,
+  return useMemo(() => {
+    const spaceSlug = spaceSlugFromParams ?? spaceSlugFromQuery ?? undefined;
+    const worldSlug = worldSlugFromParams ?? worldSlugFromQuery ?? undefined;
 
+    return {
+      spaceSlug,
+      worldSlug,
+
+      spaceSlugFromParams,
+      spaceSlugFromQuery,
+
+      worldSlugFromParams,
+      worldSlugFromQuery,
+    };
+  }, [
     spaceSlugFromParams,
-    spaceSlugFromQuery,
-
     worldSlugFromParams,
+    spaceSlugFromQuery,
     worldSlugFromQuery,
-  };
+  ]);
 };

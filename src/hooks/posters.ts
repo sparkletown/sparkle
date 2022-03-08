@@ -3,8 +3,9 @@ import { where } from "firebase/firestore";
 import Fuse from "fuse.js";
 
 import {
-  COLLECTION_SPACES,
+  ALWAYS_EMPTY_ARRAY,
   DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT,
+  PATH,
 } from "settings";
 
 import { PosterPageVenue } from "types/venues";
@@ -12,13 +13,13 @@ import { VenueTemplate } from "types/VenueTemplate";
 
 import { tokeniseStringWithQuotesBySpaces } from "utils/text";
 
-import { useRefiCollection } from "hooks/fire/useRefiCollection";
+import { useLiveCollection } from "hooks/fire/useLiveCollection";
 
 import { useDebounceSearch } from "./useDebounceSearch";
 
 export const usePosterVenues = (posterHallId: string) => {
-  const { data, isLoaded } = useRefiCollection<PosterPageVenue>({
-    path: [COLLECTION_SPACES],
+  const { data, isLoaded } = useLiveCollection<PosterPageVenue>({
+    path: PATH.spaces,
     constraints: [
       where("template", "==", VenueTemplate.posterpage),
       where("parentId", "==", posterHallId),
@@ -26,7 +27,7 @@ export const usePosterVenues = (posterHallId: string) => {
   });
   return useMemo(
     () => ({
-      posterVenues: data ?? [],
+      posterVenues: data ?? ALWAYS_EMPTY_ARRAY,
       isPostersLoaded: isLoaded,
     }),
     [data, isLoaded]

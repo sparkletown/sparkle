@@ -3,15 +3,8 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { render } from "react-dom";
 import { Provider as ReduxStoreProvider } from "react-redux";
-import {
-  AuthProvider,
-  DatabaseProvider,
-  FirebaseAppProvider,
-  FirestoreProvider,
-} from "reactfire";
 import { AppRouter } from "core/AppRouter";
 import { BugsnagErrorBoundary } from "core/BugsnagErrorBoundary";
-import { FIREBASE } from "core/firebase";
 import { activatePolyFills } from "core/polyfills";
 
 import { store } from "store";
@@ -37,22 +30,14 @@ traceReactScheduler("initial render", window.performance.now(), () => {
       <BugsnagErrorBoundary>
         <DndProvider backend={HTML5Backend}>
           <ReduxStoreProvider store={store}>
-            <FirebaseAppProvider firebaseApp={FIREBASE.app}>
-              <FirestoreProvider sdk={FIREBASE.firestore}>
-                <AuthProvider sdk={FIREBASE.auth}>
-                  <DatabaseProvider sdk={FIREBASE.db}>
-                    <AlgoliaSearchProvider>
-                      <CustomSoundsProvider
-                        loadingComponent={<LoadingPage />}
-                        waitTillConfigLoaded
-                      >
-                        <AppRouter />
-                      </CustomSoundsProvider>
-                    </AlgoliaSearchProvider>
-                  </DatabaseProvider>
-                </AuthProvider>
-              </FirestoreProvider>
-            </FirebaseAppProvider>
+            <AlgoliaSearchProvider>
+              <CustomSoundsProvider
+                loadingComponent={<LoadingPage />}
+                waitTillConfigLoaded
+              >
+                <AppRouter />
+              </CustomSoundsProvider>
+            </AlgoliaSearchProvider>
           </ReduxStoreProvider>
         </DndProvider>
       </BugsnagErrorBoundary>

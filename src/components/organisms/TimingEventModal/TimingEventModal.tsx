@@ -19,8 +19,8 @@ import { MaybeWithId, WithId } from "utils/id";
 
 import { eventEditSchema } from "forms/eventEditSchema";
 
-import { useOwnedVenues } from "hooks/useOwnedVenues";
-import { useUser } from "hooks/useUser";
+import { useSpacesByOwner } from "hooks/spaces/useSpacesByOwner";
+import { useUserId } from "hooks/user/useUserId";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 import { Modal } from "components/molecules/Modal";
@@ -29,14 +29,14 @@ import { Dropdown } from "components/atoms/Dropdown";
 
 import "./TimingEventModal.scss";
 
-export type TimingEventModalProps = {
+type TimingEventModalProps = {
   show: boolean;
   onHide: () => void;
   venueId?: string | undefined;
   event?: WorldEvent;
   template?: VenueTemplate;
   venue?: WithId<AnyVenue>;
-  worldId: WorldId | string;
+  worldId?: WorldId;
 };
 
 export const TimingEventModal: React.FC<TimingEventModalProps> = ({
@@ -89,10 +89,13 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
     }
   }, [event, reset, eventSpaceId]);
 
-  const { userId } = useUser();
-  const { ownedVenues, isLoading: isSpacesLoading } = useOwnedVenues({
+  const { userId } = useUserId();
+  const {
+    ownSpaces: ownedVenues,
+    isLoading: isSpacesLoading,
+  } = useSpacesByOwner({
     worldId,
-    userId: userId ?? "",
+    userId,
   });
 
   const spacesMap: SpaceType[] = ownedVenues.map((venue) => ({
@@ -114,6 +117,8 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
 
   const onUpdateEvent = useCallback(
     async (data: EventInput) => {
+      const updatedWorldId: string | undefined = eventSpace?.worldId ?? worldId;
+      if (!updatedWorldId) return;
       const start = dayjs(`${data.start_date} ${data.start_time}`);
       const spaceId = eventSpaceId ?? selectedSpace.id ?? "";
       const formEvent: MaybeWithId<WorldEvent> = {
@@ -127,7 +132,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
         spaceId: spaceId,
         // @debt this needs figuring out. We shouldn't get to here without
         // an eventSpace
-        worldId: eventSpace?.worldId ?? worldId,
+        worldId: updatedWorldId,
       };
       // Add the ID conditionally - otherwise the field is set to undefined
       // which firebase does not like.

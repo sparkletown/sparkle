@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import classNames from "classnames";
 import { addDays } from "date-fns";
 import dayjs from "dayjs";
@@ -18,8 +18,6 @@ import { useValidImage } from "hooks/useCheckImage";
 import { useUser } from "hooks/useUser";
 import useVenueScheduleEvents from "hooks/useVenueScheduleEvents";
 
-import { Login } from "pages/Account/Login";
-
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
@@ -29,8 +27,6 @@ import { NotFound } from "components/atoms/NotFound";
 
 import { EmergencyViewPagePortals } from "./EmergencyViewPagePortals";
 import EmergencyViewTabs from "./EmergencyViewTabs";
-
-import "./EmergencyViewPage.scss";
 
 dayjs.extend(advancedFormat);
 
@@ -45,7 +41,7 @@ export const EmergencyViewPage: React.FC = () => {
     isLoaded: isCurrentVenueLoaded,
   } = useWorldAndSpaceByParams();
 
-  const { user, userWithId } = useUser();
+  const { userWithId } = useUser();
   const userEventIds =
     userWithId?.myPersonalizedSchedule ?? emptyPersonalizedSchedule;
 
@@ -115,14 +111,6 @@ export const EmergencyViewPage: React.FC = () => {
 
   if (!space) {
     return <LoadingPage />;
-  }
-
-  if (!user) {
-    return (
-      <Suspense fallback={<LoadingPage />}>
-        <Login />
-      </Suspense>
-    );
   }
 
   return (

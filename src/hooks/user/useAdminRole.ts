@@ -7,8 +7,8 @@ import { UserId } from "types/id";
 
 import { WithId } from "utils/id";
 
-import { useRefiDocument } from "hooks/fire/useRefiDocument";
-import { useOwnedVenues } from "hooks/useOwnedVenues";
+import { useLiveDocument } from "hooks/fire/useLiveDocument";
+import { useSpacesByOwner } from "hooks/spaces/useSpacesByOwner";
 import { useOwnWorlds } from "hooks/worlds/useOwnWorlds";
 
 export type AdminRole = {
@@ -19,14 +19,14 @@ export type AdminRole = {
 export type UseAdminRole = (options: {
   userId: string;
 }) => LoadStatus & {
-  adminRole: WithId<AdminRole>;
+  adminRole?: WithId<AdminRole>;
   adminUserIds: string[];
   isAdminUser: boolean;
   isNotAdminUser: boolean;
 };
 
 export const useAdminRole: UseAdminRole = ({ userId }) => {
-  const { data: adminRole, isLoading, error } = useRefiDocument<AdminRole>([
+  const { data: adminRole, isLoading, error } = useLiveDocument<AdminRole>([
     COLLECTION_ROLES,
     "admin",
   ]);
@@ -34,7 +34,10 @@ export const useAdminRole: UseAdminRole = ({ userId }) => {
   const { isLoading: isOwnWorldsLoading, ownWorlds } = useOwnWorlds({ userId });
   const isAnyWorldOwner = !isOwnWorldsLoading && ownWorlds.length > 0;
 
-  const { ownedVenues, isLoading: isOwnVenuesLoading } = useOwnedVenues({
+  const {
+    ownSpaces: ownedVenues,
+    isLoading: isOwnVenuesLoading,
+  } = useSpacesByOwner({
     userId: userId as UserId,
   });
   const isAnySpaceOwner = !isOwnVenuesLoading && ownedVenues.length > 0;

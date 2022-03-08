@@ -12,7 +12,7 @@ import { TimingSpace } from "components/organisms/TimingSpace";
 import { Loading } from "components/molecules/Loading";
 
 type EventsPanelProps = {
-  worldId: WorldId;
+  worldId?: WorldId;
   spaces: SpaceWithId[];
 };
 
