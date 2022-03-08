@@ -74,8 +74,13 @@ const calculateImageDimensions = ({
   imageHeight,
   venue,
 }: CalculateImageDimensionsOptions) => {
-  const { width: safeWidthPerc, height: safeHeightPerc } =
+  const { width: safeWidthPerc100, height: safeHeightPerc100 } =
     venue.config?.safeZone || DEFAULT_SAFE_ZONE;
+
+  // All percentages are stored as 0-100 in the database for historical reasons
+  // and so we scale them here.
+  const safeWidthPerc = safeWidthPerc100 / 100.0;
+  const safeHeightPerc = safeHeightPerc100 / 100.0;
 
   // Decide whether the image needs to be rescaled using the width or the
   // height as the constraint - otherwise part of the safe zone will end up
