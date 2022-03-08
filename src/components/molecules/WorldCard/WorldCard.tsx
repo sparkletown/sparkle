@@ -27,7 +27,7 @@ export const WorldCard: React.FC<WorldCardProps> = ({ world }) => {
 
   return (
     <tr>
-      <td className="px-6 py-4 whitespace-nowrap">
+      <td className="px-6 py-4">
         <div className="flex items-center">
           <TableRowAvatar src={world.host?.icon || DEFAULT_VENUE_LOGO} />
           <div className="ml-4">
