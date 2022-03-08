@@ -9,7 +9,6 @@ import { LoadingSpinner } from "components/atoms/LoadingSpinner";
 import { UserAvatar } from "components/atoms/UserAvatar";
 
 import { AudioTrackPlayer } from "./internal/AudioTrackPlayer";
-import { useMute } from "./internal/useMute";
 import { VideoCommsControls } from "./internal/VideoCommsControls";
 import { useVideoComms } from "./hooks";
 import { Participant, VideoSource } from "./types";
@@ -39,9 +38,6 @@ export const VideoCommsParticipant: React.FC<VideoCommsParticipantProps> = ({
   const { profile, isLoading } = useProfileById({
     userId: participant.sparkleId as UserId,
   });
-  // These muted controls are only for muting the playback of remote participants
-  // Local participant audio is controlled via useVideoComms
-  const { isMuted, mute, unmute } = useMute();
 
   // We currently only allow one audio track and two video tracks (webcam
   // and screenshare). The controls available on each are different. Rather than
@@ -67,6 +63,9 @@ export const VideoCommsParticipant: React.FC<VideoCommsParticipantProps> = ({
     [styles.videoCommsControlsContainer__darkButtons]: !webcamTrack?.enabled,
   });
 
+  const isAudioEnabled =
+    participant.audioTracks.length !== 0 && participant.audioTracks[0].enabled;
+
   if (isLoading) {
     return <LoadingSpinner />;
   }
@@ -76,14 +75,14 @@ export const VideoCommsParticipant: React.FC<VideoCommsParticipantProps> = ({
         {webcamTrack?.enabled ? (
           <VideoTrackDisplay track={webcamTrack} isMirrored={isLocal} />
         ) : (
-          <>
-            <UserAvatar
-              containerClassName={styles.avatarContainer}
-              user={profile}
-            />
-            <span className={styles.userName}>{profile?.partyName}</span>
-          </>
+          <UserAvatar
+            containerClassName={styles.avatarContainer}
+            user={profile}
+          />
         )}
+
+        <span className={styles.userName}>{profile?.partyName}</span>
+
         <div className={controlsClasses}>
           {isLocal ? (
             <>
@@ -99,9 +98,7 @@ export const VideoCommsParticipant: React.FC<VideoCommsParticipantProps> = ({
             </>
           ) : (
             <VideoCommsControls
-              startAudio={unmute}
-              stopAudio={mute}
-              audioEnabled={!isMuted}
+              audioEnabled={isAudioEnabled}
               sourceType={VideoSource.Webcam}
             />
           )}
@@ -122,7 +119,7 @@ export const VideoCommsParticipant: React.FC<VideoCommsParticipantProps> = ({
         </div>
       )}
 
-      {!isLocal && <AudioTrackPlayer track={audioStream} isMuted={isMuted} />}
+      {!isLocal && <AudioTrackPlayer track={audioStream} />}
     </div>
   );
 };

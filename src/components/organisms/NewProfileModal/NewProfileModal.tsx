@@ -2,7 +2,7 @@ import React, { useCallback } from "react";
 
 import { REACT_BOOTSTRAP_MODAL_HIDE_DURATION } from "settings";
 
-import { SpaceWithId } from "types/id";
+import { SpaceWithId, UserId } from "types/id";
 
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useShowHide } from "hooks/useShowHide";
@@ -53,7 +53,7 @@ export const NewProfileModal: React.FC<NewProfileModalProps> = ({ space }) => {
     >
       <div className="NewProfileModal">
         <NewProfileModalBody
-          userId={selectedUserId}
+          userId={selectedUserId as UserId}
           space={space}
           closeUserProfileModal={closeUserProfileModal}
         />

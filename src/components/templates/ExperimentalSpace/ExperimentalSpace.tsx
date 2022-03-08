@@ -6,9 +6,6 @@ import {
 } from "components/attendee/VideoComms/types";
 import { VideoTrackDisplay } from "components/attendee/VideoComms/VideoTrackDisplay";
 import { useVideoHuddle } from "components/attendee/VideoHuddle/useVideoHuddle";
-import { withCurrentUserId } from "components/hocs/db/withCurrentUserId";
-import { withRequired } from "components/hocs/gate/withRequired";
-import { compose } from "lodash/fp";
 
 import { COLLECTION_EXPERIMENTS } from "settings";
 
@@ -19,8 +16,9 @@ import { ExperimentalVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
-import { useRefiDocument } from "hooks/fire/useRefiDocument";
+import { useLiveDocument } from "hooks/fire/useLiveDocument";
 import { useProfileById } from "hooks/user/useProfileById";
+import { useUserId } from "hooks/user/useUserId";
 
 import { Dropdown } from "components/atoms/Dropdown";
 
@@ -28,7 +26,6 @@ import styles from "./ExperimentalSpace.module.scss";
 
 export interface ExperimentalSpaceProps {
   venue: WithId<ExperimentalVenue>;
-  userId: string;
 }
 
 interface ProjectedVideoTrackProps {
@@ -49,6 +46,7 @@ interface UserTracknameProps {
   track: VideoTrack;
   participant: Participant;
 }
+
 const UserTrackname: React.FC<UserTracknameProps> = ({
   track,
   participant,
@@ -76,10 +74,10 @@ interface ProjectionData {
   projectedVideoTrackId: string | null;
 }
 
-const _ExperimentalSpace: React.FC<ExperimentalSpaceProps> = ({
+export const ExperimentalSpace: React.FC<ExperimentalSpaceProps> = ({
   venue,
-  userId,
 }) => {
+  const { userId } = useUserId();
   const {
     shareScreen,
     inHuddle,
@@ -96,7 +94,7 @@ const _ExperimentalSpace: React.FC<ExperimentalSpaceProps> = ({
     [huddleId]
   );
 
-  const { data: projectionData } = useRefiDocument<ProjectionData>(queryPath);
+  const { data: projectionData } = useLiveDocument<ProjectionData>(queryPath);
 
   useEffect(() => {
     return () => {
@@ -188,8 +186,3 @@ const _ExperimentalSpace: React.FC<ExperimentalSpaceProps> = ({
     </div>
   );
 };
-
-export const ExperimentalSpace = compose(
-  withCurrentUserId,
-  withRequired(["userId"])
-)(_ExperimentalSpace);

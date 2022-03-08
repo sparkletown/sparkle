@@ -19,7 +19,7 @@ import { RunTabUserInfo } from "components/organisms/AdminVenueView/components/R
 import { ButtonNG } from "components/atoms/ButtonNG";
 
 interface RunTabSidebarProps {
-  space: SpaceWithId;
+  space?: SpaceWithId;
 }
 
 export const RunTabUsers: React.FC<RunTabSidebarProps> = ({ space }) => {
@@ -29,7 +29,7 @@ export const RunTabUsers: React.FC<RunTabSidebarProps> = ({ space }) => {
     hide: hideInviteAdminModal,
   } = useShowHide();
 
-  const owners = space.owners ?? ALWAYS_EMPTY_ARRAY;
+  const owners = space?.owners ?? ALWAYS_EMPTY_ARRAY;
 
   const { value: admins = ALWAYS_EMPTY_ARRAY } = useAsync(
     async () =>
@@ -38,6 +38,10 @@ export const RunTabUsers: React.FC<RunTabSidebarProps> = ({ space }) => {
       ),
     [owners]
   );
+
+  if (!space) {
+    return null;
+  }
 
   return (
     <div className="RunTabUsers">
