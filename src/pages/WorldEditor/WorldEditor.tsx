@@ -47,9 +47,8 @@ export const WorldEditor: React.FC = () => {
   return (
     <AdminLayout>
       <div className="WorldEditor">
-        {/* @debt the check here should probably depend on editMode */}
         <WithPermission
-          check="super"
+          check="world"
           loading={<AdminRestrictedLoading />}
           fallback={<AdminRestrictedMessage />}
         >
