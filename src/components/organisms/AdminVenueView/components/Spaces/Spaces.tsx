@@ -3,11 +3,8 @@ import { SpaceEditForm } from "components/admin/SpaceEditForm";
 
 import { BACKGROUND_IMG_TEMPLATES } from "settings";
 
-import { UserId, WorldSlug } from "types/id";
-import { AnyVenue } from "types/venues";
+import { SpaceWithId } from "types/id";
 import { VenueTemplate } from "types/VenueTemplate";
-
-import { WithId } from "utils/id";
 
 import { MapPreview } from "pages/Admin/MapPreview";
 import { ScreeningRoomPreview } from "pages/Admin/ScreeningRoomPreview";
@@ -23,18 +20,13 @@ import { AdminShowcase } from "../AdminShowcase";
 import "./Spaces.scss";
 
 interface SpacesProps {
-  venue: WithId<AnyVenue>;
+  venue: SpaceWithId;
 }
 
 export const Spaces: React.FC<SpacesProps> = ({ venue: space }) => (
   <AdminPanel variant="bound" className="Spaces">
     <AdminSidebar>
-      {/* @debt TODO: use userId and worldSlug here */}
-      <SpaceEditForm
-        space={space}
-        userId={"" as UserId}
-        worldSlug={"" as WorldSlug}
-      />
+      <SpaceEditForm space={space} />
     </AdminSidebar>
     <AdminShowcase>
       {BACKGROUND_IMG_TEMPLATES.includes(space.template as VenueTemplate) && (

@@ -4,10 +4,6 @@ module.exports = {
     "faker",
     "@types/faker",
 
-    // newer version has different API, should probably be easy to rework how it is used upon upgrade
-    // @see https://github.com/FirebaseExtended/reactfire/blob/main/docs/upgrade-guide.md
-    // "reactfire",
-
     // will probably require update of components that use the older and testing of the forms
     "react-hook-form",
 

@@ -1,6 +1,4 @@
 import { useCallback, useMemo } from "react";
-import { useFirestore, useFirestoreDocData } from "reactfire";
-import { doc } from "firebase/firestore";
 
 import {
   COLLECTION_SECTIONS,
@@ -20,9 +18,9 @@ import { GridPosition } from "types/grid";
 import { AuditoriumVenue } from "types/venues";
 
 import { getVideoSizeInSeats } from "utils/auditorium";
-import { withIdConverter } from "utils/converters";
 import { WithId } from "utils/id";
 
+import { useFireDocument } from "hooks/fire/useFireDocument";
 import { useAuditoriumSeatedUsers } from "hooks/useAuditoriumSeatedUsers";
 
 import { useGetUserByPosition } from "../useGetUserByPosition";
@@ -43,24 +41,12 @@ export const useAuditoriumSection = ({
     auditoriumRows: venueRowsCount,
   } = venue;
 
-  const firestore = useFirestore();
-
   const { userWithId } = useUser();
   const userId = userWithId?.id;
 
-  const sectionRef = doc(
-    firestore,
-    COLLECTION_SPACES,
-    venueId,
-    COLLECTION_SECTIONS,
-    sectionId
-  ).withConverter(withIdConverter<AuditoriumSection>());
-
-  const { data: section, status } = useFirestoreDocData<
+  const { data: section, isLoaded: isSectionLoaded } = useFireDocument<
     WithId<AuditoriumSection>
-  >(sectionRef);
-
-  const isSectionLoaded = status !== "loading";
+  >([COLLECTION_SPACES, venueId, COLLECTION_SECTIONS, sectionId]);
 
   const baseRowsCount =
     section?.rowsCount ?? venueRowsCount ?? SECTION_DEFAULT_ROWS_COUNT;

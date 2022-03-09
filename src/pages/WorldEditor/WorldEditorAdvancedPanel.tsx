@@ -4,6 +4,8 @@ import { ThreeColumnLayout } from "components/admin/ThreeColumnLayout";
 import { WorldAdvancedForm } from "components/admin/WorldAdvancedForm";
 import { WorldShowcase } from "components/admin/WorldShowcase";
 
+import { WorldSlug } from "types/id";
+
 import { useWorldBySlug } from "hooks/worlds/useWorldBySlug";
 
 import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
@@ -13,13 +15,13 @@ import { AdminSidebar } from "components/organisms/AdminVenueView/components/Adm
 import { Loading } from "components/molecules/Loading";
 
 export interface WorldEditorAdvancedPanelProps {
-  worldSlug?: string;
+  worldSlug?: WorldSlug;
 }
 
-export const WorldEditorAdvancedPanel: React.FC<WorldEditorAdvancedPanelProps> = ({
-  worldSlug,
-}) => {
-  const { isLoaded, world } = useWorldBySlug(worldSlug);
+export const WorldEditorAdvancedPanel: React.FC<WorldEditorAdvancedPanelProps> = (
+  props
+) => {
+  const { isLoaded, world } = useWorldBySlug(props);
   return (
     <AdminPanel variant="bound">
       <ThreeColumnLayout>

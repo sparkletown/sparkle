@@ -1,34 +1,29 @@
 import React, { createContext, useCallback, useContext, useMemo } from "react";
 import { where } from "firebase/firestore";
 
-import {
-  ALWAYS_EMPTY_ARRAY,
-  COLLECTION_SPACES,
-  FIELD_WORLD_ID,
-} from "settings";
+import { ALWAYS_EMPTY_ARRAY, DEFERRED, FIELD_WORLD_ID, PATH } from "settings";
 
 import {
-  SpaceId,
   SpaceSlug,
   SpaceWithId,
   WorldAndSpaceIdLocation,
-  WorldId,
   WorldIdLocation,
 } from "types/id";
 import { AnyVenue } from "types/venues";
 
-import { convertToFirestoreKey, WithId } from "utils/id";
+import { WithId } from "utils/id";
 import { isDefined } from "utils/types";
 import { findSovereignVenue } from "utils/venue";
 
-import { useRefiCollection } from "hooks/fire/useRefiCollection";
+import { useLiveCollection } from "hooks/fire/useLiveCollection";
+import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 
-export type FindVenueInRelatedVenuesOptions = {
+type FindVenueInRelatedVenuesOptions = {
   spaceId?: string;
   spaceSlug?: SpaceSlug;
 };
 
-export interface RelatedVenuesContextState {
+interface RelatedVenuesContextState {
   isLoading: boolean;
 
   sovereignVenue?: WithId<AnyVenue>;
@@ -53,10 +48,14 @@ const LegacyRelatedVenuesProvider: React.FC<WorldAndSpaceIdLocation> = ({
   worldId,
   children,
 }) => {
-  const { data, isLoading } = useRefiCollection<SpaceWithId>({
-    path: [COLLECTION_SPACES],
-    constraints: [where(FIELD_WORLD_ID, "==", convertToFirestoreKey(worldId))],
-  });
+  const { data, isLoading } = useLiveCollection<SpaceWithId>(
+    worldId
+      ? {
+          path: PATH.spaces,
+          constraints: [where(FIELD_WORLD_ID, "==", worldId)],
+        }
+      : DEFERRED
+  );
 
   const relatedVenues = data ?? ALWAYS_EMPTY_ARRAY;
 
@@ -150,10 +149,14 @@ const WorldSpacesProvider: React.FC<WorldIdLocation> = ({
   worldId,
   children,
 }) => {
-  const { data, isLoading } = useRefiCollection<SpaceWithId>({
-    path: [COLLECTION_SPACES],
-    constraints: [where(FIELD_WORLD_ID, "==", convertToFirestoreKey(worldId))],
-  });
+  const { data, isLoading } = useLiveCollection<SpaceWithId>(
+    worldId
+      ? {
+          path: PATH.spaces,
+          constraints: [where(FIELD_WORLD_ID, "==", worldId)],
+        }
+      : DEFERRED
+  );
 
   const relatedVenues = data?.filter(isDefined) ?? ALWAYS_EMPTY_ARRAY;
 
@@ -222,10 +225,8 @@ const WorldSpacesProvider: React.FC<WorldIdLocation> = ({
   );
 };
 
-export const RelatedVenuesProvider: React.FC<{
-  spaceId?: SpaceId;
-  worldId?: WorldId;
-}> = ({ worldId, spaceId, children }) => {
+export const RelatedVenuesProvider: React.FC = ({ children }) => {
+  const { worldId, spaceId } = useWorldAndSpaceByParams();
   const defaultState: RelatedVenuesContextState = useMemo(
     () => ({
       isLoading: false,
@@ -271,22 +272,21 @@ export const useRelatedVenuesContext = (): RelatedVenuesContextState => {
   return relatedVenuesState;
 };
 
-export interface RelatedVenuesProps {
+type UseRelatedVenues = (options?: {
   currentVenueId?: string;
-}
-
-export interface RelatedVenuesData extends RelatedVenuesContextState {
+}) => RelatedVenuesContextState & {
   parentVenue?: SpaceWithId;
   currentVenue?: WithId<AnyVenue>;
   parentVenueId?: string;
-}
+};
 
-export function useRelatedVenues(props: RelatedVenuesProps): RelatedVenuesData;
-export function useRelatedVenues(): RelatedVenuesContextState;
-
-// eslint-disable-next-line func-style, prefer-arrow/prefer-arrow-functions
-export function useRelatedVenues(props?: RelatedVenuesProps) {
-  const { currentVenueId } = props ?? {};
+/**
+ * @deprecated Please use an alternative that doesn't depend on RelatedVenuesContext.Provider
+ *
+ * @see src/hooks/spaces/useRelatedSpaces.ts
+ */
+export const useRelatedVenues: UseRelatedVenues = (options) => {
+  const { currentVenueId } = options ?? {};
   const relatedVenuesState = useRelatedVenuesContext();
 
   const { findVenueInRelatedVenues } = relatedVenuesState;
@@ -295,17 +295,18 @@ export function useRelatedVenues(props?: RelatedVenuesProps) {
     return findVenueInRelatedVenues({ spaceId: currentVenueId });
   }, [currentVenueId, findVenueInRelatedVenues]);
 
-  const parentVenue: WithId<AnyVenue> | undefined = useMemo(() => {
+  const parentVenue: SpaceWithId | undefined = useMemo(() => {
     if (!currentVenue) return;
 
-    return findVenueInRelatedVenues({ spaceId: currentVenue.parentId });
+    const result = findVenueInRelatedVenues({ spaceId: currentVenue.parentId });
+    return result as SpaceWithId;
   }, [currentVenue, findVenueInRelatedVenues]);
 
   const parentVenueId = parentVenue?.id;
 
-  if (!props) {
+  if (!options) {
     return relatedVenuesState;
   }
 
   return { ...relatedVenuesState, currentVenue, parentVenue, parentVenueId };
-}
+};
