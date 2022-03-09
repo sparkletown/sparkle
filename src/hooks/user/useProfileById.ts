@@ -1,14 +1,16 @@
 import { useMemo } from "react";
 
-import { COLLECTION_USERS, DEFERRED } from "settings";
+import { COLLECTION_USERS } from "settings";
 
 import { LoadStatus } from "types/fire";
 import { UserId, UserWithId } from "types/id";
 
-import { useLiveDocument } from "hooks/fire/useLiveDocument";
+import { convertToFirestoreKey } from "utils/id";
+
+import { useRefiDocument } from "hooks/fire/useRefiDocument";
 
 type UseProfileById = (options: {
-  userId?: UserId;
+  userId: UserId;
 }) => LoadStatus & {
   profile?: UserWithId;
   userId?: UserId;
@@ -16,13 +18,15 @@ type UseProfileById = (options: {
 
 export const useProfileById: UseProfileById = ({ userId }) => {
   const {
+    status,
     data: profile,
     error,
     isLoading,
     isLoaded,
-  } = useLiveDocument<UserWithId>(
-    userId ? [COLLECTION_USERS, userId] : DEFERRED
-  );
+  } = useRefiDocument<UserWithId>([
+    COLLECTION_USERS,
+    convertToFirestoreKey(userId),
+  ]);
 
   const isTester = useMemo(() => !!profile?.tester, [profile?.tester]);
 
@@ -33,8 +37,9 @@ export const useProfileById: UseProfileById = ({ userId }) => {
       isTester,
       isLoading,
       isLoaded,
+      status,
       error,
     }),
-    [profile, userId, isTester, isLoading, isLoaded, error]
+    [profile, userId, isTester, isLoading, isLoaded, status, error]
   );
 };

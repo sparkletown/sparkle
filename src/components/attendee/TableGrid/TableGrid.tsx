@@ -111,14 +111,13 @@ export const TableGrid: React.FC<TableGridProps> = ({
   const [joiningTable, setJoiningTable] = useState("");
 
   const { userWithId } = useUser();
-  const experience = useExperience();
+  const { data: experience } = useExperience();
 
   const isCurrentUserAdmin = arrayIncludes(venue.owners, userId);
 
-  const {
-    seatedTableUsers,
-    isLoaded: isSeatedTableUsersLoaded,
-  } = useSeatedTableUsers(venueId);
+  const [seatedTableUsers, isSeatedTableUsersLoaded] = useSeatedTableUsers(
+    venueId
+  );
 
   const userTableReference = useMemo(
     () =>

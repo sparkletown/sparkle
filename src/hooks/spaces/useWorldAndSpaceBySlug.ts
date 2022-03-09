@@ -1,18 +1,11 @@
-import { useMemo } from "react";
+import { useFirestore, useFirestoreCollectionData } from "reactfire";
 import Bugsnag from "@bugsnag/js";
-import { collection, getFirestore, query, where } from "firebase/firestore";
+import { collection, query, where } from "firebase/firestore";
 
-import {
-  COLLECTION_SPACES,
-  COLLECTION_WORLDS,
-  DEFERRED,
-  FIELD_HIDDEN,
-  FIELD_SLUG,
-} from "settings";
+import { COLLECTION_SPACES, COLLECTION_WORLDS } from "settings";
 
 import { World } from "api/world";
 
-import { LoadStatus } from "types/fire";
 import {
   SpaceId,
   SpaceSlug,
@@ -24,18 +17,18 @@ import {
 import { AnyVenue } from "types/venues";
 
 import { withIdConverter } from "utils/converters";
-import { SparkleHookError } from "utils/error";
-
-import { useFireQuery } from "hooks/fire/useFireQuery";
+import { convertToFirestoreKey, WithId } from "utils/id";
 
 type UseWorldAndSpaceBySlug = (options: {
   worldSlug?: WorldSlug;
   spaceSlug?: SpaceSlug;
-}) => LoadStatus & {
+}) => {
   world?: WorldWithId;
   worldId?: WorldId;
   space?: SpaceWithId;
   spaceId?: SpaceId;
+  isLoaded: boolean;
+  error?: string;
 };
 
 /**
@@ -46,40 +39,37 @@ export const useWorldAndSpaceBySlug: UseWorldAndSpaceBySlug = ({
   worldSlug,
   spaceSlug,
 }) => {
-  const { data: spaces, isLoaded: isSpaceLoaded } = useFireQuery<SpaceWithId>(
-    useMemo(
-      () =>
-        spaceSlug
-          ? query(
-              collection(getFirestore(), COLLECTION_SPACES),
-              where(FIELD_SLUG, "==", spaceSlug)
-            ).withConverter(withIdConverter<AnyVenue, SpaceId>())
-          : DEFERRED,
-      [spaceSlug]
-    )
+  // @debt we don't properly deal with the slug being undefined.
+  // The query shouldn't happen if we don't have a world slug.
+  // This whole hook needs a bit of a rethink.
+  // It's used incorrectly by the NavBar.
+  const firestore = useFirestore();
+
+  // Note: Avoid using the option 'initialData' because it will make status always return 'success'
+
+  const { data: spaces, status: spaceStatus } = useFirestoreCollectionData<
+    WithId<AnyVenue>
+  >(
+    query(
+      collection(firestore, COLLECTION_SPACES),
+      where("slug", "==", convertToFirestoreKey(spaceSlug))
+    ).withConverter(withIdConverter<AnyVenue>())
   );
 
-  const { data: worlds, isLoaded: isWorldLoaded } = useFireQuery<WorldWithId>(
-    useMemo(
-      () =>
-        worldSlug
-          ? query(
-              collection(getFirestore(), COLLECTION_WORLDS),
-              where(FIELD_HIDDEN, "==", false),
-              where(FIELD_SLUG, "==", worldSlug)
-            ).withConverter(withIdConverter<World, WorldId>())
-          : DEFERRED,
-      [worldSlug]
-    )
+  const { data: worlds, status: worldStatus } = useFirestoreCollectionData<
+    WithId<World>
+  >(
+    query(
+      collection(firestore, COLLECTION_WORLDS),
+      where("isHidden", "==", false),
+      where("slug", "==", convertToFirestoreKey(worldSlug))
+    ).withConverter(withIdConverter<World>())
   );
 
-  const world = worlds?.[0];
-  const worldId = world?.id;
-  const matchingSpaces = spaces?.filter((space) => space.worldId === worldId);
-  const space = matchingSpaces?.[0];
-  const spaceId = space?.id;
+  const isSpaceLoaded = spaceStatus !== "loading";
+  const isWorldLoaded = worldStatus !== "loading";
 
-  if (worlds && worlds.length > 1) {
+  if (worlds?.length > 1) {
     Bugsnag.notify(
       `Multiple worlds have been found with the following slug: ${worldSlug}.`,
       (event) => {
@@ -92,7 +82,33 @@ export const useWorldAndSpaceBySlug: UseWorldAndSpaceBySlug = ({
     );
   }
 
-  if (matchingSpaces && matchingSpaces?.length > 1) {
+  const world = worlds?.[0];
+  if (!isWorldLoaded || !isSpaceLoaded) {
+    return {
+      world: undefined,
+      worldId: undefined,
+      space: undefined,
+      spaceId: undefined,
+      isLoaded: false,
+    };
+  }
+
+  if (!world) {
+    return {
+      world: undefined,
+      worldId: undefined,
+      space: undefined,
+      spaceId: undefined,
+      isLoaded: true,
+      error: `World with the following slug: ${worldSlug} does not exist.`,
+    };
+  }
+
+  const matchingSpaces = spaces.filter(
+    (candidateSpace) => candidateSpace.worldId === world.id
+  );
+
+  if (matchingSpaces?.length > 1) {
     Bugsnag.notify(
       `Multiple spaces have been found with the following slug: ${spaceSlug}.`,
       (event) => {
@@ -106,37 +122,24 @@ export const useWorldAndSpaceBySlug: UseWorldAndSpaceBySlug = ({
     );
   }
 
-  return useMemo(() => {
-    const error = !world
-      ? new SparkleHookError(
-          `World with the following slug: ${worldSlug} does not exist.`
-        )
-      : !space
-      ? new SparkleHookError(
-          `Space with the following slug: ${spaceSlug} does not exist.`
-        )
-      : undefined;
+  const space = matchingSpaces?.[0];
 
-    const isLoaded = isSpaceLoaded && isWorldLoaded;
-    const isLoading = !isLoaded;
-
+  if (!space) {
     return {
-      space,
-      spaceId,
-      world,
-      worldId,
-      isLoaded,
-      isLoading,
-      error,
+      world: world as WorldWithId,
+      worldId: world.id as WorldId,
+      space: undefined,
+      spaceId: undefined,
+      isLoaded: true,
+      error: `Space with the following slug: ${spaceSlug} does not exist.`,
     };
-  }, [
-    world,
-    space,
-    worldId,
-    spaceId,
-    worldSlug,
-    spaceSlug,
-    isWorldLoaded,
-    isSpaceLoaded,
-  ]);
+  }
+
+  return {
+    world: world as WorldWithId | undefined,
+    space: space as SpaceWithId | undefined,
+    worldId: world?.id as WorldId | undefined,
+    spaceId: space?.id as SpaceId | undefined,
+    isLoaded: true,
+  };
 };

@@ -1,10 +1,10 @@
 import { useMemo } from "react";
+import { useFirestoreCollectionData } from "reactfire";
 import { orderBy, Query, query } from "firebase/firestore";
 
 import { ALWAYS_EMPTY_ARRAY } from "settings";
 
 import { BaseChatMessage, ChatMessage, MessageToDisplay } from "types/chat";
-import { DeferredAction } from "types/id";
 
 import {
   filterNewSchemaMessages,
@@ -14,10 +14,7 @@ import {
 } from "utils/chat";
 import { withIdConverter } from "utils/converters";
 import { WithId } from "utils/id";
-import { isDeferred } from "utils/query";
 import { isTruthy } from "utils/types";
-
-import { useFireQuery } from "hooks/fire/useFireQuery";
 
 export const useChatMessagesForDisplay = <T extends ChatMessage>(
   messagesRef: Query<T>,
@@ -72,14 +69,18 @@ export const useChatMessages = <T extends ChatMessage>(
 };
 
 export const useChatMessagesRaw = <T extends BaseChatMessage>(
-  messagesRef: Query<T> | DeferredAction
+  messagesRef: Query<T>
 ): [WithId<T>[], boolean] => {
-  const { data: rawMessages = ALWAYS_EMPTY_ARRAY, isLoaded } = useFireQuery(
-    isDeferred(messagesRef)
-      ? messagesRef
-      : query(messagesRef, orderBy("timestamp", "desc")).withConverter<
-          WithId<T>
-        >(withIdConverter())
+  const {
+    data: rawMessages = ALWAYS_EMPTY_ARRAY,
+    status,
+  } = useFirestoreCollectionData(
+    query(messagesRef, orderBy("timestamp", "desc")).withConverter<WithId<T>>(
+      withIdConverter()
+    ),
+    {
+      idField: "id",
+    }
   );
 
   const chatMessages = useMemo(
@@ -89,5 +90,5 @@ export const useChatMessagesRaw = <T extends BaseChatMessage>(
     [rawMessages]
   );
 
-  return [chatMessages, isLoaded];
+  return [chatMessages, status !== "loading"];
 };

@@ -1,24 +1,23 @@
-import { useMemo } from "react";
-
 import { LoadStatus } from "types/fire";
+import { MaybeWorldAndSpaceSlugLocation } from "types/id";
 
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 
 import { useWorldAndSpaceBySlug } from "./useWorldAndSpaceBySlug";
 
 type UseWorldAndSpaceByParams = () => LoadStatus &
-  ReturnType<typeof useSpaceParams> &
-  ReturnType<typeof useWorldAndSpaceBySlug>;
+  MaybeWorldAndSpaceSlugLocation &
+  Omit<ReturnType<typeof useWorldAndSpaceBySlug>, "error">;
 
 export const useWorldAndSpaceByParams: UseWorldAndSpaceByParams = () => {
   const params = useSpaceParams();
-  const result = useWorldAndSpaceBySlug(params);
+  const { error, isLoaded, ...extra } = useWorldAndSpaceBySlug(params);
 
-  return useMemo(
-    () => ({
-      ...params,
-      ...result,
-    }),
-    [params, result]
-  );
+  return {
+    ...params,
+    ...extra,
+    isLoading: !isLoaded,
+    isLoaded,
+    error: error ? new Error(error) : undefined,
+  };
 };

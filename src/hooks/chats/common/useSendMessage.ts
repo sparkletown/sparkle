@@ -1,10 +1,10 @@
 import { useCallback } from "react";
+import { useFirestore } from "reactfire";
 import firebase from "firebase/compat/app";
 import {
   CollectionReference,
   doc,
   DocumentData,
-  getFirestore,
   WriteBatch,
   writeBatch,
 } from "firebase/firestore";
@@ -79,6 +79,7 @@ export const useSendMessage = <
   processResultingBatch = noop,
 }: UseSendMessageProps<T, K>): SendChatMessage<K> => {
   const { userWithId } = useUser();
+  const firestore = useFirestore();
 
   return useCallback(
     async (props) => {
@@ -89,7 +90,7 @@ export const useSendMessage = <
           ...getAdditionalFields(props),
         });
 
-        const batch = writeBatch(getFirestore());
+        const batch = writeBatch(firestore);
 
         const collections: CompatCollectionReference<CompatDocumentData>[] = getCollections(
           props
@@ -108,6 +109,12 @@ export const useSendMessage = <
         console.error(e);
       }
     },
-    [userWithId, getAdditionalFields, getCollections, processResultingBatch]
+    [
+      userWithId,
+      getAdditionalFields,
+      firestore,
+      getCollections,
+      processResultingBatch,
+    ]
   );
 };

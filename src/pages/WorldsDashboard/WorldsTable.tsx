@@ -1,5 +1,3 @@
-import React from "react";
-
 import { World } from "api/world";
 
 import { WithId } from "utils/id";

@@ -1,6 +1,4 @@
 import React, { useMemo } from "react";
-import { AdminRestrictedLoading } from "components/admin/AdminRestrictedLoading";
-import { AdminRestrictedMessage } from "components/admin/AdminRestrictedMessage";
 import { CardList } from "components/admin/CardList";
 import { Header } from "components/admin/Header";
 import { HeaderButton } from "components/admin/HeaderButton";
@@ -9,77 +7,65 @@ import { SectionSubtitle } from "components/admin/SectionSubtitle";
 import { SpaceCard } from "components/admin/SpaceCard";
 import { AdminLayout } from "components/layouts/AdminLayout";
 import { FullWidthLayout } from "components/layouts/FullWidthLayout";
-import { WithPermission } from "components/shared/WithPermission";
 
-import {
-  ADMIN_IA_SPACE_CREATE_PARAM_URL,
-  ALWAYS_EMPTY_ARRAY,
-  SPACE_TAXON,
-} from "settings";
+import { ADMIN_IA_SPACE_CREATE_PARAM_URL, SPACE_TAXON } from "settings";
 
+import { UserId, WorldWithId } from "types/id";
 import { isNotPartyMapVenue, isPartyMapVenue } from "types/venues";
 
 import { generateUrl } from "utils/url";
 
-import { useSpacesByWorldId } from "hooks/spaces/useSpacesByWorldId";
-import { useUserId } from "hooks/user/useUserId";
-import { useWorldBySlug } from "hooks/worlds/useWorldBySlug";
-import { useWorldParams } from "hooks/worlds/useWorldParams";
+import { useWorldSpaces } from "hooks/spaces/useWorldSpaces";
 
-import { LoadingPage } from "components/molecules/LoadingPage";
+import { AdminRestricted } from "components/atoms/AdminRestricted";
 
-export const SpacesDashboard: React.FC = () => {
-  const urlParams = useWorldParams();
-  const {
-    world,
-    worldId,
-    worldSlug,
-    isLoading: isWorldLoading,
-  } = useWorldBySlug(urlParams);
-  const { userId, isLoading: isUserLoading } = useUserId();
+interface SpacesDashboardProps {
+  userId: UserId;
+  world: WorldWithId;
+}
 
+export const SpacesDashboard: React.FC<SpacesDashboardProps> = ({
+  userId,
+  world,
+}) => {
   const isWorldAdmin = userId ? world?.owners.includes(userId) : undefined;
-  const { spaces } = useSpacesByWorldId({ worldId });
+  const { spaces } = useWorldSpaces({ worldId: world.id });
 
   const renderedMapCards = useMemo(
     () =>
-      world
-        ? spaces?.filter(isPartyMapVenue).map((space) => {
-            const isSpaceAdmin = userId
-              ? space.owners?.includes(userId)
-              : undefined;
+      spaces?.filter(isPartyMapVenue).map((space) => {
+        const isSpaceAdmin = userId
+          ? space.owners?.includes(userId)
+          : undefined;
 
-            return (
-              <SpaceCard
-                key={space.id}
-                space={space}
-                world={world}
-                isEditable={isWorldAdmin || isSpaceAdmin}
-              />
-            );
-          })
-        : ALWAYS_EMPTY_ARRAY,
+        return (
+          <SpaceCard
+            key={space.id}
+            space={space}
+            world={world}
+            isEditable={isWorldAdmin || isSpaceAdmin}
+          />
+        );
+      }),
     [spaces, userId, world, isWorldAdmin]
   );
 
   const renderedOtherSpacesCards = useMemo(
     () =>
-      world
-        ? spaces?.filter(isNotPartyMapVenue).map((space) => {
-            const isSpaceAdmin = userId
-              ? space.owners?.includes(userId)
-              : undefined;
+      spaces?.filter(isNotPartyMapVenue).map((space) => {
+        const isSpaceAdmin = userId
+          ? space.owners?.includes(userId)
+          : undefined;
 
-            return (
-              <SpaceCard
-                key={space.id}
-                space={space}
-                world={world}
-                isEditable={isWorldAdmin || isSpaceAdmin}
-              />
-            );
-          })
-        : ALWAYS_EMPTY_ARRAY,
+        return (
+          <SpaceCard
+            key={space.id}
+            space={space}
+            world={world}
+            isEditable={isWorldAdmin || isSpaceAdmin}
+          />
+        );
+      }),
     [spaces, userId, world, isWorldAdmin]
   );
 
@@ -90,20 +76,12 @@ export const SpacesDashboard: React.FC = () => {
   const createNewSpaceUrl = generateUrl({
     route: ADMIN_IA_SPACE_CREATE_PARAM_URL,
     required: ["worldSlug"],
-    params: { worldSlug },
+    params: { worldSlug: world.slug },
   });
-
-  if (isWorldLoading || isUserLoading) {
-    return <LoadingPage />;
-  }
 
   return (
     <AdminLayout>
-      <WithPermission
-        check="world"
-        loading={<AdminRestrictedLoading />}
-        fallback={<AdminRestrictedMessage />}
-      >
+      <AdminRestricted>
         <div className="SpacesDashboard">
           <Header title="Spaces">
             <HeaderButton
@@ -135,7 +113,7 @@ export const SpacesDashboard: React.FC = () => {
             )}
           </FullWidthLayout>
         </div>
-      </WithPermission>
+      </AdminRestricted>
     </AdminLayout>
   );
 };

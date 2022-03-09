@@ -7,7 +7,9 @@ import React, {
   useState,
 } from "react";
 import Bugsnag from "@bugsnag/js";
+import { withCurrentUserId } from "components/hocs/db/withCurrentUserId";
 import { HowlOptions } from "howler";
+import { compose } from "lodash/fp";
 import { useSound } from "use-sound";
 import {
   ExposedData,
@@ -20,11 +22,10 @@ import { ALWAYS_EMPTY_OBJECT } from "settings";
 
 import { fetchSoundConfigs } from "api/sounds";
 
+import { UserId } from "types/id";
 import { SoundConfigMap, SoundConfigReference } from "types/sounds";
 
 import { isDefined } from "utils/types";
-
-import { useUserId } from "hooks/user/useUserId";
 
 export type PlaySpriteFunction = (options?: PlaySpriteOptions) => void;
 export type PlaySpriteOptions = Omit<PlayOptions, "id">;
@@ -43,14 +44,15 @@ const CustomSoundsContext = createContext({
 interface CustomSoundsProviderProps {
   waitTillConfigLoaded?: boolean;
   loadingComponent?: React.ReactNode;
+  userId?: UserId;
 }
 
-export const CustomSoundsProvider: React.FC<CustomSoundsProviderProps> = ({
+const _CustomSoundsProvider: React.FC<CustomSoundsProviderProps> = ({
   loadingComponent = "Loading...",
   waitTillConfigLoaded = false,
+  userId,
   children,
 }) => {
-  const { userId } = useUserId();
   const [soundConfigs, setSoundConfigs] = useState<SoundConfigMap>(
     ALWAYS_EMPTY_OBJECT
   );
@@ -80,6 +82,10 @@ export const CustomSoundsProvider: React.FC<CustomSoundsProviderProps> = ({
     </CustomSoundsContext.Provider>
   );
 };
+
+export const CustomSoundsProvider = compose(withCurrentUserId)(
+  _CustomSoundsProvider
+);
 
 export const useCustomSoundsContext = () => useContext(CustomSoundsContext);
 

@@ -11,13 +11,19 @@ import {
 
 import { checkIsCodeValid, checkIsEmailWhitelisted } from "api/auth";
 
+import {
+  SpaceId,
+  SpaceSlug,
+  SpaceWithId,
+  WorldSlug,
+  WorldWithId,
+} from "types/id";
 import { VenueAccessMode } from "types/VenueAcccess";
 
 import { errorCode, errorMessage, errorStatus } from "utils/error";
 import { isTruthy } from "utils/types";
 import { generateUrl } from "utils/url";
 
-import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useAnalytics } from "hooks/useAnalytics";
 import { useSocialSignIn } from "hooks/useSocialSignIn";
 
@@ -26,11 +32,8 @@ import { updateUserPrivate } from "pages/Account/helpers";
 import { LoginFormData } from "components/organisms/AuthenticationModal/LoginForm/LoginForm";
 import { TicketCodeField } from "components/organisms/TicketCodeField";
 
-import { LoadingPage } from "components/molecules/LoadingPage";
-
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { ConfirmationModal } from "components/atoms/ConfirmationModal/ConfirmationModal";
-import { NotFoundFallback } from "components/atoms/NotFoundFallback";
 
 import fIcon from "assets/icons/facebook-social-icon.svg";
 import gIcon from "assets/icons/google-social-icon.svg";
@@ -54,27 +57,30 @@ export interface RegisterData {
   date_of_birth: string;
 }
 
-interface RegisterFormProps {
+export interface RegisterFormProps {
   displayLoginForm: () => void;
   displayPasswordResetForm: () => void;
   afterUserIsLoggedIn?: (data?: LoginFormData) => void;
   closeAuthenticationModal?: () => void;
+  world: WorldWithId;
+  space: SpaceWithId;
+  spaceId: SpaceId;
+  worldSlug: WorldSlug;
+  spaceSlug: SpaceSlug;
+  isWorldLoaded: boolean;
 }
 
 export const RegisterForm: React.FC<RegisterFormProps> = ({
   displayLoginForm,
   afterUserIsLoggedIn,
   closeAuthenticationModal,
+  spaceId,
+  space,
+  world,
+  worldSlug,
+  spaceSlug,
+  isWorldLoaded,
 }) => {
-  const {
-    world,
-    space,
-    spaceId,
-    spaceSlug,
-    worldSlug,
-    isLoading,
-    isLoaded,
-  } = useWorldAndSpaceByParams();
   const history = useHistory();
 
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -101,16 +107,6 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
   });
 
   const { errors } = useFormState({ control });
-
-  // putting these two checks high before the rest
-  // makes checking for undefined values unnecessary
-  if (isLoading) {
-    return <LoadingPage />;
-  }
-
-  if (!space || !world || !spaceId) {
-    return <NotFoundFallback />;
-  }
 
   const clearBackendErrors = () => {
     clearErrors("backend");
@@ -251,7 +247,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
   };
 
   const isDobRequired =
-    isLoaded && (world?.requiresDateOfBirth ?? DEFAULT_REQUIRES_DOB);
+    isWorldLoaded && (world?.requiresDateOfBirth ?? DEFAULT_REQUIRES_DOB);
 
   return (
     <div className="form-container">

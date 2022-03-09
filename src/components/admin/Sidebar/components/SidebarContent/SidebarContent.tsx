@@ -30,7 +30,6 @@ import { AdminSidebarProfile } from "components/molecules/AdminSidebarProfile";
 import * as TW from "./SidebarContent.tailwind";
 
 import SparkleLogo from "assets/icons/sparkle-300.png";
-
 const navigation = [
   {
     name: "Spaces",
@@ -50,7 +49,7 @@ const navigation = [
 
 export const SidebarContent = () => {
   const { worldSlug } = useSpaceParams();
-  const { world } = useWorldBySlug({ worldSlug });
+  const { world } = useWorldBySlug(worldSlug);
 
   const isWorldChosen = !!worldSlug;
 

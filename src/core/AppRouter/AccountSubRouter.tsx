@@ -1,6 +1,5 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
-import { LoginRestricted } from "components/shared/LoginRestricted";
 import { AnalyticsCheck } from "core/AnalyticsCheck";
 
 import {
@@ -17,25 +16,19 @@ export const AccountSubRouter: React.FC = () => {
   return (
     <Switch>
       <Route path={ACCOUNT_PROFILE_VENUE_PARAM_URL}>
-        <LoginRestricted>
-          <AnalyticsCheck>
-            <Profile />
-          </AnalyticsCheck>
-        </LoginRestricted>
+        <AnalyticsCheck>
+          <Profile />
+        </AnalyticsCheck>
       </Route>
       <Route path={ACCOUNT_PROFILE_QUESTIONS_URL}>
-        <LoginRestricted>
-          <AnalyticsCheck>
-            <ProfileQuestions />
-          </AnalyticsCheck>
-        </LoginRestricted>
+        <AnalyticsCheck>
+          <ProfileQuestions />
+        </AnalyticsCheck>
       </Route>
       <Route path={ACCOUNT_CODE_QUESTIONS_URL}>
-        <LoginRestricted>
-          <AnalyticsCheck>
-            <CodeOfConduct />
-          </AnalyticsCheck>
-        </LoginRestricted>
+        <AnalyticsCheck>
+          <CodeOfConduct />
+        </AnalyticsCheck>
       </Route>
     </Switch>
   );
