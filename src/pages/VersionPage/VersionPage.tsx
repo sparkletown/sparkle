@@ -8,10 +8,10 @@ import {
   BUILD_TAG,
 } from "secrets";
 
-import { useUserId } from "hooks/user/useUserId";
+import { useUser } from "hooks/useUser";
 
 export const VersionPage: React.FC = () => {
-  const { userId } = useUserId();
+  const { user } = useUser();
 
   return (
     <div className="container">
@@ -22,7 +22,7 @@ export const VersionPage: React.FC = () => {
           <div>BUILD_BRANCH = {BUILD_BRANCH}</div>
           <div>BUILD_REPOSITORY_URL = {BUILD_REPOSITORY_URL}</div>
           <div>BUILD_PULL_REQUESTS = {BUILD_PULL_REQUESTS}</div>
-          <div>Current User UID = {userId || "N/A"}</div>
+          <div>Current User UID = {user?.uid || "N/A"}</div>
         </div>
       </div>
     </div>

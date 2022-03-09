@@ -22,9 +22,8 @@ import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
+import { useLoginCheck } from "hooks/user/useLoginCheck";
 import { useWorldById } from "hooks/worlds/useWorldById";
-
-import { useUserId } from "./user/useUserId";
 
 export const setAnalyticsGroup = (groupKey: string, groupName: string) => {
   if (!MIXPANEL_PROJECT_TOKEN) return;
@@ -104,9 +103,9 @@ const warnOnce = (() => {
 export const useAnalytics = ({
   venue: space,
 }: UseAnalyticsOptions): UseAnalyticsResult => {
-  const { auth } = useUserId();
+  const { user } = useLoginCheck();
   const { world, isLoaded: isWorldLoaded } = useWorldById(space?.worldId);
-  const email = auth?.email;
+  const email = user?.email;
   const spaceId = space?.id;
   const worldId = world?.id;
   const worldName = world?.name;

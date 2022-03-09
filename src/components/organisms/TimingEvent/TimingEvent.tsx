@@ -5,7 +5,7 @@ import { format } from "date-fns";
 
 import { DAYJS_EVENT_TIME_FORMAT, STRING_SPACE } from "settings";
 
-import { SpaceWithId, WorldId } from "types/id";
+import { SpaceWithId } from "types/id";
 import { WorldEvent } from "types/venues";
 
 import { eventEndTime, eventStartTime } from "utils/event";
@@ -99,7 +99,7 @@ export const TimingEvent: React.FC<TimingEventProps> = ({ event, space }) => {
           venueId={space.id}
           venue={space}
           event={event}
-          worldId={space.worldId as WorldId}
+          worldId={space.worldId}
         />
       )}
     </>

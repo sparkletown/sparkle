@@ -1,0 +1,1 @@
+export { NormalRadio } from "./NormalRadio";

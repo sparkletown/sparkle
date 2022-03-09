@@ -2,8 +2,10 @@ import firebase from "firebase/compat/app";
 import {
   DocumentData,
   FirestoreDataConverter,
+  Query,
   QueryDocumentSnapshot,
   SnapshotOptions,
+  WriteBatch,
 } from "firebase/firestore";
 
 import { Settings } from "./settings";
@@ -56,8 +58,19 @@ export type InterimQueryDocumentSnapshot<T> =
   | QueryDocumentSnapshot<T>;
 
 export type CompatQuery<T> = firebase.firestore.Query<T>;
+export type InterimQuery<T> = CompatQuery<T> | Query<T>;
+
 export type CompatCreated = firebase.firestore.SnapshotOptions;
 export type InterimSnapshotOptions = CompatCreated | SnapshotOptions;
+
+export type CompatWriteBatch = firebase.firestore.WriteBatch;
+export type InterimWriteBatch = CompatWriteBatch | WriteBatch;
+
+export type CompatDocumentReference<
+  T
+> = firebase.firestore.DocumentReference<T>;
+export type CompatDocumentSnapshot<T> = firebase.firestore.DocumentSnapshot<T>;
+export type CompatTimestamp = firebase.firestore.Timestamp;
 
 // RE-EXPORT END
 

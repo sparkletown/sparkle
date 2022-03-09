@@ -2,45 +2,40 @@ import { useMemo } from "react";
 import Bugsnag from "@bugsnag/js";
 import { where } from "firebase/firestore";
 
-import {
-  ALWAYS_EMPTY_ARRAY,
-  DEFERRED,
-  FIELD_SLUG,
-  FIELD_WORLD_ID,
-  PATH,
-} from "settings";
+import { COLLECTION_SPACES, FIELD_SLUG, FIELD_WORLD_ID } from "settings";
 
 import {
-  MaybeSpacesSlugLocation,
   MaybeWorldIdLocation,
   SpaceId,
+  SpacesSlugLocation,
   SpaceWithId,
 } from "types/id";
 
-import { useLiveCollection } from "hooks/fire/useLiveCollection";
+import { convertToFirestoreKey } from "utils/id";
+
+import { useRefiCollection } from "hooks/fire/useRefiCollection";
 
 export const useSpacesBySlug = ({
   spaceSlug,
   worldId,
-}: MaybeSpacesSlugLocation & MaybeWorldIdLocation) => {
-  const constraints = useMemo(
-    () =>
-      worldId
-        ? [
-            spaceSlug ? where(FIELD_SLUG, "==", spaceSlug) : DEFERRED,
-            where(FIELD_WORLD_ID, "==", worldId),
-          ]
-        : [spaceSlug ? where(FIELD_SLUG, "==", spaceSlug) : DEFERRED],
-    [spaceSlug, worldId]
-  );
+}: SpacesSlugLocation & MaybeWorldIdLocation) => {
+  const constraints = useMemo(() => {
+    const queryConstraints = [
+      where(FIELD_SLUG, "==", convertToFirestoreKey(spaceSlug)),
+    ];
+    if (worldId) {
+      queryConstraints.push(where(FIELD_WORLD_ID, "==", worldId));
+    }
+    return queryConstraints;
+  }, [spaceSlug, worldId]);
 
   const {
-    data: spaces = ALWAYS_EMPTY_ARRAY,
+    data: spaces,
     isLoading,
     isLoaded,
     error,
-  } = useLiveCollection<SpaceWithId>({
-    path: PATH.spaces,
+  } = useRefiCollection<SpaceWithId>({
+    path: [COLLECTION_SPACES],
     constraints,
   });
 

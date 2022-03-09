@@ -4,33 +4,31 @@ import firebase from "firebase/compat/app";
 
 import { STRING_NEWLINE } from "settings";
 
-import { SpaceWithId, UserId } from "types/id";
+import { SpaceWithId, UserId, UserWithId } from "types/id";
 
 import { generateAttendeeSpaceLandingUrl } from "utils/url";
 
 import { useChatSidebarControls } from "hooks/chats/util/useChatSidebarControls";
 import { useIsCurrentUser } from "hooks/useIsCurrentUser";
-import { useProfileById } from "hooks/user/useProfileById";
 import { useShowHide } from "hooks/useShowHide";
 import { useWorldParams } from "hooks/worlds/useWorldParams";
-
-import { Loading } from "components/molecules/Loading";
 
 import { EditingProfileModalContent } from "../EditingProfileModalContent";
 import { ProfileModalContent } from "../ProfileModalContent";
 
-interface NewProfileModalBodyProps {
-  userId?: UserId;
+export interface NewProfileModalBodyProps {
+  userId: UserId;
+  profile: UserWithId;
   space?: SpaceWithId;
   closeUserProfileModal: () => void;
 }
 
 export const NewProfileModalBody: React.FC<NewProfileModalBodyProps> = ({
   userId,
+  profile,
   space,
   closeUserProfileModal,
 }) => {
-  const { profile, isLoading } = useProfileById({ userId });
   const spaceSlug = space?.slug;
   const { worldSlug } = useWorldParams();
   const history = useHistory();
@@ -52,15 +50,9 @@ export const NewProfileModalBody: React.FC<NewProfileModalBodyProps> = ({
   const { selectRecipientChat } = useChatSidebarControls();
 
   const openChosenUserChat = useCallback(() => {
-    if (profile) {
-      selectRecipientChat(profile);
-    }
+    selectRecipientChat(profile);
     closeUserProfileModal();
   }, [selectRecipientChat, profile, closeUserProfileModal]);
-
-  if (isLoading) {
-    return <Loading />;
-  }
 
   if (!profile) {
     return (
@@ -74,32 +66,31 @@ export const NewProfileModalBody: React.FC<NewProfileModalBodyProps> = ({
     );
   }
 
-  if (!isCurrentUser) {
-    return (
-      <ProfileModalContent
-        space={space}
-        user={profile}
-        onPrimaryButtonClick={openChosenUserChat}
-      />
-    );
-  }
-
-  if (editMode) {
+  if (isCurrentUser && editMode) {
     return (
       <EditingProfileModalContent
-        space={space}
         user={profile}
+        space={space}
         onCancelEditing={turnOffEditMode}
       />
     );
   }
 
+  if (isCurrentUser && !editMode)
+    return (
+      <ProfileModalContent
+        space={space}
+        user={profile}
+        onPrimaryButtonClick={logout}
+        onEditMode={turnOnEditMode}
+      />
+    );
+
   return (
     <ProfileModalContent
       space={space}
       user={profile}
-      onPrimaryButtonClick={logout}
-      onEditMode={turnOnEditMode}
+      onPrimaryButtonClick={openChosenUserChat}
     />
   );
 };

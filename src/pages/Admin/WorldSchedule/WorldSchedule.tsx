@@ -11,6 +11,8 @@ import { AdminLayout } from "components/layouts/AdminLayout";
 
 import { updateWorldScheduleSettings } from "api/world";
 
+import { WorldWithId } from "types/id";
+
 import {
   convertDateFromUtcSeconds,
   convertUtcSecondsFromInputDateAndTime,
@@ -18,13 +20,10 @@ import {
 
 import { worldScheduleSchema } from "forms/worldScheduleSchema";
 
-import { useSpacesByWorldId } from "hooks/spaces/useSpacesByWorldId";
-import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
+import { useWorldSpaces } from "hooks/spaces/useWorldSpaces";
 import { useShowHide } from "hooks/useShowHide";
 
 import { TimingEventModal } from "components/organisms/TimingEventModal";
-
-import { LoadingPage } from "components/molecules/LoadingPage";
 
 import * as TW from "./WorldSchedule.tailwind";
 
@@ -35,19 +34,18 @@ export interface WorldScheduleFormInput {
   endTime: string;
 }
 
-export const WorldSchedule: React.FC = () => {
-  const {
-    world,
-    worldId,
-    isLoading: isWorldLoading,
-  } = useWorldAndSpaceByParams();
+export interface WorldScheduleProps {
+  world: WorldWithId;
+}
+
+export const WorldSchedule: React.FC<WorldScheduleProps> = ({ world }) => {
   const {
     isShown: isShownCreateEventModal,
     show: showCreateEventModal,
     hide: hideCreateEventModal,
   } = useShowHide();
 
-  const { spaces } = useSpacesByWorldId({ worldId });
+  const { spaces } = useWorldSpaces({ worldId: world.id });
 
   const defaultValues = useMemo<WorldScheduleFormInput>(() => {
     const {
@@ -103,10 +101,6 @@ export const WorldSchedule: React.FC = () => {
 
   const isSaveLoading = isSubmitting || isSaving;
 
-  if (isWorldLoading) {
-    return <LoadingPage />;
-  }
-
   return (
     <AdminLayout>
       <Header title="World Schedule">
@@ -161,7 +155,7 @@ export const WorldSchedule: React.FC = () => {
           </form>
         </div>
 
-        <EventsPanel worldId={worldId} spaces={spaces} />
+        <EventsPanel worldId={world.id} spaces={spaces} />
       </div>
       {isShownCreateEventModal && (
         <TimingEventModal
@@ -169,7 +163,7 @@ export const WorldSchedule: React.FC = () => {
           onHide={() => {
             hideCreateEventModal();
           }}
-          worldId={worldId}
+          worldId={world.id}
         />
       )}
     </AdminLayout>

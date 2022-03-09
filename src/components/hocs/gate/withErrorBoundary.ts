@@ -1,9 +1,9 @@
 import React, { PropsWithChildren } from "react";
+import { ErrorBoundary } from "core/ErrorBoundary";
 import {
-  ErrorBoundary,
   ErrorBoundaryFallbackProps,
   ErrorBoundaryProps,
-} from "core/ErrorBoundary";
+} from "core/ErrorBoundary/ErrorBoundary";
 
 import { hoistHocStatics } from "utils/hoc";
 

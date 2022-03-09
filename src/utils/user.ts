@@ -1,6 +1,6 @@
 import { omit, pick } from "lodash";
 
-import { FireAuthUser } from "types/fire";
+import { RefiAuthUser } from "types/fire";
 import { User, UserLocation, UserWithLocation } from "types/User";
 
 import { WithId } from "./id";
@@ -47,5 +47,5 @@ export const extractLocationFromUser = <T extends UserWithLocation>(user: T) =>
     "enteredWorldIds"
   );
 
-export const isCompleteUserInfo = (user: FireAuthUser | null | undefined) =>
+export const isCompleteUserInfo = (user: RefiAuthUser | null | undefined) =>
   isTruthy(user?.displayName) && isTruthy(user?.photoURL);

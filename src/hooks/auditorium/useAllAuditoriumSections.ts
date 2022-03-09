@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 import { useHistory } from "react-router";
-import { collection, getFirestore, limit, query } from "firebase/firestore";
+import { useFirestore, useFirestoreCollectionData } from "reactfire";
+import { collection, limit, query } from "firebase/firestore";
 import { noop } from "lodash";
 
 import {
@@ -18,14 +19,13 @@ import { withIdConverter } from "utils/converters";
 import { WithId } from "utils/id";
 import { getUrlWithoutTrailingSlash } from "utils/url";
 
-import { useFireQuery } from "hooks/fire/useFireQuery";
-
 import { useShowHide } from "../useShowHide";
 
 export const useAllAuditoriumSections = (venue: WithId<AuditoriumVenue>) => {
-  const spaceId = venue.id;
+  const venueId = venue.id;
 
   const history = useHistory();
+  const firestore = useFirestore();
 
   const {
     isShown: isFullAuditoriumsShown,
@@ -42,17 +42,15 @@ export const useAllAuditoriumSections = (venue: WithId<AuditoriumVenue>) => {
     setFetchSectionsCount((prev) => prev + SECTIONS_NEXT_FETCH_SIZE);
   }, []);
 
-  const { data: sections = ALWAYS_EMPTY_ARRAY, isLoading } = useFireQuery(
-    query(
-      collection(
-        getFirestore(),
-        COLLECTION_SPACES,
-        spaceId,
-        COLLECTION_SECTIONS
-      ),
-      limit(fetchSectionsCount)
-    ).withConverter(withIdConverter<AuditoriumSection>())
-  );
+  const sectionsRef = query(
+    collection(firestore, COLLECTION_SPACES, venueId, COLLECTION_SECTIONS),
+    limit(fetchSectionsCount)
+  ).withConverter(withIdConverter<AuditoriumSection>());
+
+  const {
+    data: sections = ALWAYS_EMPTY_ARRAY,
+    status,
+  } = useFirestoreCollectionData(sectionsRef);
 
   const enterSection = useCallback(
     (sectionId: string) => {
@@ -87,7 +85,7 @@ export const useAllAuditoriumSections = (venue: WithId<AuditoriumVenue>) => {
       toggleFullAuditoriums,
       enterSection,
       allSections: sections,
-      isLoading,
+      isLoading: status === "loading",
     }),
     [
       isFullAuditoriumsHidden,
@@ -97,7 +95,7 @@ export const useAllAuditoriumSections = (venue: WithId<AuditoriumVenue>) => {
       loadMore,
       toggleFullAuditoriums,
       enterSection,
-      isLoading,
+      status,
     ]
   );
 };

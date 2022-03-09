@@ -71,7 +71,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
 
   const isCurrentTableLocked = isTruthy(!!allTables?.[seatedAtTable]?.locked);
 
-  const { seatedTableUsers } = useSeatedTableUsers(venueId);
+  const [seatedTableUsers] = useSeatedTableUsers(venueId);
   const currentTableHasSeatedUsers = seatedTableUsers.some(
     (user) => user.path.tableReference === seatedAtTable
   );

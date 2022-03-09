@@ -4,13 +4,12 @@ import { useBackgroundGradient } from "components/attendee/useBackgroundGradient
 
 import { fetchCustomAuthConfig } from "api/auth";
 
-import { SpaceWithId } from "types/id";
+import { SpaceId, SpaceWithId } from "types/id";
 
 import { tracePromise } from "utils/performance";
 import { isDefined } from "utils/types";
 import { openUrl } from "utils/url";
 
-import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { UseAnalyticsResult } from "hooks/useAnalytics";
 import { useSAMLSignIn } from "hooks/useSAMLSignIn";
 
@@ -22,24 +21,25 @@ import { RegisterForm } from "components/organisms/AuthenticationModal/RegisterF
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
-import { NotFoundFallback } from "components/atoms/NotFoundFallback";
-
 import SAMLLoginIcon from "assets/icons/saml-login-icon.png";
 
 import styles from "./scss/Login.module.scss";
 
-interface LoginProps {
+export interface LoginProps {
   formType?: "initial" | "login" | "register" | "passwordReset";
+  spaceId: SpaceId;
+  space: SpaceWithId;
   sovereignSpace?: SpaceWithId;
   analytics?: UseAnalyticsResult;
 }
 
 export const Login: React.FC<LoginProps> = ({
   formType = "initial",
+  spaceId,
+  space,
   sovereignSpace,
   analytics,
 }) => {
-  const { world, space, spaceId, isLoading } = useWorldAndSpaceByParams();
   const [formToDisplay, setFormToDisplay] = useState(formType);
 
   const { signInWithSAML, hasSamlAuthProviderId } = useSAMLSignIn(
@@ -52,7 +52,6 @@ export const Login: React.FC<LoginProps> = ({
     loading: isCustomAuthConfigLoading,
     value: customAuthConfig,
   } = useAsync(async () => {
-    if (!spaceId) return;
     return tracePromise(
       "Login::fetchCustomAuthConfig",
       () => fetchCustomAuthConfig(spaceId),
@@ -68,14 +67,6 @@ export const Login: React.FC<LoginProps> = ({
       `${customAuthConnectPath}?venueId=${spaceId}&returnOrigin=${window.location.origin}`
     );
   }, [customAuthConnectPath, spaceId]);
-
-  if (isLoading) {
-    return <LoadingPage />;
-  }
-
-  if (!space || !world || !spaceId) {
-    return <NotFoundFallback />;
-  }
 
   const hasAlternativeLogins = hasSamlAuthProviderId || hasCustomAuthConnect;
 

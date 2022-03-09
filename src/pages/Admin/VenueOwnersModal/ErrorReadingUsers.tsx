@@ -1,5 +1,5 @@
 import React from "react";
-import { ErrorBoundaryFallbackProps } from "core/ErrorBoundary";
+import { ErrorBoundaryFallbackProps } from "core/ErrorBoundary/ErrorBoundary";
 
 import "./ErrorReadingUsers.scss";
 

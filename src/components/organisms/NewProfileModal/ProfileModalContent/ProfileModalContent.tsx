@@ -1,6 +1,6 @@
 import React from "react";
 
-import { SpaceWithId, UserWithId } from "types/id";
+import { SpaceWithId, UserWithId, WorldId } from "types/id";
 
 import { useProfileQuestions } from "hooks/useProfileQuestions";
 
@@ -12,9 +12,10 @@ import { ProfileModalQuestions } from "components/organisms/NewProfileModal/comp
 
 import "./ProfileModalContent.scss";
 
-interface ProfileModalContentProps {
+export interface ProfileModalContentProps {
   user: UserWithId;
-  space?: SpaceWithId;
+  space: SpaceWithId;
+  worldId: WorldId;
   onPrimaryButtonClick: () => void;
   onEditMode?: () => void;
 }
@@ -24,8 +25,9 @@ export const ProfileModalContent: React.FC<ProfileModalContentProps> = ({
   onPrimaryButtonClick,
   onEditMode,
   space,
+  worldId,
 }) => {
-  const { questions, answers } = useProfileQuestions(user, space?.worldId);
+  const { questions, answers } = useProfileQuestions(user, worldId);
 
   return (
     <div className="ProfileModalContent">

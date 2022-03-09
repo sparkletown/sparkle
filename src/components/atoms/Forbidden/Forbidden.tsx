@@ -6,7 +6,7 @@ import firebase from "firebase/compat/app";
 import { generateAttendeeSpaceLandingUrl } from "utils/url";
 
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
-import { useUserId } from "hooks/user/useUserId";
+import { useUser } from "hooks/useUser";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { SparkleLogo } from "components/atoms/SparkleLogo";
@@ -16,7 +16,7 @@ import SHAPE_DENIED from "assets/images/access-forbidden.svg";
 import "./Forbidden.scss";
 
 export const Forbidden: React.FC = ({ children }) => {
-  const { userId, isLoaded } = useUserId();
+  const { user } = useUser();
   const history = useHistory();
   const { worldSlug, spaceSlug } = useSpaceParams();
 
@@ -44,7 +44,7 @@ export const Forbidden: React.FC = ({ children }) => {
         <p>
           If you don’t have an Account, please contact your event organiser.
         </p>
-        {userId && isLoaded && (
+        {user && (
           <ButtonNG
             className="Forbidden__switch-button"
             variant="primary"

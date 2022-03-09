@@ -2,33 +2,30 @@ import { useMemo } from "react";
 import Bugsnag from "@bugsnag/js";
 import { where } from "firebase/firestore";
 
-import {
-  ALWAYS_EMPTY_ARRAY,
-  DEFERRED,
-  FIELD_HIDDEN,
-  FIELD_SLUG,
-  PATH,
-} from "settings";
+import { COLLECTION_WORLDS, FIELD_HIDDEN, FIELD_SLUG } from "settings";
 
-import {
-  MaybeWorldSlugLocation,
-  WorldId,
-  WorldSlug,
-  WorldWithId,
-} from "types/id";
+import { WorldId, WorldSlug, WorldSlugLocation, WorldWithId } from "types/id";
 
-import { useLiveCollection } from "hooks/fire/useLiveCollection";
+import { convertToFirestoreKey } from "utils/id";
 
-export const useWorldBySlug = ({ worldSlug: slug }: MaybeWorldSlugLocation) => {
+import { useRefiCollection } from "hooks/fire/useRefiCollection";
+
+export const useWorldBySlug = (
+  slugOrOptions?: WorldSlug | string | WorldSlugLocation
+) => {
+  const slug: string = convertToFirestoreKey(
+    typeof slugOrOptions === "string" ? slugOrOptions : slugOrOptions?.worldSlug
+  );
+
   const {
-    data: worlds = ALWAYS_EMPTY_ARRAY,
+    data: worlds,
     isLoaded,
     isLoading,
     error,
-  } = useLiveCollection<WorldWithId>({
-    path: PATH.worlds,
+  } = useRefiCollection<WorldWithId>({
+    path: [COLLECTION_WORLDS],
     constraints: [
-      slug ? where(FIELD_SLUG, "==", slug) : DEFERRED,
+      where(FIELD_SLUG, "==", slug),
       where(FIELD_HIDDEN, "==", false),
     ],
   });

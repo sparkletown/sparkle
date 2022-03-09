@@ -7,7 +7,6 @@ import { ImageInput } from "components/admin/ImageInput";
 
 import {
   ADMIN_IA_SPACE_BASE_PARAM_URL,
-  ALWAYS_EMPTY_ARRAY,
   ALWAYS_NOOP_FUNCTION,
   BACKGROUND_IMG_TEMPLATES,
   DEFAULT_EMBED_URL,
@@ -35,18 +34,18 @@ import {
 import { createSlug } from "api/admin";
 import { updateVenueNG } from "api/venue";
 
-import { SpaceWithId, WorldId } from "types/id";
+import { UserId, WorldSlug } from "types/id";
+import { AnyVenue } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
 
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
+import { WithId } from "utils/id";
 import { generateUrl } from "utils/url";
 
 import { spaceEditSchema } from "forms/spaceEditSchema";
 
-import { useRelatedSpaces } from "hooks/spaces/useRelatedSpaces";
-import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useFetchAssets } from "hooks/useFetchAssets";
-import { useUserId } from "hooks/user/useUserId";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { BackgroundSelect } from "pages/Admin/BackgroundSelect";
 
@@ -77,13 +76,17 @@ const HANDLED_ERRORS = [
   "columns",
 ];
 
-interface SpaceEditFormProps {
-  space: SpaceWithId;
+export interface SpaceEditFormProps {
+  space: WithId<AnyVenue>;
+  userId: UserId;
+  worldSlug: WorldSlug;
 }
 
-export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
-  const { userId } = useUserId();
-  const { worldSlug } = useSpaceParams();
+export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
+  space,
+  userId,
+  worldSlug,
+}) => {
   const spaceLogoImage =
     PORTAL_INFO_ICON_MAPPING[space.template] ?? DEFAULT_VENUE_LOGO;
 
@@ -190,29 +193,26 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
 
   const isReactionsMutedDisabled = !values?.showReactions;
 
-  const { spaces = ALWAYS_EMPTY_ARRAY } = useRelatedSpaces({
-    worldId: space.worldId as WorldId | undefined,
-    spaceId: space.id,
-  });
+  const { relatedVenues } = useRelatedVenues();
 
   const backButtonOptionList = useMemo(
     () =>
       Object.fromEntries(
-        spaces
+        relatedVenues
           .filter(
             ({ id, worldId }) => !(space.worldId !== worldId || id === space.id)
           )
           .map((venue) => [venue.id, venue])
       ),
-    [spaces, space.worldId, space.id]
+    [relatedVenues, space.worldId, space.id]
   );
 
   const parentSpace = useMemo(
     () =>
       space.parentId
-        ? spaces.find(({ id }) => id === space.parentId)
+        ? relatedVenues.find(({ id }) => id === space.parentId)
         : { name: "" },
-    [spaces, space.parentId]
+    [relatedVenues, space.parentId]
   );
 
   const { name: watchedName } = watch();

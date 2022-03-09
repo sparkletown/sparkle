@@ -1,29 +1,24 @@
-import {
-  collection,
-  CollectionReference,
-  getFirestore,
-} from "firebase/firestore";
+import { useFirestore } from "reactfire";
+import { collection, CollectionReference } from "firebase/firestore";
 
-import { COLLECTION_SPACES, DEFERRED } from "settings";
+import { COLLECTION_SPACES, NON_EXISTENT_FIRESTORE_ID } from "settings";
 
 import { BaseChatMessage } from "types/chat";
-import { SpaceId } from "types/id";
 
 import { useChatMessagesRaw } from "hooks/chats/common/useChatMessages";
 
 export const useVenueChatThreadMessages = (
-  venueId: SpaceId | string,
+  venueId: string,
   threadId: string | undefined
-) =>
-  useChatMessagesRaw(
-    threadId
-      ? (collection(
-          getFirestore(),
-          COLLECTION_SPACES,
-          venueId,
-          "chats",
-          threadId,
-          "thread"
-        ) as CollectionReference<BaseChatMessage>)
-      : DEFERRED
-  );
+) => {
+  const firestore = useFirestore();
+  const messagesRef = collection(
+    firestore,
+    COLLECTION_SPACES,
+    venueId,
+    "chats",
+    threadId ?? NON_EXISTENT_FIRESTORE_ID,
+    "thread"
+  ) as CollectionReference<BaseChatMessage>;
+  return useChatMessagesRaw(messagesRef);
+};

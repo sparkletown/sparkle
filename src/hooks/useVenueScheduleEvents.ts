@@ -41,7 +41,7 @@ const useVenueScheduleEvents = ({
   } = useRelatedVenues();
 
   const { worldSlug } = useWorldParams();
-  const { world } = useWorldBySlug({ worldSlug });
+  const { world } = useWorldBySlug(worldSlug);
 
   const {
     events: relatedVenueEvents = emptyRelatedEvents,

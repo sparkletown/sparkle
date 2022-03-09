@@ -1,15 +1,15 @@
 import { useMemo, useState } from "react";
 import { limit, orderBy, where } from "firebase/firestore";
 
-import { ALWAYS_EMPTY_ARRAY, DEFERRED, PATH } from "settings";
+import { ALWAYS_EMPTY_ARRAY, COLLECTION_WORLD_EVENTS } from "settings";
 
 import { WorldAndSpaceIdLocation } from "types/id";
 import { WorldEvent } from "types/venues";
 
-import { WithId } from "utils/id";
+import { convertToFirestoreKey, WithId } from "utils/id";
 import { oneHourAfterTimestamp } from "utils/time";
 
-import { useLiveCollection } from "hooks/fire/useLiveCollection";
+import { useRefiCollection } from "hooks/fire/useRefiCollection";
 
 type UseConnectCurrentEvent = ({
   worldId,
@@ -25,22 +25,15 @@ export const useConnectCurrentEvent: UseConnectCurrentEvent = ({
 }) => {
   const [currentTimestamp] = useState(Date.now() / 1000);
 
-  const { data, isLoaded } = useLiveCollection<WorldEvent>({
-    path: PATH.worldEvents,
-    constraints:
-      worldId && spaceId
-        ? [
-            where(
-              "startUtcSeconds",
-              "<=",
-              oneHourAfterTimestamp(currentTimestamp)
-            ),
-            where("worldId", "==", worldId),
-            where("spaceId", "==", spaceId),
-            orderBy("startUtcSeconds", "desc"),
-            limit(1),
-          ]
-        : DEFERRED,
+  const { data, isLoaded } = useRefiCollection<WorldEvent>({
+    path: [COLLECTION_WORLD_EVENTS],
+    constraints: [
+      where("startUtcSeconds", "<=", oneHourAfterTimestamp(currentTimestamp)),
+      where("worldId", "==", convertToFirestoreKey(worldId)),
+      where("spaceId", "==", convertToFirestoreKey(spaceId)),
+      orderBy("startUtcSeconds", "desc"),
+      limit(1),
+    ],
   });
 
   return useMemo(
