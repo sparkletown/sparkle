@@ -10,16 +10,7 @@ import {
   PLATFORM_BRAND_NAME,
 } from "settings";
 
-import { RefiAuthUser } from "types/fire";
-import {
-  SpaceId,
-  SpaceSlugLocation,
-  SpaceWithId,
-  UserId,
-  WorldId,
-  WorldWithId,
-} from "types/id";
-import { Profile, UserLocation } from "types/User";
+import { SpaceWithId } from "types/id";
 import { VenueTemplate } from "types/VenueTemplate";
 
 import { hasEventFinished, isEventStartingSoon } from "utils/event";
@@ -39,16 +30,21 @@ import {
   useUpdateTimespentPeriodically,
 } from "utils/userLocation";
 
+import { useRelatedSpaces } from "hooks/spaces/useRelatedSpaces";
+import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useAnalytics } from "hooks/useAnalytics";
 import { useConnectCurrentEvent } from "hooks/useConnectCurrentEvent";
 import { useInterval } from "hooks/useInterval";
 import { usePreloadAssets } from "hooks/usePreloadAssets";
-import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { useLiveProfile } from "hooks/user/useLiveProfile";
+import { useUserId } from "hooks/user/useUserId";
 
 import { updateUserProfile } from "pages/Account/helpers";
 
 import { CountDown } from "components/molecules/CountDown";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
+
+import { NotFoundFallback } from "components/atoms/NotFoundFallback";
 
 const TemplateWrapper = lazy(() =>
   tracePromise("VenuePage::lazy-import::TemplateWrapper", () =>
@@ -58,37 +54,35 @@ const TemplateWrapper = lazy(() =>
   )
 );
 
-// @debt Refactor this constant into settings, or types/templates, or similar?
+// @debt Refactor this constant into capabilities map along with other similar info
 const checkSupportsPaidEvents = (template: VenueTemplate) =>
   template === VenueTemplate.jazzbar;
 
-type VenuePageProps = SpaceSlugLocation & {
-  space: SpaceWithId;
-  spaceId: SpaceId;
-  world: WorldWithId;
-  worldId: WorldId;
-  user?: RefiAuthUser;
-  userId?: UserId;
-  profile?: Profile;
-  userLocation?: UserLocation;
+type VenuePageProps = {
   setBackButtonSpace: React.Dispatch<
     React.SetStateAction<SpaceWithId | undefined>
   >;
 };
 
-export const VenuePage: React.FC<VenuePageProps> = ({
-  worldSlug,
-  spaceSlug,
-  world,
-  worldId,
-  space,
-  spaceId,
-  user,
-  userId,
-  profile,
-  userLocation,
-  setBackButtonSpace,
-}) => {
+export const VenuePage: React.FC<VenuePageProps> = ({ setBackButtonSpace }) => {
+  const { auth, userId, isLoading: isAuthLoading } = useUserId();
+
+  const {
+    profile,
+    userLocation,
+    isLoading: isProfileLoading,
+  } = useLiveProfile({ auth });
+
+  const {
+    worldSlug,
+    worldId,
+    world,
+    spaceSlug,
+    spaceId,
+    space,
+    isLoading: isSpaceLoading,
+  } = useWorldAndSpaceByParams();
+
   const analytics = useAnalytics({ venue: space });
 
   const {
@@ -121,7 +115,7 @@ export const VenuePage: React.FC<VenuePageProps> = ({
   const isEventFinished = event && hasEventFinished(event);
 
   const isUserVenueOwner = userId && space?.owners?.includes(userId);
-  const isMember = user && space;
+  const isMember = auth && space;
 
   // NOTE: User location updates
   // @debt refactor how user location updates works here to encapsulate in a hook or similar?
@@ -135,13 +129,13 @@ export const VenuePage: React.FC<VenuePageProps> = ({
   }, LOC_UPDATE_FREQ_MS);
 
   const {
-    sovereignVenueId,
-    sovereignVenueDescendantIds,
-    parentVenue,
-  } = useRelatedVenues({ currentVenueId: space.id });
+    rootId: sovereignVenueId,
+    descendantIds: sovereignVenueDescendantIds,
+    parent: parentSpace,
+  } = useRelatedSpaces({ worldId, spaceId });
 
   useEffect(() => {
-    setBackButtonSpace(parentVenue);
+    setBackButtonSpace(parentSpace);
     return () => {
       setBackButtonSpace(undefined);
     };
@@ -163,18 +157,20 @@ export const VenuePage: React.FC<VenuePageProps> = ({
 
   useEffect(() => {
     if (
-      user &&
+      auth &&
       profile &&
       !isCompleteProfile(profile) &&
-      isCompleteUserInfo(user)
+      isCompleteUserInfo(auth)
     ) {
       const profileData = {
-        pictureUrl: user.photoURL ?? "",
-        partyName: user.displayName ?? "",
+        pictureUrl: auth.photoURL ?? "",
+        partyName: auth.displayName ?? "",
       };
-      updateUserProfile(user?.uid, profileData);
+      updateUserProfile(auth?.uid, profileData).catch((e) =>
+        console.error(VenuePage.name, e)
+      );
     }
-  }, [user, profile]);
+  }, [auth, profile]);
 
   useTitle(`${PLATFORM_BRAND_NAME} - ${venueName}`);
 
@@ -222,10 +218,18 @@ export const VenuePage: React.FC<VenuePageProps> = ({
 
   // @debt refactor how user location updates works here to encapsulate in a hook or similar?
   useEffect(() => {
-    if (!world || !user) return;
+    if (!world || !auth) return;
 
     analytics.trackVenuePageLoadedEvent();
-  }, [analytics, user, world]);
+  }, [analytics, auth, world]);
+
+  if (isAuthLoading || isSpaceLoading || isProfileLoading || !profile) {
+    return <LoadingPage />;
+  }
+
+  if (!spaceId || !space) {
+    return <NotFoundFallback />;
+  }
 
   const { template, hasPaidEvents } = space;
 

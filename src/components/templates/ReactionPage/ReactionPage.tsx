@@ -1,13 +1,15 @@
 import React from "react";
 import { orderBy } from "firebase/firestore";
 
-import { ALWAYS_EMPTY_ARRAY, SHOW_EMOJI_IN_REACTION_PAGE } from "settings";
+import {
+  ALWAYS_EMPTY_ARRAY,
+  DEFERRED,
+  SHOW_EMOJI_IN_REACTION_PAGE,
+} from "settings";
 
 import { EmojiReaction, TextReaction, TextReactionType } from "types/reactions";
 
-import { convertToFirestoreKey } from "utils/id";
-
-import { useRefiCollection } from "hooks/fire/useRefiCollection";
+import { useLiveCollection } from "hooks/fire/useLiveCollection";
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 
 import { UserList } from "components/molecules/UserList";
@@ -16,13 +18,12 @@ import { ReactionList } from "./ReactionList";
 
 import "./ReactionPage.scss";
 
-// @debt pass venue through the props
 export const ReactionPage: React.FC = () => {
   const { space, spaceId } = useWorldAndSpaceByParams();
 
   // @debt this is very similar to the query in src/hooks/reactions.tsx, but that filters by createdAt > now
-  const { data } = useRefiCollection<TextReaction | EmojiReaction>({
-    path: ["experiences", convertToFirestoreKey(spaceId), "reactions"],
+  const { data } = useLiveCollection<TextReaction | EmojiReaction>({
+    path: ["experiences", spaceId || DEFERRED, "reactions"],
     constraints: [orderBy("created_at", "desc")],
   });
 

@@ -7,7 +7,7 @@ import {
   PARTY_MAP_VERTICAL_PAD,
 } from "settings";
 
-import { RefiAuthUser } from "types/fire";
+import { FireAuthUser } from "types/fire";
 import { Room } from "types/rooms";
 import { Dimensions, Position } from "types/utility";
 import { PartyMapVenue } from "types/venues";
@@ -17,6 +17,7 @@ import { useValidImage } from "hooks/useCheckImage";
 import { MapRoom } from "./MapRoom";
 
 import styles from "./Map.module.scss";
+
 interface PortalsProps {
   portals: Room[];
   space: PartyMapVenue;
@@ -127,7 +128,7 @@ const calculateImageDimensions = ({
 };
 
 interface MapProps {
-  user: RefiAuthUser;
+  user: FireAuthUser;
   venue: PartyMapVenue;
   selectRoom: (room: Room) => void;
 }

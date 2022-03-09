@@ -1,3 +1,4 @@
+import React from "react";
 import { Link } from "react-router-dom";
 import { ArrowRightIcon } from "@heroicons/react/solid";
 import { TableRowAvatar } from "components/admin/TableRowAvatar";
@@ -49,7 +50,7 @@ export const WorldCard: React.FC<WorldCardProps> = ({ world }) => {
               <ArrowRightIcon
                 className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-900 hover:text-indigo-900"
                 aria-hidden="true"
-              ></ArrowRightIcon>
+              />
               Go to world
             </Link>
           </div>

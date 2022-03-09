@@ -8,7 +8,7 @@ import {
   FIREBASE_STORAGE_IMAGES_ORIGIN,
 } from "settings";
 
-import { RefiAuthUser } from "types/fire";
+import { FireAuthUser } from "types/fire";
 import { User } from "types/User";
 
 import { isDefined } from "utils/types";
@@ -85,7 +85,7 @@ type DetermineAvatarOptions = {
   index?: number;
   partyName?: string;
   pictureUrl?: string;
-  userInfo?: RefiAuthUser;
+  userInfo?: FireAuthUser;
   user?: User;
 };
 

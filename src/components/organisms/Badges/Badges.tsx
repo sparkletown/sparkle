@@ -1,7 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useFirestore } from "reactfire";
 import { User } from "@bugsnag/js";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  getFirestore,
+  query,
+  where,
+} from "firebase/firestore";
 import { chunk } from "lodash";
 
 import {
@@ -58,8 +63,6 @@ export const Badges: React.FC<{
   const [venues, setVenues] = useState<WithId<AnyVenue>[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const firestore = useFirestore();
-
   const fetchAllVenues = useCallback(async () => {
     const userSnapshot = await getUserRef(user.id).get();
     const visitsSnapshot = await userSnapshot.ref.collection("visits").get();
@@ -79,7 +82,7 @@ export const Badges: React.FC<{
     ).map((visitChunk) =>
       getDocs(
         query(
-          collection(firestore, COLLECTION_SPACES),
+          collection(getFirestore(), COLLECTION_SPACES),
           where(
             "name",
             "in",
@@ -111,7 +114,7 @@ export const Badges: React.FC<{
 
     setVenues(venues);
     setVisits(visits);
-  }, [firestore, user.id, setVenues, setVisits]);
+  }, [user.id, setVenues, setVisits]);
 
   useEffect(() => {
     setIsLoading(true);

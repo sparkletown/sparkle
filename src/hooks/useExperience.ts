@@ -1,26 +1,26 @@
 import { useMemo } from "react";
-import { ObservableStatus } from "reactfire/src/useObservable";
+
+import { ALWAYS_EMPTY_OBJECT, DEFERRED } from "settings";
 
 import { Experience } from "types/Firestore";
 import { Table } from "types/Table";
 
-import { convertToFirestoreKey } from "utils/id";
-
-import { useRefiDocument } from "hooks/fire/useRefiDocument";
+import { useLiveDocument } from "./fire/useLiveDocument";
 
 type UseExperience = (
   spaceName?: string
-) => ObservableStatus<Experience> & {
+) => {
   tables: Record<string, Record<string, Table>>;
 };
 
 export const useExperience: UseExperience = (spaceName) => {
-  const result = useRefiDocument<Experience>([
+  const result = useLiveDocument<Experience>([
     "experiences",
-    convertToFirestoreKey(spaceName),
+    spaceName || DEFERRED,
   ]);
 
-  const tables: Record<string, Record<string, Table>> = result?.data?.tables;
+  const tables: Record<string, Record<string, Table>> =
+    result?.data?.tables ?? ALWAYS_EMPTY_OBJECT;
 
   return useMemo(() => ({ ...result, tables }), [result, tables]);
 };
