@@ -1,4 +1,10 @@
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import React, {
+  RefObject,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useIntersection } from "react-use";
 import { faBookmark as regularBookmark } from "@fortawesome/free-regular-svg-icons";
 import {
@@ -56,6 +62,8 @@ import { Loading } from "components/molecules/Loading";
 import CN from "./ScheduleOverlay.module.scss";
 
 const minWeekDaysScrollValue = 8;
+const weekDayStepValue = 7;
+const weekDayStepSkipValue = weekDayStepValue * 2;
 interface ScheduleDay {
   daysEvents: ScheduledEvent[];
   scheduleDate: Date;
@@ -81,10 +89,18 @@ export const ScheduleOverlay: React.FC = () => {
     isEventsLoading,
     sovereignVenue,
   } = useVenueScheduleEvents({ userEventIds });
-  const firstRef = useRef<HTMLButtonElement>(null);
-  const lastRef = useRef<HTMLButtonElement>(null);
-  const firstDayRef = useIntersection(firstRef, { rootMargin: "0px" });
-  const lastDayRef = useIntersection(lastRef, { rootMargin: "0px" });
+  const [forwardTarget, setForwardTarget] = useState<
+    RefObject<HTMLButtonElement>
+  >();
+  const [backwardTarget, setBackwardTarget] = useState<
+    RefObject<HTMLButtonElement>
+  >();
+  const allRefs = useRef<RefObject<HTMLButtonElement>[]>(
+    range(30).map(() => React.createRef())
+  );
+  const firstDayIntersect = useIntersection(allRefs?.current[0], {
+    rootMargin: "0px",
+  });
 
   const scheduledStartDate = sovereignVenue?.start_utc_seconds;
 
@@ -114,31 +130,6 @@ export const ScheduleOverlay: React.FC = () => {
         [CN.scheduleButtonDisabled]: !daysWithEvents,
       });
 
-      // const handleAddRef = (el: unknown) => {
-      //   const element = el as RefObject<HTMLButtonElement>;
-      //   if(!dayIndex) {
-      //   firstRef.current[i] = element;
-      // }
-
-      // if(dayIndex % 8 === 0 && !!dayIndex) {
-      //   lastRef.current[i] = element;
-      // }
-      // }
-
-      let buttonRef;
-
-      if (!dayIndex) {
-        // firstRef.current[i] = buttonRef;
-        // buttonRef = firstRef.current[i];
-        buttonRef = firstRef;
-      }
-
-      if (dayIndex % 8 === 0 && !!dayIndex) {
-        // lastRef.current[i] = buttonRef
-        // console.log(lastRef.current[i], buttonRef)
-        buttonRef = lastRef;
-      }
-
       return (
         <Button
           key={day.toISOString()}
@@ -148,7 +139,7 @@ export const ScheduleOverlay: React.FC = () => {
           }}
           variant="alternative"
           className={buttonClasses}
-          forwardRef={buttonRef}
+          forwardRef={allRefs.current[i]}
         >
           {formattedDay}
         </Button>
@@ -250,38 +241,50 @@ export const ScheduleOverlay: React.FC = () => {
     [schedule.daysEvents, bookmarkEvent]
   );
   const handleWeekScrollForward = () => {
-    // const scrolToElement = lastRef?.current;
-    // console.log(scrolToElement)
-    // console.log(lastRef)
-    // const [, firstCurrent] = lastRef?.current?.filter(x => !!x) ?? [];
-    // console.log(firstCurrent, firstCurrent?.current)
-    lastRef?.current?.scrollIntoView({
+    const scrollRef =
+      forwardTarget?.current ?? allRefs?.current[weekDayStepValue].current;
+    scrollRef?.scrollIntoView({
       behavior: "smooth",
       block: "nearest",
       inline: "start",
     });
+    const newIndex =
+      allRefs.current.findIndex(
+        (el) => el.current?.innerText === scrollRef?.innerText
+      ) + weekDayStepValue;
+    const newTarget =
+      allRefs.current[newIndex] ?? allRefs.current[allRefs.current.length - 1];
+    const newBackwardTarget =
+      allRefs.current[newIndex - weekDayStepSkipValue] ?? allRefs.current[0];
+    setForwardTarget(newTarget);
+    setBackwardTarget(newBackwardTarget);
   };
 
   const handleWeekScrollBackward = () => {
-    // const scrolToElement = firstRef?.current;
-    // console.log(scrolToElement)
-    // console.log(firstRef)
-    // weekdays.findIndex(firstRef?.current?.value)
-    // const [firstCurrent] = firstRef?.current?.filter(x => !!x) ?? [];
-    // console.log(firstCurrent)
-    firstRef?.current?.scrollIntoView({
+    const scrollRef = backwardTarget?.current ?? allRefs?.current[0].current;
+    scrollRef?.scrollIntoView({
       behavior: "smooth",
       block: "nearest",
       inline: "start",
     });
+    const newIndex =
+      allRefs.current.findIndex(
+        (el) => el.current?.innerText === scrollRef?.innerText
+      ) - weekDayStepValue;
+    const newTarget = allRefs.current[newIndex] ?? allRefs.current[0];
+    const newForwardTarget =
+      allRefs.current[newIndex + weekDayStepSkipValue] ??
+      allRefs.current[weekDayStepValue];
+    setForwardTarget(newForwardTarget);
+    setBackwardTarget(newTarget);
   };
 
   const backAngleClasses = classNames(CN.angleIcon, {
-    [CN.angleDisabled]: firstDayRef?.isIntersecting,
+    [CN.angleDisabled]: firstDayIntersect?.isIntersecting,
   });
 
   const forwardAngleClassnames = classNames(CN.angleIcon, {
-    [CN.angleDisabled]: lastDayRef?.isIntersecting,
+    [CN.angleDisabled]: !forwardTarget?.current,
   });
 
   return (

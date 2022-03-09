@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes } from "react";
+import { ButtonHTMLAttributes, RefObject } from "react";
 import classNames from "classnames";
 
 import CN from "./Button.module.scss";
@@ -12,7 +12,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   onClick?: () => void;
   variant?: ButtonVariant;
   className?: string;
-  forwardRef?: React.RefObject<HTMLButtonElement> | null;
+  forwardRef?: RefObject<HTMLButtonElement> | null;
 }
 
 export const Button: React.FC<ButtonProps> = ({
