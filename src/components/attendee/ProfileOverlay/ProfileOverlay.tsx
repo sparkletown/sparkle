@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   FieldErrors,
   useFieldArray,
@@ -13,12 +13,13 @@ import { ProfileModalEditLinks } from "components/attendee/ProfileModalEditLinks
 import firebase from "firebase/compat/app";
 import { omit, pick, uniq } from "lodash";
 
-import { UserWithId } from "types/id";
 import {
   UserProfileModalFormData,
   UserProfileModalFormDataPasswords,
 } from "types/profileModal";
+import { User } from "types/User";
 
+import { WithId } from "utils/id";
 import { isShallowEqual } from "utils/object";
 
 import { useCheckOldPassword } from "hooks/useCheckOldPassword";
@@ -37,13 +38,13 @@ const PASSWORD_FIELDS: (keyof UserProfileModalFormDataPasswords)[] = [
 Object.freeze(PASSWORD_FIELDS);
 
 type ProfileOverlayProps = {
-  user: UserWithId;
+  profile: WithId<User>;
 };
-export const ProfileOverlay: React.FC<ProfileOverlayProps> = ({ user }) => {
+export const ProfileOverlay: React.FC<ProfileOverlayProps> = ({ profile }) => {
   const [isSuccess, setSuccess] = useState(false);
   const checkOldPassword = useCheckOldPassword();
   const firebaseUser = firebase.auth()?.currentUser;
-  const defaultValues = useProfileModalFormDefaultValues(user);
+  const defaultValues = useProfileModalFormDefaultValues(profile);
 
   const {
     register,
@@ -159,7 +160,7 @@ export const ProfileOverlay: React.FC<ProfileOverlayProps> = ({ user }) => {
       <div className={styles.ProfileOverlay__search}></div>
       <div className={styles.ProfileOverlay__content}>
         <ProfileModalEditBasicInfo
-          user={user}
+          user={profile}
           register={register}
           watch={watch}
           setValue={setValue}
