@@ -1,6 +1,11 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
+import { useIntersection } from "react-use";
 import { faBookmark as regularBookmark } from "@fortawesome/free-regular-svg-icons";
-import { faBookmark as solidBookmark } from "@fortawesome/free-solid-svg-icons";
+import {
+  faAngleLeft as angleLeft,
+  faAngleRight as angleRight,
+  faBookmark as solidBookmark,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { Button } from "components/attendee/Button";
@@ -50,6 +55,7 @@ import { Loading } from "components/molecules/Loading";
 
 import CN from "./ScheduleOverlay.module.scss";
 
+const minWeekDaysScrollValue = 8;
 interface ScheduleDay {
   daysEvents: ScheduledEvent[];
   scheduleDate: Date;
@@ -75,6 +81,10 @@ export const ScheduleOverlay: React.FC = () => {
     isEventsLoading,
     sovereignVenue,
   } = useVenueScheduleEvents({ userEventIds });
+  const firstRef = useRef<HTMLButtonElement>(null);
+  const lastRef = useRef<HTMLButtonElement>(null);
+  const firstDayRef = useIntersection(firstRef, { rootMargin: "0px" });
+  const lastDayRef = useIntersection(lastRef, { rootMargin: "0px" });
 
   const scheduledStartDate = sovereignVenue?.start_utc_seconds;
 
@@ -90,7 +100,7 @@ export const ScheduleOverlay: React.FC = () => {
   const weekdays = useMemo(() => {
     if (dayDifference <= 0) return ALWAYS_EMPTY_ARRAY;
 
-    return range(dayDifference).map((dayIndex) => {
+    return range(dayDifference).map((dayIndex, i) => {
       const day = addDays(firstScheduleDate, dayIndex);
 
       const daysWithEvents = liveAndFutureEvents.some(
@@ -104,6 +114,31 @@ export const ScheduleOverlay: React.FC = () => {
         [CN.scheduleButtonDisabled]: !daysWithEvents,
       });
 
+      // const handleAddRef = (el: unknown) => {
+      //   const element = el as RefObject<HTMLButtonElement>;
+      //   if(!dayIndex) {
+      //   firstRef.current[i] = element;
+      // }
+
+      // if(dayIndex % 8 === 0 && !!dayIndex) {
+      //   lastRef.current[i] = element;
+      // }
+      // }
+
+      let buttonRef;
+
+      if (!dayIndex) {
+        // firstRef.current[i] = buttonRef;
+        // buttonRef = firstRef.current[i];
+        buttonRef = firstRef;
+      }
+
+      if (dayIndex % 8 === 0 && !!dayIndex) {
+        // lastRef.current[i] = buttonRef
+        // console.log(lastRef.current[i], buttonRef)
+        buttonRef = lastRef;
+      }
+
       return (
         <Button
           key={day.toISOString()}
@@ -113,6 +148,7 @@ export const ScheduleOverlay: React.FC = () => {
           }}
           variant="alternative"
           className={buttonClasses}
+          forwardRef={buttonRef}
         >
           {formattedDay}
         </Button>
@@ -213,6 +249,40 @@ export const ScheduleOverlay: React.FC = () => {
       }),
     [schedule.daysEvents, bookmarkEvent]
   );
+  const handleWeekScrollForward = () => {
+    // const scrolToElement = lastRef?.current;
+    // console.log(scrolToElement)
+    // console.log(lastRef)
+    // const [, firstCurrent] = lastRef?.current?.filter(x => !!x) ?? [];
+    // console.log(firstCurrent, firstCurrent?.current)
+    lastRef?.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+      inline: "start",
+    });
+  };
+
+  const handleWeekScrollBackward = () => {
+    // const scrolToElement = firstRef?.current;
+    // console.log(scrolToElement)
+    // console.log(firstRef)
+    // weekdays.findIndex(firstRef?.current?.value)
+    // const [firstCurrent] = firstRef?.current?.filter(x => !!x) ?? [];
+    // console.log(firstCurrent)
+    firstRef?.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+      inline: "start",
+    });
+  };
+
+  const backAngleClasses = classNames(CN.angleIcon, {
+    [CN.angleDisabled]: firstDayRef?.isIntersecting,
+  });
+
+  const forwardAngleClassnames = classNames(CN.angleIcon, {
+    [CN.angleDisabled]: lastDayRef?.isIntersecting,
+  });
 
   return (
     <div className={CN.scheduleOverlayWrapper}>
@@ -225,7 +295,23 @@ export const ScheduleOverlay: React.FC = () => {
         onChange={togglePersonalisedSchedule}
         title="Only show bookmarked events"
       />
-      <div className={CN.scheduleDays}>{weekdays}</div>
+      <div className={CN.scheduleDaysWrapper}>
+        <div className={CN.scheduleDays}>{weekdays}</div>
+        {weekdays.length > minWeekDaysScrollValue && (
+          <div className={CN.scheduleDaysArrows}>
+            <FontAwesomeIcon
+              icon={angleLeft}
+              className={backAngleClasses}
+              onClick={handleWeekScrollBackward}
+            />
+            <FontAwesomeIcon
+              icon={angleRight}
+              className={forwardAngleClassnames}
+              onClick={handleWeekScrollForward}
+            />
+          </div>
+        )}
+      </div>
       {isEventsLoading && (
         <Loading
           containerClassName="Schedule__loading"

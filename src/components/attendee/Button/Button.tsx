@@ -12,6 +12,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   onClick?: () => void;
   variant?: ButtonVariant;
   className?: string;
+  forwardRef?: React.RefObject<HTMLButtonElement> | null;
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -19,6 +20,7 @@ export const Button: React.FC<ButtonProps> = ({
   children,
   variant,
   className,
+  forwardRef,
   ...rest
 }) => {
   const buttonClasses = classNames(`${CN.button} ${className}`, {
@@ -29,7 +31,12 @@ export const Button: React.FC<ButtonProps> = ({
   });
 
   return (
-    <button className={buttonClasses} onClick={onClick} {...rest}>
+    <button
+      className={buttonClasses}
+      onClick={onClick}
+      ref={forwardRef}
+      {...rest}
+    >
       {children}
     </button>
   );

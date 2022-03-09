@@ -46,16 +46,31 @@
     margin-right: 16px;
   }
 }
-.scheduleDays {
+.scheduleDaysWrapper {
   width: 100%;
   margin: space.empty(2) 0;
   display: flex;
+  align-items: center;
+}
+
+.scheduleDays {
+  width: 88%;
+  display: flex;
   justify-content: space-between;
+  overflow-x: auto;
 
   button:first-child {
     padding-left: 0px;
   }
 }
+
+.scheduleDaysArrows {
+  width: 5%;
+  display: flex;
+  justify-content: space-between;
+  margin-left: auto;
+}
+
 .bookmarkIcon {
   cursor: pointer;
 }
@@ -87,4 +102,14 @@
 
 .scheduleOverlayButton {
   margin-left: auto;
+}
+
+.angleIcon {
+  width: space.empty(0.66);
+  cursor: pointer;
+}
+
+.angleDisabled {
+  color: theme.$sparkle-disabled;
+  pointer-events: none;
 }
