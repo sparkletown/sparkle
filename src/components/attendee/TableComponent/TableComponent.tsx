@@ -79,6 +79,8 @@ export const TableComponent: React.FunctionComponent<TableComponentPropsType> = 
   return (
     <div className={styles.tableContainer}>
       <div className={styles.tableHeader}>
+        <span className={styles.tableTitle}>{table.title}</span>
+
         {isRemoveButtonShown && (
           <img
             className={styles.deleteButton}
@@ -91,7 +93,6 @@ export const TableComponent: React.FunctionComponent<TableComponentPropsType> = 
           {locked && "locked"}
           {!locked && full && "full"}
         </div>
-        <span>{table.title}</span>
       </div>
       <div className={styles.tableUsers}>
         {renderedUserPictures}

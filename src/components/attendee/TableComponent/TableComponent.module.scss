@@ -34,6 +34,11 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+  width: 100%;
+}
+
+.tableTitle {
+  flex: 1;
 }
 
 .deleteButton {
@@ -42,6 +47,7 @@
 
 .tableUsers {
   display: flex;
+  flex-wrap: wrap;
   flex-direction: row;
   justify-content: center;
   align-items: center;
@@ -70,7 +76,8 @@
   margin: space.empty(0.5);
   width: space.empty(4);
   height: space.empty(4);
-  border-radius: 100%;
+  border-radius: 50%;
+  overflow: hidden;
   display: flex;
 
   @media (min-width: breakpoint.$md) {
