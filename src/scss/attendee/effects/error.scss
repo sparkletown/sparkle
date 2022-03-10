@@ -1,4 +1,7 @@
+@use "../theme";
+@use "../border";
+
 @mixin input-error {
-  background-color: #fae7e7;
-  border: 1px solid #ed2326;
+  background-color: theme.$error-background;
+  border: border.$width--slim solid theme.$error-border;
 }

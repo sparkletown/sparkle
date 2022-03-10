@@ -4,8 +4,6 @@ import classNames from "classnames";
 
 import { AnyForm, ContainerClassName } from "types/utility";
 
-import { isDefined } from "utils/types";
-
 import styles from "./InputSelect.module.scss";
 
 const urlSources: Record<string, string> = {
@@ -49,7 +47,7 @@ export const InputSelect: React.FC<InputSelectProps> = ({
   );
 
   const wrapperClassNames = classNames(styles.inputWrapper, {
-    [styles.invalid]: isDefined(error),
+    [styles.invalid]: error,
   });
 
   const inputClassNames = classNames(styles.input, inputClassName);

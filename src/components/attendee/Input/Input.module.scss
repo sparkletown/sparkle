@@ -1,6 +1,7 @@
 @use "scss/attendee/space";
 @use "scss/attendee/border";
 @use "scss/attendee/font";
+@use "scss/attendee/iconSize";
 @use "scss/attendee/theme";
 @use "scss/attendee/effects/error";
 
@@ -22,7 +23,7 @@
     height: 26px;
     color: theme.$c-glass-panel-text;
     right: space.empty(0.8);
-    border-left: border.$radius--s3 solid theme.$sparkle--border;
+    border-left: border.$width--slim solid theme.$sparkle--border;
     color: theme.$c-inverted-text;
     cursor: pointer;
   }
@@ -33,7 +34,7 @@
 }
 
 .border {
-  border: border.$radius--s3 solid theme.$sparkle--border;
+  border: border.$width--slim solid theme.$sparkle--border;
 }
 
 .invalid {
@@ -42,9 +43,10 @@
 
 .errorIcon {
   background-image: url(/assets/icons/input-error-icon.svg);
-  height: 18px;
-  width: 18px;
-  margin-left: -24px;
+  height: iconSize.$input-error-icon-size;
+  width: iconSize.$input-error-icon-size;
+  // pull icon inside input field
+  margin-left: space.empty(-2);
 }
 
 .inputWrapper {

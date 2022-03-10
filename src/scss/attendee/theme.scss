@@ -24,6 +24,11 @@
   --overlay-fg: rgb(255, 255, 255);
   --overlay-bg: rgba(99, 42, 199, 0.7);
 
+  --error-background: #fae7e7;
+  --error-border: #ed2326;
+
+  --toggler-off-color: rgba(255, 255, 255, 0.3);
+
   @media (prefers-color-scheme: dark) {
     --default-text: rgb(255, 255, 255);
     --chat-input-background: rgb(60, 60, 60);
@@ -59,6 +64,11 @@ $c-overlay-fg: var(--overlay-fg);
 $c-overlay-bg: var(--overlay-bg);
 
 $sparkle-disabled: var(--disabled-color);
+
+$error-background: var(--error-background);
+$error-border: var(--error-border);
+
+$toggler-off-color: var(--toggler-off-color);
 
 // Auxillary text that is less important than other text and so fades into the
 // background a little.

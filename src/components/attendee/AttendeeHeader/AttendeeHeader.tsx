@@ -11,7 +11,7 @@ import { ATTENDEE_INSIDE_URL, SPACE_TAXON, STRING_SPACE } from "settings";
 
 import { BaseVenue } from "types/venues";
 
-import { formatFullTimeLocalised } from "utils/time";
+import { currentMilliseconds, getDateHoursAndMinutes } from "utils/time";
 import { generateUrl } from "utils/url";
 
 import { useChatSidebarControls } from "hooks/chats/util/useChatSidebarControls";
@@ -106,7 +106,7 @@ export const AttendeeHeader: React.FC<AttendeeHeaderProps> = ({
             variant={isNarrow ? "primaryAlternate" : "primary"}
           >
             <FontAwesomeIcon icon={faArrowLeft} /> Leave{STRING_SPACE}
-            {formatFullTimeLocalised(Date.now())}
+            {getDateHoursAndMinutes(currentMilliseconds())}
           </Button>
         ) : (
           <Button
@@ -115,13 +115,15 @@ export const AttendeeHeader: React.FC<AttendeeHeaderProps> = ({
           >
             {space?.name ?? `This ${SPACE_TAXON.title}`}
             {STRING_SPACE}
-            {formatFullTimeLocalised(Date.now())}
+            {getDateHoursAndMinutes(currentMilliseconds())}
           </Button>
         )}
-        <Attendance
-          totalUsersCount={space?.recentUserCount}
-          usersSample={space?.recentUsersSample}
-        />
+        {!isNarrow && (
+          <Attendance
+            totalUsersCount={space?.recentUserCount}
+            usersSample={space?.recentUsersSample}
+          />
+        )}
         <div>{renderedCaptions}</div>
       </div>
       {isShown && <NavOverlay onClose={hide} type={overlayLabel} />}

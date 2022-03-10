@@ -4,8 +4,6 @@ import classNames from "classnames";
 
 import { AnyForm, ContainerClassName } from "types/utility";
 
-import { isDefined } from "utils/types";
-
 import CN from "./Input.module.scss";
 
 interface InputProps
@@ -37,7 +35,7 @@ export const Input: React.ForwardRefRenderFunction<
   ...extraInputProps
 }) => {
   const inputClassNames = classNames(inputClassName, CN[border], {
-    [CN.invalid]: isDefined(error),
+    [CN.invalid]: error,
   });
   const registerProps = name && register ? register(name, rules) : {};
 

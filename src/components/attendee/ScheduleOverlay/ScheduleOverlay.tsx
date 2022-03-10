@@ -28,6 +28,7 @@ import {
 import {
   ALWAYS_EMPTY_ARRAY,
   ALWAYS_EMPTY_OBJECT,
+  STRING_DASH_SPACE,
   STRING_SPACE,
 } from "settings";
 
@@ -223,7 +224,8 @@ export const ScheduleOverlay: React.FC = () => {
               </div>
               <div>
                 <span>
-                  {formatTimeLocalised(eventStartTime({ event })) + " - "}
+                  {formatTimeLocalised(eventStartTime({ event })) +
+                    STRING_DASH_SPACE}
                 </span>
                 <span>
                   {showDate && formatDateRelativeToNow(eventEndTime({ event }))}

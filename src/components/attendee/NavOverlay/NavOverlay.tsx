@@ -35,7 +35,7 @@ const navOverlayTypeMap: Readonly<Record<NavOverlayTabType, string>> = {
 };
 
 export const NavOverlay: React.FC<NavOverlayProps> = ({ onClose, type }) => {
-  const [navOverlayType, setNavOverlay] = useState(type);
+  const [selectedNavMenu, setNavMenu] = useState(type);
   const [isMenuShown, setMenuShown] = useState(true);
   const { isTablet, isMobile } = useMediaQuery();
   const { space } = useWorldAndSpaceByParams();
@@ -43,13 +43,13 @@ export const NavOverlay: React.FC<NavOverlayProps> = ({ onClose, type }) => {
   const isMenuPaged = isTablet || isMobile;
 
   useEffect(() => {
-    setNavOverlay(type);
+    setNavMenu(type);
 
-    return () => setNavOverlay("");
+    return () => setNavMenu("");
   }, [type]);
 
   const handleMenuItemSelect = (key: string) => {
-    setNavOverlay(key);
+    setNavMenu(key);
     isMenuPaged && setMenuShown(false);
   };
 
@@ -95,14 +95,16 @@ export const NavOverlay: React.FC<NavOverlayProps> = ({ onClose, type }) => {
         )}
         {!(isMenuPaged && isMenuShown) && (
           <div className={CN.navOverlayContent}>
-            {navOverlayType === space?.name && <SpaceInfo />}
-            {navOverlayType === NavOverlayTabType.schedule && (
+            {selectedNavMenu === space?.name && <SpaceInfo />}
+            {selectedNavMenu === NavOverlayTabType.schedule && (
               <ScheduleOverlay />
             )}
-            {navOverlayType === NavOverlayTabType.search && (
+            {selectedNavMenu === NavOverlayTabType.search && (
               <SearchOverlay onClose={onClose} />
             )}
-            {navOverlayType === NavOverlayTabType.profile && <ProfileOverlay />}
+            {selectedNavMenu === NavOverlayTabType.profile && (
+              <ProfileOverlay />
+            )}
           </div>
         )}
       </div>

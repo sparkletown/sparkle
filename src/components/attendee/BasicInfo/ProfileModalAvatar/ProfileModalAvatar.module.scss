@@ -2,10 +2,11 @@
 @use "scss/attendee/theme";
 @use "scss/attendee/font";
 @use "scss/attendee/border";
+@use "scss/attendee/iconSize";
 
 .profileModalAvatar {
-  width: space.empty(7);
-  height: space.empty(7);
+  width: iconSize.$profile-overlay-avatar-size;
+  height: iconSize.$profile-overlay-avatar-size;
 }
 
 .input {
@@ -13,8 +14,8 @@
 }
 
 .image {
-  width: space.empty(7);
-  height: space.empty(7);
+  width: iconSize.$profile-overlay-avatar-size;
+  height: iconSize.$profile-overlay-avatar-size;
   border-radius: 50%;
   cursor: pointer;
 }
@@ -22,7 +23,7 @@
 .text {
   @include font.core;
   position: sticky;
-  margin: -(space.empty(5)) space.empty(1) 0 space.empty(1);
+  margin: space.empty(-5) space.empty(1) 0 space.empty(1);
   cursor: pointer;
   text-align: center;
   border-radius: border.$radius--xs;

@@ -2,9 +2,8 @@
 @use "scss/attendee/space";
 @use "scss/attendee/font";
 @use "scss/attendee/border";
+@use "scss/attendee/iconSize";
 @use "scss/attendee/effects/error";
-
-$-error-icon-size: 18px;
 
 .wrapper {
   @include font.core;
@@ -22,7 +21,7 @@ $-error-icon-size: 18px;
   box-sizing: border-box;
   width: 100%;
   border: none;
-  border-right: border.$radius--s3 solid theme.$c-glass-panel-background;
+  border-right: border.$width--slim solid theme.$c-glass-panel-background;
 }
 
 .select {
@@ -37,9 +36,10 @@ $-error-icon-size: 18px;
 
 .errorIcon {
   background-image: url(/assets/icons/input-error-icon.svg);
-  height: $-error-icon-size;
-  width: $-error-icon-size;
-  margin-left: -(space.empty(2));
+  height: iconSize.$input-error-icon-size;
+  width: iconSize.$input-error-icon-size;
+  // pull icon inside input field
+  margin-left: space.empty(-2);
 }
 
 .inputWrapper {

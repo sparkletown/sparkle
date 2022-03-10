@@ -2,8 +2,6 @@
 @use "scss/attendee/theme";
 @use "scss/attendee/font";
 
-$-toggler-off-color: rgba(255, 255, 255, 0.3);
-
 .toggler {
   font-size: font.$size--lg;
   position: relative;
@@ -49,7 +47,7 @@ $-toggler-off-color: rgba(255, 255, 255, 0.3);
     width: space.empty(2);
     bottom: space.gap(1);
     left: space.gap(1);
-    background-color: $-toggler-off-color;
+    background-color: theme.$toggler-off-color;
     -webkit-transition: 0.4s;
     transition: 0.4s;
   }

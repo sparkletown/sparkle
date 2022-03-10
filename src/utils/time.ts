@@ -21,9 +21,11 @@ import {
   subHours,
 } from "date-fns";
 
-const DATEFNS_INPUT_TIME_FORMAT = "HH:mm";
-const DATEFNS_INPUT_DATE_FORMAT = "yyyy-MM-dd";
-const DATEFNS_DAY_FORMAT = "MMM d";
+import {
+  DATEFNS_INPUT_DATE_FORMAT,
+  DATEFNS_INPUT_TIME_FORMAT,
+  DAYJS_EVENT_WEEK_DAY_FORMAT,
+} from "settings";
 
 /**
  * @deprecated in favor of using date-fns functions
@@ -331,18 +333,18 @@ export const formatDayLabel = (
   isScheduleTimeshifted: boolean
 ) => {
   if (isScheduleTimeshifted) {
-    return format(day, DATEFNS_DAY_FORMAT);
+    return format(day, DAYJS_EVENT_WEEK_DAY_FORMAT);
   }
 
   return formatDateRelativeToNow(day, {
     formatOtherDate: (dateOrTimestamp) =>
-      format(dateOrTimestamp, DATEFNS_DAY_FORMAT),
+      format(dateOrTimestamp, DAYJS_EVENT_WEEK_DAY_FORMAT),
     formatTomorrow: (dateOrTimestamp) =>
-      format(dateOrTimestamp, DATEFNS_DAY_FORMAT),
+      format(dateOrTimestamp, DAYJS_EVENT_WEEK_DAY_FORMAT),
   });
 };
 
-export const formatFullTimeLocalised = (
+export const getDateHoursAndMinutes = (
   dateOrTimestamp: Date | number
 ): string => format(dateOrTimestamp, DATEFNS_INPUT_TIME_FORMAT);
 

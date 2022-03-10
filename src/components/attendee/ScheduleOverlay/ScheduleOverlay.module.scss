@@ -14,7 +14,7 @@
   margin: space.empty(10) auto 0 space.empty(5);
   padding: space.empty(4) space.empty(3);
 
-  @media (max-width: breakpoint.$md) {
+  @media (max-width: breakpoint.$lg) {
     margin: 0;
   }
 }
