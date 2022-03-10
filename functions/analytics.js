@@ -121,8 +121,6 @@ exports.generateAnalytics = functions.https.onCall(async (data, context) => {
     {}
   );
 
-  // const allSpaceVisitsFileName = "allSpaceVisits.csv";
-
   // TODO: filter enteredVenueIds and visitsTimeSpent so that they only contain related venues?
   const result = usersWithVisits
     .reduce((arr, userWithVisits) => {
@@ -166,11 +164,6 @@ exports.generateAnalytics = functions.https.onCall(async (data, context) => {
       const { user, visits } = userWithVisits;
       const { id, partyName } = user;
       const { email } = authUsersById[id] || {};
-      // const visitIds = visits.map((el) => el.id);
-
-      // visitIds.map((visit) =>
-      // fs.writeFileSync(allSpaceVisitsFileName, `${visit} \n`, { flag: "a" })
-      // );
 
       return {
         id,
@@ -190,13 +183,6 @@ exports.generateAnalytics = functions.https.onCall(async (data, context) => {
   }, []);
 
   const globalUniqueVisits = [...new Set(allResultVisits)];
-
-  // const uniqueVenuesVisitedFileName = "uniqueVenuesVisited.csv";
-
-  // write all unique venues
-  // globalUniqueVisits.map((el) =>
-  //   fs.writeFileSync(uniqueVenuesVisitedFileName, `${el} \n`, { flag: "a" })
-  // );
 
   const dataReportFileName = "dataReport.csv";
 
