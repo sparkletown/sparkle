@@ -256,6 +256,11 @@ export const ScheduleOverlay: React.FC = () => {
       block: "nearest",
       inline: "start",
     });
+    recalculateSkipPrevValues(scrollRef);
+  };
+
+  // sets schedule arrow backward/forward values
+  const recalculateSkipPrevValues = (scrollRef: HTMLButtonElement | null) => {
     const newIndex =
       allRefs.current.findIndex(
         (el) => el.current?.innerText === scrollRef?.innerText
@@ -275,6 +280,12 @@ export const ScheduleOverlay: React.FC = () => {
       block: "nearest",
       inline: "start",
     });
+
+    recalculateSkipToValues(scrollRef);
+  };
+
+  // sets schedule arrow backward/forward values
+  const recalculateSkipToValues = (scrollRef: HTMLButtonElement | null) => {
     const newIndex =
       allRefs.current.findIndex(
         (el) => el.current?.innerText === scrollRef?.innerText
