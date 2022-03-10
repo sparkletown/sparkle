@@ -34,9 +34,14 @@ export const Input: React.ForwardRefRenderFunction<
   border = "borderless",
   ...extraInputProps
 }) => {
-  const inputClassNames = classNames(inputClassName, CN[border], {
-    [CN.invalid]: error,
-  });
+  const inputClassNames = classNames(
+    CN.inputField,
+    inputClassName,
+    CN[border],
+    {
+      [CN.invalid]: error,
+    }
+  );
   const registerProps = name && register ? register(name, rules) : {};
 
   return (

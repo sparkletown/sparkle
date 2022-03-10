@@ -3,14 +3,13 @@ import classNames from "classnames";
 
 import CN from "./Button.module.scss";
 
-type ButtonVariant =
-  | "primary"
-  | "alternative"
-  | "alternativeBorder"
-  | "primaryAlternate";
+type ButtonVariant = "primary" | "alternative";
+type BorderVariant = ButtonVariant;
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   onClick?: () => void;
   variant?: ButtonVariant;
+  transparent?: boolean;
+  border?: BorderVariant;
   className?: string;
   forwardRef?: RefObject<HTMLButtonElement> | null;
 }
@@ -20,14 +19,16 @@ export const Button: React.FC<ButtonProps> = ({
   children,
   variant,
   className,
+  transparent,
   forwardRef,
+  border,
   ...rest
 }) => {
   const buttonClasses = classNames(`${CN.button} ${className}`, {
-    [CN.buttonPrimary]: variant === "primary",
-    [CN.buttonAlternative]: variant === "alternative",
-    [CN.buttonAlternativeBorder]: variant === "alternativeBorder",
-    [CN.buttonPrimaryAlternate]: variant === "primaryAlternate",
+    [CN.primary]: variant === "primary",
+    [CN.alternative]: variant === "alternative",
+    [CN.transparent]: transparent,
+    [CN.borderAlternative]: border === "alternative",
   });
 
   return (

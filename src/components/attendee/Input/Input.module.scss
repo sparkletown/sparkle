@@ -59,3 +59,7 @@
   @include font.core;
   margin-top: space.empty(0.5);
 }
+
+.inputField {
+  outline: none;
+}

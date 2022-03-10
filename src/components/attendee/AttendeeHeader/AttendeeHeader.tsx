@@ -84,7 +84,7 @@ export const AttendeeHeader: React.FC<AttendeeHeaderProps> = ({
           </Button>
         ))
       ) : (
-        <Button variant="primaryAlternate" onClick={show}>
+        <Button variant="primary" transparent onClick={show}>
           Menu
         </Button>
       ),
@@ -101,16 +101,14 @@ export const AttendeeHeader: React.FC<AttendeeHeaderProps> = ({
     <header className={headerClassnames}>
       <div className={containerClasses}>
         {backButtonSpace ? (
-          <Button
-            onClick={goBack}
-            variant={isNarrow ? "primaryAlternate" : "primary"}
-          >
+          <Button onClick={goBack} variant="primary" transparent={isNarrow}>
             <FontAwesomeIcon icon={faArrowLeft} /> Leave{STRING_SPACE}
             {getDateHoursAndMinutes(currentMilliseconds())}
           </Button>
         ) : (
           <Button
-            variant={isNarrow ? "primaryAlternate" : "primary"}
+            variant="primary"
+            transparent={isNarrow}
             onClick={() => handleOverlayOpen(space?.name || "")}
           >
             {space?.name ?? `This ${SPACE_TAXON.title}`}

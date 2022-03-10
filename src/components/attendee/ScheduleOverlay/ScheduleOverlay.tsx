@@ -97,7 +97,7 @@ export const ScheduleOverlay: React.FC = () => {
     RefObject<HTMLButtonElement>
   >();
   const allRefs = useRef<RefObject<HTMLButtonElement>[]>(
-    range(30).map(() => React.createRef())
+    range(50).map(() => React.createRef())
   );
   const firstDayIntersect = useIntersection(allRefs?.current[0], {
     rootMargin: "0px",
@@ -286,7 +286,9 @@ export const ScheduleOverlay: React.FC = () => {
   });
 
   const forwardAngleClassnames = classNames(CN.angleIcon, {
-    [CN.angleDisabled]: !forwardTarget?.current,
+    [CN.angleDisabled]: forwardTarget
+      ? !forwardTarget?.current
+      : !allRefs.current[weekDayStepValue],
   });
 
   return (

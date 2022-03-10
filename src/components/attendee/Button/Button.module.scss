@@ -21,21 +21,19 @@
   }
 }
 
-.buttonPrimary {
+.primary {
   @include sparkle.color--glass;
 }
 
-.buttonAlternative {
+.alternative {
   background: transparent;
 }
 
-.buttonAlternativeBorder {
-  background: transparent;
-  border: 1px solid white;
+.borderAlternative {
+  border: border.$width--slim solid theme.$c-button-fg;
 }
 
-.buttonPrimaryAlternate {
-  @include sparkle.color--glass;
+.transparent {
   background: transparent;
   backdrop-filter: none;
 }

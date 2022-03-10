@@ -188,7 +188,8 @@ export const ProfileOverlay: React.FC<ProfileOverlayProps> = ({ profile }) => {
             <Button
               type="submit"
               disabled={isSubmitting}
-              variant="alternativeBorder"
+              variant="alternative"
+              border="alternative"
             >
               {isSubmitting ? "Saving..." : "Save changes"}
             </Button>
