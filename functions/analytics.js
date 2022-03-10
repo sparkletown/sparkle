@@ -1,4 +1,7 @@
 const fs = require("fs");
+const os = require("os");
+const path = require("path");
+
 const admin = require("firebase-admin");
 const functions = require("firebase-functions");
 const lodash = require("lodash");
@@ -43,19 +46,60 @@ const getUsersWithVisits = async (venueIdsArray) => {
   return Promise.all(await dto);
 };
 
+const getWorldBySlug = async ({ worldSlug }) => {
+  const matchingWorlds = await admin
+    .firestore()
+    .collection("worlds")
+    .where("slug", "==", worldSlug)
+    .get();
+
+  if (matchingWorlds.empty) {
+    throw new HttpsError(
+      "internal",
+      `The world with ${worldSlug} does not exist`
+    );
+  }
+
+  const [world] = matchingWorlds.docs;
+  return world;
+};
+
 exports.generateAnalytics = functions.https.onCall(async (data, context) => {
   checkAuth(context);
 
+  if (!context.auth) {
+    throw new HttpsError("internal", `No authentication context`);
+  }
+
+  if (!data.worldSlug) {
+    throw new HttpsError("internal", `World slug missing`);
+  }
+
   await checkIsAdmin(context.auth.token.user_id);
 
-  const { venueIds = [] } = data;
+  const world = await getWorldBySlug({ worldSlug: data.worldSlug });
 
-  const venueIdsArray = venueIds.split(",");
+  const worldId = world.id;
+
+  const matchingSpaces = await admin
+    .firestore()
+    .collection("venues")
+    .where("worldId", "==", worldId)
+    .get();
+
+  if (matchingSpaces.empty) {
+    throw new HttpsError(
+      "internal",
+      `The world ${data.worldSlug} does not have any venues`
+    );
+  }
+
+  const spaceIds = matchingSpaces.docs.map((space) => space.id);
 
   // TODO: CHECK IF ADMIN
   // TODO: extract this as a generic helper function?
   const usersWithVisits = await Promise.all(
-    await getUsersWithVisits(venueIdsArray).then((res) => res.flat())
+    await getUsersWithVisits(spaceIds).then((res) => res.flat())
   );
 
   // TODO: extract this as a generic helper function?
@@ -76,8 +120,6 @@ exports.generateAnalytics = functions.https.onCall(async (data, context) => {
     (acc, authUser) => ({ ...acc, [authUser.uid]: authUser }),
     {}
   );
-
-  const allSpaceVisitsFileName = "allSpaceVisits.csv";
 
   // TODO: filter enteredVenueIds and visitsTimeSpent so that they only contain related venues?
   const result = usersWithVisits
@@ -122,11 +164,6 @@ exports.generateAnalytics = functions.https.onCall(async (data, context) => {
       const { user, visits } = userWithVisits;
       const { id, partyName } = user;
       const { email } = authUsersById[id] || {};
-      const visitIds = visits.map((el) => el.id);
-
-      visitIds.map((visit) =>
-        fs.writeFileSync(allSpaceVisitsFileName, `${visit} \n`, { flag: "a" })
-      );
 
       return {
         id,
@@ -147,14 +184,9 @@ exports.generateAnalytics = functions.https.onCall(async (data, context) => {
 
   const globalUniqueVisits = [...new Set(allResultVisits)];
 
-  const uniqueVenuesVisitedFileName = "uniqueVenuesVisited.csv";
-
-  // write all unique venues
-  globalUniqueVisits.map((el) =>
-    fs.writeFileSync(uniqueVenuesVisitedFileName, `${el} \n`, { flag: "a" })
-  );
-
   const dataReportFileName = "dataReport.csv";
+
+  const dataReportFilePath = path.join(os.tmpdir(), dataReportFileName);
 
   // Write user venue headings
   (() => {
@@ -167,7 +199,7 @@ exports.generateAnalytics = functions.https.onCall(async (data, context) => {
       .map((heading) => `"${heading}"`)
       .join(",");
 
-    fs.writeFileSync(dataReportFileName, `${headingLine} \n`, { flag: "a" });
+    fs.writeFileSync(dataReportFilePath, `${headingLine} \n`, { flag: "a" });
   })();
 
   let globalVisitsValue = 0;
@@ -209,7 +241,7 @@ exports.generateAnalytics = functions.https.onCall(async (data, context) => {
 
     const csvFormattedLine = dto.map((s) => `"${s}"`).join(",");
 
-    fs.writeFileSync(dataReportFileName, `${csvFormattedLine} \n`, {
+    fs.writeFileSync(dataReportFilePath, `${csvFormattedLine} \n`, {
       flag: "a",
     });
 
@@ -220,7 +252,7 @@ exports.generateAnalytics = functions.https.onCall(async (data, context) => {
 
   // space between visit data & total data
   [0, 1, 2].map(() =>
-    fs.writeFileSync(dataReportFileName, `\n`, { flag: "a" })
+    fs.writeFileSync(dataReportFilePath, `\n`, { flag: "a" })
   );
 
   const arrayOfResults = [];
@@ -256,10 +288,10 @@ exports.generateAnalytics = functions.https.onCall(async (data, context) => {
     ),
   ];
 
-  fs.writeFileSync(dataReportFileName, `${uniqueVisitDataLine} \n`, {
+  fs.writeFileSync(dataReportFilePath, `${uniqueVisitDataLine} \n`, {
     flag: "a",
   });
-  fs.writeFileSync(dataReportFileName, `${averageVisitDataLine} \n`, {
+  fs.writeFileSync(dataReportFilePath, `${averageVisitDataLine} \n`, {
     flag: "a",
   });
 
@@ -272,41 +304,16 @@ exports.generateAnalytics = functions.https.onCall(async (data, context) => {
 
   const bucket = storage.bucket(`${functionsConfig.project.id}.appspot.com`);
 
-  const [dataReportFile] = await bucket.upload(dataReportFileName, {
+  const [dataReportFile] = await bucket.upload(dataReportFilePath, {
     destination: `analytics/dataReportFile-${expiryDate}.csv`,
   });
-
-  const [allSpaceVisitsFile] = await bucket.upload(allSpaceVisitsFileName, {
-    destination: `analytics/allSpaceVisits-${expiryDate}.csv`,
-  });
-
-  const [uniqueVenuesVisitedFile] = await bucket.upload(
-    uniqueVenuesVisitedFileName,
-    {
-      destination: `analytics/uniqueVenuesVisited-${expiryDate}.csv`,
-    }
-  );
 
   const [dataReportFileUrl] = await dataReportFile.getSignedUrl({
     action: "read",
     expires: expiryDate,
   });
 
-  const [allSpaceVisitsFileUrl] = await allSpaceVisitsFile.getSignedUrl({
-    action: "read",
-    expires: expiryDate,
-  });
-
-  const [
-    uniqueVenuesVisitedFileUrl,
-  ] = await uniqueVenuesVisitedFile.getSignedUrl({
-    action: "read",
-    expires: expiryDate,
-  });
-
   return {
     dataReportFileUrl,
-    allSpaceVisitsFileUrl,
-    uniqueVenuesVisitedFileUrl,
   };
 });
