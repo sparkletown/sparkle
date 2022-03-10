@@ -21,6 +21,15 @@ export class SparkleHookError extends SparkleError {
   }
 }
 
+export class SparkleFetchError extends SparkleError {
+  readonly args: unknown;
+
+  constructor(options?: { message?: string; args: unknown }) {
+    super("SparkleFetchError", options?.message);
+    this.args = options?.args;
+  }
+}
+
 type AssertUnreachable = (_: never) => void;
 export const assertUnreachable: AssertUnreachable = () => {
   throw new Error("Didn't expect to get here");
