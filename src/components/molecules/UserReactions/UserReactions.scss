@@ -62,6 +62,8 @@ $reactionTimeout: 5s;
     color: $content--under;
     font-size: 20px;
     border-radius: 10px;
+
+    word-break: break-all;
   }
 }
 
@@ -104,8 +106,7 @@ $reactionTimeout: 5s;
   }
 
   25% {
-    transform: scale(1.25)
-      translateX(calc(-1 * #{$shoutBounceTranslateXOffset}));
+    transform: scale(1.25) translateX(calc(-1 * #{$shoutBounceTranslateXOffset}));
   }
 
   40%,

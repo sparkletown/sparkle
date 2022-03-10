@@ -58,58 +58,58 @@ export const VideoCommsParticipant: React.FC<VideoCommsParticipantProps> = ({
   const { isMuted, mute, unmute } = useMute();
 
   return (
-    <div className={styles.videoCommsParticipant}>
-      {hasActiveVideoStream &&
-        participant.videoTracks.map((track) => (
-          <div key={track.id} className={styles.trackContainer}>
-            <VideoTrackDisplay
-              key={track.id}
-              track={track}
-              isMirrored={isLocal && track.sourceType === VideoSource.Webcam}
-            />
-            <div className={styles.videoCommsControlsContainer}>
-              {videoTrackControls && videoTrackControls(track)}
+    <div className={styles.container}>
+      <div className={styles.videoCommsParticipant}>
+        {hasActiveVideoStream &&
+          participant.videoTracks.map((track) => (
+            <div key={track.id} className={styles.trackContainer}>
+              <VideoTrackDisplay
+                key={track.id}
+                track={track}
+                isMirrored={isLocal && track.sourceType === VideoSource.Webcam}
+              />
+              <div className={styles.videoCommsControlsContainer}>
+                {videoTrackControls && videoTrackControls(track)}
+              </div>
             </div>
-          </div>
-        ))}
-      {!isLocal &&
-        participant.audioTracks.map((track) => (
-          <AudioTrackPlayer key={track.id} track={track} isMuted={isMuted} />
-        ))}
+          ))}
+        {!isLocal &&
+          participant.audioTracks.map((track) => (
+            <AudioTrackPlayer key={track.id} track={track} isMuted={isMuted} />
+          ))}
 
-      {!isLoading && (
-        <>
+        {!isLoading && (
           <UserAvatar
             containerClassName={styles.avatarContainer}
             user={profile}
           />
-          {userId && (
-            <UserReactions
-              userId={userId}
-              isMuted={isAudioEffectDisabled}
-              reactionPosition={reactionPosition}
+        )}
+        <div className={styles.videoCommsControlsContainer}>
+          {isLocal ? (
+            <VideoCommsControls
+              startAudio={startAudio}
+              stopAudio={stopAudio}
+              startVideo={startVideo}
+              stopVideo={stopVideo}
+              audioEnabled={isTransmittingAudio}
+              videoEnabled={isTransmittingVideo}
+            />
+          ) : (
+            <VideoCommsControls
+              startAudio={unmute}
+              stopAudio={mute}
+              audioEnabled={!isMuted}
             />
           )}
-        </>
-      )}
-      <div className={styles.videoCommsControlsContainer}>
-        {isLocal ? (
-          <VideoCommsControls
-            startAudio={startAudio}
-            stopAudio={stopAudio}
-            startVideo={startVideo}
-            stopVideo={stopVideo}
-            audioEnabled={isTransmittingAudio}
-            videoEnabled={isTransmittingVideo}
-          />
-        ) : (
-          <VideoCommsControls
-            startAudio={unmute}
-            stopAudio={mute}
-            audioEnabled={!isMuted}
-          />
-        )}
+        </div>
       </div>
+      {!isLoading && userId && (
+        <UserReactions
+          userId={userId}
+          isMuted={isAudioEffectDisabled}
+          reactionPosition={reactionPosition}
+        />
+      )}
     </div>
   );
 };

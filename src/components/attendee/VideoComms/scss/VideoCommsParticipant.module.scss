@@ -1,14 +1,17 @@
 @use "scss/constants";
 
-.videoCommsParticipant {
-  display: flex;
-  flex-direction: row;
+.container, .videoCommsParticipant {
   position: relative;
   height: 100%;
   max-width: constants.$video-participant-optimal-width;
   min-width: constants.$video-participant-optimal-width;
   max-height: constants.$video-participant-optimal-height;
   width: 100%;
+}
+
+.videoCommsParticipant {
+  display: flex;
+  flex-direction: row;
   background: #3d3a3f;
   border-radius: constants.$border-radius--xl;
   overflow: hidden;
@@ -18,6 +21,7 @@
   display: flex;
   position: relative;
   width: 100%;
+
   video {
     object-fit: cover;
     width: 100%;
@@ -34,6 +38,7 @@
   color: #f1f1f1;
   background: rgba(0, 0, 0, 0.5);
   border-top-left-radius: 4px;
+
   span {
     margin: 2px 7px;
     cursor: pointer;
@@ -47,6 +52,7 @@
   position: absolute;
   left: 8px;
   bottom: 8px;
+
   img {
     max-width: 64px;
     max-height: 64px;
