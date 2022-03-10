@@ -97,11 +97,17 @@ export const ScheduleOverlay: React.FC = () => {
     RefObject<HTMLButtonElement>
   >();
   const allRefs = useRef<RefObject<HTMLButtonElement>[]>(
-    range(50).map(() => React.createRef())
+    range(dayDifference).map(() => React.createRef())
   );
   const firstDayIntersect = useIntersection(allRefs?.current[0], {
     rootMargin: "0px",
   });
+  const lastDayIntersect = useIntersection(
+    allRefs?.current[dayDifference - 1],
+    {
+      rootMargin: "0px",
+    }
+  );
 
   const scheduledStartDate = sovereignVenue?.start_utc_seconds;
 
@@ -286,9 +292,7 @@ export const ScheduleOverlay: React.FC = () => {
   });
 
   const forwardAngleClassnames = classNames(CN.angleIcon, {
-    [CN.angleDisabled]: forwardTarget
-      ? !forwardTarget?.current
-      : !allRefs.current[weekDayStepValue],
+    [CN.angleDisabled]: lastDayIntersect?.isIntersecting,
   });
 
   return (
