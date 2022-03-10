@@ -300,6 +300,26 @@ exports.setAuditoriumSections = functions.https.onCall(
     // Removing sections if needed
     const numberOfSectionsToRemove = -1 * numberOfSectionsToAdd;
     for (let i = 1; i <= numberOfSectionsToRemove; i++) {
+      // to remove subcollection seatedSectionUsers we need to remove all its objects
+      const batchForSections = admin.firestore().batch();
+      const sectionId = sections[currentNumberOfSections - i].id;
+      admin
+        .firestore()
+        .collection("venues")
+        .doc(venueId)
+        .collection("sections")
+        .doc(sectionId)
+        .collection("seatedSectionUsers")
+        .listDocuments()
+        .then((array) => {
+          array.map((userDoc) => batchForSections.delete(userDoc));
+          return batchForSections.commit();
+        })
+        .catch((e) => {
+          throw e;
+        });
+
+      // remove section object
       batch.delete(sections[currentNumberOfSections - i].ref);
     }
 
