@@ -115,10 +115,10 @@ export const ReactionsBar: React.FC<ReactionsBarProps> = ({
     }
   }, [isShoutSent]);
 
-  const isTextTooLogn = errors?.text?.type === "maxLength";
+  const isTextTooLong = errors?.text?.type === "maxLength";
   const inputClasses = classNames({
     text: true,
-    "input-error": isTextTooLogn,
+    "input-error": isTextTooLong,
   });
 
   return (
@@ -162,7 +162,7 @@ export const ReactionsBar: React.FC<ReactionsBarProps> = ({
               type="submit"
               id={`send-shout-out`}
               value={isShoutSent ? "Sent!" : "Send"}
-              disabled={isShoutSent || isTextTooLogn}
+              disabled={isShoutSent || isTextTooLong}
             />
           </form>
         </div>
