@@ -2,7 +2,7 @@
 
 import { Point } from "types/utility";
 
-import { PlayerDataProviderInterface } from "../../DataProvider";
+import { PlayerDataProviderInterface } from "../../../providers";
 import { CommonInterface } from "../Contructor/CommonInterface";
 import playerModel from "../Structures/PlayerModel";
 

@@ -24,12 +24,13 @@ import {
 
 import { Point } from "types/utility";
 
-import { CloudDataProvider } from "../bridges/DataProvider/CloudDataProvider";
+import { GameInstanceInterface } from "../../GameInstanseInterface";
 import { DataProviderEvent } from "../bridges/DataProvider/Providers/DataProviderEvent";
 import EventProvider, {
   EventType,
 } from "../bridges/EventProvider/EventProvider";
 import { GameConfig } from "../configs/GameConfig";
+import { DataProvider } from "../providers";
 
 import { TimeoutCommand } from "./commands/TimeoutCommand";
 import WaitClickForHeroCreation from "./commands/WaitClickForHeroCreation";
@@ -41,7 +42,7 @@ import { StartPoint } from "./utils/Point";
 // @debt do not create objects on load time, but only in the constructor.
 // Globals (or module level) constants like mapLightningShader and mapStaticLightningShader
 // will cause an error on devices/browsers that don't support WebGL 2
-export class GameInstance {
+export class GameInstance implements GameInstanceInterface {
   public static DEBOUNCE_TIME: number = 25;
 
   public static instance: GameInstance;
@@ -59,7 +60,7 @@ export class GameInstance {
   constructor(
     private _config: GameConfig,
     private _store: Store,
-    public dataProvider: CloudDataProvider,
+    public dataProvider: DataProvider,
     private _containerElement: HTMLDivElement,
     private _pictureUrl?: string
   ) {
