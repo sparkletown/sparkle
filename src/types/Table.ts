@@ -21,5 +21,5 @@ export interface TableComponentPropsType {
   users: readonly WithId<DisplayUser>[];
   tableCapacity?: number;
   onJoinClicked: (table: string, locked: boolean) => void;
-  venue: WithId<AnyVenue>;
+  space: WithId<AnyVenue>;
 }

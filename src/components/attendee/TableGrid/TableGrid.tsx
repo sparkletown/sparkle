@@ -38,26 +38,24 @@ interface TableGridProps {
   showOnlyAvailableTables?: boolean;
   joinMessage: boolean;
   leaveText?: string;
-  venue: WithId<AnyVenue>;
-  venueId: string;
+  space: WithId<AnyVenue>;
   userId: string;
 }
 
 export const TableGrid: React.FC<TableGridProps> = ({
-  venueId,
   customTables,
   defaultTables,
   showOnlyAvailableTables = false,
   joinMessage,
-  venue,
+  space,
   userId,
 }) => {
-  const analytics = useAnalytics({ venue });
+  const analytics = useAnalytics({ venue: space });
   const [seatedAtTable, setSeatedAtTable] = useState<string>();
 
   useUpdateTableRecentSeatedUsers(
     VenueTemplate.jazzbar,
-    seatedAtTable && venue?.id
+    seatedAtTable && space?.id
   );
 
   useEffect(() => {
@@ -76,16 +74,16 @@ export const TableGrid: React.FC<TableGridProps> = ({
       if (wasPrevAtTable && table) {
         leaveHuddle();
       }
-      joinHuddle(userId, `${venue.id}-${table}`);
+      joinHuddle(userId, `${space.id}-${table}`);
       setSeatedAtTable(table);
     },
-    [wasPrevAtTable, joinHuddle, userId, venue.id, leaveHuddle]
+    [wasPrevAtTable, joinHuddle, userId, space.id, leaveHuddle]
   );
 
   const leaveTable = useCallback(async () => {
-    await unsetTableSeat(userId, { venueId: venue.id });
+    await unsetTableSeat(userId, { venueId: space.id });
     setSeatedAtTable(undefined);
-  }, [userId, venue.id]);
+  }, [userId, space.id]);
 
   useEffect(() => {
     if (!inHuddle && seatedAtTable) {
@@ -123,10 +121,10 @@ export const TableGrid: React.FC<TableGridProps> = ({
   const { userWithId } = useUser();
   const { data: experience } = useExperience();
 
-  const isCurrentUserAdmin = arrayIncludes(venue.owners, userId);
+  const isCurrentUserAdmin = arrayIncludes(space.owners, userId);
 
   const [seatedTableUsers, isSeatedTableUsersLoaded] = useSeatedTableUsers(
-    venueId
+    space.id
   );
 
   const userTableReference = useMemo(
@@ -149,11 +147,11 @@ export const TableGrid: React.FC<TableGridProps> = ({
       if (!userWithId) return;
 
       await setTableSeat(userWithId, {
-        venueId,
+        venueId: space.id,
         tableReference: table,
       });
     },
-    [userWithId, venueId]
+    [userWithId, space.id]
   );
 
   const usersSeatedAtTables: Record<
@@ -241,7 +239,7 @@ export const TableGrid: React.FC<TableGridProps> = ({
         table={table}
         tableLocked={tableLocked}
         onJoinClicked={onJoinClicked}
-        venue={venue}
+        space={space}
         userId={userId}
       />
     ));
@@ -252,7 +250,7 @@ export const TableGrid: React.FC<TableGridProps> = ({
     tableLocked,
     usersSeatedAtTables,
     onJoinClicked,
-    venue,
+    space,
     userId,
   ]);
 
@@ -267,7 +265,7 @@ export const TableGrid: React.FC<TableGridProps> = ({
           newTable={generateTable({
             tableNumber: tables.length + 1,
           })}
-          venue={venue}
+          space={space}
         />
       )}
       <Modal show={isLockedMessageVisible} onHide={hideLockedMessage}>

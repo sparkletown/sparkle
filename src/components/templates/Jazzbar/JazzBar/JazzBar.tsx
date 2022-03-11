@@ -12,22 +12,19 @@ import { WithId } from "utils/id";
 import { useAnalytics } from "hooks/useAnalytics";
 import { useUserId } from "hooks/user/useUserId";
 
-import { RenderMarkdown } from "components/organisms/RenderMarkdown";
-
 import { Loading } from "components/molecules/Loading";
-
-import styles from "./JazzBar.module.scss";
+import { SpaceInfo } from "components/molecules/SpaceInfo";
 
 interface JazzProps {
-  venue: WithId<JazzbarVenue>;
+  space: WithId<JazzbarVenue>;
 }
 
-export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
-  const analytics = useAnalytics({ venue });
+export const JazzBar: React.FC<JazzProps> = ({ space }) => {
+  const analytics = useAnalytics({ venue: space });
 
   useBackgroundGradient();
 
-  const jazzbarTables = venue.config?.tables ?? JAZZBAR_TABLES;
+  const jazzbarTables = space.config?.tables ?? JAZZBAR_TABLES;
 
   const { userId } = useUserId();
 
@@ -41,29 +38,16 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
 
   return (
     <>
-      {!venue.hideVideo && (
-        <MediaPlayer url={venue.iframeUrl} autoPlay={venue.autoPlay || false} />
+      {!space.hideVideo && (
+        <MediaPlayer url={space.iframeUrl} autoPlay={space.autoPlay || false} />
       )}
 
-      <div className={styles.componentSpaceInfo}>
-        {venue.name && <h1>{venue.name}</h1>}
-      </div>
-
-      {venue.description?.text && (
-        <div className="row">
-          <div className="col">
-            <div className="description">
-              <RenderMarkdown text={venue.description?.text} />
-            </div>
-          </div>
-        </div>
-      )}
+      <SpaceInfo space={space} />
 
       <TableGrid
-        venueId={venue.id}
         joinMessage={false}
         customTables={jazzbarTables}
-        venue={venue}
+        space={space}
         defaultTables={JAZZBAR_TABLES}
         userId={userId}
       />
