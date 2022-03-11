@@ -62,7 +62,7 @@ export const ProfileModalEditLinks: React.FC<ProfileModalEditLinksProps> = ({
       <div className={styles.ProfileModalEditLinks__header}>
         <div>Profile links</div>
         {renderedLinks}
-        <Button onClick={onAddLink} variant="alternativeBorder">
+        <Button onClick={onAddLink} variant="alternative" border="alternative">
           Add another link
         </Button>
       </div>

@@ -1,0 +1,7 @@
+@use "../theme";
+@use "../border";
+
+@mixin input-error {
+  background-color: theme.$error-background;
+  border: border.$width--slim solid theme.$error-border;
+}
