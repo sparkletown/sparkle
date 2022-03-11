@@ -90,7 +90,7 @@ export const ScheduleOverlay: React.FC = () => {
     isEventsLoading,
     sovereignVenue,
   } = useVenueScheduleEvents({ userEventIds });
-  console.log(dayDifference, liveAndFutureEvents);
+
   const allRefs = useRef<RefObject<HTMLButtonElement>[]>(
     range(dayDifference).map(() => React.createRef())
   );
