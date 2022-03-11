@@ -34,5 +34,5 @@ export const IntersectingButton: React.FC<IntersectingButtonProps> = ({
     }
   }, [buttonIntersect, updateIntersected, forwardRef]);
 
-  return <Button {...rest} forwardRef={forwardRef} />;
+  return <Button {...rest} forwardRef={forwardRef} onClick={onClick} />;
 };
