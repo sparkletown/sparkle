@@ -146,3 +146,76 @@ export const deleteWorld = functions.https.onCall(async (data, context) => {
 
   admin.firestore().collection("worlds").doc(worldId).delete();
 });
+
+export const addWorldAdmin = functions.https.onCall(async (data, context) => {
+  assertValidAuth(context);
+
+  const worldId = data.worldId;
+  const userId = data.userId;
+
+  await throwErrorIfNotWorldOwner({
+    worldId,
+    userId,
+  });
+
+  const worldRef = await admin
+    .firestore()
+    .collection("worlds")
+    .doc(worldId)
+    .get();
+
+  const worldData = worldRef.data();
+
+  if (!worldData) {
+    return;
+  }
+
+  const owners = worldData.owners as string[];
+
+  if (owners.includes(userId)) {
+    return;
+  }
+
+  const newOwners = [...owners, userId];
+
+  const newWorldData = { ...worldData, owners: newOwners };
+
+  admin.firestore().collection("worlds").doc(worldId).set(newWorldData);
+});
+
+export const removeWorldAdmin = functions.https.onCall(
+  async (data, context) => {
+    assertValidAuth(context);
+
+    const worldId = data.worldId;
+    const userId = data.userId;
+    await throwErrorIfNotWorldOwner({
+      worldId,
+      userId,
+    });
+
+    const worldRef = await admin
+      .firestore()
+      .collection("worlds")
+      .doc(worldId)
+      .get();
+
+    const worldData = worldRef.data();
+
+    if (!worldData) {
+      return;
+    }
+
+    const owners = worldData.owners as string[];
+
+    if (!owners.includes(userId)) {
+      return;
+    }
+
+    const newOwners = owners.filter((owner) => owner !== userId);
+
+    const newWorldData = { ...worldData, owners: newOwners };
+
+    admin.firestore().collection("worlds").doc(worldId).set(newWorldData);
+  }
+);
