@@ -90,7 +90,7 @@ export const ScheduleOverlay: React.FC = () => {
     isEventsLoading,
     sovereignVenue,
   } = useVenueScheduleEvents({ userEventIds });
-
+  console.log(dayDifference, liveAndFutureEvents);
   const allRefs = useRef<RefObject<HTMLButtonElement>[]>(
     range(dayDifference).map(() => React.createRef())
   );
@@ -202,11 +202,12 @@ export const ScheduleOverlay: React.FC = () => {
 
     const currentVenueBookMarkEvents = eventsFilledWithPriority.filter(
       ({ isSaved, spaceId: eventSpaceId }) =>
-        isSaved && eventSpaceId?.toLowerCase() === space?.id
+        isSaved && eventSpaceId?.toLowerCase() === space?.id.toLowerCase()
     );
 
     const currentVenueEvents = eventsFilledWithPriority.filter(
-      ({ spaceId: eventSpaceId }) => eventSpaceId?.toLowerCase() === space?.id
+      ({ spaceId: eventSpaceId }) =>
+        eventSpaceId?.toLowerCase() === space?.id.toLowerCase()
     );
 
     return {
