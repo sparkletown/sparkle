@@ -14,7 +14,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
-import { Button } from "components/attendee/Button";
+import { IntersectingButton } from "components/attendee/IntersectingButton";
 import { Toggler } from "components/attendee/Toggler";
 import {
   addDays,
@@ -90,12 +90,7 @@ export const ScheduleOverlay: React.FC = () => {
     isEventsLoading,
     sovereignVenue,
   } = useVenueScheduleEvents({ userEventIds });
-  const [forwardTarget, setForwardTarget] = useState<
-    RefObject<HTMLButtonElement>
-  >();
-  const [backwardTarget, setBackwardTarget] = useState<
-    RefObject<HTMLButtonElement>
-  >();
+
   const allRefs = useRef<RefObject<HTMLButtonElement>[]>(
     range(dayDifference).map(() => React.createRef())
   );
@@ -108,6 +103,28 @@ export const ScheduleOverlay: React.FC = () => {
       rootMargin: "0px",
     }
   );
+
+  const [forwardTarget, setForwardTarget] = useState<
+    RefObject<HTMLButtonElement>
+  >(allRefs?.current[weekDayStepValue]);
+  const [backwardTarget, setBackwardTarget] = useState<
+    RefObject<HTMLButtonElement>
+  >(allRefs?.current[0]);
+
+  // triggered on schedule days scroll, sets prev arrow value to {currentIntersectingDay - 14}
+  // or the first day and next arrow value to {currentIntersectingDay + 7} or the last day
+  const updateIntersected = (lastIntersected: RefObject<HTMLButtonElement>) => {
+    const newIndex = allRefs.current.findIndex(
+      (el) => el.current?.innerText === lastIntersected.current?.innerText
+    );
+    const newTarget =
+      allRefs.current[newIndex - 1] ??
+      allRefs.current[allRefs.current.length - 1];
+    const newBackwardTarget =
+      allRefs.current[newIndex - weekDayStepSkipValue] ?? allRefs.current[0];
+    setForwardTarget(newTarget);
+    setBackwardTarget(newBackwardTarget);
+  };
 
   const scheduledStartDate = sovereignVenue?.start_utc_seconds;
 
@@ -138,7 +155,7 @@ export const ScheduleOverlay: React.FC = () => {
       });
 
       return (
-        <Button
+        <IntersectingButton
           key={day.toISOString()}
           disabled={!daysWithEvents}
           onClick={() => {
@@ -147,9 +164,10 @@ export const ScheduleOverlay: React.FC = () => {
           variant="alternative"
           className={buttonClasses}
           forwardRef={allRefs.current[i]}
+          updateIntersected={updateIntersected}
         >
           {formattedDay}
-        </Button>
+        </IntersectingButton>
       );
     });
   }, [
@@ -259,8 +277,8 @@ export const ScheduleOverlay: React.FC = () => {
     recalculateSkipPrevValues(scrollRef);
   };
 
-  // triggered on arrow click, sets prev arrow value to {currentValue - 14} or the first day
-  // and next arrow value to {currentValue + 7} or the last day
+  // triggered on arrow click, sets prev arrow value to {currentIntersectingDay - 14} or the first day
+  // and next arrow value to {currentIntersectingDay + 7} or the last day
   const recalculateSkipPrevValues = (scrollRef: HTMLButtonElement | null) => {
     const newIndex =
       allRefs.current.findIndex(
@@ -285,8 +303,8 @@ export const ScheduleOverlay: React.FC = () => {
     recalculateSkipToValues(scrollRef);
   };
 
-  // triggered on arrow click, sets prev arrow value to {currentValue - 7} or the first day
-  // and next arrow value to {currentValue + 14} or the last day
+  // triggered on arrow click, sets prev arrow value to {currentIntersectingDay - 7} or the first day
+  // and next arrow value to {currentIntersectingDay + 14} or the last day
   const recalculateSkipToValues = (scrollRef: HTMLButtonElement | null) => {
     const newIndex =
       allRefs.current.findIndex(
