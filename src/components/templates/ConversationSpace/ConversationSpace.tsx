@@ -8,53 +8,30 @@ import { GenericVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
-import { useUser } from "hooks/useUser";
-
-import { RenderMarkdown } from "components/organisms/RenderMarkdown";
-
-import { Loading } from "components/molecules/Loading";
-
-import styles from "./ConversationSpace.module.scss";
+import { SpaceInfo } from "components/molecules/SpaceInfo";
 
 export interface ConversationSpaceProps {
-  venue: WithId<GenericVenue>;
+  space: WithId<GenericVenue>;
+  userId: string;
 }
 
 export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
-  venue,
+  space,
+  userId,
 }) => {
   useBackgroundGradient();
 
-  const { userId } = useUser();
-
-  const tables = venue?.config?.tables ?? CONVERSATION_TABLES;
-
-  if (!userId) {
-    return <Loading />;
-  }
+  const tables = space?.config?.tables ?? CONVERSATION_TABLES;
 
   return (
     <>
-      <div className={styles.componentSpaceInfo}>
-        {venue.name && <h1>{venue.name}</h1>}
-      </div>
-
-      {venue.description?.text && (
-        <div className="row">
-          <div className="col">
-            <div className="description">
-              <RenderMarkdown text={venue.description?.text} />
-            </div>
-          </div>
-        </div>
-      )}
+      <SpaceInfo space={space} />
 
       <TableGrid
-        venueId={venue.id}
-        joinMessage={venue.hideVideo === false}
+        joinMessage={space.hideVideo === false}
         customTables={tables}
         defaultTables={CONVERSATION_TABLES}
-        venue={venue}
+        space={space}
         userId={userId}
       />
     </>

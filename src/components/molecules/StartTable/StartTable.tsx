@@ -17,25 +17,25 @@ import styles from "./StartTable.module.scss";
 export interface StartTablePropsType {
   defaultTables: Table[];
   newTable: Table;
-  venue: WithId<AnyVenue>;
+  space: WithId<AnyVenue>;
 }
 
 export const StartTable: React.FC<StartTablePropsType> = ({
   defaultTables,
   newTable,
-  venue,
+  space,
 }) => {
-  const venueId = venue.id;
+  const spaceId = space.id;
 
   const [{ loading: isUpdatingTables }, updateTables] = useAsyncFn(async () => {
-    if (!venueId) return;
+    if (!spaceId) return;
 
     await updateVenueTable({
-      venueId,
+      venueId: spaceId,
       newTable,
       defaultTables,
     });
-  }, [newTable, venueId, defaultTables]);
+  }, [newTable, spaceId, defaultTables]);
 
   return isUpdatingTables ? (
     <Loading />
