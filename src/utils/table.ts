@@ -15,7 +15,7 @@ export const generateTable: (props: {
   columns = DEFAULT_TABLE_COLUMNS,
   rows = DEFAULT_TABLE_ROWS,
 }) => {
-  const title = tableNumber ? `Table ${tableNumber}` : 'New table';
+  const title = tableNumber ? `Table ${tableNumber}` : "New table";
   const reference = generateUniqueTableReference(title);
 
   const capacity = columns * rows;
