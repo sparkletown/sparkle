@@ -95,11 +95,11 @@ export const TableGrid: React.FC<TableGridProps> = ({
     return () => {
       (async () => {
         // Always leave the table when leaving the space
-        await unsetTableSeat(userId, { venueId: venue.id });
+        await unsetTableSeat(userId, { venueId: space.id });
         leaveHuddle();
       })();
     };
-  }, [leaveTable, leaveHuddle, userId, venue.id]);
+  }, [leaveTable, leaveHuddle, userId, space.id]);
 
   // NOTE: custom tables can already contain default tables and this check here is to only doubleconfrim the data coming from the above
   const tables: Table[] = customTables || defaultTables;
