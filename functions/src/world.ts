@@ -208,7 +208,7 @@ export const removeWorldAdmin = functions.https.onCall(
 
     const owners = worldData.owners as string[];
 
-    if (!owners.includes(userId)) {
+    if (!owners.includes(userId) || owners.length === 1) {
       return;
     }
 

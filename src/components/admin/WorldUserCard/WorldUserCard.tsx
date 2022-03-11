@@ -1,7 +1,7 @@
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { SpaceWithId, UserWithId } from "types/id";
+import { SpaceWithId, UserId, UserWithId } from "types/id";
 
 import { useShowHide } from "hooks/useShowHide";
 
@@ -11,21 +11,33 @@ import { DeleteAdminModal } from "../DeleteAdminModal";
 export interface WorldUserCardProps {
   user: UserWithId;
   spaces: SpaceWithId[];
+  userId?: UserId;
 }
 
 export const WorldUserCard: React.FC<WorldUserCardProps> = ({
   user,
   spaces,
+  userId,
 }) => {
   const ownedSpaces = spaces.filter((space) =>
     space.owners?.includes(user.id as string)
   );
+
+  const isMyUserCard = user.id === userId;
 
   const {
     isShown: isShownDeleteAdminModal,
     show: showDeleteAdminModal,
     hide: hideDeleteAdminModal,
   } = useShowHide();
+
+  const showDeleteModal = () => {
+    if (isMyUserCard) {
+      return;
+    }
+
+    showDeleteAdminModal();
+  };
 
   return (
     <div className="px-6 py-4 w-full flex flex-row gap-x-4 items-center ">
@@ -70,8 +82,9 @@ export const WorldUserCard: React.FC<WorldUserCardProps> = ({
         <div className="whitespace-nowrap text-right text-sm font-medium flex justify-end items-center gap-x-5">
           <Button
             variant="secondaryBorderless"
+            disabled={isMyUserCard}
             className="flex"
-            onClick={showDeleteAdminModal}
+            onClick={showDeleteModal}
           >
             <FontAwesomeIcon
               icon={faTrash}

@@ -14,6 +14,7 @@ import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams"
 import { useWorldSpaces } from "hooks/spaces/useWorldSpaces";
 import { useProfileByIds } from "hooks/user/useProfileByIds";
 import { useShowHide } from "hooks/useShowHide";
+import { useUser } from "hooks/useUser";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
@@ -34,6 +35,8 @@ export const WorldUsers: React.FC = () => {
     worldId,
     isLoading: isWorldLoading,
   } = useWorldAndSpaceByParams();
+
+  const { userId } = useUser();
 
   const {
     isShown: isShownInviteAdminModal,
@@ -125,6 +128,7 @@ export const WorldUsers: React.FC = () => {
                 {filteredUserSpaces?.map((userSpace) => (
                   <WorldUserCard
                     key={userSpace.user.id}
+                    userId={userId}
                     user={userSpace.user}
                     spaces={userSpace.spaces}
                   />
