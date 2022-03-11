@@ -4,8 +4,10 @@ import { DEFAULT_TABLE_COLUMNS, DEFAULT_TABLE_ROWS } from "settings";
 
 import { Table } from "types/Table";
 
+const generateUniqueTableReference = (title: string) => `${title}-${uuid()}`;
+
 export const generateTable: (props: {
-  tableNumber: number;
+  tableNumber?: number;
   columns?: number;
   rows?: number;
 }) => Table = ({
@@ -13,8 +15,8 @@ export const generateTable: (props: {
   columns = DEFAULT_TABLE_COLUMNS,
   rows = DEFAULT_TABLE_ROWS,
 }) => {
-  const title = `Table ${tableNumber}`;
-  const reference = `${title}-${uuid()}`;
+  const title = tableNumber ? `Table ${tableNumber}` : 'New table';
+  const reference = generateUniqueTableReference(title);
 
   const capacity = columns * rows;
 
