@@ -15,7 +15,7 @@ import { User } from "types/User";
 import { WithId } from "utils/id";
 import { getFirebaseStorageResizedImage } from "utils/image";
 
-import { DataProvider } from "../../providers";
+import { DataProvider } from "../../../DataProvider";
 import { RoomWithFullData } from "../CloudDataProviderWrapper";
 import EventProvider, { EventType } from "../EventProvider/EventProvider";
 

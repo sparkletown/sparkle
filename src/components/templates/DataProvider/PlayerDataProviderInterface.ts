@@ -1,4 +1,4 @@
-import { Point } from "../../../../types/utility";
+import { Point } from "types/utility";
 
 export interface PlayerDataProviderInterface {
   isReady: () => boolean;

@@ -24,13 +24,13 @@ import {
 
 import { Point } from "types/utility";
 
+import { DataProvider } from "../../DataProvider";
 import { GameInstanceInterface } from "../../GameInstanseInterface";
 import { DataProviderEvent } from "../bridges/DataProvider/Providers/DataProviderEvent";
 import EventProvider, {
   EventType,
 } from "../bridges/EventProvider/EventProvider";
 import { GameConfig } from "../configs/GameConfig";
-import { DataProvider } from "../providers";
 
 import { TimeoutCommand } from "./commands/TimeoutCommand";
 import WaitClickForHeroCreation from "./commands/WaitClickForHeroCreation";
