@@ -5,7 +5,7 @@ import { Table } from "types/Table";
 import { generateTableReferenceId } from "./string";
 
 export const generateTable: (props: {
-  tableNumber: number;
+  tableNumber?: number;
   columns?: number;
   rows?: number;
   generateTableReference?: (title: string) => string;
@@ -15,7 +15,7 @@ export const generateTable: (props: {
   rows = DEFAULT_TABLE_ROWS,
   generateTableReference = generateTableReferenceId,
 }) => {
-  const title = `Table ${tableNumber}`;
+  const title = tableNumber ? `Table ${tableNumber}` : "New table";
   const reference = generateTableReference(title);
 
   const capacity = columns * rows;
