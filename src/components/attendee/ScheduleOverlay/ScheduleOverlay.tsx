@@ -259,7 +259,8 @@ export const ScheduleOverlay: React.FC = () => {
     recalculateSkipPrevValues(scrollRef);
   };
 
-  // sets schedule arrow backward/forward values
+  // triggered on arrow click, sets prev arrow value to {currentValue - 14} or the first day
+  // and next arrow value to {currentValue + 7} or the last day
   const recalculateSkipPrevValues = (scrollRef: HTMLButtonElement | null) => {
     const newIndex =
       allRefs.current.findIndex(
@@ -284,7 +285,8 @@ export const ScheduleOverlay: React.FC = () => {
     recalculateSkipToValues(scrollRef);
   };
 
-  // sets schedule arrow backward/forward values
+  // triggered on arrow click, sets prev arrow value to {currentValue - 7} or the first day
+  // and next arrow value to {currentValue + 14} or the last day
   const recalculateSkipToValues = (scrollRef: HTMLButtonElement | null) => {
     const newIndex =
       allRefs.current.findIndex(

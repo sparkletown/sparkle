@@ -3,6 +3,8 @@ import classNames from "classnames";
 
 import CN from "./Button.module.scss";
 
+// Button And Border variant types are the same to allow variant mixing.
+// But we might have different variants for either button or border in the future
 type ButtonVariant = "primary" | "alternative";
 type BorderVariant = ButtonVariant;
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {

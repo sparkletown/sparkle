@@ -14,7 +14,7 @@
   margin: space.empty(10) auto 0 space.empty(5);
   padding: space.empty(4) space.empty(3);
 
-  @media (max-width: breakpoint.$lg) {
+  @media (max-width: breakpoint.$xl) {
     margin: 0;
   }
 }
@@ -54,7 +54,7 @@
 }
 
 .scheduleDays {
-  width: 88%;
+  width: 90%;
   display: flex;
   justify-content: space-between;
   overflow-x: auto;

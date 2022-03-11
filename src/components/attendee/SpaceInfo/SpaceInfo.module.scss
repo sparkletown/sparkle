@@ -3,7 +3,7 @@
 @use "scss/attendee/space";
 @use "scss/attendee/layout";
 @use "scss/attendee/breakpoint";
-@use "scss/attendee/iconSize";
+@use "scss/attendee/icon";
 
 .spaceWrapper {
   height: 100%;
@@ -15,13 +15,13 @@
   padding: space.empty(4) space.empty(3);
 
   @media (max-width: breakpoint.$md) {
-    margin: 0;
+    margin: space.empty(3) 0;
   }
 }
 
 .spaceImage {
-  min-width: iconSize.$space-info-image-size;
-  min-height: iconSize.$space-info-image-size;
+  min-width: icon.$size--space-info-image;
+  min-height: icon.$size--space-info-image;
   background-size: contain;
   background-repeat: no-repeat;
   margin-bottom: space.empty(1);

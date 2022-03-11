@@ -2,11 +2,11 @@
 @use "scss/attendee/theme";
 @use "scss/attendee/font";
 @use "scss/attendee/border";
-@use "scss/attendee/iconSize";
+@use "scss/attendee/icon";
 
 .profileModalAvatar {
-  width: iconSize.$profile-overlay-avatar-size;
-  height: iconSize.$profile-overlay-avatar-size;
+  width: icon.$size--profile-overlay-avatar;
+  height: icon.$size--profile-overlay-avatar;
 }
 
 .input {
@@ -14,8 +14,8 @@
 }
 
 .image {
-  width: iconSize.$profile-overlay-avatar-size;
-  height: iconSize.$profile-overlay-avatar-size;
+  width: icon.$size--profile-overlay-avatar;
+  height: icon.$size--profile-overlay-avatar;
   border-radius: 50%;
   cursor: pointer;
 }
