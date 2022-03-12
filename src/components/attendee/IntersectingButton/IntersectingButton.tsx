@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes, RefObject, useEffect } from "react";
+import { ButtonHTMLAttributes, RefObject, useEffect, useRef } from "react";
 import { useIntersection } from "react-use";
 import { Button } from "components/attendee/Button";
 
@@ -14,7 +14,7 @@ interface IntersectingButtonProps
   transparent?: boolean;
   border?: BorderVariant;
   className?: string;
-  forwardRef: RefObject<HTMLButtonElement>;
+  forwardRef?: RefObject<HTMLButtonElement>;
   updateIntersected: (el: RefObject<HTMLButtonElement>) => void;
 }
 
@@ -24,15 +24,17 @@ export const IntersectingButton: React.FC<IntersectingButtonProps> = ({
   updateIntersected,
   ...rest
 }) => {
-  const buttonIntersect = useIntersection(forwardRef, {
+  const fallbackRef = useRef<HTMLButtonElement>(null);
+  const targetRef = forwardRef ?? fallbackRef;
+  const buttonIntersect = useIntersection(targetRef, {
     rootMargin: "0px",
   });
 
   useEffect(() => {
     if (buttonIntersect?.isIntersecting) {
-      updateIntersected(forwardRef);
+      updateIntersected(targetRef);
     }
-  }, [buttonIntersect, updateIntersected, forwardRef]);
+  }, [buttonIntersect, updateIntersected, targetRef]);
 
-  return <Button {...rest} forwardRef={forwardRef} onClick={onClick} />;
+  return <Button {...rest} forwardRef={targetRef} onClick={onClick} />;
 };
