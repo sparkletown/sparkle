@@ -8,7 +8,7 @@ import { Modal } from "components/molecules/Modal";
 
 import { Button } from "../Button";
 
-export interface DeleteAdminModalProps {
+interface DeleteAdminModalProps {
   show: boolean;
   user: UserWithId;
   onHide: () => void;

@@ -22,13 +22,6 @@ import { AdminRestricted } from "components/atoms/AdminRestricted";
 
 import * as TW from "./WorldUsers.tailwind";
 
-export interface WorldScheduleFormInput {
-  startDate: string;
-  startTime: string;
-  endDate: string;
-  endTime: string;
-}
-
 export const WorldUsers: React.FC = () => {
   const {
     world,

@@ -172,7 +172,7 @@ export const addWorldAdmin = functions.https.onCall(async (data, context) => {
 
   const owners = worldData.owners as string[];
 
-  if (owners.includes(userId)) {
+  if (!Array.isArray(owners) || owners.includes(userId)) {
     return;
   }
 
@@ -208,7 +208,11 @@ export const removeWorldAdmin = functions.https.onCall(
 
     const owners = worldData.owners as string[];
 
-    if (!owners.includes(userId) || owners.length === 1) {
+    if (
+      !Array.isArray(owners) ||
+      !owners.includes(userId) ||
+      owners.length === 1
+    ) {
       return;
     }
 

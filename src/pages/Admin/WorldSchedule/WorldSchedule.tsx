@@ -29,7 +29,7 @@ import { AdminRestricted } from "components/atoms/AdminRestricted";
 
 import * as TW from "./WorldSchedule.tailwind";
 
-export interface WorldScheduleFormInput {
+interface WorldScheduleFormInput {
   startDate: string;
   startTime: string;
   endDate: string;

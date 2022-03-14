@@ -20,3 +20,9 @@ export const DISABLED_DUE_TO_1324 = true;
  * @see https://github.com/sparkletown/internal-sparkle-issues/issues/1142
  */
 export const DISABLED_DUE_TO_1142 = true;
+
+/**
+ * Disables certain UI features because of missing design.
+ * @see https://github.com/sparkletown/internal-sparkle-issues/issues/1142
+ */
+export const DISABLED_DUE_TO_MISSING_DESIGN = true;

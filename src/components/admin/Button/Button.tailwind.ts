@@ -6,8 +6,7 @@ export const secondary =
   "border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus:ring-indigo-500";
 export const danger =
   "border-transparent text-white bg-warning-red focus:ring-indigo-500";
-export const secondaryBorderless =
-  "border-none shadow-none bg-white text-gray-700 hover:bg-gray-50 focus:ring-indigo-500";
 
 export const rounded = "h-10 text-center px-3.5 text-sm leading-4 rounded-full";
 export const regular = "rounded-md";
+export const none = "border-none shadow-none";

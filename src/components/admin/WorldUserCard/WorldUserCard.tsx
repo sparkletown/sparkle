@@ -1,5 +1,7 @@
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+import { DISABLED_DUE_TO_MISSING_DESIGN } from "settings";
 
 import { SpaceWithId, UserId, UserWithId } from "types/id";
 
@@ -30,6 +32,8 @@ export const WorldUserCard: React.FC<WorldUserCardProps> = ({
     show: showDeleteAdminModal,
     hide: hideDeleteAdminModal,
   } = useShowHide();
+
+  const { show: showEditAdminModal } = useShowHide();
 
   const showDeleteModal = () => {
     if (isMyUserCard) {
@@ -68,22 +72,24 @@ export const WorldUserCard: React.FC<WorldUserCardProps> = ({
       </div>
       <div className="flex flex-row w-full justify-end">
         <div className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex justify-end items-center gap-x-5">
-          {/* TODO: Add edit modal when design is provided. */}
-          {/* <Button
-            variant="secondaryBorderless"
-            className="flex"
-            onClick={showEditAdminModal}
-          >
-            <FontAwesomeIcon icon={faPen} className="px-1" size="lg" />
+          {!DISABLED_DUE_TO_MISSING_DESIGN && (
+            <Button
+              variant="secondary"
+              borders="none"
+              disabled={isMyUserCard}
+              onClick={showEditAdminModal}
+            >
+              <FontAwesomeIcon icon={faPen} className="px-1" size="lg" />
 
-            <div>Edit</div>
-          </Button> */}
+              <div>Edit</div>
+            </Button>
+          )}
         </div>
         <div className="whitespace-nowrap text-right text-sm font-medium flex justify-end items-center gap-x-5">
           <Button
-            variant="secondaryBorderless"
+            variant="secondary"
+            borders="none"
             disabled={isMyUserCard}
-            className="flex"
             onClick={showDeleteModal}
           >
             <FontAwesomeIcon
