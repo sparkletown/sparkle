@@ -1,8 +1,73 @@
+@use "scss/attendee/breakpoint";
+
 .ExternalRoom {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
+  height: 100vh;
+}
+
+.InfoContainer {
+  text-align: center;
+  display: flex;
+  background: rgba(255, 255, 255, 0.3);
+  border: 1px solid #8282824d;
+  padding: 15px;
+
+  @media (max-width: breakpoint.$md) {
+    flex-direction: column;
+    margin: 50px;
+  }
+}
+
+.MainInfo {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px;
+  border-right: 1px solid #8282824d;
+  max-width: 300px;
+
+  @media (max-width: breakpoint.$md) {
+    border-right: none;
+    border-bottom: 1px solid #8282824d;
+    text-align: left;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 0;
+    max-width: none;
+  }
+}
+
+.VenueName {
+  font-size: 23px;
+
+  @media (max-width: breakpoint.$md) {
+    border-bottom: 1px solid #8282824d;
+    width: 100%;
+    padding-bottom: 20px;
+  }
+}
+
+.VenueDescription {
+  font-size: 14px;
+
+  @media (max-width: breakpoint.$md) {
+    padding-bottom: 20px;
+  }
+}
+
+.VenueIcon {
+  margin-bottom: 10px;
+}
+
+.SecondaryInfo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 50px;
 }
 
 .RedirectText {

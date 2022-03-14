@@ -26,22 +26,34 @@ export const ExternalRoom: React.FC<ExternalRoomProps> = ({ venue }) => {
   // venue.config?.landingPageConfig.description
 
   return (
-    <div className={styles.ExternalRoom}>
-      {/* {!redirectUrl && (
-          <div className="ExternalRoom__container">
-            <div className="ExternalRoom__message">
-              Venue {venue.name} should redirect to a URL, but none was set.
-            </div>
-          </div>
-        )} */}
-      <img src={venue.host?.icon} alt="Venue icon" />
-      <h1>{venue.name}</h1>
-      <p className={styles.RedirectText}>
-        This page should automatically open <br />
-        <a href={redirectUrl}>{redirectUrl}</a> <br />
-        in a new tab.If you&apos;re not seeing this, try enabling pop ups on
-        your browser.
-      </p>
+    <div
+      className={styles.ExternalRoom}
+      style={{
+        background: `url(${venue.config?.landingPageConfig.coverImageUrl}) center center`,
+      }}
+    >
+      <img
+        src={venue.host?.icon}
+        alt="Venue icon"
+        className={styles.VenueIcon}
+      />
+      <div className={styles.InfoContainer}>
+        <div className={styles.MainInfo}>
+          <h1 className={styles.VenueName}>{venue.name}</h1>
+          <h2 className={styles.VenueDescription}>
+            {venue.config?.landingPageConfig.description}
+          </h2>
+        </div>
+        <div className={styles.SecondaryInfo}>
+          <p className={styles.RedirectText}>
+            Opened {venue.name} in a new tab <br />
+            <a href={redirectUrl}>{redirectUrl}</a> <br />
+            <br />
+            Doesn&apos;t work? Try enabling pop ups on your browser <br />
+            and click here to try again.
+          </p>
+        </div>
+      </div>
     </div>
   );
 };
