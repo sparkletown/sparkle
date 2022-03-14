@@ -4,9 +4,9 @@ import { AnyVenue } from "types/venues";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
-import styles from "./SpaceInfo.module.scss";
+import styles from "./SpaceInfoText.module.scss";
 
-interface SpaceInfoProps {
+interface SpaceInfoTextProps {
   space: AnyVenue;
 }
 
@@ -14,13 +14,13 @@ const moreLessSpan = (text: string) => (
   <span className={styles.moreLessSpan}>{text}</span>
 );
 
-export const SpaceInfo: React.FC<SpaceInfoProps> = ({ space }) => (
+export const SpaceInfoText: React.FC<SpaceInfoTextProps> = ({ space }) => (
   <div className={styles.spaceInfo}>
     <div className={styles.spaceName}>
       {space.name && <h1>{space.name}</h1>}
     </div>
 
-    {space.description?.text && (
+    {space?.config?.landingPageConfig?.description && (
       <div className="row">
         <div className="col">
           <div className="description">
@@ -31,7 +31,9 @@ export const SpaceInfo: React.FC<SpaceInfoProps> = ({ space }) => (
               less={moreLessSpan("Less")}
               expanded={false}
             >
-              <RenderMarkdown text={space.description?.text} />
+              <RenderMarkdown
+                text={space.config.landingPageConfig.description}
+              />
             </ShowMoreText>
           </div>
         </div>

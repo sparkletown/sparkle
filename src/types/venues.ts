@@ -129,9 +129,6 @@ export interface BaseVenue {
   rooms?: Room[];
   width: number;
   height: number;
-  description?: {
-    text: string;
-  };
   subtitle?: string;
   showLearnMoreLink?: boolean;
   start_utc_seconds?: number;

@@ -8,7 +8,7 @@ import { GenericVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
-import { SpaceInfo } from "components/molecules/SpaceInfo";
+import { SpaceInfoText } from "components/molecules/SpaceInfoText";
 
 export interface ConversationSpaceProps {
   space: WithId<GenericVenue>;
@@ -25,7 +25,7 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
 
   return (
     <>
-      <SpaceInfo space={space} />
+      <SpaceInfoText space={space} />
 
       <TableGrid
         joinMessage={space.hideVideo === false}
