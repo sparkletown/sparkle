@@ -26,7 +26,7 @@ export const SpaceInfo: React.FC = () => {
   const mapStyles = useCss({
     backgroundImage: `url(${mapBackground})`,
   });
-  console.log(space);
+
   return (
     <div className={CN.spaceWrapper}>
       <div className={`${CN.spaceImage} ${mapStyles}`}></div>

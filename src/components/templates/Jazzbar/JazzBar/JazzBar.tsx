@@ -13,7 +13,7 @@ import { useAnalytics } from "hooks/useAnalytics";
 import { useUserId } from "hooks/user/useUserId";
 
 import { Loading } from "components/molecules/Loading";
-import { SpaceInfo } from "components/molecules/SpaceInfo";
+import { SpaceInfoText } from "components/molecules/SpaceInfoText";
 
 interface JazzProps {
   space: WithId<JazzbarVenue>;
@@ -42,7 +42,7 @@ export const JazzBar: React.FC<JazzProps> = ({ space }) => {
         <MediaPlayer url={space.iframeUrl} autoPlay={space.autoPlay || false} />
       )}
 
-      <SpaceInfo space={space} />
+      <SpaceInfoText space={space} />
 
       <TableGrid
         joinMessage={false}
