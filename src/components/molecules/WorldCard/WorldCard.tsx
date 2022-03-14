@@ -1,7 +1,7 @@
-import React, { CSSProperties } from "react";
-import { useCss } from "react-use";
-import { faSignInAlt } from "@fortawesome/free-solid-svg-icons";
-import classNames from "classnames";
+import { Link } from "react-router-dom";
+import { ArrowRightIcon } from "@heroicons/react/solid";
+import { TablePanel } from "components/admin/TablePanel";
+import { TableRowAvatar } from "components/admin/TableRowAvatar";
 
 import { ADMIN_IA_WORLD_PARAM_URL, DEFAULT_VENUE_LOGO } from "settings";
 
@@ -10,58 +10,46 @@ import { World } from "api/world";
 import { WithId } from "utils/id";
 import { generateUrl } from "utils/url";
 
-import { ButtonNG } from "components/atoms/ButtonNG";
-
-import "./WorldCard.scss";
-
-export interface WorldCardProps {
+interface WorldCardProps {
   world: WithId<World>;
 }
 
 export const WorldCard: React.FC<WorldCardProps> = ({ world }) => {
-  const cardBackgroundUrl = world.config?.landingPageConfig?.coverImageUrl;
-  const cardBackgroundStyles: CSSProperties = {};
-  if (cardBackgroundUrl) {
-    cardBackgroundStyles.backgroundImage = `url(${cardBackgroundUrl})`;
-  }
-
-  const cardVars = useCss(cardBackgroundStyles);
-
-  const cardClasses = classNames("WorldCard", cardVars, {
-    "WorldCard--disabled": !world.slug,
+  // TODO-redesign
+  // Probably want to include these variables in this component:
+  // - world.config?.landingPageConfig?.coverImageUrl
+  // - world.host?.icon ?? DEFAULT_VENUE_LOGO
+  const url = generateUrl({
+    route: ADMIN_IA_WORLD_PARAM_URL,
+    required: ["worldSlug"],
+    params: { worldSlug: world.slug },
   });
-
-  const logoVars = useCss({
-    backgroundImage: `url(${world.host?.icon || DEFAULT_VENUE_LOGO})`,
-  });
-
-  const logoClasses = classNames("WorldCard__logo", logoVars);
 
   return (
-    <div className={cardClasses}>
-      <div className="WorldCard__info">
-        <div className={logoClasses} />
-        <div className="WorldCard__titles">
-          <div className="WorldCard__world-name">{world.name}</div>
-          <div className="WorldCard__world-description">
+    <TablePanel.Row>
+      <TablePanel.Cell>
+        <TableRowAvatar src={world.host?.icon || DEFAULT_VENUE_LOGO} />
+        <div className="ml-4">
+          <div className="text-sm font-medium text-gray-900">{world.name}</div>
+          <div className="text-sm text-gray-900">
             {world.config?.landingPageConfig?.description}
           </div>
         </div>
-      </div>
-      <ButtonNG
-        variant="dark"
-        isLink
-        disabled={!world.slug}
-        linkTo={generateUrl({
-          route: ADMIN_IA_WORLD_PARAM_URL,
-          required: ["worldSlug"],
-          params: { worldSlug: world.slug },
-        })}
-        iconName={faSignInAlt}
-        className="WorldCard__button"
-      >
-        Enter dashboard
-      </ButtonNG>
-    </div>
+      </TablePanel.Cell>
+      <TablePanel.ActionsCell>
+        <div className="flex align-center items-center">
+          <Link
+            to={url}
+            className="flex align-center items-center text-gray-900 hover:text-indigo-900"
+          >
+            <ArrowRightIcon
+              className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-900 hover:text-indigo-900"
+              aria-hidden="true"
+            ></ArrowRightIcon>
+            Go to world
+          </Link>
+        </div>
+      </TablePanel.ActionsCell>
+    </TablePanel.Row>
   );
 };

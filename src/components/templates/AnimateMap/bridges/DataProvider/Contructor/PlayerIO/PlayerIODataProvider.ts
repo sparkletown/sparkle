@@ -88,7 +88,6 @@ export class PlayerIODataProvider extends utils.EventEmitter {
     if (!this.client?.multiplayer)
       return Promise.reject("Connection not ready.");
 
-    console.log(data);
     const rooms = data[0];
     this._playerObject = data[1].originDatabaseObject as PlayerObject;
     let needSave = false;

@@ -11,4 +11,7 @@ export interface UserProfileModalFormData
   partyName: string;
   pictureUrl: string;
   profileLinks: ProfileLink[];
+  micSource?: string;
+  speakerSource?: string;
+  videoSource?: string;
 }

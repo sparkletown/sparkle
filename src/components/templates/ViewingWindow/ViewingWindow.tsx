@@ -1,5 +1,4 @@
 import React from "react";
-import { useCss } from "react-use";
 import classNames from "classnames";
 
 import {
@@ -53,10 +52,11 @@ export const ViewingWindow: React.FC<ViewingWindowProps> = ({ venue }) => {
   const landingPageConfig = config?.landingPageConfig;
   const embeddableUrl = convertToEmbeddableUrl({ url: iframeUrl, autoPlay });
 
+  // TODO-redesign use it or delete it
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const filteredAspect = filterAspectRatioProperty(videoAspect);
-  const customAspect = useCss({
-    "aspect-ratio": filteredAspect,
-  });
+  // TODO-redesign - we probably want to set aspect-ratio in the CSS somehow:
+  // "aspect-ratio": filteredAspect,
 
   // NOTE: useful if some UI element with multiple options or free input is added for aspect ratio
   const aspectContainerClasses = classNames({
@@ -65,7 +65,6 @@ export const ViewingWindow: React.FC<ViewingWindowProps> = ({ venue }) => {
     "mod--anamorphic": videoAspect === VideoAspectRatio.anamorphic,
     "mod--width-100pp":
       !videoAspect || videoAspect === VideoAspectRatio.fullWidth,
-    [customAspect]: true,
   });
 
   if (!venue) return <Loading label="Loading..." />;

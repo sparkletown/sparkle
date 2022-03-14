@@ -19,10 +19,7 @@ import { AuditoriumSection } from "types/auditorium";
 import { GridPosition } from "types/grid";
 import { AuditoriumVenue } from "types/venues";
 
-import {
-  convertToCartesianCoordinate,
-  getVideoSizeInSeats,
-} from "utils/auditorium";
+import { getVideoSizeInSeats } from "utils/auditorium";
 import { withIdConverter } from "utils/converters";
 import { WithId } from "utils/id";
 
@@ -114,27 +111,6 @@ export const useAuditoriumSection = ({
     return unsetAuditoriumSectionSeat(userId, { venueId, sectionId });
   }, [venueId, userId, sectionId]);
 
-  const checkIfSeat = useCallback(
-    ({ row, column }: GridPosition) => {
-      const convertedRowCoordinate = convertToCartesianCoordinate({
-        index: row,
-        totalAmount: baseRowsCount,
-      });
-      const convertedColumnCoordinate = convertToCartesianCoordinate({
-        index: column,
-        totalAmount: baseColumnsCount,
-      });
-
-      const isInVideoRow =
-        Math.abs(convertedRowCoordinate) <= screenHeightInSeats / 2;
-      const isInVideoColumn =
-        Math.abs(convertedColumnCoordinate) <= screenWidthInSeats / 2;
-
-      return !(isInVideoRow && isInVideoColumn);
-    },
-    [baseRowsCount, baseColumnsCount, screenHeightInSeats, screenWidthInSeats]
-  );
-
   return {
     auditoriumSection: section,
     isAuditoriumSectionLoaded: isSectionLoaded,
@@ -150,6 +126,5 @@ export const useAuditoriumSection = ({
     getUserBySeat,
     takeSeat,
     leaveSeat,
-    checkIfSeat,
   };
 };

@@ -1,5 +1,5 @@
 import React from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useFormState } from "react-hook-form";
 import firebase from "firebase/compat/app";
 
 import { SpaceWithId, WorldWithId } from "types/id";
@@ -15,6 +15,8 @@ import { ButtonNG } from "components/atoms/ButtonNG";
 
 import fIcon from "assets/icons/facebook-social-icon.svg";
 import gIcon from "assets/icons/google-social-icon.svg";
+
+import FORMS from "scss/attendee/form.module.scss";
 
 export interface LoginFormProps {
   displayRegisterForm: () => void;
@@ -45,20 +47,22 @@ export const LoginForm: React.FC<LoginFormProps> = ({
   const {
     register,
     handleSubmit,
-    errors,
     formState,
     setError,
-    clearError,
+    control,
+    clearErrors,
   } = useForm<LoginFormData>({
     mode: "onChange",
     reValidateMode: "onChange",
   });
 
+  const { errors } = useFormState({ control });
+
   // @debt is `null` the best choice here? we might better show here a loading or error screen instead
   if (!space || !world) return null;
 
   const clearBackendErrors = () => {
-    clearError("backend");
+    clearErrors("backend");
   };
 
   const signIn = ({ email, password }: LoginFormData) => {
@@ -82,19 +86,21 @@ export const LoginForm: React.FC<LoginFormProps> = ({
       const message = errorMessage(error);
 
       if (status === 404) {
-        setError(
-          "email",
-          "validation",
-          `Email ${data.email} does not have a ticket; get your ticket at ${space.ticketUrl}`
-        );
+        setError("email", {
+          type: "validation",
+          message: `Email ${data.email} does not have a ticket; get your ticket at ${space.ticketUrl}`,
+        });
       } else if (status >= 500) {
-        setError("email", "validation", `Error checking ticket: ${message}`);
+        setError("email", {
+          type: "validation",
+          message: `Error checking ticket: ${message}`,
+        });
       } else {
-        setError(
-          "backend",
-          "firebase",
-          "Please check your email or password or contact your event organizer"
-        );
+        setError("backend", {
+          type: "firebase",
+          message:
+            "Please check your email or password or contact your event organizer",
+        });
       }
     }
   };
@@ -104,7 +110,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
       await signInWithGoogle();
       postSignInCheck();
     } catch {
-      setError("backend", "firebase", "Error");
+      setError("backend", { type: "firebase", message: "Error" });
     }
   };
 
@@ -113,14 +119,14 @@ export const LoginForm: React.FC<LoginFormProps> = ({
       const auth = await signInWithFacebook();
 
       if (auth.message) {
-        setError("backend", "firebase", "Error");
+        setError("backend", { type: "firebase", message: "Error" });
 
         return;
       }
 
       postSignInCheck();
     } catch {
-      setError("backend", "firebase", "Error");
+      setError("backend", { type: "firebase", message: "Error" });
     }
   };
 
@@ -129,7 +135,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
       <div className="secondary-action">
         {`Don't have an account yet?`}
         <br />
-        <span className="link" onClick={displayRegisterForm}>
+        <span className={FORMS.inlineLink} onClick={displayRegisterForm}>
           Register instead!
         </span>
       </div>
@@ -150,10 +156,9 @@ export const LoginForm: React.FC<LoginFormProps> = ({
       >
         <div className="input-group">
           <input
-            name="email"
-            className="input-block input-centered auth-input"
+            className={FORMS.input}
             placeholder="Your email address"
-            ref={register({ required: true })}
+            {...register("email", { required: true })}
           />
           {errors.email && errors.email.type === "required" && (
             <span className="input-error">Email is required</span>
@@ -166,11 +171,10 @@ export const LoginForm: React.FC<LoginFormProps> = ({
 
         <div className="input-group">
           <input
-            name="password"
-            className="input-block input-centered auth-input"
+            className={FORMS.input}
             type="password"
             placeholder="Password"
-            ref={register({
+            {...register("password", {
               required: true,
             })}
           />
@@ -222,7 +226,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
       <div className="secondary-action">
         {`Forgot your password?`}
         <br />
-        <span className="link" onClick={displayPasswordResetForm}>
+        <span className={FORMS.inlineLink} onClick={displayPasswordResetForm}>
           Reset your password
         </span>
       </div>

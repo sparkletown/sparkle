@@ -1,7 +1,8 @@
 import React from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useFormState } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn } from "react-use";
+import { useBackgroundGradient } from "components/attendee/useBackgroundGradient";
 
 import {
   ACCOUNT_PROFILE_QUESTIONS_URL,
@@ -26,6 +27,7 @@ import { updateUserProfile } from "./helpers";
 // @debt refactor the Profile related styles from Account.scss into Profile.scss
 import "./Account.scss";
 import "./Profile.scss";
+import FORMS from "scss/attendee/form.module.scss";
 
 export interface ProfileFormData {
   partyName: string;
@@ -38,10 +40,12 @@ export const Profile: React.FC = () => {
 
   const { worldSlug, spaceSlug = DEFAULT_SPACE_SLUG } = useSpaceParams();
 
+  useBackgroundGradient();
+
   const {
     register,
     handleSubmit,
-    errors,
+    control,
     formState,
     setValue,
     watch,
@@ -52,6 +56,8 @@ export const Profile: React.FC = () => {
       pictureUrl: userWithId?.pictureUrl,
     },
   });
+
+  const { errors } = useFormState({ control });
 
   const [{ loading: isUpdating, error: httpError }, onSubmit] = useAsyncFn(
     async (data: ProfileFormData) => {
@@ -88,10 +94,9 @@ export const Profile: React.FC = () => {
           <div className="input-group profile-form">
             {/* @debt refactor this to use InputField */}
             <input
-              name="partyName"
-              className="input-block input-centered"
+              className={FORMS.input}
               placeholder="Your display name"
-              ref={register({
+              {...register("partyName", {
                 required: true,
                 maxLength: DISPLAY_NAME_MAX_CHAR_COUNT,
               })}
@@ -126,7 +131,7 @@ export const Profile: React.FC = () => {
             <ButtonNG
               type="submit"
               className="create-account__button"
-              variant="login-gradient"
+              variant="primary"
               disabled={!formState.isValid || isUpdating}
             >
               Create my profile

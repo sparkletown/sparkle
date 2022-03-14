@@ -276,7 +276,7 @@ export interface RelatedVenuesProps {
 }
 
 export interface RelatedVenuesData extends RelatedVenuesContextState {
-  parentVenue?: WithId<AnyVenue>;
+  parentVenue?: SpaceWithId;
   currentVenue?: WithId<AnyVenue>;
   parentVenueId?: string;
 }

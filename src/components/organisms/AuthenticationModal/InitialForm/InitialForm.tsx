@@ -15,11 +15,11 @@ export const InitialForm: FC<InitialFormProps> = ({
 }) => {
   return (
     <div className="InitialForm">
-      <ButtonNG variant="login-primary" onClick={displayRegisterForm}>
+      <ButtonNG variant="primary" onClick={displayRegisterForm}>
         Create your account
       </ButtonNG>
       <div className="InitialForm__separator">or</div>
-      <ButtonNG variant="login-outline" onClick={displayLoginForm}>
+      <ButtonNG variant="secondary" onClick={displayLoginForm}>
         Log In
       </ButtonNG>
     </div>

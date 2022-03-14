@@ -1,7 +1,6 @@
 import React, { lazy, Suspense, useEffect, useMemo } from "react";
 import { Redirect } from "react-router-dom";
 import { useTitle } from "react-use";
-import { VideoCommsProvider } from "components/attendee/VideoComms/VideoCommsProvider";
 
 import {
   ACCOUNT_PROFILE_VENUE_PARAM_URL,
@@ -16,6 +15,7 @@ import {
   SpaceId,
   SpaceSlugLocation,
   SpaceWithId,
+  UserId,
   WorldId,
   WorldWithId,
 } from "types/id";
@@ -50,10 +50,6 @@ import { updateUserProfile } from "pages/Account/helpers";
 import { CountDown } from "components/molecules/CountDown";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 
-import { updateTheme } from "./helpers";
-
-import "./VenuePage.scss";
-
 const TemplateWrapper = lazy(() =>
   tracePromise("VenuePage::lazy-import::TemplateWrapper", () =>
     import("./TemplateWrapper").then(({ TemplateWrapper }) => ({
@@ -72,8 +68,12 @@ type VenuePageProps = SpaceSlugLocation & {
   world: WorldWithId;
   worldId: WorldId;
   user?: RefiAuthUser;
+  userId?: UserId;
   profile?: Profile;
   userLocation?: UserLocation;
+  setBackButtonSpace: React.Dispatch<
+    React.SetStateAction<SpaceWithId | undefined>
+  >;
 };
 
 export const VenuePage: React.FC<VenuePageProps> = ({
@@ -84,8 +84,10 @@ export const VenuePage: React.FC<VenuePageProps> = ({
   space,
   spaceId,
   user,
+  userId,
   profile,
   userLocation,
+  setBackButtonSpace,
 }) => {
   const analytics = useAnalytics({ venue: space });
 
@@ -113,16 +115,8 @@ export const VenuePage: React.FC<VenuePageProps> = ({
     isLoaded: eventRequestStatus,
   } = useConnectCurrentEvent({ worldId, spaceId });
 
-  const userId = user?.uid;
   const venueName = space?.name ?? "";
   const event = currentEvent?.[0];
-
-  useEffect(() => {
-    if (!space) return;
-
-    // @debt replace this with useCss?
-    updateTheme(space);
-  }, [space]);
 
   const isEventFinished = event && hasEventFinished(event);
 
@@ -140,7 +134,18 @@ export const VenuePage: React.FC<VenuePageProps> = ({
     });
   }, LOC_UPDATE_FREQ_MS);
 
-  const { sovereignVenueId, sovereignVenueDescendantIds } = useRelatedVenues();
+  const {
+    sovereignVenueId,
+    sovereignVenueDescendantIds,
+    parentVenue,
+  } = useRelatedVenues({ currentVenueId: space.id });
+
+  useEffect(() => {
+    setBackButtonSpace(parentVenue);
+    return () => {
+      setBackButtonSpace(undefined);
+    };
+  });
 
   // @debt refactor how user location updates works here to encapsulate in a hook or similar?
   useEffect(() => {
@@ -186,13 +191,17 @@ export const VenuePage: React.FC<VenuePageProps> = ({
       window.removeEventListener("beforeunload", onBeforeUnloadHandler);
   }, [userId]);
 
+  const handleRejection = (e: unknown) => console.error(VenuePage.name, e);
+
   // @debt refactor how user location updates works here to encapsulate in a hook or similar?
   useEffect(() => {
     if (!spaceId || !userId || !profile || enteredVenueIds?.includes(spaceId)) {
       return;
     }
 
-    void updateProfileEnteredVenueIds(enteredVenueIds, userId, spaceId);
+    updateProfileEnteredVenueIds(enteredVenueIds, userId, spaceId).catch(
+      handleRejection
+    );
   }, [enteredVenueIds, userLocation, userId, spaceId, profile]);
 
   // @debt refactor how user location updates works here to encapsulate in a hook or similar?
@@ -201,7 +210,9 @@ export const VenuePage: React.FC<VenuePageProps> = ({
       return;
     }
 
-    updateProfileEnteredWorldIds(enteredWorldIds, userId, worldId);
+    updateProfileEnteredWorldIds(enteredWorldIds, userId, worldId).catch(
+      handleRejection
+    );
   }, [enteredWorldIds, userLocation, userId, worldId, profile]);
 
   // NOTE: User's timespent updates
@@ -270,9 +281,7 @@ export const VenuePage: React.FC<VenuePageProps> = ({
 
   return (
     <Suspense fallback={<LoadingPage />}>
-      <VideoCommsProvider>
-        <TemplateWrapper venue={space} />
-      </VideoCommsProvider>
+      <TemplateWrapper venue={space} />
     </Suspense>
   );
 };

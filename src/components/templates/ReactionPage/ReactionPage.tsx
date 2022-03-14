@@ -8,8 +8,7 @@ import { EmojiReaction, TextReaction, TextReactionType } from "types/reactions";
 import { convertToFirestoreKey } from "utils/id";
 
 import { useRefiCollection } from "hooks/fire/useRefiCollection";
-import { useSpaceParams } from "hooks/spaces/useSpaceParams";
-import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
+import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 
 import { UserList } from "components/molecules/UserList";
 
@@ -19,8 +18,7 @@ import "./ReactionPage.scss";
 
 // @debt pass venue through the props
 export const ReactionPage: React.FC = () => {
-  const { worldSlug, spaceSlug } = useSpaceParams();
-  const { space, spaceId } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
+  const { space, spaceId } = useWorldAndSpaceByParams();
 
   // @debt this is very similar to the query in src/hooks/reactions.tsx, but that filters by createdAt > now
   const { data } = useRefiCollection<TextReaction | EmojiReaction>({

@@ -1,25 +1,11 @@
-import React, { useCallback, useEffect } from "react";
-import { useCss } from "react-use";
-import classNames from "classnames";
-
-import { ALWAYS_EMPTY_ARRAY, ENABLE_POPUPS_URL } from "settings";
+import React, { useEffect } from "react";
 
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
-import { getExtraLinkProps, openUrl } from "utils/url";
+import { openUrl } from "utils/url";
 
-import { RenderMarkdown } from "components/organisms/RenderMarkdown";
-
-import { UserList } from "components/molecules/UserList";
-
-import { ButtonNG } from "components/atoms/ButtonNG";
-import { SparkleLogoIcon } from "components/atoms/SparkleLogoIcon";
-import { VenueWithOverlay } from "components/atoms/VenueWithOverlay/VenueWithOverlay";
-
-import IconExternalLink from "assets/icons/icon-room-externallink.svg";
-
-import "./ExternalRoom.scss";
+import CN from "./ExternalRoom.module.scss";
 
 export interface ExternalRoomProps {
   venue: WithId<AnyVenue>;
@@ -28,87 +14,44 @@ export interface ExternalRoomProps {
 export const ExternalRoom: React.FC<ExternalRoomProps> = ({ venue }) => {
   const redirectUrl = venue.zoomUrl ?? "";
 
-  const venueLogoVars = useCss({
-    "background-image": `url(${venue.host?.icon || IconExternalLink})`,
-  });
-
-  const venueLogoClasses = classNames(
-    "ExternalRoom__venue-logo",
-    venueLogoVars
-  );
-
   useEffect(() => {
     if (!redirectUrl) return;
+
     openUrl(redirectUrl);
   }, [redirectUrl]);
 
-  const openRoomUrl = useCallback(() => openUrl(redirectUrl), [redirectUrl]);
-
   return (
-    <VenueWithOverlay venue={venue} containerClassNames="ExternalRoom">
-      <div className="ExternalRoom__container">
-        <SparkleLogoIcon />
-        {!redirectUrl && (
-          <div className="ExternalRoom__container">
-            <div className="ExternalRoom__message">
-              Venue {venue.name} should redirect to a URL, but none was set.
-            </div>
-          </div>
-        )}
-
-        {redirectUrl && (
-          <>
-            <div className="ExternalRoom__message">
-              <div>This page should automatically open</div>
-              <a
-                href={redirectUrl}
-                className="ExternalRoom__link"
-                {...getExtraLinkProps(true)}
-              >
-                {redirectUrl}
-              </a>
-
-              <div>
-                in a new tab. If you&apos;re not seeing this, try{" "}
-                <a rel="noreferrer" href={ENABLE_POPUPS_URL} target="_blank">
-                  enabling pop ups on your browser.
-                </a>
-              </div>
-            </div>
-            <div className="ExternalRoom__content">
-              <div className="ExternalRoom__venue-container">
-                <div className={venueLogoClasses} />
-
-                <div className="ExternalRoom__venue-details">
-                  <div className="ExternalRoom__venue-title">{venue.name}</div>
-
-                  <div className="ExternalRoom__venue-subtitle">
-                    {venue.config?.landingPageConfig.subtitle}
-                  </div>
-
-                  <ButtonNG variant="primary" onClick={openRoomUrl}>
-                    Enter
-                  </ButtonNG>
-                </div>
-              </div>
-
-              <div className="ExternalRoom__venue-description">
-                <RenderMarkdown
-                  text={venue.config?.landingPageConfig.description}
-                />
-              </div>
-
-              <UserList
-                containerClassName="ExternalRoom__userlist"
-                userCount={venue.recentUserCount ?? 0}
-                usersSample={venue.recentUsersSample ?? ALWAYS_EMPTY_ARRAY}
-                activity="in here"
-                hasClickableAvatars
-              />
-            </div>
-          </>
-        )}
+    <div
+      className={CN.externalRoom}
+      style={{
+        background: `url(${venue.config?.landingPageConfig.coverImageUrl}) center center`,
+      }}
+    >
+      <img src={venue.host?.icon} alt="Venue icon" className={CN.venueIcon} />
+      <div className={CN.infoContainer}>
+        <div className={CN.mainInfo}>
+          <h1 className={CN.venueName}>{venue.name}</h1>
+          <h2 className={CN.venueDescription}>
+            {venue.config?.landingPageConfig.description}
+          </h2>
+        </div>
+        <div className={CN.secondaryInfo}>
+          <p className={CN.redirectText}>
+            Opened {venue.name} in a new tab <br />
+            <a href={redirectUrl} target="_blank" rel="noreferrer">
+              {redirectUrl}
+            </a>
+            <br />
+            <br />
+            Doesn&apos;t work? Try enabling pop ups on your browser <br />
+            and click{" "}
+            <a href={redirectUrl} target="_blank" rel="noreferrer">
+              here
+            </a>{" "}
+            to try again.
+          </p>
+        </div>
       </div>
-    </VenueWithOverlay>
+    </div>
   );
 };

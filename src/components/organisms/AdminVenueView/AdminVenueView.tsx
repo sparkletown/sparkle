@@ -1,12 +1,12 @@
 import React, { useCallback, useMemo } from "react";
 import { useParams } from "react-router";
-import { Link, useHistory } from "react-router-dom";
-import { faClock, faPlayCircle } from "@fortawesome/free-regular-svg-icons";
-import { faArrowLeft, faBorderNone } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import classNames from "classnames";
+import { useHistory } from "react-router-dom";
+import { Header } from "components/admin/Header";
+import { HeaderButton } from "components/admin/HeaderButton";
+import { TabBar } from "components/admin/TabBar";
+import { AdminLayout } from "components/layouts/AdminLayout";
 
-import { ADMIN_IA_WORLD_PARAM_URL, SPACE_TAXON } from "settings";
+import { ADMIN_IA_WORLD_PARAM_URL } from "settings";
 
 import {
   SpaceId,
@@ -28,11 +28,7 @@ import VenueDeleteModal from "pages/Admin/Venue/VenueDeleteModal";
 
 import { SpaceTimingPanel } from "components/organisms/AdminVenueView/components/SpaceTimingPanel";
 
-import { AdminTitle } from "components/molecules/AdminTitle";
-import { AdminTitleBar } from "components/molecules/AdminTitleBar";
-
 import { AdminRestricted } from "components/atoms/AdminRestricted";
-import { ButtonNG } from "components/atoms/ButtonNG";
 import { NotFound } from "components/atoms/NotFound";
 
 import { WithNavigationBar } from "../WithNavigationBar";
@@ -54,16 +50,10 @@ export interface AdminVenueViewRouteParams {
   selectedTab?: AdminVenueTab;
 }
 
-const adminVenueTabLabelMap: Readonly<Record<AdminVenueTab, String>> = {
+const adminVenueTabLabelMap: Readonly<Record<AdminVenueTab, string>> = {
   [AdminVenueTab.spaces]: "Spaces",
   [AdminVenueTab.timing]: "Timing",
   [AdminVenueTab.run]: "Run",
-};
-
-const tabIcons = {
-  [AdminVenueTab.spaces]: faBorderNone,
-  [AdminVenueTab.timing]: faClock,
-  [AdminVenueTab.run]: faPlayCircle,
 };
 
 type AdminVenueViewProps = {
@@ -89,24 +79,14 @@ export const AdminVenueView: React.FC<AdminVenueViewProps> = ({
     hide: closeDeleteModal,
   } = useShowHide();
 
-  const renderAdminVenueTabs = useMemo(() => {
-    return Object.entries(adminVenueTabLabelMap).map(([key, label]) => (
-      <Link
-        key={key}
-        to={adminNGVenueUrl(worldSlug, spaceSlug, key)}
-        className={classNames({
-          AdminVenueView__tab: true,
-          "AdminVenueView__tab--selected": selectedTab === key,
-        })}
-      >
-        <FontAwesomeIcon
-          className="AdminVenueView__tabIcon"
-          icon={tabIcons[key as AdminVenueTab]}
-        />
-        {label}
-      </Link>
-    ));
-  }, [selectedTab, spaceSlug, worldSlug]);
+  const tabs = useMemo(() => {
+    return Object.fromEntries(
+      Object.entries(adminVenueTabLabelMap).map(([key, label]) => {
+        const url = adminNGVenueUrl(worldSlug, spaceSlug, key);
+        return [key, { url, label }];
+      })
+    );
+  }, [spaceSlug, worldSlug]);
 
   const navigateToHome = useCallback(
     () =>
@@ -120,6 +100,24 @@ export const AdminVenueView: React.FC<AdminVenueViewProps> = ({
     [history, worldSlug]
   );
 
+  const crumbtrail = useMemo(
+    () => [
+      {
+        name: "Spaces",
+        href: generateUrl({
+          route: ADMIN_IA_WORLD_PARAM_URL,
+          required: ["worldSlug"],
+          params: { worldSlug },
+        }),
+      },
+    ],
+    [worldSlug]
+  );
+
+  const subtitleItems = useMemo(() => [{ text: space.template }], [
+    space.template,
+  ]);
+
   const navBarTitle = `${world?.name ?? ""}`;
 
   if (!space) {
@@ -131,49 +129,45 @@ export const AdminVenueView: React.FC<AdminVenueViewProps> = ({
       </WithNavigationBar>
     );
   }
+  const visitSpaceUrl = spaceSlug
+    ? generateAttendeeInsideUrl({ worldSlug, spaceSlug })
+    : undefined;
+
+  // @debt use a single structure of type Record<VenueTemplate,TemplateInfo> to
+  // compile info like the subtitle which should be a friendly taxon of the
+  // template e.g. "Map" not "partymap"
 
   return (
-    <WithNavigationBar
-      withSchedule
-      variant="internal-scroll"
-      title={navBarTitle}
-    >
+    <AdminLayout>
       <AdminRestricted>
         <div className="AdminVenueView">
-          <AdminTitleBar variant="grid-with-tools">
-            <ButtonNG onClick={navigateToHome} iconName={faArrowLeft}>
-              Back to Dashboard
-            </ButtonNG>
-            <AdminTitle>Edit {space.name}</AdminTitle>
-            <div>
-              <ButtonNG variant="danger" onClick={showDeleteModal}>
-                Delete {SPACE_TAXON.lower}
-              </ButtonNG>
-              <ButtonNG
-                isLink
-                newTab
-                linkTo={
-                  spaceSlug
-                    ? generateAttendeeInsideUrl({ worldSlug, spaceSlug })
-                    : undefined
-                }
-                variant="primary"
-              >
-                Visit {SPACE_TAXON.capital}
-              </ButtonNG>
-            </div>
-          </AdminTitleBar>
-          <div className="AdminVenueView__tab-bar">
-            <div className="AdminVenueView__options">
-              {renderAdminVenueTabs}
-            </div>
-          </div>
+          <Header
+            title={space.name}
+            subtitleItems={subtitleItems}
+            crumbtrail={crumbtrail}
+          >
+            <HeaderButton
+              name="Delete space"
+              variant="danger"
+              onClick={showDeleteModal}
+            />
+            <HeaderButton
+              to={visitSpaceUrl}
+              name="Visit space"
+              variant="primary"
+            />
+          </Header>
 
-          {selectedTab === AdminVenueTab.spaces && <Spaces venue={space} />}
+          <TabBar tabs={tabs} selectedTab={selectedTab} />
+
+          {selectedTab === AdminVenueTab.spaces && (
+            <Spaces space={space} world={world} />
+          )}
           {selectedTab === AdminVenueTab.timing && (
             <SpaceTimingPanel space={space} />
           )}
           {selectedTab === AdminVenueTab.run && <RunTabView space={space} />}
+
           <VenueDeleteModal
             venueId={spaceId}
             venueName={space?.name}
@@ -184,6 +178,6 @@ export const AdminVenueView: React.FC<AdminVenueViewProps> = ({
           />
         </div>
       </AdminRestricted>
-    </WithNavigationBar>
+    </AdminLayout>
   );
 };

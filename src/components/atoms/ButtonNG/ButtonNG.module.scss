@@ -1,0 +1,25 @@
+// Temporary styles until we decide what to do.
+
+@mixin button {
+  border-radius: 18px;
+  padding: 18px;
+  font-size: 18px;
+}
+
+.buttonPrimary {
+  @include button;
+  background: #880044 !important;
+  border: 1px solid #440022;
+  color: #ccc;
+}
+
+.buttonSecondary {
+  @include button;
+  background: transparent !important;
+  border: 1px solid #333;
+  color: #333;
+}
+
+.buttonDisabled {
+  display: none;
+}

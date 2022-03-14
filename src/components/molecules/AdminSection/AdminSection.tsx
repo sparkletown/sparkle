@@ -11,6 +11,10 @@ export interface AdminSectionProps {
   withLabel?: boolean;
 }
 
+/**
+ * @deprecated Use InputGroup component instead.
+ * @see src/components/admin/InputGroup/
+ */
 export const AdminSection: React.FC<AdminSectionProps> = ({
   title,
   subtitle,

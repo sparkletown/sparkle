@@ -5,10 +5,9 @@ import firebase from "firebase/compat/app";
 import { REACTION_TIMEOUT } from "settings";
 
 import { isReaction, isReactionCreatedBy, Reaction } from "types/reactions";
-import { ReactHook } from "types/utility";
 
-import { isTruthyFilter } from "utils/filter";
 import { WithId, withId } from "utils/id";
+import { isTruthy } from "utils/types";
 
 export type ReactionsById = Partial<Record<string, WithId<Reaction>>>;
 
@@ -73,7 +72,7 @@ export const ReactionsProvider: React.FC<ReactionsProviderProps> = ({
   const reactionsState: ReactionsContextState = useMemo(
     () => ({
       reactionsById: reactionsMap,
-      reactions: Object.values(reactionsMap).filter(isTruthyFilter),
+      reactions: Object.values(reactionsMap).filter(isTruthy),
     }),
     [reactionsMap]
   );
@@ -97,11 +96,11 @@ export const useReactionsContext = (): ReactionsContextState => {
   return reactionsState;
 };
 
-export interface UseReactionsProps {
+interface UseReactionsOptions {
   userId?: string;
 }
 
-export const useReactions: ReactHook<UseReactionsProps, Reaction[]> = ({
+export const useReactions: (options: UseReactionsOptions) => Reaction[] = ({
   userId,
 }) => {
   const { reactions } = useReactionsContext();

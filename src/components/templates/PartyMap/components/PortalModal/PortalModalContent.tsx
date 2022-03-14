@@ -1,7 +1,11 @@
 import React, { useCallback, useEffect, useRef } from "react";
 import ShowMoreText from "react-show-more-text";
 
-import { ALWAYS_EMPTY_ARRAY, SPACE_TAXON } from "settings";
+import {
+  ALWAYS_EMPTY_ARRAY,
+  DEFAULT_SHOW_MORE_SETTINGS,
+  SPACE_TAXON,
+} from "settings";
 
 import { retainAttendance } from "store/actions/Attendance";
 
@@ -12,8 +16,7 @@ import { shouldScheduleBeShown } from "utils/schedule";
 import { isExternalPortal, openUrl } from "utils/url";
 
 import { useCustomSound } from "hooks/sounds";
-import { useSpaceParams } from "hooks/spaces/useSpaceParams";
-import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
+import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useAnalytics } from "hooks/useAnalytics";
 import { useDispatch } from "hooks/useDispatch";
 import { usePortal } from "hooks/usePortal";
@@ -40,11 +43,7 @@ export const PortalModalContent: React.FC<PortalModalContentProps> = ({
   venueEvents,
   onHide,
 }) => {
-  const { worldSlug, spaceSlug } = useSpaceParams();
-  const { world, space, spaceId } = useWorldAndSpaceBySlug(
-    worldSlug,
-    spaceSlug
-  );
+  const { world, space, spaceId } = useWorldAndSpaceByParams();
 
   const dispatch = useDispatch();
 
@@ -116,11 +115,8 @@ export const PortalModalContent: React.FC<PortalModalContentProps> = ({
           {portalSubtitle && (
             <ShowMoreText
               lines={2}
-              more="Show more"
-              less="Show less"
               className="PortalModal__subtitle"
-              expanded={false}
-              truncatedEndingComponent={"... "}
+              {...DEFAULT_SHOW_MORE_SETTINGS}
             >
               {portalSubtitle}
             </ShowMoreText>
@@ -139,11 +135,8 @@ export const PortalModalContent: React.FC<PortalModalContentProps> = ({
       {portalDescription && (
         <ShowMoreText
           lines={3}
-          more="Show more"
-          less="Show less"
           className="PortalModal__description"
-          expanded={false}
-          truncatedEndingComponent={"... "}
+          {...DEFAULT_SHOW_MORE_SETTINGS}
         >
           <RenderMarkdown text={portalDescription} />
         </ShowMoreText>

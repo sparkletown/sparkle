@@ -1,0 +1,22 @@
+@use "./space";
+
+$w-sidebar: 416px; // previously named $sidebar-width
+$h-video-chat: 160px; // previously named $video-chat-height
+
+$w-overlay--med: 715px;
+$w-overlay--max: 800px;
+
+$w-space-info: 420px;
+$h-chat-controls: 42px;
+
+// Button height plus padding
+$h-top-nav: 42px + 2 * space.empty(1);
+
+// TODO Only medium has had its size set. The other sizes need configuring
+// which is why they're odd values.
+$avatarSizes: (
+  small: 1px,
+  medium: 42px,
+  large: 504px,
+  xlarge: 1000px,
+);

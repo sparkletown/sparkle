@@ -1,7 +1,8 @@
-import React, { useCallback, useEffect, useMemo } from "react";
-import { useForm } from "react-hook-form";
-import { useParams } from "react-router";
+import React, { useEffect, useMemo } from "react";
+import { useForm, useFormState } from "react-hook-form";
 import { useAsyncFn } from "react-use";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { ImageInput } from "components/admin/ImageInput";
 import omit from "lodash/omit";
 
 import { deleteScreeningRoomVideo, upsertScreeningRoomVideo } from "api/admin";
@@ -14,16 +15,13 @@ import { isTruthy } from "utils/types";
 
 import { screeningRoomVideoSchema } from "forms/screeningRoomVideoSchema";
 
-import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
+import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useUser } from "hooks/useUser";
 
 import { AdminInput } from "components/molecules/AdminInput";
 import { SubmitError } from "components/molecules/SubmitError";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
-import { ImageInput } from "components/atoms/ImageInput";
-
-import { AdminVenueViewRouteParams } from "../AdminVenueView/AdminVenueView";
 
 import "./ScreeningRoomVideoAddEditForm.scss";
 
@@ -37,11 +35,7 @@ export const ScreeningRoomVideoAddEditForm: React.FC<ScreeningRoomVideoAddEditFo
   onDone,
 }) => {
   const { user } = useUser();
-  const { worldSlug, spaceSlug } = useParams<AdminVenueViewRouteParams>();
-  const { spaceId: currentSpaceId } = useWorldAndSpaceBySlug(
-    worldSlug,
-    spaceSlug
-  );
+  const { spaceId: currentSpaceId } = useWorldAndSpaceByParams();
 
   const isEditMode = isTruthy(video);
   const title = isEditMode ? "Edit video" : "Add video";
@@ -71,23 +65,18 @@ export const ScreeningRoomVideoAddEditForm: React.FC<ScreeningRoomVideoAddEditFo
     register,
     getValues,
     handleSubmit,
-    errors,
     setValue,
     reset,
+    control,
   } = useForm({
     reValidateMode: "onChange",
-
-    validationSchema: screeningRoomVideoSchema,
+    resolver: yupResolver(screeningRoomVideoSchema),
     defaultValues,
   });
 
+  const { errors } = useFormState({ control });
+
   useEffect(() => reset(defaultValues), [defaultValues, reset]);
-  const changeRoomImageUrl = useCallback(
-    (val: string) => {
-      setValue("image_url", val, false);
-    },
-    [setValue]
-  );
 
   const [
     { loading: isLoading, error: submitError },
@@ -150,78 +139,76 @@ export const ScreeningRoomVideoAddEditForm: React.FC<ScreeningRoomVideoAddEditFo
     >
       <div className="ScreeningRoomVideoAddEditForm__title">{title}</div>
       <AdminInput
-        name="title"
         type="text"
         autoComplete="off"
         placeholder="Name your video"
         label="Title (required)"
         errors={errors}
+        name="title"
         register={register}
         disabled={isLoading}
       />
 
       <AdminInput
-        name="authorName"
         type="text"
         autoComplete="off"
         placeholder="Esmerelda Diamond"
         label="Author of video (required)"
         errors={errors}
+        name="authorName"
         register={register}
         disabled={isLoading}
       />
 
       <AdminInput
-        name="videoSrc"
         type="text"
         autoComplete="off"
         placeholder="https://"
         label="Embed URL (required)"
         errors={errors}
+        name="videoSrc"
         register={register}
         disabled={isLoading}
       />
 
       <AdminInput
-        name="category"
         type="text"
         autoComplete="off"
         placeholder="Add category"
         label="Category (required)"
         errors={errors}
+        name="category"
         register={register}
         disabled={isLoading}
       />
 
       <ImageInput
-        onChange={changeRoomImageUrl}
         name="thumbnailSrc"
         setValue={setValue}
         register={register}
-        small
         imgUrl={video?.thumbnailSrc}
         error={errors?.thumbnailSrcUrl}
         text="Change thumbnail"
       />
 
       <AdminInput
-        name="subCategory"
         type="text"
         autoComplete="off"
         placeholder="Add subcategory"
         label="Subcategory"
         errors={errors}
+        name="subCategory"
         register={register}
         disabled={isLoading}
       />
 
       <AdminInput
-        name="introduction"
         type="text"
         autoComplete="off"
         placeholder="Add introduction"
         label="Introduction"
         errors={errors}
+        name="introduction"
         register={register}
         disabled={isLoading}
       />

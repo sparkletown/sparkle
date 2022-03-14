@@ -1,143 +1,137 @@
-import React, { useCallback, useMemo } from "react";
-import classNames from "classnames";
+import React, { useCallback, useMemo, useState } from "react";
+import ReactDOM from "react-dom";
+import { usePopper } from "react-popper";
+import { useToggle } from "react-use";
 
-import { COVERT_ROOM_TYPES, IFRAME_ALLOW } from "settings";
-
-import { retainAttendance } from "store/actions/Attendance";
+import { COVERT_ROOM_TYPES, POPOVER_CONTAINER_ID } from "settings";
 
 import { Room, RoomType } from "types/rooms";
 import { RoomVisibility } from "types/RoomVisibility";
+import { Dimensions, Position } from "types/utility";
 import { PartyMapVenue } from "types/venues";
 
+import { isExternalPortal, openUrl } from "utils/url";
+
 import { useCustomSound } from "hooks/sounds";
-import { useDispatch } from "hooks/useDispatch";
+import { useAnalytics } from "hooks/useAnalytics";
 import { usePortal } from "hooks/usePortal";
-import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { RoomAttendance } from "components/templates/PartyMap/components/RoomAttendance";
 
-import "./MapRoom.scss";
+import styles from "./MapRoom.module.scss";
 
 export interface MapRoomProps {
   venue: PartyMapVenue;
   room: Room;
   selectRoom: () => void;
+  safeZoneBounds: Dimensions & Position;
 }
 
 export const MapRoom: React.FC<MapRoomProps> = ({
   venue,
   room,
-  selectRoom,
+  safeZoneBounds,
 }) => {
-  const { portalSpaceId } = usePortal({ portal: room });
-
-  const { findVenueInRelatedVenues } = useRelatedVenues({
-    currentVenueId: venue.id,
-  });
-  const portalVenue = findVenueInRelatedVenues({ spaceId: portalSpaceId });
-
-  const hasRecentRoomUsers =
-    portalVenue?.recentUserCount && portalVenue?.recentUserCount > 0;
+  const { enterPortal } = usePortal({ portal: room });
+  const analytics = useAnalytics({ venue });
+  const [infoVisible, toggleInfoVisible] = useToggle(false);
 
   const isUnclickable =
     room.visibility === RoomVisibility.unclickable ||
     room.type === RoomType.unclickable;
-  const isMapFrame = room.type === RoomType.mapFrame;
   const isCovertRoom = room.type && COVERT_ROOM_TYPES.includes(room.type);
-  const isLabelHidden =
-    (room.visibility === RoomVisibility.none ||
-      room.visibility === RoomVisibility.unclickable) ??
-    false;
-  const shouldShowLabel = !isCovertRoom && !isLabelHidden;
   const shouldBeClickable = !isCovertRoom && !isUnclickable;
 
-  const roomLabelConditions =
-    room.visibility === RoomVisibility.nameCount ||
-    (room.visibility === RoomVisibility.count && hasRecentRoomUsers);
-  const venueLabelConditions =
-    venue.roomVisibility === RoomVisibility.nameCount ||
-    (venue.roomVisibility === RoomVisibility.count && hasRecentRoomUsers);
-
-  const dispatch = useDispatch();
-
-  // @debt do we need to keep this retainAttendance stuff (for counting feature), or is it legacy tech debt?
-  const handleRoomHovered = useCallback(() => {
-    dispatch(retainAttendance(true));
-  }, [dispatch]);
-
-  // @debt do we need to keep this retainAttendance stuff (for counting feature), or is it legacy tech debt?
-  const handleRoomUnhovered = useCallback(() => {
-    dispatch(retainAttendance(false));
-  }, [dispatch]);
-
-  const containerClasses = classNames("maproom", {
-    "maproom--covert": isCovertRoom,
-    "maproom--unclickable": isUnclickable,
-    "maproom--iframe": isMapFrame,
-    "maproom--always-show-label":
-      shouldShowLabel && (roomLabelConditions || venueLabelConditions),
-  });
-
-  const titleClasses = classNames("maproom__title", {
-    "maproom__title--count":
-      !isCovertRoom &&
-      (room.visibility === RoomVisibility.count ||
-        venue.roomVisibility === RoomVisibility.count),
-  });
+  // All the percentages are stored as 0 to 100 in the database for historical
+  // reasons. We scale them back down here.
+  const left =
+    safeZoneBounds.left + (safeZoneBounds.width * room.x_percent) / 100;
+  const top =
+    safeZoneBounds.top + (safeZoneBounds.height * room.y_percent) / 100;
+  const width = (safeZoneBounds.width * room.width_percent) / 100;
+  const height = (safeZoneBounds.height * room.height_percent) / 100;
 
   const roomInlineStyles = useMemo(
     () => ({
-      left: `${room.x_percent}%`,
-      top: `${room.y_percent}%`,
-      width: `${room.width_percent}%`,
-      height: `${room.height_percent}%`,
+      left: `${left}px`,
+      top: `${top}px`,
+      width: `${width}px`,
+      height: `${height}px`,
       zIndex: room.zIndex,
     }),
-    [
-      room.height_percent,
-      room.width_percent,
-      room.x_percent,
-      room.y_percent,
-      room.zIndex,
-    ]
+    [height, left, room.zIndex, top, width]
   );
 
-  const [play] = useCustomSound(room.enterSound, { interrupt: true });
+  const [enterWithSound] = useCustomSound(room.enterSound, {
+    interrupt: true,
+    onend: enterPortal,
+  });
+
   const selectRoomWithSound = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-      play();
-      selectRoom();
-      e.currentTarget.blur();
+    (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+      if (!shouldBeClickable) return;
+      analytics.trackEnterRoomEvent(room.title, room.template);
+      isExternalPortal(room) ? openUrl(room.url) : enterWithSound();
     },
-    [play, selectRoom]
+    [analytics, enterWithSound, room, shouldBeClickable]
+  );
+
+  const [referenceElement, setReferenceElement] = useState<HTMLElement | null>(
+    null
+  );
+  const [popperElement, setPopperElement] = useState<HTMLElement | null>(null);
+  const { styles: popperStyles, attributes: popperAttributes } = usePopper(
+    referenceElement,
+    popperElement
+  );
+
+  const popoverContainerElement = document.querySelector(
+    `#${POPOVER_CONTAINER_ID}`
   );
 
   return (
-    <button
-      className={containerClasses}
-      style={roomInlineStyles}
-      onClick={shouldBeClickable ? selectRoomWithSound : undefined}
-      onMouseEnter={shouldBeClickable ? handleRoomHovered : undefined}
-      onMouseLeave={shouldBeClickable ? handleRoomUnhovered : undefined}
-    >
-      {isMapFrame ? (
-        <iframe
-          className="maproom__iframe"
-          src={room.url}
-          title={room.title}
-          allow={IFRAME_ALLOW}
-          frameBorder="0"
-        />
-      ) : (
-        <img className="maproom__image" src={room.image_url} alt={room.title} />
-      )}
-
-      {shouldShowLabel && (
-        <div className="maproom__label">
-          <span className={titleClasses}>{room.title}</span>
-          <RoomAttendance room={room} />
+    <div className={styles.MapRoom} style={roomInlineStyles}>
+      <div className={styles.PortalOnMap}>
+        <div className={styles.PortalImage} onClick={selectRoomWithSound}>
+          <img src={room.image_url} alt={room.title} />
         </div>
-      )}
-    </button>
+        <div className={styles.portalInfo}>
+          <div className={styles.PortalTitle}>
+            {room.title}
+            <span>
+              <span></span>
+              <RoomAttendance room={room} />
+            </span>
+            <span
+              className={styles.InfoButton}
+              ref={setReferenceElement}
+              onClick={toggleInfoVisible}
+            >
+              <span />
+            </span>
+          </div>
+          {infoVisible &&
+            popoverContainerElement &&
+            ReactDOM.createPortal(
+              <div
+                className={styles.PortalPopupInfo}
+                ref={setPopperElement}
+                style={popperStyles.popper}
+                {...popperAttributes.popper}
+              >
+                <h3>TODO Title</h3>
+                <p>TODO</p>
+                <span
+                  className={styles.PortalInfoButton}
+                  onClick={selectRoomWithSound}
+                >
+                  Enter
+                </span>
+              </div>,
+              popoverContainerElement
+            )}
+        </div>
+      </div>
+    </div>
   );
 };

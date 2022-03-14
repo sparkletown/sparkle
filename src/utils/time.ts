@@ -21,8 +21,11 @@ import {
   subHours,
 } from "date-fns";
 
-const DATEFNS_INPUT_TIME_FORMAT = "HH:mm";
-const DATEFNS_INPUT_DATE_FORMAT = "yyyy-MM-dd";
+import {
+  DATEFNS_INPUT_DATE_FORMAT,
+  DATEFNS_INPUT_TIME_FORMAT,
+  DAYJS_EVENT_WEEK_DAY_FORMAT,
+} from "settings";
 
 /**
  * @deprecated in favor of using date-fns functions
@@ -324,3 +327,27 @@ export const convertUtcSecondsFromInputDateAndTime: (input: {
   date: string;
   time: string;
 }) => number = ({ date, time }) => getUnixTime(new Date(`${date} ${time}`));
+
+export const formatDayLabel = (
+  day: Date | number,
+  isScheduleTimeshifted: boolean
+) => {
+  if (isScheduleTimeshifted) {
+    return format(day, DAYJS_EVENT_WEEK_DAY_FORMAT);
+  }
+
+  return formatDateRelativeToNow(day, {
+    formatOtherDate: (dateOrTimestamp) =>
+      format(dateOrTimestamp, DAYJS_EVENT_WEEK_DAY_FORMAT),
+    formatTomorrow: (dateOrTimestamp) =>
+      format(dateOrTimestamp, DAYJS_EVENT_WEEK_DAY_FORMAT),
+  });
+};
+
+export const getDateHoursAndMinutes = (
+  dateOrTimestamp: Date | number
+): string => format(dateOrTimestamp, DATEFNS_INPUT_TIME_FORMAT);
+
+export const currentMilliseconds = () => new Date().getTime();
+export const currentIso = () => new Date().toISOString();
+export const currentUtc = () => new Date().toUTCString();

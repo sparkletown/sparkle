@@ -5,10 +5,12 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { FieldErrors, FieldValues } from "react-hook-form";
+import { FieldErrors, FieldValues, UseFormRegister } from "react-hook-form";
 import { get } from "lodash";
 
 import { PortalInfoItem } from "settings";
+
+import { AnyForm } from "types/utility";
 
 import { PortalAddEditModal } from "components/molecules/PortalAddEditModal";
 import { PortalListItem } from "components/molecules/PortalListItem";
@@ -23,7 +25,7 @@ interface PortalListProps {
   label?: ReactNode | string;
   name?: string;
   onClick?: (context: { item: PortalInfoItem; index: number }) => void;
-  register?: (Ref: unknown, RegisterOptions?: unknown) => void;
+  register?: UseFormRegister<AnyForm>;
   selectedItem?: PortalInfoItem;
   variant: PortalListVariant;
 }
@@ -75,7 +77,7 @@ export const PortalList: React.FC<PortalListProps> = ({
       className="PortalList__input"
       type="hidden"
       name={name}
-      ref={register}
+      {...register}
     />
   );
 

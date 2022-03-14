@@ -5,15 +5,12 @@ import classNames from "classnames";
 
 import { isDefined } from "utils/types";
 
-import { useSpaceParams } from "hooks/spaces/useSpaceParams";
-import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
+import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useShowHide } from "hooks/useShowHide";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import { LinkButton } from "components/atoms/LinkButton";
-
-import "./AnnouncementMessage.scss";
 
 export interface AnnouncementMessageProps {
   isAnnouncementUserView?: boolean;
@@ -28,8 +25,7 @@ export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
     hide: hideAnnouncementMessage,
   } = useShowHide();
 
-  const { worldSlug, spaceSlug } = useSpaceParams();
-  const { space } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
+  const { space } = useWorldAndSpaceByParams();
 
   const { banner } = space ?? {};
 

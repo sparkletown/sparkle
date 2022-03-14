@@ -8,8 +8,6 @@ import {
   WorldWithId,
 } from "types/id";
 
-import { updateTheme } from "pages/VenuePage/helpers";
-
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
 import { NotFound } from "components/atoms/NotFound";
@@ -35,13 +33,6 @@ export const VenueLandingPage: React.FC<VenueLandingPageProps> = (props) => {
       window.location.hostname = redirectUrl;
     }
   }, [hostname, redirectUrl]);
-
-  useEffect(() => {
-    if (!space) return;
-
-    // @debt replace this with useCss?
-    updateTheme(space);
-  }, [space]);
 
   return space && world ? (
     <WithNavigationBar hasBackButton withSchedule>

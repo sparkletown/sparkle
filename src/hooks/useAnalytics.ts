@@ -18,7 +18,6 @@ import {
   VENUE_PAGE_LOADED_EVENT_NAME,
 } from "settings";
 
-import { ReactHook } from "types/utility";
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
@@ -66,7 +65,7 @@ export const identifyUser = ({ email, name = "N/A" }: IdentifyUserProps) => {
   }
 };
 
-export interface UseAnalyticsProps {
+interface UseAnalyticsOptions {
   venue?: WithId<AnyVenue>;
 }
 
@@ -89,9 +88,21 @@ export interface UseAnalyticsResult {
   trackEnterJazzBarEvent: () => void;
 }
 
-export const useAnalytics: ReactHook<UseAnalyticsProps, UseAnalyticsResult> = ({
+// Helper method that emits a warning exactly once. Prevents flooding console
+// with the same warning over and over.
+const warnOnce = (() => {
+  const warned: Record<string, boolean> = {};
+  return (message: string) => {
+    if (!warned[message]) {
+      console.warn(message);
+      warned[message] = true;
+    }
+  };
+})();
+
+export const useAnalytics = ({
   venue: space,
-}) => {
+}: UseAnalyticsOptions): UseAnalyticsResult => {
   const { user } = useLoginCheck();
   const { world, isLoaded: isWorldLoaded } = useWorldById(space?.worldId);
   const email = user?.email;
@@ -102,6 +113,7 @@ export const useAnalytics: ReactHook<UseAnalyticsProps, UseAnalyticsResult> = ({
   const trackWithWorld = useCallback(
     (eventName, properties = {}) => {
       if (!spaceId) return;
+      if (!MIXPANEL_PROJECT_TOKEN) return;
 
       const worldString = `${
         isWorldLoaded ? worldName : DEFAULT_ANALYTICS_WORLD_NAME
@@ -190,6 +202,10 @@ export const useAnalytics: ReactHook<UseAnalyticsProps, UseAnalyticsResult> = ({
     () => trackWithWorld(ENTER_JAZZ_BAR_EVENT_NAME),
     [trackWithWorld]
   );
+
+  if (!MIXPANEL_PROJECT_TOKEN) {
+    warnOnce("MIXPANEL_PROJECT_TOKEN not set. Analytics disabled.");
+  }
 
   return useMemo(
     () => ({

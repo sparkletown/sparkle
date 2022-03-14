@@ -3,11 +3,9 @@ import { CSSProperties } from "react";
 import { HAS_ROOMS_TEMPLATES } from "settings";
 
 import { AuditoriumSectionPath } from "types/auditorium";
-import { SpaceSlug } from "types/id";
+import { SpaceSlug, UserWithId } from "types/id";
 import { RoomVisibility } from "types/RoomVisibility";
 import { VenueTemplate } from "types/VenueTemplate";
-
-import { WithId } from "utils/id";
 
 import { GameOptions } from "components/templates/AnimateMap/configs/GameConfig";
 
@@ -17,7 +15,7 @@ import { Quotation } from "./Quotation";
 import { Room } from "./rooms";
 import { Table } from "./Table";
 import { UpcomingEvent } from "./UpcomingEvent";
-import { User, UserStatus } from "./User";
+import { UserStatus } from "./User";
 import { VenueAccessMode } from "./VenueAcccess";
 import { VideoAspectRatio } from "./VideoAspectRatio";
 
@@ -34,6 +32,7 @@ export type GenericVenueTemplates = Exclude<
   | VenueTemplate.themecamp
   | VenueTemplate.auditorium
   | VenueTemplate.viewingwindow
+  | VenueTemplate.experiment
 >;
 
 // We shouldn't include 'Venue' here, that is what 'GenericVenue' is for (which correctly narrows the types; these should remain alphabetically sorted, except with GenericVenue at the top)
@@ -45,7 +44,8 @@ export type AnyVenue =
   | JazzbarVenue
   | PartyMapVenue
   | PosterPageVenue
-  | ViewingWindowVenue;
+  | ViewingWindowVenue
+  | ExperimentalVenue;
 
 // --- VENUE V2
 export interface Venue_v2 extends Venue_v2_Base, VenueAdvancedConfig {}
@@ -129,9 +129,6 @@ export interface BaseVenue {
   rooms?: Room[];
   width: number;
   height: number;
-  description?: {
-    text: string;
-  };
   subtitle?: string;
   showLearnMoreLink?: boolean;
   start_utc_seconds?: number;
@@ -150,7 +147,7 @@ export interface BaseVenue {
   showUserStatus?: boolean;
   createdAt?: number;
   recentUserCount?: number;
-  recentUsersSample?: WithId<User>[];
+  recentUsersSample?: UserWithId[];
   recentUsersSampleSize?: number;
   updatedAt?: number;
   worldId: string;
@@ -208,6 +205,10 @@ export interface JazzbarVenue extends BaseVenue {
   enableJukebox?: boolean;
 }
 
+export interface ExperimentalVenue extends BaseVenue {
+  template: VenueTemplate.experiment;
+}
+
 export interface EmbeddableVenue extends BaseVenue {
   template: VenueTemplate.embeddable;
   iframeUrl?: string;
@@ -251,6 +252,11 @@ interface TermOfService {
   link?: string;
 }
 
+export type SafeZone = {
+  width: number;
+  height: number;
+};
+
 export interface VenueConfig {
   theme: {
     primaryColor: string;
@@ -262,6 +268,10 @@ export interface VenueConfig {
   redirectUrl?: string;
   memberEmails?: string[];
   tables?: Table[];
+  // See PartyMap for what safe zone means
+  // These are expressed as a percentage of the total image width/height.
+  // Expected range: 0.0 to 100.0.
+  safeZone?: SafeZone;
 }
 
 // @debt The following keys are marked as required on this type, but i'm not sure they should be:

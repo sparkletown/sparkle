@@ -95,10 +95,7 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
 
     return sortedQuestions.map((question) => (
       <div key={question.name} className="ChatPoll__text">
-        <div
-          className="ChatPoll__text-background"
-          style={{ width: `${question.share}%` }}
-        />
+        <div className="ChatPoll__text-background" />
         <span className="ChatPoll__text-count">{question.share}%</span>
         <RenderMarkdown
           text={question.name}
@@ -136,7 +133,7 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
         </div>
       </div>
 
-      <ChatMessageInfo message={message} reversed={isMine} />
+      <ChatMessageInfo message={message} />
     </div>
   );
 };

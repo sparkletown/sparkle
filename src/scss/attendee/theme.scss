@@ -1,0 +1,79 @@
+// Global color constants should be added here
+// Please make sure their names have semantic meaning
+// i.e. instead of $white it would be $c-button--fg or $c-input--bg
+
+// All the colour definitions are dona via CSS variables and then we use SCSS
+// variables to substitue them into the right place.
+:root {
+  --default-text: rgb(0, 0, 0);
+  --subdued-text: rgb(142, 142, 142);
+  --chat-input-background: rgb(230, 230, 230);
+  --disabled-color: rgba(255, 255, 255, 0.4);
+  --glass-panel-background-transparent: rgba(255, 255, 255, 0.1);
+
+  --panel-background: rgb(255, 255, 255);
+  --glass-panel-background: rgba(255, 255, 255, 0.4);
+  --color-glass-panel-background: rgba(99, 42, 199, 0.7);
+
+  --sparkle--bg: rgb(99, 42, 199);
+  --sparkle--border: rgba(130, 130, 130, 0.3);
+
+  --button-fg: rgb(255, 255, 255);
+  --button-bg: rgb(99, 42, 199);
+
+  --overlay-fg: rgb(255, 255, 255);
+  --overlay-bg: rgba(99, 42, 199, 0.7);
+
+  --error-background: #fae7e7;
+  --error-border: #ed2326;
+
+  --toggler-off-color: rgba(255, 255, 255, 0.3);
+
+  @media (prefers-color-scheme: dark) {
+    --default-text: rgb(255, 255, 255);
+    --chat-input-background: rgb(60, 60, 60);
+
+    --panel-background: rgb(0, 0, 0);
+    --glass-panel-background: rgba(0, 0, 0, 0.4);
+    --glass-panel-text: rgba(0, 0, 0, 0.6);
+  }
+}
+
+// This is the colour that should be used for 90% of text
+$c-default-text: var(--default-text);
+// This is the colour for anything that is lower priority text
+$c-subdued-text: var(--subdued-text);
+// Used wherever we are putting text on to a light background
+$c-inverted-text: var(--inverted-text);
+
+$sparkle--bg: var(--sparkle--bg); // previously named $sparkle-theme
+$sparkle--border: var(--sparkle--border); // previously named $sparkle-border
+
+$c-panel-background: var(--panel-background);
+$c-glass-panel-background: var(--glass-panel-background);
+$c-glass-panel-background-transparent: var(
+  --glass-panel-background-transparent
+);
+$c-glass-panel-text: var(--glass-panel-text);
+$c-color-glass-panel-background: var(--color-glass-panel-background);
+
+$c-button-fg: var(--button-fg);
+$c-button-bg: var(--button-bg);
+
+$c-overlay-fg: var(--overlay-fg);
+$c-overlay-bg: var(--overlay-bg);
+
+$sparkle-disabled: var(--disabled-color);
+
+$error-background: var(--error-background);
+$error-border: var(--error-border);
+
+$toggler-off-color: var(--toggler-off-color);
+
+// Auxillary text that is less important than other text and so fades into the
+// background a little.
+$light--aux-text: rgba(128, 128, 128);
+
+$c-chat-input-background: var(--chat-input-background);
+
+$c-light-text-on-dark: rgb(230, 230, 230);

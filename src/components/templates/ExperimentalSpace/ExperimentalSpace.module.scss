@@ -1,0 +1,14 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+.contentBox {
+  border: 1px solid black;
+  min-height: 400px;
+}
+
+.projectedVideoTrack {
+  max-height: 50%;
+}

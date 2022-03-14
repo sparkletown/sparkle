@@ -1,5 +1,4 @@
 import React, { Suspense, useEffect, useMemo, useState } from "react";
-import { useCss } from "react-use";
 import classNames from "classnames";
 import { addDays } from "date-fns";
 import dayjs from "dayjs";
@@ -14,14 +13,12 @@ import {
 import { range } from "utils/range";
 import { formatDateRelativeToNow } from "utils/time";
 
-import { useSpaceParams } from "hooks/spaces/useSpaceParams";
-import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
+import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useValidImage } from "hooks/useCheckImage";
 import { useUser } from "hooks/useUser";
 import useVenueScheduleEvents from "hooks/useVenueScheduleEvents";
 
 import { Login } from "pages/Account/Login";
-import { updateTheme } from "pages/VenuePage/helpers";
 
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
@@ -41,13 +38,12 @@ const emptyPersonalizedSchedule = {};
 
 export const EmergencyViewPage: React.FC = () => {
   const [selectedTab, updateTab] = useState(0);
-  const { worldSlug, spaceSlug } = useSpaceParams();
 
   const {
     space,
     spaceId,
     isLoaded: isCurrentVenueLoaded,
-  } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
+  } = useWorldAndSpaceByParams();
 
   const { user, userWithId } = useUser();
   const userEventIds =
@@ -70,13 +66,6 @@ export const EmergencyViewPage: React.FC = () => {
       window.location.hostname = redirectUrl;
     }
   }, [hostname, redirectUrl]);
-
-  useEffect(() => {
-    if (!space) return;
-
-    // @debt replace this with useCss?
-    updateTheme(space);
-  }, [space]);
 
   const weekdays = useMemo(() => {
     return range(dayDifference)
@@ -107,16 +96,14 @@ export const EmergencyViewPage: React.FC = () => {
       .filter((day) => !!day);
   }, [dayDifference, liveAndFutureEvents, firstScheduleDate]);
 
+  // TODO-redesign use it or delete it
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [validBannerImageUrl] = useValidImage(
     space?.config?.landingPageConfig.bannerImageUrl,
     DEFAULT_VENUE_BANNER_COLOR
   );
 
-  const containerVars = useCss({
-    "background-image": `url("${validBannerImageUrl}")`,
-  });
-
-  const containerClasses = classNames("EmergencyView", containerVars);
+  const containerClasses = classNames("EmergencyView");
 
   if (!spaceId || (isCurrentVenueLoaded && !space)) {
     return (

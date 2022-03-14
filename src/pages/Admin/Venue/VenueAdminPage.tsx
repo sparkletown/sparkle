@@ -1,15 +1,12 @@
 import React from "react";
-import { useCss } from "react-use";
-import classNames from "classnames";
 
 import { DEFAULT_MAP_BACKGROUND, IFRAME_TEMPLATES } from "settings";
 
-import { useSpaceParams } from "hooks/spaces/useSpaceParams";
-import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
+import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useValidImage } from "hooks/useCheckImage";
-import { useIsUserVenueOwner } from "hooks/useIsUserVenueOwner";
+import { useUserNG } from "hooks/user/useUserNG";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useShowHide } from "hooks/useShowHide";
-import { useUser } from "hooks/useUser";
 
 import { BannerAdmin } from "components/organisms/BannerAdmin";
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
@@ -23,12 +20,16 @@ import { AnnouncementOptions } from "./AnnouncementOptions";
 import "./VenueAdminPage.scss";
 
 export const VenueAdminPage: React.FC = () => {
-  const { profile, user } = useUser();
+  const { profile, auth: user, userId } = useUserNG();
+  const { space, spaceId, isLoaded } = useWorldAndSpaceByParams();
+  const { currentVenue, parentVenue } = useRelatedVenues({
+    currentVenueId: spaceId,
+  });
 
-  const { worldSlug, spaceSlug } = useSpaceParams();
-  const { space, spaceId, isLoaded } = useWorldAndSpaceBySlug(
-    worldSlug,
-    spaceSlug
+  const isVenueOwner: boolean = !!(
+    currentVenue &&
+    userId &&
+    (parentVenue ? parentVenue.owners : currentVenue?.owners)?.includes(userId)
   );
 
   const {
@@ -36,18 +37,16 @@ export const VenueAdminPage: React.FC = () => {
     show: showBannerAdmin,
     hide: hideBannerAdmin,
   } = useShowHide();
-  const isVenueOwner = useIsUserVenueOwner();
+
   const isLoggedIn = profile && user;
   const isVenueLoading = !isLoaded;
 
+  // TODO-redesign - Use this or delete it
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [mapBackground] = useValidImage(
     space?.mapBackgroundImageUrl,
     DEFAULT_MAP_BACKGROUND
   );
-
-  const announcementContainerVars = useCss({
-    background: `url("${mapBackground}")`,
-  });
 
   if (isVenueLoading) {
     return <LoadingPage />;
@@ -69,18 +68,13 @@ export const VenueAdminPage: React.FC = () => {
 
   const isIframeVenue = IFRAME_TEMPLATES.includes(space.template);
 
-  const announcementWrapperClasses = classNames(
-    "VenueAdminPage__announcement-wrapper",
-    announcementContainerVars
-  );
-
   return (
     <WithNavigationBar>
       <div className="VenueAdminPage">
         <h4 className="VenueAdminPage__title">
           Current Announcement in {space?.name}
         </h4>
-        <div className={announcementWrapperClasses}>
+        <div>
           <AnnouncementMessage />
         </div>
       </div>

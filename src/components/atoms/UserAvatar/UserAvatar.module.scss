@@ -1,0 +1,19 @@
+@use "scss/attendee/layout";
+
+@each $sizeName, $sizePixels in layout.$avatarSizes {
+  .avatarContainer__#{$sizeName} {
+    width: $sizePixels;
+    height: $sizePixels;
+    flex-shrink: 0;
+  }
+}
+
+.avatarContainer__full {
+  width: 100%;
+  height: 100%;
+}
+
+.userAvatar {
+  width: 100%;
+  height: 100%;
+}

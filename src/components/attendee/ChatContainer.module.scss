@@ -1,0 +1,71 @@
+@use "scss/attendee/theme";
+@use "scss/attendee/font";
+@use "scss/attendee/space";
+@use "scss/attendee/opacity";
+@use "scss/attendee/layout";
+@use "scss/attendee/breakpoint";
+@use "scss/attendee/effects/sparkle";
+@use "scss/attendee/effects/rounded";
+@use "scss/attendee/effects/atom";
+
+.ChatContainer {
+  padding: 0 space.empty(1);
+  height: layout.$h-chat-controls;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  order: 2;
+  @include sparkle.panel--normal;
+
+  @media (min-width: breakpoint.$md) {
+    padding: 0;
+    width: layout.$w-sidebar;
+    margin-left: auto;
+    flex-shrink: 0;
+
+    @include rounded.topleft;
+  }
+
+  nav {
+    display: flex;
+    padding: 0 space.empty(0.5);
+    span {
+      padding: space.empty(0.5) space.empty(1);
+      text-decoration: none;
+      color: theme.$c-default-text;
+      cursor: pointer;
+      position: relative;
+    }
+  }
+}
+
+.messageNotification {
+  background: red;
+  font-size: font.$size--sm;
+  border-radius: 100%;
+  width: 6px;
+  height: 6px;
+  display: inline-block;
+  vertical-align: text-top;
+  position: absolute;
+  right: 2px;
+}
+
+.toggler {
+  margin-left: auto;
+}
+
+.chatSidebar {
+  order: 3;
+  margin-left: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  max-width: layout.$w-sidebar;
+  margin-top: calc(layout.$h-top-nav);
+
+  @media (min-width: breakpoint.$md) {
+    margin-top: 0;
+  }
+
+  @include sparkle.panel--glass;
+}

@@ -42,6 +42,10 @@ service cloud.firestore {
     match /experiences/{experienceId}/{restOfPath=**} {
       allow read, write: if request.auth.uid != null;
     }
+    // TODO This should not make it into production, it's an experiment
+    match /experiments/{experiment} {
+      allow read, write: if request.auth.uid != null;
+    }
     match /venues/{venue} {
       allow read: if true;
 

@@ -1,39 +1,26 @@
 import { MutableRefObject, useEffect, useState } from "react";
 import Mousetrap, { ExtendedKeyboardEvent } from "mousetrap";
 
-import { ReactHook } from "types/utility";
+type BinaryCallback = (e: ExtendedKeyboardEvent, combo: string) => unknown;
+type UnaryCallback = (e: ExtendedKeyboardEvent) => unknown;
+type NullaryCallback = () => unknown;
+type MousetrapCallback = BinaryCallback | UnaryCallback | NullaryCallback;
 
-export type MousetrapCallbackWithTwoArgs = (
-  e: ExtendedKeyboardEvent,
-  combo: string
-) => unknown;
-export type MousetrapCallbackWithOneArg = (e: ExtendedKeyboardEvent) => unknown;
-export type MousetrapCallbackWithNoArgs = () => unknown;
-
-export type MousetrapCallback =
-  | MousetrapCallbackWithTwoArgs
-  | MousetrapCallbackWithOneArg
-  | MousetrapCallbackWithNoArgs;
-
-export interface MousetrapBaseProps {
-  keys: string | string[];
-  callback: MousetrapCallback;
-  action?: "keyup" | "keydown" | "keypress";
-}
-
-export type MousetrapWithoutGlobalBind = MousetrapBaseProps & {
+type WithoutGlobalBind = {
   /** @default false **/
   withGlobalBind?: false;
   bindRef: MutableRefObject<HTMLElement>;
 };
 
-export type MousetrapWithGlobalBind = MousetrapBaseProps & {
+type WithGlobalBind = {
   withGlobalBind: true;
 };
 
-export type UseMousetrapProps =
-  | MousetrapWithoutGlobalBind
-  | MousetrapWithGlobalBind;
+type UseMousetrapOptions = (WithoutGlobalBind | WithGlobalBind) & {
+  keys: string | string[];
+  callback: MousetrapCallback;
+  action?: "keyup" | "keydown" | "keypress";
+};
 
 /**
  * React hook to efficiently bind keyboard shortcuts to callbacks.
@@ -49,7 +36,7 @@ export type UseMousetrapProps =
  *
  * @see https://craig.is/killing/mice
  */
-export const useMousetrap: ReactHook<UseMousetrapProps, void> = ({
+export const useMousetrap: (options: UseMousetrapOptions) => void = ({
   keys,
   callback,
   action,
@@ -58,6 +45,7 @@ export const useMousetrap: ReactHook<UseMousetrapProps, void> = ({
   // @ts-ignore
   bindRef,
 }) => {
+  // @debt useMoustrap is unused, probably safe to delete
   const [boundElement, setBoundElement] = useState<HTMLElement | undefined>(
     bindRef
   );

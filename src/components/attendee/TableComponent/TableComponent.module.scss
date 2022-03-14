@@ -1,0 +1,88 @@
+@use "scss/attendee/border";
+@use "scss/attendee/space";
+@use "scss/attendee/effects/sparkle";
+@use "scss/attendee/effects/rounded";
+@use "scss/attendee/effects/atom";
+@use "scss/attendee/theme";
+@use "scss/attendee/breakpoint";
+
+.tableContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+
+  margin: space.gap(3);
+  flex-direction: column;
+  @include sparkle.panel--glass;
+  @include rounded.normal;
+  border: 1px solid theme.$sparkle--border;
+  padding: space.empty(1);
+  width: 100%;
+
+  @media (min-width: breakpoint.$md) {
+    max-width: space.empty(33);
+  }
+
+  h2 {
+    flex-grow: 1;
+    width: 100%;
+    padding: space.empty(1);
+  }
+}
+
+.tableHeader {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+}
+
+.tableTitle {
+  flex: 1;
+}
+
+.deleteButton {
+  align-self: flex-start;
+}
+
+.tableUsers {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.joinButton {
+  border-radius: 50%;
+  @include sparkle.panel--normal;
+  margin: space.empty(0.5);
+  border: 1px solid theme.$sparkle--border;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: space.empty(4);
+  height: space.empty(4);
+  cursor: pointer;
+
+  @media (min-width: breakpoint.$md) {
+    width: space.empty(5);
+    height: space.empty(5);
+  }
+}
+
+.userAvatar {
+  @include atom.avatar;
+  margin: space.empty(0.5);
+  width: space.empty(4);
+  height: space.empty(4);
+  border-radius: border.$radius--mx;
+  overflow: hidden;
+  display: flex;
+
+  @media (min-width: breakpoint.$md) {
+    width: space.empty(5);
+    height: space.empty(5);
+  }
+}

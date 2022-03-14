@@ -1,55 +1,52 @@
 import React from "react";
 import { useAsyncFn } from "react-use";
-import classNames from "classnames";
 
 import { updateVenueTable } from "api/table";
 
 import { Table } from "types/Table";
 import { AnyVenue } from "types/venues";
-import { VenueTemplate } from "types/VenueTemplate";
 
 import { WithId } from "utils/id";
 
 import { Loading } from "components/molecules/Loading";
 
-import "./StartTable.scss";
+import { ButtonNG } from "components/atoms/ButtonNG";
+
+import styles from "./StartTable.module.scss";
 
 export interface StartTablePropsType {
   defaultTables: Table[];
   newTable: Table;
-  venue: WithId<AnyVenue>;
+  space: WithId<AnyVenue>;
 }
 
 export const StartTable: React.FC<StartTablePropsType> = ({
   defaultTables,
   newTable,
-  venue,
+  space,
 }) => {
-  const venueId = venue.id;
+  const spaceId = space.id;
 
   const [{ loading: isUpdatingTables }, updateTables] = useAsyncFn(async () => {
-    if (!venueId) return;
+    if (!spaceId) return;
 
     await updateVenueTable({
-      venueId,
+      venueId: spaceId,
       newTable,
       defaultTables,
     });
-  }, [newTable, venueId, defaultTables]);
+  }, [newTable, spaceId, defaultTables]);
 
-  const containerClasses = classNames("StartTable", {
-    "StartTable--jazzbar": venue?.template === VenueTemplate.jazzbar,
-  });
-
-  return (
-    <button
+  return isUpdatingTables ? (
+    <Loading />
+  ) : (
+    <ButtonNG
       disabled={isUpdatingTables}
-      className={containerClasses}
+      className={styles.startTableButton}
       onClick={updateTables}
+      variant="primary"
     >
-      <Loading containerClassName="StartTable__loading" />
-      <div className="StartTable__sign">+</div>
-      <div className="StartTable__title">Start a table</div>
-    </button>
+      Start a table
+    </ButtonNG>
   );
 };

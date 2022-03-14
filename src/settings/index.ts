@@ -14,6 +14,7 @@ import {
 } from "./taxonomy";
 
 // NOTE: please keep these exports sorted alphabetically for faster visual scan
+export * from "./adminDesignSettings";
 export * from "./apiSettings";
 export * from "./dateSettings";
 export * from "./disableSettings";
@@ -78,7 +79,7 @@ export const SCHEDULE_SHOW_COPIED_TEXT_MS = 1000; // 1s
 export const LOC_UPDATE_FREQ_MS = FIVE_MINUTES_MS;
 
 export const WORLD_USERS_UPDATE_INTERVAL = 5000;
-export const VENUE_RECENT_SEATED_USERS_UPDATE_INTERVAL = 20 * 1000;
+export const VENUE_RECENT_SEATED_USERS_UPDATE_INTERVAL = 1000;
 
 // How often to increment user's timespent
 export const LOCATION_INCREMENT_SECONDS = 10;
@@ -561,10 +562,12 @@ export const DEFAULT_CONVERSATION_SPACE_TABLES_NUMBER = 10;
 
 export const JAZZBAR_TABLES: Table[] = generateTables({
   num: DEFAULT_JAZZBAR_TABLES_NUMBER,
+  generateTableReference: (title: string) => title,
 });
 
 export const CONVERSATION_TABLES: Table[] = generateTables({
   num: DEFAULT_CONVERSATION_SPACE_TABLES_NUMBER,
+  generateTableReference: (title: string) => title,
 });
 
 // These are really supposed to be constants and to avoid possible mutable shared state in the code elsewhere
@@ -602,3 +605,18 @@ export const VENUE_CHAT_MESSAGES_COUNTER_SHARDS_COUNT = 10;
 export const NON_EXISTENT_FIRESTORE_ID = "NON_EXISTENT_FIRESTORE_ID";
 
 export const INVALID_SLUG_CHARS_REGEX = /[^a-zA-Z0-9]/g;
+
+export const DEFAULT_SHOW_MORE_SETTINGS = {
+  more: "Show more",
+  less: "Show less",
+  expanded: false,
+  truncatedEndingComponent: "... ",
+};
+export const DEFAULT_MISSING_PLACEHOLDER = "Placeholder";
+
+export const POPOVER_CONTAINER_ID = "popoverContainer";
+export const DEFAULT_SAFE_ZONE = { width: 100.0, height: 100.0 };
+Object.freeze(DEFAULT_SAFE_ZONE);
+
+// Allow 70px for the top and bottom UI. Ideally, this would come from CSS
+export const PARTY_MAP_VERTICAL_PAD = 140;

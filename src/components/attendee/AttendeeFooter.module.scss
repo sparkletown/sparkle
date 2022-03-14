@@ -1,0 +1,45 @@
+@use "scss/attendee/space";
+@use "scss/attendee/opacity";
+@use "scss/attendee/effects/sparkle";
+@use "scss/attendee/effects/atom";
+@use "scss/attendee/breakpoint";
+
+.AttendeeFooter {
+  @include sparkle.panel--normal;
+  position: relative;
+  padding: space.empty(1);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+
+  p {
+    padding: space.empty(1);
+    opacity: opacity.$md;
+  }
+
+  nav {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    justify-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: space.empty(2) 15%;
+
+    @media (min-width: breakpoint.$md) {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      padding: space.empty(2) 0;
+    }
+
+    a {
+      @include atom.button;
+      opacity: opacity.$md;
+
+      &:hover,
+      &:focus {
+        opacity: 1;
+      }
+    }
+  }
+}

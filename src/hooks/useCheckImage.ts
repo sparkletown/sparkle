@@ -7,23 +7,29 @@ export const useCheckImage = (
   isValid: boolean;
   isLoading: boolean;
   error: string | undefined;
+  width: number | undefined;
+  height: number | undefined;
 } => {
-  const { loading, error } = useAsync(async () => {
+  const { loading, error, value } = useAsync(async () => {
     const checkImage = new Image();
     if (!src) throw Error("src is not defined.");
     checkImage.src = src;
 
     await checkImage.decode();
+
+    return { width: checkImage.naturalWidth, height: checkImage.naturalHeight };
   }, [src]);
 
   return useMemo(
     () => ({
-      //here we consider the image valid while it's still loading
+      // we consider the image valid while it's still loading
       isValid: !error,
       isLoading: loading,
       error: error?.message,
+      width: value?.width,
+      height: value?.height,
     }),
-    [error, loading]
+    [error, loading, value]
   );
 };
 

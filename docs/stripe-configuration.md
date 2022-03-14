@@ -1,8 +1,10 @@
 ### Stripe configuration
 
-**Note**: Stripe is NOT REQUIRED unless you will be testing ticketing integration.
+**Note**: Stripe is NOT REQUIRED unless you will be testing ticketing
+integration.
 
-First, you need to install the [Stripe CLI](https://stripe.com/docs/stripe-cli). Make sure that you have a Stripe account with the right credentials.
+First, you need to install the [Stripe CLI](https://stripe.com/docs/stripe-cli).
+Make sure that you have a Stripe account with the right credentials.
 
 ```bash
 brew install stripe/stripe-cli/stripe

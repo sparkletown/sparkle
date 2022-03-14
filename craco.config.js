@@ -1,23 +1,19 @@
-const path = require("path");
 // noinspection NpmUsedModulesInstalled
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const { BugsnagSourceMapUploaderPlugin } = require("webpack-bugsnag-plugins");
 
 const findSvgRule = (rules) => {
-  for(const rule of rules) {
-    const foundSubrule = (rule.oneOf || []).find(subrule => {
-      // Testing true equality of regex is difficult. For what we need
-      // testing the toString is sufficient.
-      if (subrule.test.toString() === "/\\.svg$/") {
-        return true;
-      }
-      return false;
+  for (const rule of rules) {
+    const foundSubrule = (rule.oneOf || []).find((subrule) => {
+      // Testing true equality of regex is difficult.
+      // For our need, testing the toString() result is sufficient.
+      return subrule.test.toString() === "/\\.svg$/";
     });
     if (foundSubrule) {
       return foundSubrule;
     }
   }
-}
+};
 
 // @see https://github.com/gsoft-inc/craco/blob/master/packages/craco/README.md#configuration
 module.exports = {
@@ -40,6 +36,12 @@ module.exports = {
     // },
 
     configure: (webpackConfig) => {
+      // @see https://webpack.js.org/configuration/stats/
+      webpackConfig.stats = {
+        ...(webpackConfig.stats ?? {}),
+        errorDetails: true,
+      };
+
       // some dependencies don't export source maps in their dist directories
       webpackConfig.ignoreWarnings = [/Failed to parse source map/];
 
@@ -54,16 +56,16 @@ module.exports = {
         // @see https://github.com/sebbo2002/ical-generator/issues/64
         fs: false,
 
-        // because uuidv4 is using Node.js core module
+        // @debt was needed for uuidv4, since that library is replaced, this may not be needed
         util: require.resolve("util"),
       };
 
       webpackConfig.module.rules
-                   .find((i) => i.oneOf !== undefined)
-                   .oneOf.unshift({
-        test:   /\.(glsl)$/,
-        loader: "ts-shader-loader",
-      });
+        .find((i) => i.oneOf !== undefined)
+        .oneOf.unshift({
+          test: /\.(glsl)$/,
+          loader: "ts-shader-loader",
+        });
 
       const instanceOfMiniCssExtractPlugin = webpackConfig.plugins.find(
         (plugin) => plugin instanceof MiniCssExtractPlugin
@@ -81,7 +83,7 @@ module.exports = {
 
       if (buildSha1 && bugsnagApiKey) {
         const bugsnagPlugin = new BugsnagSourceMapUploaderPlugin({
-          apiKey:     process.env.REACT_APP_BUGSNAG_API_KEY,
+          apiKey: process.env.REACT_APP_BUGSNAG_API_KEY,
           appVersion: process.env.REACT_APP_BUILD_SHA1,
           overwrite: true,
         });
@@ -92,7 +94,7 @@ module.exports = {
       // build in the database. The broader asset generation requires that
       // the name does NOT include a "." between the hash and the extension
       // tag. The SVG rule requires the "." to be there.
-      const generatedAssetsNameWithoutExt = 'static/media/[name].[hash:8]'
+      const generatedAssetsNameWithoutExt = "static/media/[name].[hash:8]";
       webpackConfig.output.assetModuleFilename = `${generatedAssetsNameWithoutExt}[ext]`;
 
       // The SVG rule also needs to be updated separately.
@@ -106,6 +108,11 @@ module.exports = {
       }
 
       return webpackConfig;
+    },
+  },
+  style: {
+    postOptions: {
+      plugins: [require("tailwindcss"), require("autoprefixer")],
     },
   },
 };

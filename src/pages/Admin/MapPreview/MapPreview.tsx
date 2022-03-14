@@ -8,6 +8,7 @@ import React, {
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { useAsyncFn } from "react-use";
+import { Button } from "components/admin/Button";
 import { isEqual } from "lodash";
 
 import { ROOM_TAXON, ROOMS_TAXON } from "settings";
@@ -15,18 +16,18 @@ import { ROOM_TAXON, ROOMS_TAXON } from "settings";
 import { updateRoom } from "api/admin";
 
 import { PortalInput, Room } from "types/rooms";
+import { SafeZone } from "types/venues";
 
 import { useCheckImage } from "hooks/useCheckImage";
 import { useUser } from "hooks/useUser";
 
 import {
   Container,
-  SubVenueIconMap,
-} from "pages/Account/Venue/VenueMapEdition/Container";
+  SubVenueIcon,
+} from "pages/Account/Venue/VenueMapEditor/Container";
 
 import { MapBackgroundPlaceholder } from "components/molecules/MapBackgroundPlaceholder";
 
-import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
 import { Legend } from "components/atoms/Legend";
 
 import "./MapPreview.scss";
@@ -39,6 +40,7 @@ export interface MapPreviewProps {
   venueId: string;
   isEditing: boolean;
   onRoomChange?: (rooms: Room[]) => void;
+  safeZone: SafeZone;
 }
 
 export const MapPreview: React.FC<MapPreviewProps> = ({
@@ -49,6 +51,7 @@ export const MapPreview: React.FC<MapPreviewProps> = ({
   venueId,
   isEditing,
   onRoomChange,
+  safeZone,
 }) => {
   const { user } = useUser();
   const [mapRooms, setMapRooms] = useState<Room[]>([]);
@@ -83,7 +86,7 @@ export const MapPreview: React.FC<MapPreviewProps> = ({
     }
   }, [isEditing, mapRooms, rooms]);
 
-  const roomRef = useRef<SubVenueIconMap>({});
+  const roomRef = useRef<SubVenueIcon[]>([]);
 
   const iconsMap = useMemo(() => {
     const iconsRooms = isEditing || mapRooms.length ? mapRooms : rooms;
@@ -100,7 +103,7 @@ export const MapPreview: React.FC<MapPreviewProps> = ({
   }, [isEditing, mapRooms, rooms]);
 
   const updateRoomsPosition = useCallback(
-    (val: SubVenueIconMap) => {
+    (val: SubVenueIcon[]) => {
       if (isEqual(roomRef.current, val)) return;
 
       roomRef.current = val;
@@ -188,32 +191,22 @@ export const MapPreview: React.FC<MapPreviewProps> = ({
         {mapBackground && isEditing && (
           <Container
             interactive
-            resizable
             onChange={updateRoomsPosition}
             backgroundImage={mapBackground}
-            otherIcons={{}}
-            // @debt It probably doesn't work as iconsMap is an array and SubVenueIconMap object is expected
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
             iconsMap={iconsMap}
-            coordinatesBoundary={{
-              width: 100,
-              height: 100,
-            }}
-            otherIconsStyle={{ opacity: 0.4 }}
+            safeZone={safeZone}
             lockAspectRatio
             isSaving={isSaving}
           />
         )}
 
-        <ButtonNG
-          className="MapPreview__save-button"
+        <Button
           disabled={isSaving}
           loading={isSaving}
           onClick={saveRoomPositions}
         >
           Save {ROOMS_TAXON.lower}
-        </ButtonNG>
+        </Button>
       </div>
     </DndProvider>
   );

@@ -1,0 +1,34 @@
+$border-radius-normal: 4px;
+
+@mixin normal {
+  border-radius: $border-radius-normal;
+}
+
+@mixin top {
+  @include normal;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+@mixin left {
+  @include normal;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+@mixin right {
+  @include normal;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+@mixin bottom {
+  @include normal;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+@mixin topleft {
+  border-radius: 0;
+  border-top-left-radius: $border-radius-normal;
+}

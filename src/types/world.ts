@@ -36,3 +36,15 @@ export interface WorldAdvancedFormInput {
   userStatuses?: UserStatus[];
   hasSocialLoginEnabled?: boolean;
 }
+
+export interface WorldScheduleFormInput {
+  startDate: string;
+  startTime: string;
+  endDate: string;
+  endTime: string;
+}
+
+export interface WorldScheduleSettings {
+  startTimeUnix?: number;
+  endTimeUnix?: number;
+}

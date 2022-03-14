@@ -1,24 +1,52 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo } from "react";
+import { useWindowSize } from "react-use";
 
-import {
-  DEFAULT_MAP_BACKGROUND,
-  MAXIMUM_PARTYMAP_COLUMNS_COUNT,
-  MINIMUM_PARTYMAP_COLUMNS_COUNT,
-} from "settings";
+import { DEFAULT_MAP_BACKGROUND } from "settings";
 
 import { RefiAuthUser } from "types/fire";
 import { Room } from "types/rooms";
+import { Dimensions, Position } from "types/utility";
 import { PartyMapVenue } from "types/venues";
+
+import { calculateImageDimensions } from "utils/mapPositioning";
 
 import { useValidImage } from "hooks/useCheckImage";
 
 import { MapRoom } from "./MapRoom";
 
-import "./Map.scss";
+import styles from "./Map.module.scss";
+interface PortalsProps {
+  portals: Room[];
+  space: PartyMapVenue;
+  selectPortal: (room: Room) => void;
+  safeZoneBounds: Dimensions & Position;
+}
 
-export const DEFAULT_COLUMNS = 40;
-export const DEFAULT_ROWS = 25;
-
+const Portals: React.FC<PortalsProps> = ({
+  space,
+  selectPortal,
+  portals,
+  safeZoneBounds,
+}) => {
+  const portalsFragment = useMemo(
+    () =>
+      portals
+        .filter((portal) => portal.isEnabled)
+        .map((portal) => (
+          <MapRoom
+            key={portal.title}
+            venue={space}
+            room={portal}
+            selectRoom={() => {
+              selectPortal(portal);
+            }}
+            safeZoneBounds={safeZoneBounds}
+          />
+        )),
+    [portals, safeZoneBounds, selectPortal, space]
+  );
+  return <div className={styles.Portals}>{portalsFragment}</div>;
+};
 interface MapProps {
   user: RefiAuthUser;
   venue: PartyMapVenue;
@@ -26,77 +54,55 @@ interface MapProps {
 }
 
 export const Map: React.FC<MapProps> = ({ user, venue, selectRoom }) => {
-  const totalColumns = Math.max(
-    MINIMUM_PARTYMAP_COLUMNS_COUNT,
-    Math.min(MAXIMUM_PARTYMAP_COLUMNS_COUNT, venue.columns ?? DEFAULT_COLUMNS)
-  );
-  const [totalRows, setTotalRows] = useState<number>(0);
-  const hasRows = totalRows > 0;
+  const [
+    mapBackground,
+    { width: imageWidth, height: imageHeight, isLoading: isImageLoading },
+  ] = useValidImage(venue?.mapBackgroundImageUrl, DEFAULT_MAP_BACKGROUND);
 
-  const [mapBackground] = useValidImage(
-    venue?.mapBackgroundImageUrl,
-    DEFAULT_MAP_BACKGROUND
-  );
+  const { width: windowWidth, height: browserHeight } = useWindowSize();
 
-  useEffect(() => {
-    //@debt the image is already loaded and checked inside useValidImage
-    const img = new Image();
-    img.src = mapBackground ?? DEFAULT_MAP_BACKGROUND;
-    img.onload = () => {
-      const imgRatio = img.width ? img.width / img.height : 1;
+  const browserWidth = useMemo(() => {
+    return document.body.clientWidth;
+    // This is intentinonally recalculated when the browser resizes
+    // This allows for optional horizontal scrollbar sizes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [windowWidth]);
 
-      const calcRows = venue.columns
-        ? Math.round(parseInt(venue.columns.toString()) / imgRatio)
-        : DEFAULT_ROWS;
-
-      setTotalRows(calcRows);
-    };
-  }, [mapBackground, venue.columns]);
-
-  const roomOverlay = useMemo(
-    () =>
-      venue?.rooms
-        ?.filter((room) => room.isEnabled)
-        .map((room) => (
-          <MapRoom
-            key={room.title}
-            venue={venue}
-            room={room}
-            selectRoom={() => {
-              selectRoom(room);
-            }}
-          />
-        )),
-    [selectRoom, venue]
-  );
-
-  const gridContainerStyles = useMemo(
-    () => ({
-      gridTemplateColumns: `repeat(${totalColumns}, calc(100% / ${totalColumns}))`,
-      gridTemplateRows: `repeat(${totalRows}, 1fr)`,
-    }),
-    [totalColumns, totalRows]
-  );
-
-  if (!user || !venue) {
+  if (!user || !venue || isImageLoading) {
     return <>Loading map...</>;
   }
 
+  if (!imageWidth || !imageHeight) {
+    console.error("Failed to get image width/height");
+    return <>Failed to get image width/height</>;
+  }
+
+  const {
+    desiredWidth,
+    desiredHeight,
+    safeZoneBounds,
+  } = calculateImageDimensions({
+    browserWidth,
+    browserHeight,
+    imageWidth,
+    imageHeight,
+    safeZone: venue.config?.safeZone,
+  });
+
+  const mapStyles = {
+    backgroundImage: `url(${mapBackground})`,
+    backgroundSize: `${desiredWidth}px ${desiredHeight}px`,
+  };
+
   return (
-    <div className="party-map-map-component">
-      <div className="party-map-map-content">
-        <img
-          width="100%"
-          className="party-map-background"
-          src={mapBackground}
-          alt=""
-        />
-        {hasRows && (
-          <div className="party-map-grid-container" style={gridContainerStyles}>
-            {roomOverlay}
-          </div>
-        )}
-      </div>
-    </div>
+    <>
+      <div className={styles.MapBackground} style={mapStyles} />
+      <Portals
+        portals={venue.rooms ?? []}
+        space={venue}
+        selectPortal={selectRoom}
+        safeZoneBounds={safeZoneBounds}
+      />
+    </>
   );
 };

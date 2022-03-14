@@ -5,18 +5,18 @@ import { doc } from "firebase/firestore";
 import { COLLECTION_USERS } from "settings";
 
 import { RefiAuthUser, RefiError, RefiStatus } from "types/fire";
-import { UserId } from "types/id";
-import { Profile, User, UserLocation, UserWithLocation } from "types/User";
+import { UserId, UserWithId } from "types/id";
+import { Profile, UserLocation, UserWithLocation } from "types/User";
 
 import { identityConverter } from "utils/converters";
-import { convertToFirestoreKey, WithId, withId } from "utils/id";
+import { convertToFirestoreKey, withId } from "utils/id";
 import { extractLocationFromUser, omitLocationFromUser } from "utils/user";
 
 export interface UseUserResult {
   user?: RefiAuthUser;
   profile?: Profile;
   userLocation?: UserLocation;
-  userWithId?: WithId<User>;
+  userWithId?: UserWithId;
   userId?: UserId;
   isTester: boolean;
   isLoading: boolean;
@@ -65,7 +65,7 @@ export const useUser = (): UseUserResult => {
     [profileDataWithLocation]
   );
 
-  const userWithId = useMemo(() => {
+  const userWithId = useMemo<UserWithId | undefined>(() => {
     if (!userId || !user || !profile) return;
 
     const profileData = {

@@ -1,0 +1,33 @@
+@use "../theme";
+
+$blur: 5px;
+
+// previously named sparkle-panel
+@mixin panel--normal {
+  color: theme.$c-default-text;
+  background: theme.$c-panel-background;
+}
+
+// previously named sparkle-panel-glass
+@mixin panel--glass {
+  color: theme.$c-default-text;
+  background: theme.$c-glass-panel-background;
+  -webkit-backdrop-filter: blur($blur);
+  backdrop-filter: blur($blur);
+}
+
+// previously named sparkle-color
+@mixin color--normal {
+  color: theme.$c-default-text;
+  -webkit-font-smoothing: antialiased;
+  background-color: rgba(theme.$sparkle--bg, 1);
+}
+
+// previously named sparkle-color-glass
+@mixin color--glass {
+  color: white;
+  -webkit-font-smoothing: antialiased;
+  background-color: theme.$c-color-glass-panel-background;
+  -webkit-backdrop-filter: blur($blur);
+  backdrop-filter: blur($blur);
+}

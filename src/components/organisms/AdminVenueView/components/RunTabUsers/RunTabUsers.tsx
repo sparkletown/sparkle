@@ -1,5 +1,4 @@
 import React from "react";
-import { useParams } from "react-router-dom";
 import { useAsync } from "react-use";
 
 import { ALWAYS_EMPTY_ARRAY, STRING_PLUS } from "settings";
@@ -10,21 +9,17 @@ import { User } from "types/User";
 
 import { withId } from "utils/id";
 
-import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
+import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useShowHide } from "hooks/useShowHide";
 
 import { VenueOwnersModal } from "pages/Admin/VenueOwnersModal";
 
 import { RunTabUserInfo } from "components/organisms/AdminVenueView/components/RunTabUserInfo";
 
-import { AdminVenueViewRouteParams } from "../../AdminVenueView";
-
 import "./RunTabUsers.scss";
 
 export const RunTabUsers: React.FC = () => {
-  const { worldSlug, spaceSlug } = useParams<AdminVenueViewRouteParams>();
-
-  const { space, world } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
+  const { space, world } = useWorldAndSpaceByParams();
   const {
     isShown: isShownInviteAdminModal,
     show: showInviteAdminModal,

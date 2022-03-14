@@ -1,0 +1,34 @@
+Both
+====
+
+Loading spinner design
+404 pages etc
+
+Admin
+=====
+
+figure out how we want to do buttons
+Abstract out the headers etc as that's going to get repetitive.
+
+Attendee
+========
+
+Fonts
+RelatedVenueProvider needs putting in AttendeeLayout somewhere
+Chat in the design assumes per-world chat. We have per-space chat.
+Remove id declarations in AttendeeLayout
+Lots of browser specific stuff in ChatContainer.module.scss that probably isn't needed
+Loading page, 404 page, etc
+Login page
+Announcements
+Figure out proper placement of portals inside the map. It has been a temporary hack.
+Figure out what information should be displayed inside the information bubble on a portal
+Figure out gradients
+Q: How does it work if you join a table and then move to another space?
+Q: What happens to reactions
+
+Bug: video not appearing when a refresh is done with two local videos (one in incognito browser, one not)
+ - Possibly related to all the twilio hooks we have
+Reinstate audio tracks
+Dialog box etc for joining a huddle
+Figure out how to remove from table when someone leaves a huddle. Some kind of callback?

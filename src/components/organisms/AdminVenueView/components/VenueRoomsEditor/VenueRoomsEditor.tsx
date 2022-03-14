@@ -1,5 +1,4 @@
 import React, {
-  CSSProperties,
   Dispatch,
   SetStateAction,
   useCallback,
@@ -16,20 +15,13 @@ import update from "immutability-helper";
 import { Room } from "types/rooms";
 import { Dimensions, Position } from "types/utility";
 
-import { CustomDragLayer } from "pages/Account/Venue/VenueMapEdition";
-import { DraggableSubvenue } from "pages/Account/Venue/VenueMapEdition/DraggableSubvenue";
-import { DragItem } from "pages/Account/Venue/VenueMapEdition/interfaces";
-import { ItemTypes } from "pages/Account/Venue/VenueMapEdition/ItemTypes";
-import { snapToGrid as doSnapToGrid } from "pages/Account/Venue/VenueMapEdition/snapToGrid";
+import { CustomDragLayer } from "pages/Account/Venue/VenueMapEditor";
+import { DraggableSubvenue } from "pages/Account/Venue/VenueMapEditor/DraggableSubvenue";
+import { DragItem } from "pages/Account/Venue/VenueMapEditor/interfaces";
+import { ItemTypes } from "pages/Account/Venue/VenueMapEditor/ItemTypes";
+import { snapToGrid as doSnapToGrid } from "pages/Account/Venue/VenueMapEditor/snapToGrid";
 
 import { MapBackgroundPlaceholder } from "components/molecules/MapBackgroundPlaceholder";
-
-import "./VenueRoomsEditor.scss";
-
-const styles: React.CSSProperties = {
-  width: "100%",
-  position: "relative",
-};
 
 export interface RoomIcon {
   title: string;
@@ -54,8 +46,6 @@ export interface VenueRoomsEditorProps {
   snapToGrid?: boolean;
   roomIcons?: RoomIcon[];
   backgroundImage?: string;
-  iconImageStyle?: CSSProperties; // This is not being used ATM
-  draggableIconImageStyle?: CSSProperties; // This is not being used ATM
   roomIconsMap?: RoomIconsMap;
   onOtherIconClick?: (key: string) => void;
   coordinatesBoundary: PortalSize;
@@ -63,10 +53,7 @@ export interface VenueRoomsEditorProps {
   resizable: boolean;
   onResize?: (size: Dimensions) => void;
   onMove?: (position: Position) => void;
-  otherIconsStyle?: CSSProperties;
-  rounded?: boolean;
   backgroundImageClassName?: string;
-  containerStyle?: CSSProperties;
   lockAspectRatio?: boolean;
   rooms: Room[];
   selectedRoom?: Room;
@@ -77,13 +64,10 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
   snapToGrid,
   roomIcons,
   backgroundImage,
-  iconImageStyle,
   coordinatesBoundary,
   interactive,
   resizable,
-  rounded,
   backgroundImageClassName,
-  containerStyle,
   lockAspectRatio,
   rooms,
   selectedRoom,
@@ -160,7 +144,7 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
   ]);
 
   const moveBox = useCallback(
-    (id: string, left: number, top: number) => {
+    (id: number, left: number, top: number) => {
       onMove?.({
         left: convertDisplayedCoordToIntrinsic(
           left,
@@ -237,7 +221,7 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
         [left, top] = doSnapToGrid(left, top);
       }
 
-      moveBox(item.id, left, top);
+      moveBox(item.itemId, left, top);
     },
   });
 
@@ -246,10 +230,7 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
       return (
         <>
           <DraggableSubvenue
-            isResizable={resizable}
-            id={index.toString()}
-            imageStyle={iconImageStyle}
-            rounded={!!rounded}
+            itemId={index}
             {...boxes[index]}
             onChangeSize={resizeBox(index.toString())}
             lockAspectRatio={lockAspectRatio}
@@ -257,24 +238,13 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
           {imageDims && interactive && (
             <CustomDragLayer
               snapToGrid={!!snapToGrid}
-              rounded={!!rounded}
               iconSize={boxes[Object.keys(boxes)[index]]}
             />
           )}
         </>
       );
     },
-    [
-      boxes,
-      iconImageStyle,
-      imageDims,
-      interactive,
-      lockAspectRatio,
-      resizable,
-      resizeBox,
-      rounded,
-      snapToGrid,
-    ]
+    [boxes, imageDims, interactive, lockAspectRatio, resizeBox, snapToGrid]
   );
 
   const renderRoomsPreview = useMemo(
@@ -305,7 +275,7 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
   );
 
   return (
-    <div ref={drop} style={{ ...styles, ...containerStyle }}>
+    <div ref={drop}>
       <div ref={ref}>
         <ReactResizeDetector handleWidth handleHeight>
           {({ targetRef }) => <span ref={targetRef} />}

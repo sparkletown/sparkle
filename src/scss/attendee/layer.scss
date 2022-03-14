@@ -1,0 +1,37 @@
+// This file is intended to give the tools for relative z-index values.
+// The baseline should be private,
+// and every other z-index should be defined in terms of the provided functions:
+// - above;
+// - below;
+// - level.
+//
+// Example:
+//
+// $z-index--header: level($z-index--baseline);
+// $z-index--chat: above($z-index--header);
+
+// NOTE: make greater steps upwards to have some slack for other elements
+@function above($z-index) {
+  @return $z-index + 100;
+}
+
+// NOTE: make lesser steps downwards to not waste the slack that can be used by other elements
+@function below($z-index) {
+  @return $z-index - 1;
+}
+
+// NOTE: makes explicit the intent of having equal level when reusing or re-aliasing the same constant
+@function level($z-index) {
+  @return $z-index;
+}
+
+// NOTE:
+// Public constants like z-index--attendee have only meaning
+// if they are used to coordinate some baseline between different components,
+// otherwise, for intra-component z-index values,
+// module private constants should do just fine.
+
+// Major application or page wide z-index values should follow here
+// Minor ones constrained to their own component can be provided in separate files
+$-z-index--baseline: 1000;
+$z-index--attendee: above($-z-index--baseline);

@@ -1,4 +1,4 @@
-import React, { useCallback, useLayoutEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useRouteMatch } from "react-router";
 import { Redirect } from "react-router-dom";
@@ -11,18 +11,14 @@ import { AuditoriumEmptyBlocksCount } from "types/auditorium";
 import { AuditoriumVenue } from "types/venues";
 
 import { chooseAuditoriumSize } from "utils/auditorium";
-import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { WithId } from "utils/id";
 
 import { useAllAuditoriumSections } from "hooks/auditorium";
-import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { Loading } from "components/molecules/Loading";
 
-import { BackButton } from "components/atoms/BackButton";
 import { ButtonOG } from "components/atoms/ButtonOG";
 import { Checkbox } from "components/atoms/Checkbox";
-import { IFrame } from "components/atoms/IFrame";
 import { VenueWithOverlay } from "components/atoms/VenueWithOverlay/VenueWithOverlay";
 
 import { SectionPreview } from "../SectionPreview";
@@ -38,10 +34,6 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
 }) => {
   const match = useRouteMatch();
 
-  const { parentVenue } = useRelatedVenues({
-    currentVenueId: venue.id,
-  });
-
   const {
     auditoriumSections,
     loadMore,
@@ -56,18 +48,6 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
   const [firstSection] = auditoriumSections;
 
   const auditoriumSize = chooseAuditoriumSize(sectionsCount);
-
-  const [iframeUrl, setIframeUrl] = useState("");
-  useLayoutEffect(() => {
-    if (!venue) return;
-
-    setIframeUrl(
-      convertToEmbeddableUrl({
-        url: venue.iframeUrl,
-        autoPlay: venue.autoPlay,
-      })
-    );
-  }, [venue]);
 
   const availableSectionIds = useMemo(
     () => availableSections.map((section) => section.id),
@@ -92,7 +72,6 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
 
   return (
     <>
-      {parentVenue && <BackButton variant="relative" space={parentVenue} />}
       <VenueWithOverlay venue={venue} containerClassNames="">
         <InfiniteScroll
           dataLength={auditoriumSections.length}
@@ -115,16 +94,11 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
             ))}
 
           <div className="AllSectionPreviews__main">
-            <IFrame
-              src={iframeUrl}
-              containerClassName="AllSectionPreviews__iframe-overlay"
-              iframeClassname="AllSectionPreviews__iframe"
-            />
             <div className="AllSectionPreviews__welcome-text">
               {venue.title}
             </div>
             <div className="AllSectionPreviews__description-text">
-              {venue.description}
+              {venue.config?.landingPageConfig?.description}
             </div>
             <div className="AllSectionPreviews__action-buttons">
               <Checkbox

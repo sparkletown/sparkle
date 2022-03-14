@@ -1,9 +1,11 @@
 import React from "react";
 import classNames from "classnames";
 
-import { ALWAYS_NOOP_FUNCTION, PortalInfoItem, ROOM_TAXON } from "settings";
+import { ALWAYS_NOOP_FUNCTION, PortalInfoItem } from "settings";
 
 import { useKeyPress } from "hooks/useKeyPress";
+
+import * as TW from "./PortalListItem.tailwind";
 
 import "./PortalListItem.scss";
 
@@ -25,9 +27,8 @@ export const PortalListItem: React.FC<PortalListItemProps> = ({
   const { text, template, icon, hidden } = item;
 
   const parentClasses = classNames({
-    [`PortalListItem PortalListItem--${template}`]: true,
-    "PortalListItem--selected": selected,
-    "mod--hidden": hidden,
+    [TW.selectedItem]: selected,
+    hidden: hidden,
   });
 
   const handleKeyPress = useKeyPress({
@@ -39,17 +40,14 @@ export const PortalListItem: React.FC<PortalListItemProps> = ({
   return (
     <div className={parentClasses}>
       <div
-        className="PortalListItem__list-item"
+        className={TW.portalItem}
+        key={template}
         onClick={onClick}
         onKeyPress={handleKeyPress}
         tabIndex={tabIndex}
       >
-        <img
-          className="PortalListItem__icon"
-          alt={`${ROOM_TAXON.lower} icon`}
-          src={icon}
-        />
-        <div className="PortalListItem__name">{text}</div>
+        <img className={TW.icon} src={icon} alt={template} />
+        <div className={TW.name}>{text}</div>
       </div>
     </div>
   );

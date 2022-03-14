@@ -1,5 +1,4 @@
 import React from "react";
-import { useCss } from "react-use";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
@@ -57,7 +56,10 @@ export const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = (
   const logoUrl = space?.host?.icon;
   const coverUrl = landingPageConfig?.coverImageUrl;
 
+  // TODO-redesign use it or delete it
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [validLogoUrl] = useValidImage(logoUrl, DEFAULT_VENUE_LOGO);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [validBannerUrl] = useValidImage(coverUrl, DEFAULT_LANDING_BANNER);
 
   const { events } = useWorldEvents({ worldId });
@@ -88,20 +90,7 @@ export const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = (
 
   const isPasswordRequired = space.access === VenueAccessMode.Password;
 
-  const containerVars = useCss({
-    background: `linear-gradient(
-            0deg,
-            rgba(0, 0, 0, 0.8) 2%,
-            rgba(0, 0, 0, 0) 98%
-          ), url("${validBannerUrl}")`,
-    backgroundSize: "cover",
-  });
-
-  const containerClasses = classNames(
-    "VenueLandingPageContent__header",
-    "header",
-    containerVars
-  );
+  const containerClasses = classNames("header");
 
   return (
     <div className="VenueLandingPageContent container venue-entrance-experience-container">
@@ -145,9 +134,7 @@ export const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = (
       <div className="row">
         <div className="col-lg-6 col-12 venue-presentation">
           <div>
-            <div style={{ whiteSpace: "pre-wrap", overflowWrap: "break-word" }}>
-              {landingPageConfig?.description}
-            </div>
+            <div>{space.config?.landingPageConfig.description}</div>
 
             <div>
               {landingPageConfig?.checkList?.map(

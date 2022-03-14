@@ -1,4 +1,6 @@
 import React, { useMemo } from "react";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { GridPosition } from "types/grid";
 
@@ -6,27 +8,25 @@ import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
 import { GetUserByPosition } from "../useGetUserByPosition";
 
+import styles from "./seats.module.scss";
+
 export interface UseAuditoriumGridProps {
   isUserAudioMuted: boolean;
-  rows: number;
-  columns: number;
   getUserBySeat: GetUserByPosition;
-  checkIfSeat: (gridData: GridPosition) => boolean;
   takeSeat: (gridData: GridPosition) => Promise<void> | undefined;
 }
 
 export const useAuditoriumGrid = ({
   isUserAudioMuted,
-  rows,
-  columns,
-  checkIfSeat,
   getUserBySeat,
   takeSeat,
-}: UseAuditoriumGridProps) =>
-  useMemo(
+}: UseAuditoriumGridProps) => {
+  const rows = 9;
+  const columns = 24;
+  return useMemo(
     () =>
       Array.from(Array(rows)).map((_, rowIndex) => (
-        <div key={rowIndex} className="Section__seats-row">
+        <div key={rowIndex} className={styles.seatsRow}>
           {Array.from(Array(columns)).map((_, columnIndex) => {
             const user = getUserBySeat({
               row: rowIndex,
@@ -40,29 +40,23 @@ export const useAuditoriumGrid = ({
                   user={user}
                   containerClassName="Section__user-avatar"
                   isAudioEffectDisabled={isUserAudioMuted}
+                  size="medium"
                 />
               );
             }
 
-            const isSeat = checkIfSeat({ row: rowIndex, column: columnIndex });
-
-            if (isSeat) {
-              return (
-                <div
-                  key={columnIndex}
-                  className="Section__seat"
-                  onClick={() =>
-                    takeSeat({ row: rowIndex, column: columnIndex })
-                  }
-                >
-                  +
-                </div>
-              );
-            }
-
-            return <div key={columnIndex} className="Section__empty-circle" />;
+            return (
+              <div
+                key={columnIndex}
+                className={styles.seat}
+                onClick={() => takeSeat({ row: rowIndex, column: columnIndex })}
+              >
+                <FontAwesomeIcon icon={faPlus} />
+              </div>
+            );
           })}
         </div>
       )),
-    [rows, columns, checkIfSeat, takeSeat, getUserBySeat, isUserAudioMuted]
+    [rows, columns, takeSeat, getUserBySeat, isUserAudioMuted]
   );
+};
