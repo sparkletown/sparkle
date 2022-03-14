@@ -177,6 +177,8 @@ export const setSeat = async <T>({
 }: setSeatOptions<T>) => {
   const data: SeatedUser<T> = {
     ...pickDisplayUserFromUser(user),
+    spaceId,
+    sectionId,
     seatData,
   };
   return getUserInSectionRef(user.id, spaceId, sectionId).set(data);
