@@ -15,6 +15,7 @@ import {
   INVALID_SLUG_CHARS_REGEX,
 } from "settings";
 
+import { getUserRef } from "api/profile";
 import { findSpaceBySlug } from "api/space";
 
 import { SpaceSlug } from "types/id";
@@ -22,10 +23,11 @@ import { PortalInput, Room, RoomInput } from "types/rooms";
 import { ScreeningRoomVideo } from "types/screeningRoom";
 import { SpaceType } from "types/spaces";
 import { Table } from "types/Table";
+import { User } from "types/User";
 import { VenueAdvancedConfig, VenuePlacement, WorldEvent } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
 
-import { WithId, WithoutId, WithWorldId } from "utils/id";
+import { WithId, withId, WithoutId, WithWorldId } from "utils/id";
 import { generateAttendeeInsideUrl } from "utils/url";
 
 import { fetchVenue } from "./venue";
@@ -560,3 +562,13 @@ export const deleteScreeningRoomVideo = async (
     throw e;
   });
 };
+
+export const getSpaceOwners = async (spaceOwners: string[]) =>
+  Promise.all(
+    spaceOwners.map((admin) => getUserRef(admin).get())
+  ).then((docs) => docs.map((doc) => withId(doc.data() as User, doc.id)));
+
+export const getSpaceEditors = async (spaceEditors: string[]) =>
+  Promise.all(
+    spaceEditors.map((admin) => getUserRef(admin).get())
+  ).then((docs) => docs.map((doc) => withId(doc.data() as User, doc.id)));

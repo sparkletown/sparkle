@@ -3,11 +3,7 @@ import { useAsync } from "react-use";
 
 import { ALWAYS_EMPTY_ARRAY, STRING_PLUS } from "settings";
 
-import { getUserRef } from "api/profile";
-
-import { User } from "types/User";
-
-import { withId } from "utils/id";
+import { getSpaceEditors, getSpaceOwners } from "api/admin";
 
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useShowHide } from "hooks/useShowHide";
@@ -29,18 +25,15 @@ export const RunTabUsers: React.FC = () => {
   const spaceEditors = space?.owners ?? ALWAYS_EMPTY_ARRAY;
   const worldOwners = world?.owners ?? ALWAYS_EMPTY_ARRAY;
 
-  const { value: editors = ALWAYS_EMPTY_ARRAY } = useAsync(
-    async () =>
-      Promise.all(
-        [...worldOwners, ...spaceEditors].map((admin) =>
-          getUserRef(admin).get()
-        )
-      ).then((docs) => docs.map((doc) => withId(doc.data() as User, doc.id))),
-    [spaceEditors, worldOwners]
+  const { value: editorArray = ALWAYS_EMPTY_ARRAY } = useAsync(
+    () => getSpaceEditors(spaceEditors),
+    [spaceEditors]
   );
 
-  const editorArray = editors.slice(worldOwners.length);
-  const ownerArray = editors.slice(0, worldOwners.length);
+  const { value: ownerArray = ALWAYS_EMPTY_ARRAY } = useAsync(
+    () => getSpaceOwners(worldOwners),
+    [worldOwners]
+  );
 
   if (!space) {
     return null;
