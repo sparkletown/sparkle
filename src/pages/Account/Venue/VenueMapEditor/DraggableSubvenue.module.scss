@@ -1,0 +1,21 @@
+.resizeableImageContainer {
+  overflow: hidden;
+  width: 100%;
+  flex: 1;
+  background-position: center;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+
+.resizeTab {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: white;
+}
+
+.dragContainer {
+  height: 100%;
+  display: flex;
+  position: relative;
+}

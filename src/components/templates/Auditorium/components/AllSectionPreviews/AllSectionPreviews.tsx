@@ -98,7 +98,7 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
               {venue.title}
             </div>
             <div className="AllSectionPreviews__description-text">
-              {venue.description}
+              {venue.config?.landingPageConfig?.description}
             </div>
             <div className="AllSectionPreviews__action-buttons">
               <Checkbox

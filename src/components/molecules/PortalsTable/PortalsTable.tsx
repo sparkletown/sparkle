@@ -1,5 +1,10 @@
 import React from "react";
+import { HeaderButton } from "components/admin/HeaderButton";
 import { PortalStripForm } from "components/admin/PortalStripForm";
+import { Section } from "components/admin/Section";
+import { SectionHeading } from "components/admin/SectionHeading";
+import { SectionTitle } from "components/admin/SectionTitle";
+import { TablePanel } from "components/admin/TablePanel";
 
 import { ALWAYS_EMPTY_ARRAY } from "settings";
 
@@ -9,11 +14,7 @@ import { WithId } from "utils/id";
 
 import { useShowHide } from "hooks/useShowHide";
 
-import { ButtonNG } from "components/atoms/ButtonNG";
-
 import { PortalAddEditModal } from "../PortalAddEditModal";
-
-import "./PortalsTable.scss";
 
 interface PortalsTableProps {
   space: WithId<AnyVenue>;
@@ -30,21 +31,26 @@ export const PortalsTable: React.FC<PortalsTableProps> = ({ space }) => {
   } = useShowHide(false);
 
   return (
-    <>
-      <ButtonNG onClick={showCreateModal}>Create portal</ButtonNG>
-      <div className="PortalsTable">
-        {portals?.map((portal, index) => (
-          <PortalStripForm
-            key={index}
-            portal={portal}
-            index={index}
-            spaceId={space?.id}
-          />
-        ))}
-        {isShownCreateModal && (
-          <PortalAddEditModal show={true} onHide={hideCreateModal} />
-        )}
-      </div>
-    </>
+    <Section>
+      <SectionHeading>
+        <SectionTitle>Portals</SectionTitle>
+        <HeaderButton onClick={showCreateModal} name="Create portal" />
+      </SectionHeading>
+      <TablePanel.Panel>
+        <TablePanel.Body>
+          {portals?.map((portal, index) => (
+            <PortalStripForm
+              key={index}
+              portal={portal}
+              index={index}
+              spaceId={space?.id}
+            />
+          ))}
+          {isShownCreateModal && (
+            <PortalAddEditModal show={true} onHide={hideCreateModal} />
+          )}
+        </TablePanel.Body>
+      </TablePanel.Panel>
+    </Section>
   );
 };

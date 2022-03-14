@@ -7,8 +7,8 @@ import { ImageInput } from "components/admin/ImageInput";
 
 import {
   ADMIN_IA_SPACE_BASE_PARAM_URL,
-  ALWAYS_NOOP_FUNCTION,
   BACKGROUND_IMG_TEMPLATES,
+  COMMON_NAME_MAX_CHAR_COUNT,
   DEFAULT_EMBED_URL,
   DEFAULT_REACTIONS_MUTED,
   DEFAULT_SECTIONS_AMOUNT,
@@ -25,16 +25,14 @@ import {
   PORTAL_INFO_ICON_MAPPING,
   SECTION_DEFAULT_COLUMNS_COUNT,
   SECTION_DEFAULT_ROWS_COUNT,
-  SPACE_INFO_MAP,
-  STRING_EMPTY,
   SUBVENUE_TEMPLATES,
   ZOOM_URL_TEMPLATES,
 } from "settings";
 
 import { createSlug } from "api/admin";
 import { updateVenueNG } from "api/venue";
+import { World } from "api/world";
 
-import { UserId, WorldSlug } from "types/id";
 import { AnyVenue } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
 
@@ -45,17 +43,14 @@ import { generateUrl } from "utils/url";
 import { spaceEditSchema } from "forms/spaceEditSchema";
 
 import { useFetchAssets } from "hooks/useFetchAssets";
+import { useUserId } from "hooks/user/useUserId";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { BackgroundSelect } from "pages/Admin/BackgroundSelect";
 
 import { AdminSidebarButtons } from "components/organisms/AdminVenueView/components/AdminSidebarButtons";
-import { AdminSidebarSectionTitle } from "components/organisms/AdminVenueView/components/AdminSidebarSectionTitle";
 
 import { AdminInput } from "components/molecules/AdminInput";
-import { AdminSection } from "components/molecules/AdminSection";
-import { AdminSidebarAccordion } from "components/molecules/AdminSectionAccordion";
-import { AdminTextarea } from "components/molecules/AdminTextarea";
 import { FormErrors } from "components/molecules/FormErrors";
 import { SubmitError } from "components/molecules/SubmitError";
 import { YourUrlDisplay } from "components/molecules/YourUrlDisplay";
@@ -64,6 +59,11 @@ import { ButtonNG } from "components/atoms/ButtonNG";
 import { InputField } from "components/atoms/InputField";
 import { PortalVisibility } from "components/atoms/PortalVisibility";
 import { SpacesDropdown } from "components/atoms/SpacesDropdown";
+
+import { Input } from "./Input";
+import { InputGroup } from "./InputGroup";
+import { SidebarHeader } from "./SidebarHeader";
+import { Textarea } from "./Textarea";
 
 const HANDLED_ERRORS = [
   "name",
@@ -78,17 +78,17 @@ const HANDLED_ERRORS = [
 
 export interface SpaceEditFormProps {
   space: WithId<AnyVenue>;
-  userId: UserId;
-  worldSlug: WorldSlug;
+  world: World;
 }
 
 export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
   space,
-  userId,
-  worldSlug,
+  world,
 }) => {
   const spaceLogoImage =
     PORTAL_INFO_ICON_MAPPING[space.template] ?? DEFAULT_VENUE_LOGO;
+
+  const { userId } = useUserId();
 
   const defaultValues = useMemo(
     () => ({
@@ -239,117 +239,105 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
     <div className="SpaceEditForm">
       <form onSubmit={handleSubmit(updateVenue)}>
         <div className="SpaceEditForm__portal">
-          <AdminSidebarSectionTitle>
-            Edit general settings
-          </AdminSidebarSectionTitle>
-          <AdminSidebarAccordion title="The basics" open>
-            <AdminSection title="Space template" withLabel>
-              <div className="SpaceEditForm__template">
-                <div />
-                <AdminInput
-                  value={SPACE_INFO_MAP[space.template].text}
-                  disabled
-                  name={STRING_EMPTY}
-                  register={ALWAYS_NOOP_FUNCTION}
-                />
-              </div>
-            </AdminSection>
-            <AdminSection title="Rename your space" withLabel>
-              <AdminInput
-                placeholder="Space Name"
+          <SidebarHeader>The basics</SidebarHeader>
+          <InputGroup
+            title="Space name"
+            subtitle="max 50 characters"
+            isRequired
+            withLabel
+          >
+            <Input
+              placeholder="Space Name"
+              register={register}
+              name="name"
+              errors={errors}
+              max={COMMON_NAME_MAX_CHAR_COUNT}
+              required
+            />
+          </InputGroup>
+          <InputGroup title="Your URL will be">
+            <YourUrlDisplay
+              path={generateUrl({
+                route: ADMIN_IA_SPACE_BASE_PARAM_URL,
+                required: ["worldSlug"],
+                params: { worldSlug: world.slug },
+              })}
+              slug={slug}
+            />
+          </InputGroup>
+          <InputGroup title="Subtitle">
+            <Input
+              placeholder="Subtitle for your space"
+              register={register}
+              name="subtitle"
+              errors={errors}
+            />
+          </InputGroup>
+          <InputGroup title="Description">
+            <Textarea
+              placeholder={`Let your guests know what they’ll find when they join your space. Keep it short & sweet, around 2-3 sentences maximum. Be sure to indicate any expectations for their participation.`}
+              register={register}
+              name="description"
+              errors={errors}
+            />
+          </InputGroup>
+          <InputGroup title="Select the space for the “back” button">
+            <SpacesDropdown
+              spaces={backButtonOptionList}
+              setValue={setValue}
+              register={register}
+              fieldName="parentId"
+              parentSpace={parentSpace}
+              error={errors?.parentId}
+            />
+          </InputGroup>
+          {SUBVENUE_TEMPLATES.includes(space.template as VenueTemplate) && (
+            <InputGroup title="Default portal appearance">
+              <PortalVisibility
+                getValues={getValues}
+                name="roomVisibility"
                 register={register}
-                name="name"
-                errors={errors}
-                required
-              />
-            </AdminSection>
-            <AdminSection title="Your URL will be">
-              <YourUrlDisplay
-                path={generateUrl({
-                  route: ADMIN_IA_SPACE_BASE_PARAM_URL,
-                  required: ["worldSlug"],
-                  params: { worldSlug },
-                })}
-                slug={slug}
-              />
-            </AdminSection>
-            <AdminSection title="Subtitle" withLabel>
-              <AdminInput
-                placeholder="Subtitle for your space"
-                register={register}
-                name="subtitle"
-                errors={errors}
-              />
-            </AdminSection>
-            <AdminSection title="Description" withLabel>
-              <AdminTextarea
-                placeholder={`Let your guests know what they’ll find when they join your space. Keep it short & sweet, around 2-3 sentences maximum. Be sure to indicate any expectations for their participation.`}
-                register={register}
-                name="description"
-                errors={errors}
-              />
-            </AdminSection>
-            <AdminSection
-              title="Select the space for the “back” button"
-              withLabel
-            >
-              <SpacesDropdown
-                spaces={backButtonOptionList}
                 setValue={setValue}
-                register={register}
-                fieldName="parentId"
-                parentSpace={parentSpace}
-                error={errors?.parentId}
               />
-            </AdminSection>
-            {SUBVENUE_TEMPLATES.includes(space.template as VenueTemplate) && (
-              <AdminSection title="Default portal appearance">
-                <PortalVisibility
-                  getValues={getValues}
-                  name="roomVisibility"
-                  register={register}
-                  setValue={setValue}
-                />
-              </AdminSection>
-            )}
-          </AdminSidebarAccordion>
+            </InputGroup>
+          )}
 
-          <AdminSidebarAccordion title="Appearance" open>
-            <AdminSection
-              title="Upload a highlight image"
-              subtitle="A plain 1920 x 1080px image works best."
-              withLabel
-            >
-              <ImageInput
-                onChange={changeBackgroundImageUrl}
-                name="bannerImage"
-                imgUrl={values.bannerImageUrl}
-                error={errors.bannerImageUrl}
-                // isInputHidden={!values.bannerImageUrl}
-                register={register}
-                setValue={setValue}
-              />
-            </AdminSection>
-            <AdminSection
-              title="Upload a logo"
-              withLabel
-              subtitle="(A transparent 300 px square image works best)"
-            >
-              <ImageInput
-                onChange={changePortalImageUrl}
-                name="logoImage"
-                imgUrl={values.logoImageUrl}
-                error={errors.logoImageUrl}
-                setValue={setValue}
-                register={register}
-              />
-            </AdminSection>
-          </AdminSidebarAccordion>
+          <SidebarHeader>Appearance</SidebarHeader>
+          <InputGroup
+            title="Upload a highlight image"
+            subtitle="A plain 1920 x 1080px image works best."
+            withLabel
+          >
+            <ImageInput
+              onChange={changeBackgroundImageUrl}
+              name="bannerImage"
+              imgUrl={values.bannerImageUrl}
+              error={errors.bannerImageUrl}
+              // isInputHidden={!values.bannerImageUrl}
+              register={register}
+              setValue={setValue}
+            />
+          </InputGroup>
+          <InputGroup
+            title="Upload a logo"
+            withLabel
+            subtitle="(A transparent 300 px square image works best)"
+          >
+            <ImageInput
+              onChange={changePortalImageUrl}
+              name="logoImage"
+              imgUrl={values.logoImageUrl}
+              error={errors.logoImageUrl}
+              setValue={setValue}
+              register={register}
+            />
+          </InputGroup>
 
           {BACKGROUND_IMG_TEMPLATES.includes(
             space.template as VenueTemplate
           ) && (
-            <AdminSidebarAccordion title="Map background">
+            <>
+              <SidebarHeader>Map background</SidebarHeader>
               <BackgroundSelect
                 isLoadingBackgrounds={isLoadingBackgrounds}
                 mapBackgrounds={mapBackgrounds}
@@ -367,119 +355,119 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                   <div>Error: {errorFetchBackgrounds.message}</div>
                 </>
               )}
-            </AdminSidebarAccordion>
+            </>
           )}
 
-          <AdminSidebarAccordion title="Embedable content" open>
-            {space.template &&
-              // @debt use a single structure of type Record<VenueTemplate,TemplateInfo> to compile all these .includes() arrays' flags
-              IFRAME_TEMPLATES.includes(space.template as VenueTemplate) && (
-                <AdminSection title="Livestream URL" withLabel>
-                  <AdminInput
-                    placeholder="Livestream URL"
-                    register={register}
-                    name="iframeUrl"
-                    errors={errors}
-                  />
-                  <Checkbox
-                    label="Autoplay"
-                    variant="toggler"
-                    register={register}
-                    name="autoPlay"
-                  />
-                </AdminSection>
-              )}
-
-            {space.template &&
-              // @debt use a single structure of type Record<VenueTemplate,TemplateInfo> to compile all these .includes() arrays' flags
-              ZOOM_URL_TEMPLATES.includes(space.template as VenueTemplate) && (
-                <AdminSection title="URL" withLabel>
-                  <AdminInput
-                    type="text"
-                    placeholder="URL"
-                    register={register}
-                    name="zoomUrl"
-                    errors={errors}
-                    autoComplete="off"
-                  />
-                </AdminSection>
-              )}
-
-            {!DISABLED_DUE_TO_1253 &&
-              // @debt use a single structure of type Record<VenueTemplate,TemplateInfo> to compile all these .includes() arrays' flags
-              HAS_GRID_TEMPLATES.includes(space.template as VenueTemplate) && (
+          <SidebarHeader>Embedable content</SidebarHeader>
+          {space.template &&
+            // @debt use a single structure of type Record<VenueTemplate,TemplateInfo> to compile all these .includes() arrays' flags
+            IFRAME_TEMPLATES.includes(space.template as VenueTemplate) && (
+              <InputGroup title="Livestream URL">
+                <AdminInput
+                  placeholder="Livestream URL"
+                  register={register}
+                  name="iframeUrl"
+                  errors={errors}
+                />
                 <Checkbox
-                  label="Show grid layout"
+                  label="Autoplay"
                   variant="toggler"
                   register={register}
-                  name="showGrid"
+                  name="autoPlay"
                 />
-              )}
+              </InputGroup>
+            )}
 
-            {
-              // @debt use a single structure of type Record<VenueTemplate,TemplateInfo> to compile all these .includes() arrays' flags
-              HAS_REACTIONS_TEMPLATES.includes(
-                space.template as VenueTemplate
-              ) && (
-                <AdminSection>
-                  <Checkbox
-                    label="Show shoutouts"
-                    variant="toggler"
-                    register={register}
-                    name="showShoutouts"
-                  />
-                  <Checkbox
-                    label="Show reactions"
-                    variant="toggler"
-                    register={register}
-                    name="showReactions"
-                  />
-                  <Checkbox
-                    variant="flip-switch"
-                    register={register}
-                    name="isReactionsMuted"
-                    disabled={isReactionsMutedDisabled}
-                    displayOn="Muted"
-                    displayOff="Audible"
-                  />
-                </AdminSection>
-              )
-            }
+          {space.template &&
+            // @debt use a single structure of type Record<VenueTemplate,TemplateInfo> to compile all these .includes() arrays' flags
+            ZOOM_URL_TEMPLATES.includes(space.template as VenueTemplate) && (
+              <InputGroup title="URL" withLabel>
+                <AdminInput
+                  type="text"
+                  placeholder="URL"
+                  register={register}
+                  name="zoomUrl"
+                  errors={errors}
+                  autoComplete="off"
+                />
+              </InputGroup>
+            )}
 
-            {!DISABLED_DUE_TO_1253 &&
-              HAS_GRID_TEMPLATES.includes(space.template as VenueTemplate) &&
-              values.showGrid && (
-                <>
-                  <div className="input-container">
-                    <h4 className="italic input-header">Number of columns</h4>
-                    <input
-                      defaultValue={1}
-                      type="number"
-                      {...register("columns")}
-                      className="align-left"
-                      placeholder={`Number of grid columns`}
-                    />
-                    {errors?.columns ? (
-                      <span className="input-error">
-                        {errors?.columns.message}
-                      </span>
-                    ) : null}
+          {!DISABLED_DUE_TO_1253 &&
+            // @debt use a single structure of type Record<VenueTemplate,TemplateInfo> to compile all these .includes() arrays' flags
+            HAS_GRID_TEMPLATES.includes(space.template as VenueTemplate) && (
+              <Checkbox
+                label="Show grid layout"
+                variant="toggler"
+                register={register}
+                name="showGrid"
+              />
+            )}
+
+          {
+            // @debt use a single structure of type Record<VenueTemplate,TemplateInfo> to compile all these .includes() arrays' flags
+            HAS_REACTIONS_TEMPLATES.includes(
+              space.template as VenueTemplate
+            ) && (
+              <>
+                <Checkbox
+                  label="Show shoutouts"
+                  variant="toggler"
+                  register={register}
+                  name="showShoutouts"
+                />
+                <Checkbox
+                  label="Show reactions"
+                  variant="toggler"
+                  register={register}
+                  name="showReactions"
+                />
+                <Checkbox
+                  variant="flip-switch"
+                  register={register}
+                  name="isReactionsMuted"
+                  disabled={isReactionsMutedDisabled}
+                  displayOn="Muted"
+                  displayOff="Audible"
+                />
+              </>
+            )
+          }
+
+          {!DISABLED_DUE_TO_1253 &&
+            HAS_GRID_TEMPLATES.includes(space.template as VenueTemplate) &&
+            values.showGrid && (
+              <>
+                <div className="input-container">
+                  <h4 className="italic input-header">Number of columns</h4>
+                  <input
+                    defaultValue={1}
+                    type="number"
+                    {...register("columns")}
+                    className="align-left"
+                    placeholder={`Number of grid columns`}
+                  />
+                  {errors?.columns ? (
+                    <span className="input-error">
+                      {errors?.columns.message}
+                    </span>
+                  ) : null}
+                </div>
+                <div className="input-container">
+                  <h4 className="italic input-header">Number of rows</h4>
+                  <div>
+                    Not editable. The number of rows is derived from the number
+                    of specified columns and the width:height ratio of the party
+                    map, to keep the two aligned.
                   </div>
-                  <div className="input-container">
-                    <h4 className="italic input-header">Number of rows</h4>
-                    <div>
-                      Not editable. The number of rows is derived from the
-                      number of specified columns and the width:height ratio of
-                      the party map, to keep the two aligned.
-                    </div>
-                  </div>
-                </>
-              )}
-          </AdminSidebarAccordion>
+                </div>
+              </>
+            )}
 
           {space.template === VenueTemplate.auditorium && (
-            <AdminSidebarAccordion title="Extras" open>
-              <AdminSection>
+            <>
+              <SidebarHeader>Extras</SidebarHeader>
+              <InputGroup>
                 <div className="input-container">
                   <h4 className="italic input-header">
                     Number of seats columns
@@ -514,9 +502,9 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                     </span>
                   ) : null}
                 </div>
-              </AdminSection>
+              </InputGroup>
 
-              <AdminSection title="Capacity (optional)">
+              <InputGroup title="Capacity (optional)">
                 <div className="SpaceEditForm__capacity">
                   <div># Sections</div>
                   <div># Seats</div>
@@ -534,8 +522,8 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                   <div>x 200</div>
                   <div>= {200 * values.numberOfSections}</div>
                 </div>
-              </AdminSection>
-            </AdminSidebarAccordion>
+              </InputGroup>
+            </>
           )}
           <FormErrors errors={errors} omitted={HANDLED_ERRORS} />
           <SubmitError error={updateError} />

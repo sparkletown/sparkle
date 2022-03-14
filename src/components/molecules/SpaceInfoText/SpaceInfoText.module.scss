@@ -2,7 +2,7 @@
 @use "scss/attendee/layout";
 @use "scss/attendee/space";
 
-.componentSpaceInfo {
+.spaceInfo {
   text-align: center;
   padding: 0 space.empty(1);
   margin: 0 auto;
@@ -12,4 +12,12 @@
     font-size: font.$size--xl;
     font-weight: font.$weight--md;
   }
+}
+
+.moreLessSpan {
+  color: #707070;
+}
+
+.showMoreLessAnchor {
+  text-decoration: none;
 }

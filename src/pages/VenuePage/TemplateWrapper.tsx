@@ -48,7 +48,7 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   let template;
   switch (venue.template) {
     case VenueTemplate.jazzbar:
-      template = <JazzBar venue={venue} />;
+      template = <JazzBar space={venue} />;
       break;
 
     case VenueTemplate.partymap:
@@ -82,7 +82,7 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       break;
 
     case VenueTemplate.conversationspace:
-      template = <ConversationSpace venue={venue} />;
+      template = <ConversationSpace space={venue} />;
       break;
 
     case VenueTemplate.embeddable:

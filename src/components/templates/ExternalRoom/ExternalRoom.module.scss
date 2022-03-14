@@ -1,0 +1,78 @@
+@use "scss/attendee/breakpoint";
+@use "scss/attendee/space";
+@use "scss/attendee/font";
+
+.externalRoom {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.infoContainer {
+  text-align: center;
+  display: flex;
+  background: rgba(255, 255, 255, 0.3);
+  border: thin solid #8282824d;
+  padding: space.$lg;
+
+  @media (max-width: breakpoint.$md) {
+    flex-direction: column;
+    margin: space.$l3;
+  }
+}
+
+.mainInfo {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  padding: space.$xl;
+  border-right: thin solid #8282824d;
+  max-width: 300px;
+
+  @media (max-width: breakpoint.$md) {
+    border-right: none;
+    border-bottom: thin solid #8282824d;
+    text-align: left;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 0;
+    max-width: none;
+  }
+}
+
+.venueName {
+  font-size: font.$size--xl;
+
+  @media (max-width: breakpoint.$md) {
+    border-bottom: thin solid #8282824d;
+    width: 100%;
+    padding-bottom: space.$xl;
+  }
+}
+
+.venueDescription {
+  font-size: font.$size--md;
+
+  @media (max-width: breakpoint.$md) {
+    padding-bottom: space.$xl;
+  }
+}
+
+.venueIcon {
+  margin-bottom: space.$md;
+}
+
+.secondaryInfo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: space.$l3;
+}
+
+.redirectText {
+  text-align: center;
+  justify-self: flex-end;
+}

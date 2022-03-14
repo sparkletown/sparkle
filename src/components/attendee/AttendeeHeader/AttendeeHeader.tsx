@@ -7,16 +7,18 @@ import { Attendance } from "components/attendee/Attendance";
 import { Button } from "components/attendee/Button";
 import { NavOverlay } from "components/attendee/NavOverlay";
 
-import { ATTENDEE_INSIDE_URL, SPACE_TAXON } from "settings";
+import { ATTENDEE_INSIDE_URL, SPACE_TAXON, STRING_SPACE } from "settings";
 
 import { BaseVenue } from "types/venues";
 
+import { currentMilliseconds, getDateHoursAndMinutes } from "utils/time";
 import { generateUrl } from "utils/url";
 
 import { useChatSidebarControls } from "hooks/chats/util/useChatSidebarControls";
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
+import { useMediaQuery } from "hooks/viewport/useMediaQuery";
 
 import CN from "./AttendeeHeader.module.scss";
 
@@ -37,6 +39,7 @@ export const AttendeeHeader: React.FC<AttendeeHeaderProps> = ({
 }) => {
   const { isShown, hide, show } = useShowHide(false);
   const [overlayLabel, setOverlayLabel] = useState("");
+  const { isTablet, isMobile } = useMediaQuery();
   const { space, worldSlug } = useWorldAndSpaceByParams();
   const history = useHistory();
 
@@ -70,34 +73,55 @@ export const AttendeeHeader: React.FC<AttendeeHeaderProps> = ({
 
   const { userWithId } = useUser();
 
+  const isNarrow = isTablet || isMobile;
+
   const renderedCaptions = useMemo(
     () =>
-      Object.entries(tabCaptions).map(([key, label]) => (
-        <Button onClick={() => handleOverlayOpen(key)} key={key}>
-          {label}
+      !isNarrow ? (
+        Object.entries(tabCaptions).map(([key, label]) => (
+          <Button onClick={() => handleOverlayOpen(key)} key={key}>
+            {label}
+          </Button>
+        ))
+      ) : (
+        <Button variant="primary" transparent onClick={show}>
+          Menu
         </Button>
-      )),
-    [handleOverlayOpen]
+      ),
+    [handleOverlayOpen, show, isNarrow]
   );
 
   if (!userWithId) return null;
 
+  const containerClasses = classNames(CN.container, {
+    [CN.narrow]: isNarrow,
+  });
+
   return (
     <header className={headerClassnames}>
-      <div className={CN.container}>
-        <div>
-          {backButtonSpace ? (
-            <Button onClick={goBack}>
-              <FontAwesomeIcon icon={faArrowLeft} /> Leave
-            </Button>
-          ) : (
-            <Button>{space?.name ?? `This ${SPACE_TAXON.title}`}</Button>
-          )}
-        </div>
-        <Attendance
-          totalUsersCount={space?.recentUserCount}
-          usersSample={space?.recentUsersSample}
-        />
+      <div className={containerClasses}>
+        {backButtonSpace ? (
+          <Button onClick={goBack} variant="primary" transparent={isNarrow}>
+            <FontAwesomeIcon icon={faArrowLeft} /> Leave{STRING_SPACE}
+            {getDateHoursAndMinutes(currentMilliseconds())}
+          </Button>
+        ) : (
+          <Button
+            variant="primary"
+            transparent={isNarrow}
+            onClick={() => handleOverlayOpen(space?.name || "")}
+          >
+            {space?.name ?? `This ${SPACE_TAXON.title}`}
+            {STRING_SPACE}
+            {getDateHoursAndMinutes(currentMilliseconds())}
+          </Button>
+        )}
+        {!isNarrow && (
+          <Attendance
+            totalUsersCount={space?.recentUserCount}
+            usersSample={space?.recentUsersSample}
+          />
+        )}
         <div>{renderedCaptions}</div>
       </div>
       {isShown && <NavOverlay onClose={hide} type={overlayLabel} />}
