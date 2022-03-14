@@ -2,7 +2,7 @@
 @use "scss/attendee/space";
 @use "scss/attendee/font";
 
-.ExternalRoom {
+.externalRoom {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -10,7 +10,7 @@
   height: 100vh;
 }
 
-.InfoContainer {
+.infoContainer {
   text-align: center;
   display: flex;
   background: rgba(255, 255, 255, 0.3);
@@ -23,7 +23,7 @@
   }
 }
 
-.MainInfo {
+.mainInfo {
   display: flex;
   justify-content: center;
   flex-direction: column;
@@ -43,7 +43,7 @@
   }
 }
 
-.VenueName {
+.venueName {
   font-size: font.$size--xl;
 
   @media (max-width: breakpoint.$md) {
@@ -53,7 +53,7 @@
   }
 }
 
-.VenueDescription {
+.venueDescription {
   font-size: font.$size--md;
 
   @media (max-width: breakpoint.$md) {
@@ -61,18 +61,18 @@
   }
 }
 
-.VenueIcon {
+.venueIcon {
   margin-bottom: space.$md;
 }
 
-.SecondaryInfo {
+.secondaryInfo {
   display: flex;
   justify-content: center;
   align-items: center;
   padding: space.$l3;
 }
 
-.RedirectText {
+.redirectText {
   text-align: center;
   justify-self: flex-end;
 }

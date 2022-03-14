@@ -5,7 +5,7 @@ import { AnyVenue } from "types/venues";
 import { WithId } from "utils/id";
 import { openUrl } from "utils/url";
 
-import styles from "./ExternalRoom.module.scss";
+import CN from "./ExternalRoom.module.scss";
 
 export interface ExternalRoomProps {
   venue: WithId<AnyVenue>;
@@ -22,25 +22,21 @@ export const ExternalRoom: React.FC<ExternalRoomProps> = ({ venue }) => {
 
   return (
     <div
-      className={styles.ExternalRoom}
+      className={CN.externalRoom}
       style={{
         background: `url(${venue.config?.landingPageConfig.coverImageUrl}) center center`,
       }}
     >
-      <img
-        src={venue.host?.icon}
-        alt="Venue icon"
-        className={styles.VenueIcon}
-      />
-      <div className={styles.InfoContainer}>
-        <div className={styles.MainInfo}>
-          <h1 className={styles.VenueName}>{venue.name}</h1>
-          <h2 className={styles.VenueDescription}>
+      <img src={venue.host?.icon} alt="Venue icon" className={CN.venueIcon} />
+      <div className={CN.infoContainer}>
+        <div className={CN.mainInfo}>
+          <h1 className={CN.venueName}>{venue.name}</h1>
+          <h2 className={CN.venueDescription}>
             {venue.config?.landingPageConfig.description}
           </h2>
         </div>
-        <div className={styles.SecondaryInfo}>
-          <p className={styles.RedirectText}>
+        <div className={CN.secondaryInfo}>
+          <p className={CN.redirectText}>
             Opened {venue.name} in a new tab <br />
             <a href={redirectUrl} target="_blank" rel="noreferrer">
               {redirectUrl}
