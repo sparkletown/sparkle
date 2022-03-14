@@ -29,6 +29,10 @@ import { PortalIcon } from "components/atoms/PortalIcon";
 
 import { TablePanel } from "./TablePanel";
 import { Toggle } from "./Toggle";
+
+const FIELD_ENABLED = "isEnabled";
+const FIELD_CLICKABLE = "isClickable";
+
 interface PortalStripFormProps {
   portal: Room;
   index: number;
@@ -75,13 +79,13 @@ export const PortalStripForm: React.FC<PortalStripFormProps> = ({
   const values = getValues();
 
   const [{ loading, error: submitError }, submit] = useAsyncFn(
-    async (field: string, _) => {
+    async (field: typeof FIELD_ENABLED | typeof FIELD_CLICKABLE) => {
       if (!user) return;
 
       const isEnabled =
-        field === "isEnabled" ? !values.isEnabled : values.isEnabled;
+        field === FIELD_ENABLED ? !values.isEnabled : values.isEnabled;
       const isClickable =
-        field === "isClickable" ? !values.isClickable : values.isClickable;
+        field === FIELD_CLICKABLE ? !values.isClickable : values.isClickable;
 
       const type = convertClickabilityToPortalType(isClickable);
 
@@ -103,7 +107,7 @@ export const PortalStripForm: React.FC<PortalStripFormProps> = ({
   const handleClickable = useCallback(
     (event) => {
       setUpdatingClickable(true);
-      const handler = handleSubmit((data) => submit("isClickable", data));
+      const handler = handleSubmit(() => submit(FIELD_CLICKABLE));
       return handler(event);
     },
     [setUpdatingClickable, handleSubmit, submit]
@@ -112,7 +116,7 @@ export const PortalStripForm: React.FC<PortalStripFormProps> = ({
   const handleEnabled = useCallback(
     (event) => {
       setUpdatingEnabled(true);
-      const handler = handleSubmit((data) => submit("isEnabled", data));
+      const handler = handleSubmit(() => submit(FIELD_ENABLED));
       return handler(event);
     },
     [setUpdatingEnabled, handleSubmit, submit]
@@ -168,8 +172,6 @@ export const PortalStripForm: React.FC<PortalStripFormProps> = ({
         </div>
         <div className="flex items-center -mb-5 flex-row">
           <div className="flex items-center mb-5">
-            {/* @debt For some reason this requires being double clicked.
-               Investigate when first pass is done. */}
             <Toggle
               name="isClickable"
               label={renderedClickableLabel}

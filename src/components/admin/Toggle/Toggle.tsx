@@ -1,11 +1,11 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, SyntheticEvent, useCallback } from "react";
 
 import * as TW from "./Toggle.tailwind";
 
 export interface ToggleProps {
   label: ReactNode;
   checked?: boolean;
-  onChange?: (ev: React.FormEvent<HTMLInputElement>) => void;
+  onChange?: React.ReactEventHandler<SyntheticEvent>;
   name?: string;
 }
 
@@ -15,25 +15,20 @@ export const Toggle: React.FC<ToggleProps> = ({
   onChange,
   name,
 }) => {
-  const toggleClassName = checked
-    ? TW.checkedButtonClass
-    : TW.uncheckedButtonClass;
-  const dotClassName = checked ? TW.checkedLabelClass : TW.uncheckedLabelClass;
+  // NOTE: the click handlers needs to be on the label to capture all its children clicks and there must always be a <label>
+  const handleClick = useCallback((event) => onChange?.(event), [onChange]);
+
+  // NOTE: the thumb is a little circle sliding left-right inside a horizontal track
+  const thumbClasses = TW[`${!!checked}Thumb`];
+  const trackClasses = TW[`${!!checked}Track`];
+
   return (
     <div className="flex justify-end w-full">
-      <label
-        htmlFor={`toggle${name}`}
-        className="flex items-center cursor-pointer"
-      >
+      <label className="flex items-center cursor-pointer" onClick={handleClick}>
         <div className="relative">
-          <input
-            type="checkbox"
-            id={`toggle${name}`}
-            onChange={onChange}
-            className="sr-only "
-          />
-          <div className={toggleClassName}></div>
-          <div className={dotClassName}></div>
+          <input className="sr-only " name={name} type="checkbox" />
+          <div className={trackClasses} />
+          <div className={thumbClasses} />
         </div>
         <div className="ml-3 text-gray-700 font-medium">{label}</div>
       </label>
