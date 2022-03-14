@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
+import { openUrl } from "utils/url";
 
-// import { openUrl } from "utils/url";
 import styles from "./ExternalRoom.module.scss";
 
 export interface ExternalRoomProps {
@@ -14,16 +14,11 @@ export interface ExternalRoomProps {
 export const ExternalRoom: React.FC<ExternalRoomProps> = ({ venue }) => {
   const redirectUrl = venue.zoomUrl ?? "";
 
-  // useEffect(() => {
-  // if (!redirectUrl) return;
-  // openUrl(redirectUrl);
-  // }, [redirectUrl]);
+  useEffect(() => {
+    if (!redirectUrl) return;
 
-  // const openRoomUrl = useCallback(() => openUrl(redirectUrl), [redirectUrl]);
-
-  // venue.name
-  // venue.config?.landingPageConfig.subtitle
-  // venue.config?.landingPageConfig.description
+    openUrl(redirectUrl);
+  }, [redirectUrl]);
 
   return (
     <div
@@ -47,10 +42,17 @@ export const ExternalRoom: React.FC<ExternalRoomProps> = ({ venue }) => {
         <div className={styles.SecondaryInfo}>
           <p className={styles.RedirectText}>
             Opened {venue.name} in a new tab <br />
-            <a href={redirectUrl}>{redirectUrl}</a> <br />
+            <a href={redirectUrl} target="_blank" rel="noreferrer">
+              {redirectUrl}
+            </a>
+            <br />
             <br />
             Doesn&apos;t work? Try enabling pop ups on your browser <br />
-            and click here to try again.
+            and click{" "}
+            <a href={redirectUrl} target="_blank" rel="noreferrer">
+              here
+            </a>{" "}
+            to try again.
           </p>
         </div>
       </div>
