@@ -6,19 +6,20 @@ import {
   faPen,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { TableSeatData } from "components/attendee/TableGrid/TableGrid";
 import { Toggler } from "components/attendee/Toggler";
 import firebase from "firebase/compat/app";
 
-import { MAX_TABLE_CAPACITY } from "settings";
+import { MAX_TABLE_CAPACITY, STATIC_SECTION_ID } from "settings";
 
-import { unsetTableSeat } from "api/venue";
+import { unsetSeat } from "api/venue";
 
 import { Table } from "types/Table";
 
 import { isTruthy } from "utils/types";
 
 import { useExperience } from "hooks/useExperience";
-import { useSeatedTableUsers } from "hooks/useSeatedTableUsers";
+import { useSeatedUsers } from "hooks/useSeatedUsers";
 import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 
@@ -71,9 +72,12 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
 
   const isCurrentTableLocked = isTruthy(!!allTables?.[seatedAtTable]?.locked);
 
-  const [seatedTableUsers] = useSeatedTableUsers(venueId);
+  const { users: seatedTableUsers } = useSeatedUsers<TableSeatData>({
+    spaceId: venueId,
+    sectionId: STATIC_SECTION_ID,
+  });
   const currentTableHasSeatedUsers = seatedTableUsers.some(
-    (user) => user.path.tableReference === seatedAtTable
+    (user) => user.seatData.tableReference === seatedAtTable
   );
 
   const tableTitle = tableOfUser?.title ?? "Table";
@@ -111,7 +115,11 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
   // @debt This should be extracted into the api layer
   const leaveSeat = useCallback(async () => {
     if (!userId || !profile) return;
-    await unsetTableSeat(userId, { venueId });
+    await unsetSeat({
+      userId,
+      spaceId: venueId,
+      sectionId: STATIC_SECTION_ID,
+    });
     setSeatedAtTable("");
   }, [userId, profile, venueId, setSeatedAtTable]);
 

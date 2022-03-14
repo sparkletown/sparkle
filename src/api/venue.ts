@@ -4,17 +4,15 @@ import firebase from "firebase/compat/app";
 import { httpsCallable, HttpsCallableResult } from "firebase/functions";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
-import { AuditoriumSeatedUser, AuditoriumSectionPath } from "types/auditorium";
 import {
   CompatCollectionReference,
   CompatDocumentData,
   CompatFirestoreDataConverter,
   CompatQueryDocumentSnapshot,
 } from "types/Firestore";
-import { GridPosition } from "types/grid";
 import { UserId } from "types/id";
-import { DisplayUser, TableSeatedUser } from "types/User";
-import { AnyVenue, VenueTablePath } from "types/venues";
+import { DisplayUser, SeatedUser } from "types/User";
+import { AnyVenue } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
 
 import { pickDisplayUserFromUser } from "utils/chat";
@@ -150,83 +148,50 @@ export const updateVenueNG = async (venue: VenueInputForm, userId: UserId) => {
   return updateResponse;
 };
 
-const getUserInSectionRef = (userId: string, path: AuditoriumSectionPath) =>
-  firebase
+const getUserInSectionRef = (
+  userId: string,
+  spaceId: string,
+  sectionId: string
+) => {
+  return firebase
     .firestore()
     .collection("venues")
-    .doc(path.venueId)
+    .doc(spaceId)
     .collection("sections")
-    .doc(path.sectionId)
+    .doc(sectionId)
     .collection("seatedSectionUsers")
     .doc(userId);
-
-const getUserSeatedTableRef = (userId: string, venueId: string) =>
-  firebase
-    .firestore()
-    .collection("venues")
-    .doc(venueId)
-    .collection("seatedTableUsers")
-    .doc(userId);
-
-export const unsetAuditoriumSectionSeat = async (
-  userId: string,
-  path: AuditoriumSectionPath
-) => {
-  return getUserInSectionRef(userId, path)
-    .delete()
-    .catch((err) => {
-      Bugsnag.notify(err, (event) => {
-        event.addMetadata("context", {
-          location: "api/venue::unsetAuditoriumSectionSeat",
-          venueId: path.venueId,
-          sectionId: path.sectionId,
-          userId,
-        });
-      });
-
-      throw err;
-    });
 };
+interface setSeatOptions<T> {
+  user: WithId<DisplayUser>;
+  spaceId: string;
+  sectionId: string;
+  seatData: T;
+}
 
-export const setAuditoriumSectionSeat = async (
-  user: WithId<DisplayUser>,
-  position: GridPosition,
-  path: AuditoriumSectionPath
-) => {
-  const seatedUserData: AuditoriumSeatedUser = {
+export const setSeat = async <T>({
+  user,
+  spaceId,
+  sectionId,
+  seatData,
+}: setSeatOptions<T>) => {
+  const data: SeatedUser<T> = {
     ...pickDisplayUserFromUser(user),
-    position,
-    path,
+    seatData,
   };
-
-  return getUserInSectionRef(user.id, path)
-    .set(seatedUserData)
-    .catch((err) => {
-      Bugsnag.notify(err, (event) => {
-        event.addMetadata("context", {
-          location: "api/venue::setAuditoriumSectionSeat",
-          venueId: path.venueId,
-          sectionId: path.sectionId,
-          user,
-        });
-      });
-
-      throw err;
-    });
+  return getUserInSectionRef(user.id, spaceId, sectionId).set(data);
 };
 
-export const setTableSeat = async (
-  user: WithId<DisplayUser>,
-  path: VenueTablePath
-) => {
-  const data: TableSeatedUser = {
-    ...pickDisplayUserFromUser(user),
-    path,
-  };
-  return getUserSeatedTableRef(user.id, path.venueId).set(data);
-};
+interface unsetSeatOptions {
+  userId: string;
+  spaceId: string;
+  sectionId: string;
+}
 
-export const unsetTableSeat = async (
-  userId: string,
-  { venueId }: Pick<VenueTablePath, "venueId">
-) => getUserSeatedTableRef(userId, venueId).delete();
+export const unsetSeat = async ({
+  userId,
+  spaceId,
+  sectionId,
+}: unsetSeatOptions) => {
+  getUserInSectionRef(userId, spaceId, sectionId).delete();
+};

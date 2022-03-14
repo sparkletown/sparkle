@@ -10,10 +10,7 @@ import {
   SECTION_DEFAULT_ROWS_COUNT,
 } from "settings";
 
-import {
-  setAuditoriumSectionSeat,
-  unsetAuditoriumSectionSeat,
-} from "api/venue";
+import { setSeat, unsetSeat } from "api/venue";
 
 import { AuditoriumSection } from "types/auditorium";
 import { GridPosition } from "types/grid";
@@ -23,7 +20,7 @@ import { getVideoSizeInSeats } from "utils/auditorium";
 import { withIdConverter } from "utils/converters";
 import { WithId } from "utils/id";
 
-import { useAuditoriumSeatedUsers } from "hooks/useAuditoriumSeatedUsers";
+import { useSeatedUsers } from "hooks/useSeatedUsers";
 
 import { useGetUserByPosition } from "../useGetUserByPosition";
 import { useUser } from "../useUser";
@@ -75,7 +72,10 @@ export const useAuditoriumSection = ({
     videoHeightInSeats + REACTIONS_CONTAINER_HEIGHT_IN_SEATS;
   const screenWidthInSeats = videoWidthInSeats;
 
-  const seatedUsers = useAuditoriumSeatedUsers({ venueId, sectionId });
+  const { users: seatedUsers } = useSeatedUsers<GridPosition>({
+    spaceId: venueId,
+    sectionId,
+  });
 
   const isUserSeated = useMemo(
     () => seatedUsers?.some((seatedUser) => seatedUser.id === userId),
@@ -90,17 +90,15 @@ export const useAuditoriumSection = ({
     ({ row, column }: GridPosition) => {
       if (!sectionId || !venueId || !userWithId) return;
 
-      return setAuditoriumSectionSeat(
-        userWithId,
-        {
+      return setSeat<GridPosition>({
+        user: userWithId,
+        spaceId: venueId,
+        sectionId,
+        seatData: {
           row,
           column,
         },
-        {
-          venueId,
-          sectionId,
-        }
-      );
+      });
     },
     [sectionId, venueId, userWithId]
   );
@@ -108,7 +106,7 @@ export const useAuditoriumSection = ({
   const leaveSeat: () => Promise<void> | undefined = useCallback(() => {
     if (!venueId || !userId || !sectionId) return;
 
-    return unsetAuditoriumSectionSeat(userId, { venueId, sectionId });
+    return unsetSeat({ userId, spaceId: venueId, sectionId });
   }, [venueId, userId, sectionId]);
 
   return {

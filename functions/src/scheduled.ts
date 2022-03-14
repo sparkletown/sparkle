@@ -46,41 +46,22 @@ const removeDanglingSeatedUsers = async () => {
           );
           removedUsersCount += 1;
 
-          switch (seatedUserData.template) {
-            case "auditorium":
-              if (!has(seatedUserData.venueSpecificData, "sectionId")) {
-                console.error(
-                  "No sectionId prop in seatedUserData.venueSpecificData in" +
-                    `/venues/${venueId}/recentSeatedUsers/${userId}`
-                );
-                break;
-              }
-              batch.delete(
-                firestore
-                  .collection("venues")
-                  .doc(venueId)
-                  .collection("sections")
-                  .doc(seatedUserData.venueSpecificData.sectionId)
-                  .collection("seatedSectionUsers")
-                  .doc(userId)
-              );
-              break;
-            case "jazzbar":
-            case "conversationspace":
-              batch.delete(
-                firestore
-                  .collection("venues")
-                  .doc(venueId)
-                  .collection("seatedTableUsers")
-                  .doc(userId)
-              );
-              break;
-            default:
-              console.warn(
-                `Found unsupported venue template ${seatedUserData.template}`
-              );
-              break;
+          if (!has(seatedUserData.venueSpecificData, "sectionId")) {
+            console.error(
+              "No sectionId prop in seatedUserData.venueSpecificData in" +
+                `/venues/${venueId}/recentSeatedUsers/${userId}`
+            );
+            return;
           }
+          batch.delete(
+            firestore
+              .collection("venues")
+              .doc(venueId)
+              .collection("sections")
+              .doc(seatedUserData.venueSpecificData.sectionId)
+              .collection("seatedSectionUsers")
+              .doc(userId)
+          );
         });
         return batch.commit();
       } catch (e) {

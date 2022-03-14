@@ -59,6 +59,10 @@ export type TableSeatedUser = DisplayUser & {
   path: VenueTablePath;
 };
 
+export type SeatedUser<T> = DisplayUser & {
+  seatData: T;
+};
+
 export interface UserStatus {
   status: string;
   color: string;

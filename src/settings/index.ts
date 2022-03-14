@@ -79,7 +79,7 @@ export const SCHEDULE_SHOW_COPIED_TEXT_MS = 1000; // 1s
 export const LOC_UPDATE_FREQ_MS = FIVE_MINUTES_MS;
 
 export const WORLD_USERS_UPDATE_INTERVAL = 5000;
-export const VENUE_RECENT_SEATED_USERS_UPDATE_INTERVAL = 1000;
+export const VENUE_RECENT_SEATED_USERS_UPDATE_INTERVAL = 60000;
 
 // How often to increment user's timespent
 export const LOCATION_INCREMENT_SECONDS = 10;

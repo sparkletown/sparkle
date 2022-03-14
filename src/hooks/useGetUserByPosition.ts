@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from "react";
 
 import { GridPosition } from "types/grid";
-import { GridSeatedUser, User } from "types/User";
+import { SeatedUser, User } from "types/User";
 
 import { WithId } from "utils/id";
 import { isDefined } from "utils/types";
@@ -13,20 +13,23 @@ export interface UseGetUserByPositionProps {
 
 export type GetUserByPosition = (
   gridPosition: GridPosition
-) => WithId<GridSeatedUser> | undefined;
+) => WithId<SeatedUser<GridPosition>> | undefined;
 
 const getPositionHash = ({ row, column }: GridPosition): string => {
   return `${row}|${column}`;
 };
 
 export const useGetUserByPosition = (
-  gridSeatedUsers: WithId<GridSeatedUser>[]
+  gridSeatedUsers: WithId<SeatedUser<GridPosition>>[]
 ): GetUserByPosition => {
-  const seatedUsersByHash: Map<string, WithId<GridSeatedUser>> = useMemo(
+  const seatedUsersByHash: Map<
+    string,
+    WithId<SeatedUser<GridPosition>>
+  > = useMemo(
     () =>
-      gridSeatedUsers.reduce<Map<string, WithId<GridSeatedUser>>>(
+      gridSeatedUsers.reduce<Map<string, WithId<SeatedUser<GridPosition>>>>(
         (acc, user) => {
-          const { row, column } = user.position;
+          const { row, column } = user.seatData;
 
           if (!isDefined(row) || !isDefined(column)) return acc;
 

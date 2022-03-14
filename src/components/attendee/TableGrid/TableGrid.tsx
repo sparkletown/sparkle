@@ -2,12 +2,12 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useVideoHuddle } from "components/attendee/VideoHuddle/useVideoHuddle";
 import { groupBy } from "lodash";
 
-import { ALLOWED_EMPTY_TABLES_NUMBER } from "settings";
+import { ALLOWED_EMPTY_TABLES_NUMBER, STATIC_SECTION_ID } from "settings";
 
-import { setTableSeat, unsetTableSeat } from "api/venue";
+import { setSeat, unsetSeat } from "api/venue";
 
 import { Table } from "types/Table";
-import { TableSeatedUser } from "types/User";
+import { SeatedUser } from "types/User";
 import { AnyVenue } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
 
@@ -17,7 +17,7 @@ import { arrayIncludes, isTruthy } from "utils/types";
 
 import { useAnalytics } from "hooks/useAnalytics";
 import { useExperience } from "hooks/useExperience";
-import { useSeatedTableUsers } from "hooks/useSeatedTableUsers";
+import { useSeatedUsers } from "hooks/useSeatedUsers";
 import { useShowHide } from "hooks/useShowHide";
 import { useUpdateTableRecentSeatedUsers } from "hooks/useUpdateRecentSeatedUsers";
 import { useUser } from "hooks/useUser";
@@ -40,6 +40,10 @@ interface TableGridProps {
   leaveText?: string;
   space: WithId<AnyVenue>;
   userId: string;
+}
+
+export interface TableSeatData {
+  tableReference: string;
 }
 
 export const TableGrid: React.FC<TableGridProps> = ({
@@ -81,7 +85,11 @@ export const TableGrid: React.FC<TableGridProps> = ({
   );
 
   const leaveTable = useCallback(async () => {
-    await unsetTableSeat(userId, { venueId: space.id });
+    await unsetSeat({
+      userId,
+      spaceId: space.id,
+      sectionId: STATIC_SECTION_ID,
+    });
     setSeatedAtTable(undefined);
   }, [userId, space.id]);
 
@@ -95,7 +103,11 @@ export const TableGrid: React.FC<TableGridProps> = ({
     return () => {
       (async () => {
         // Always leave the table when leaving the space
-        await unsetTableSeat(userId, { venueId: space.id });
+        await unsetSeat({
+          userId,
+          spaceId: space.id,
+          sectionId: STATIC_SECTION_ID,
+        });
         leaveHuddle();
       })();
     };
@@ -123,14 +135,18 @@ export const TableGrid: React.FC<TableGridProps> = ({
 
   const isCurrentUserAdmin = arrayIncludes(space.owners, userId);
 
-  const [seatedTableUsers, isSeatedTableUsersLoaded] = useSeatedTableUsers(
-    space.id
-  );
+  const {
+    users: seatedTableUsers,
+    isLoaded: isSeatedTableUsersLoaded,
+  } = useSeatedUsers<TableSeatData>({
+    spaceId: venueId,
+    sectionId: STATIC_SECTION_ID,
+  });
 
   const userTableReference = useMemo(
     () =>
-      seatedTableUsers.find((u) => u.id === userWithId?.id)?.path
-        ?.tableReference,
+      seatedTableUsers.find((u) => u.id === userWithId?.id)?.seatData
+        .tableReference,
     [seatedTableUsers, userWithId?.id]
   );
 
@@ -146,9 +162,13 @@ export const TableGrid: React.FC<TableGridProps> = ({
     async (table: string) => {
       if (!userWithId) return;
 
-      await setTableSeat(userWithId, {
-        venueId: space.id,
-        tableReference: table,
+      await setSeat<TableSeatData>({
+        user: userWithId,
+        spaceId: space.id,
+        sectionId: STATIC_SECTION_ID,
+        seatData: {
+          tableReference: table,
+        },
       });
     },
     [userWithId, space.id]
@@ -156,14 +176,14 @@ export const TableGrid: React.FC<TableGridProps> = ({
 
   const usersSeatedAtTables: Record<
     string,
-    WithId<TableSeatedUser>[]
+    WithId<SeatedUser<TableSeatData>>[]
   > = useMemo(() => {
     const tableReferences = tables.map((t) => t.reference);
 
     const filteredUsers = seatedTableUsers.filter((user) =>
-      tableReferences.includes(user.path.tableReference)
+      tableReferences.includes(user.seatData.tableReference)
     );
-    return groupBy(filteredUsers, (user) => user.path.tableReference);
+    return groupBy(filteredUsers, (user) => user.seatData.tableReference);
   }, [seatedTableUsers, tables]);
 
   const isFullTable = useCallback(

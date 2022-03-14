@@ -53,47 +53,22 @@ const removePreviousDanglingSeat = async (
   const afterSectionId =
     afterVenueSpecificData && afterVenueSpecificData.sectionId;
 
-  switch (template) {
-    case "auditorium":
-      if (!beforeSectionId)
-        throw new HttpsError(
-          "invalid-argument",
-          `Missing sectionId. Before: ${beforeSnap}. After: ${afterSnap}`
-        );
-      if (beforeSectionId === afterSectionId) return;
+  if (!beforeSectionId)
+    throw new HttpsError(
+      "invalid-argument",
+      `Missing sectionId. Before: ${beforeSnap}. After: ${afterSnap}`
+    );
+  if (beforeSectionId === afterSectionId) return;
 
-      await admin
-        .firestore()
-        .collection("venues")
-        .doc(venueId)
-        .collection("sections")
-        .doc(beforeSectionId)
-        .collection("seatedSectionUsers")
-        .doc(userId)
-        .delete();
-
-      break;
-    case "jazzbar":
-    case "conversationspace":
-      //Don't delete seatedTableUser if recentSeatedUser is being updated
-      //As there is now dangling data
-      if (afterSnap) return;
-
-      await admin
-        .firestore()
-        .collection("venues")
-        .doc(venueId)
-        .collection("seatedTableUsers")
-        .doc(userId)
-        .delete();
-
-      break;
-    default:
-      throw new HttpsError(
-        "invalid-argument",
-        `Unsupported template ${template}`
-      );
-  }
+  await admin
+    .firestore()
+    .collection("venues")
+    .doc(venueId)
+    .collection("sections")
+    .doc(beforeSectionId)
+    .collection("seatedSectionUsers")
+    .doc(userId)
+    .delete();
 };
 
 export const removeDanglingAfterSeatChange = functions.firestore

@@ -1,7 +1,9 @@
 import React, { Fragment, useCallback, useMemo } from "react";
 import { VideoCommsParticipant } from "components/attendee/VideoComms/VideoCommsParticipant";
 
-import { unsetTableSeat } from "api/venue";
+import { STATIC_SECTION_ID } from "settings";
+
+import { unsetSeat } from "api/venue";
 
 import { useVideoRoomState } from "hooks/twilio/useVideoRoomState";
 import { useUser } from "hooks/useUser";
@@ -37,7 +39,7 @@ export const Room: React.FC<RoomProps> = ({
   const leaveSeat = useCallback(async () => {
     if (!userId || !venueId) return;
 
-    await unsetTableSeat(userId, { venueId });
+    await unsetSeat({ userId, spaceId: venueId, sectionId: STATIC_SECTION_ID });
 
     setSeatedAtTable?.("");
   }, [setSeatedAtTable, userId, venueId]);
