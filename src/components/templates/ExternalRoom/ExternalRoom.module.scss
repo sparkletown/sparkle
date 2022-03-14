@@ -1,4 +1,6 @@
 @use "scss/attendee/breakpoint";
+@use "scss/attendee/space";
+@use "scss/attendee/font";
 
 .ExternalRoom {
   display: flex;
@@ -12,12 +14,12 @@
   text-align: center;
   display: flex;
   background: rgba(255, 255, 255, 0.3);
-  border: 1px solid #8282824d;
-  padding: 15px;
+  border: thin solid #8282824d;
+  padding: space.$lg;
 
   @media (max-width: breakpoint.$md) {
     flex-direction: column;
-    margin: 50px;
+    margin: space.$l3;
   }
 }
 
@@ -26,13 +28,13 @@
   justify-content: center;
   flex-direction: column;
   align-items: center;
-  padding: 24px;
-  border-right: 1px solid #8282824d;
+  padding: space.$xl;
+  border-right: thin solid #8282824d;
   max-width: 300px;
 
   @media (max-width: breakpoint.$md) {
     border-right: none;
-    border-bottom: 1px solid #8282824d;
+    border-bottom: thin solid #8282824d;
     text-align: left;
     justify-content: flex-start;
     align-items: flex-start;
@@ -42,32 +44,32 @@
 }
 
 .VenueName {
-  font-size: 23px;
+  font-size: font.$size--xl;
 
   @media (max-width: breakpoint.$md) {
-    border-bottom: 1px solid #8282824d;
+    border-bottom: thin solid #8282824d;
     width: 100%;
-    padding-bottom: 20px;
+    padding-bottom: space.$xl;
   }
 }
 
 .VenueDescription {
-  font-size: 14px;
+  font-size: font.$size--md;
 
   @media (max-width: breakpoint.$md) {
-    padding-bottom: 20px;
+    padding-bottom: space.$xl;
   }
 }
 
 .VenueIcon {
-  margin-bottom: 10px;
+  margin-bottom: space.$md;
 }
 
 .SecondaryInfo {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 50px;
+  padding: space.$l3;
 }
 
 .RedirectText {
