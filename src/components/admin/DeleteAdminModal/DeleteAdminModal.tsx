@@ -1,3 +1,5 @@
+import { useAsyncFn } from "react-use";
+
 import { removeWorldAdmin } from "api/world";
 
 import { UserWithId } from "types/id";
@@ -21,7 +23,7 @@ export const DeleteAdminModal: React.FC<DeleteAdminModalProps> = ({
 }) => {
   const { worldId } = useWorldAndSpaceByParams();
 
-  const removeAdmin = async () => {
+  const removeAdminCallback = async () => {
     if (!worldId) {
       return;
     }
@@ -29,6 +31,10 @@ export const DeleteAdminModal: React.FC<DeleteAdminModalProps> = ({
     await removeWorldAdmin(worldId, user.id);
     onHide();
   };
+
+  const [{ loading: isRemoving }, removeAdmin] = useAsyncFn(
+    removeAdminCallback
+  );
 
   return (
     <Modal show={show} onHide={onHide} autoHide>
@@ -38,7 +44,7 @@ export const DeleteAdminModal: React.FC<DeleteAdminModalProps> = ({
         <Button variant="secondary" onClick={onHide}>
           Cancel
         </Button>
-        <Button variant="danger" onClick={removeAdmin}>
+        <Button disabled={isRemoving} variant="danger" onClick={removeAdmin}>
           Delete
         </Button>
       </div>
