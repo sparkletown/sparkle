@@ -18,28 +18,30 @@ interface InputSelectProps
     ContainerClassName {
   inputClassName?: string;
   errorTextClassName?: string;
-  error?: FieldError;
+  errorSelect?: FieldError;
+  errorInput?: FieldError;
   inputName: string;
   selectName: string;
   inputPlaceholder?: string;
   selectPlaceholder?: string;
   register: UseFormRegister<AnyForm>;
-  inputRules: RegisterOptions;
-  selectRules: RegisterOptions;
+  inputRules?: RegisterOptions;
+  selectRules?: RegisterOptions;
 }
 
 export const InputSelect: React.FC<InputSelectProps> = ({
   containerClassName,
   inputClassName,
   errorTextClassName,
-  error,
+  errorSelect,
+  errorInput,
   inputName,
   selectName,
   inputPlaceholder,
   selectPlaceholder,
   register,
-  inputRules,
-  selectRules,
+  inputRules = {},
+  selectRules = {},
 }) => {
   const containerClassNames = classNames(
     styles.inputSelect,
@@ -47,41 +49,52 @@ export const InputSelect: React.FC<InputSelectProps> = ({
   );
 
   const wrapperClassNames = classNames(styles.inputWrapper, {
-    [styles.invalid]: error,
+    [styles.invalid]: errorInput,
   });
 
   const inputClassNames = classNames(styles.input, inputClassName);
+
+  const selectWrapperClassNames = classNames(styles.selectWrapper, {
+    [styles.invalid]: errorSelect,
+  });
   const selectClassNames = classNames(styles.select, containerClassNames);
 
   return (
     <div className={containerClassNames}>
-      <div className={styles.wrapper}>
+      <form className={styles.wrapper} autoComplete="off">
         <div className={wrapperClassNames}>
           <input
             className={inputClassNames}
             placeholder={inputPlaceholder}
+            autoComplete="off"
             {...register(inputName, inputRules)}
           />
-          {error && <span className={styles.errorIcon}></span>}
+          {errorInput && <span className={styles.errorIcon}></span>}
         </div>
-        <select
-          className={selectClassNames}
-          defaultValue={selectPlaceholder}
-          {...register(selectName, selectRules)}
-        >
-          <option value={selectPlaceholder} hidden disabled>
-            {selectPlaceholder}
-          </option>
-          {Object.entries(urlSources).map(([key, label]) => (
-            <option key={key} value={label}>
-              {label}
+        <div className={selectWrapperClassNames}>
+          <select
+            className={selectClassNames}
+            {...register(selectName, selectRules)}
+          >
+            <option value={""} disabled>
+              {selectPlaceholder}
             </option>
-          ))}
-        </select>
-      </div>
-      {error && (
+            {Object.entries(urlSources).map(([key, label]) => (
+              <option key={key} value={label}>
+                {label}
+              </option>
+            ))}
+          </select>
+          {errorSelect && (
+            <span className={classNames(styles.error, errorTextClassName)}>
+              {errorSelect?.message}
+            </span>
+          )}
+        </div>
+      </form>
+      {errorInput && (
         <span className={classNames(styles.error, errorTextClassName)}>
-          {error.message}
+          {errorInput?.message}
         </span>
       )}
     </div>

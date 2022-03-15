@@ -17,7 +17,7 @@ import {
   UserProfileModalFormData,
   UserProfileModalFormDataPasswords,
 } from "types/profileModal";
-import { User } from "types/User";
+import { ProfileLink, User } from "types/User";
 
 import { WithId } from "utils/id";
 import { isShallowEqual } from "utils/object";
@@ -80,18 +80,11 @@ export const ProfileOverlay: React.FC<ProfileOverlayProps> = ({ profile }) => {
     control,
   });
 
-  const { fields: links, append: addLink, remove: removeLink } = useFieldArray({
+  const { fields: links, append: addLink } = useFieldArray({
     control,
     name: "profileLinks",
     shouldUnregister: true,
   });
-
-  const onDeleteLink = useCallback(
-    (i: number) => {
-      removeLink(i);
-    },
-    [removeLink]
-  );
 
   const addLinkHandler = useCallback(() => {
     addLink({ url: "", title: "" });
@@ -109,7 +102,7 @@ export const ProfileOverlay: React.FC<ProfileOverlayProps> = ({ profile }) => {
     async (data: Omit<UserProfileModalFormData, "profileLinks">) => {
       if (!firebaseUser) return;
       const dataWithProfileLinks = {
-        profileLinks: [],
+        profileLinks: [] as ProfileLink[],
         ...data,
       };
 
@@ -143,15 +136,30 @@ export const ProfileOverlay: React.FC<ProfileOverlayProps> = ({ profile }) => {
       ) as (keyof UserProfileModalFormData)[];
 
       if (changedFields.length > 0) {
-        await updateUserProfile(
-          firebaseUser.uid,
-          pick(dataWithProfileLinks, changedFields)
+        const data = pick(dataWithProfileLinks, changedFields);
+        const validLinks = data.profileLinks?.filter(
+          (link) => link.url && link.title !== ""
         );
-
+        const requestDto = {
+          ...data,
+          profileLinks: data.profileLinks?.filter(
+            (link) => link.url && link.title !== ""
+          ),
+        };
+        await updateUserProfile(firebaseUser.uid, requestDto);
+        reset({ ...values, profileLinks: validLinks });
         setSuccess(true);
       }
     },
-    [firebaseUser, dirtyFields, checkOldPassword, setError, clearErrors]
+    [
+      firebaseUser,
+      dirtyFields,
+      checkOldPassword,
+      setError,
+      clearErrors,
+      reset,
+      values,
+    ]
   );
 
   return (
@@ -167,13 +175,11 @@ export const ProfileOverlay: React.FC<ProfileOverlayProps> = ({ profile }) => {
           partyNameError={errors?.partyName}
         />
 
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <div>
           <ProfileModalEditLinks
             register={register}
-            initialLinks={defaultValues.profileLinks ?? []}
             links={links}
             errors={errors?.profileLinks}
-            onDeleteLink={onDeleteLink}
             onAddLink={addLinkHandler}
           />
           <ProfileModalChangePassword
@@ -188,6 +194,7 @@ export const ProfileOverlay: React.FC<ProfileOverlayProps> = ({ profile }) => {
             <Button
               type="submit"
               disabled={isSubmitting}
+              onClick={handleSubmit(onSubmit)}
               variant="alternative"
               border="alternative"
             >
@@ -198,7 +205,7 @@ export const ProfileOverlay: React.FC<ProfileOverlayProps> = ({ profile }) => {
             </Button>
             {isSuccess ? <span>✓ Saved</span> : ""}
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );
