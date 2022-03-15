@@ -7,7 +7,7 @@ import CN from "./Button.module.scss";
 // But we might have different variants for either button or border in the future
 type ButtonVariant = "primary" | "alternative";
 type BorderVariant = ButtonVariant;
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   onClick?: () => void;
   variant?: ButtonVariant;
   transparent?: boolean;

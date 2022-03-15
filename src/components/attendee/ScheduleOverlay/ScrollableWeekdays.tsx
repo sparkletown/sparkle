@@ -1,10 +1,4 @@
-import React, {
-  RefObject,
-  useCallback,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { RefObject, useCallback, useRef, useState } from "react";
 import { useIntersection } from "react-use";
 import {
   faAngleLeft as angleLeft,
@@ -19,21 +13,20 @@ import { ALWAYS_EMPTY_OBJECT } from "settings";
 import { useUser } from "hooks/useUser";
 import useVenueScheduleEvents from "hooks/useVenueScheduleEvents";
 
-import { generatedWeekDays } from "./helpers";
+import { ScheduleDay } from "./ScheduleDay";
+import { WeekDaysProps } from "./Weekdays";
 
 import CN from "./ScheduleOverlay.module.scss";
 
 const weekDayStepValue = 7;
 const weekDayStepSkipValue = weekDayStepValue * 2;
 
-type ScrollableWeekDaysProps = {
-  setSelectedDayIndex: React.Dispatch<React.SetStateAction<number>>;
-  selectedDayIndex: number;
+interface ScrollableWeekDaysProps extends WeekDaysProps {
   dayDifference: number;
-  isScheduleTimeshifted: boolean;
-};
+}
+
 export const ScrollableWeekdays: React.FC<ScrollableWeekDaysProps> = ({
-  setSelectedDayIndex,
+  onIndexSelect,
   selectedDayIndex,
   dayDifference,
   isScheduleTimeshifted,
@@ -84,30 +77,7 @@ export const ScrollableWeekdays: React.FC<ScrollableWeekDaysProps> = ({
     []
   );
 
-  const weekdays = useMemo(
-    () =>
-      generatedWeekDays({
-        isScheduleTimeshifted,
-        dayDifference,
-        liveAndFutureEvents,
-        firstScheduleDate,
-        selectedDayIndex,
-        setSelectedDayIndex,
-        allRefs,
-        updateIntersected,
-      }),
-    [
-      isScheduleTimeshifted,
-      dayDifference,
-      liveAndFutureEvents,
-      firstScheduleDate,
-      selectedDayIndex,
-      setSelectedDayIndex,
-      allRefs,
-      updateIntersected,
-    ]
-  );
-
+  // TODO: Unite logic along with handleWeekScrollBackward
   const handleWeekScrollForward = () => {
     const scrollRef =
       forwardTarget?.current ?? allRefs?.current?.[weekDayStepValue].current;
@@ -119,8 +89,8 @@ export const ScrollableWeekdays: React.FC<ScrollableWeekDaysProps> = ({
     recalculateSkipPrevValues(scrollRef);
   };
 
-  // triggered on arrow click, sets prev arrow value to {currentIntersectingDay - 14} or the first day
-  // and next arrow value to {currentIntersectingDay + 7} or the last day
+  // TODO: Unite logic along with recalculateSkipToValues/updateIntersected
+  // recalculates forward/backward arrow values once one of them are clicked
   const recalculateSkipPrevValues = (scrollRef: HTMLButtonElement | null) => {
     const newIndex =
       allRefs.current.findIndex(
@@ -134,6 +104,7 @@ export const ScrollableWeekdays: React.FC<ScrollableWeekDaysProps> = ({
     setBackwardTarget(newBackwardTarget);
   };
 
+  // TODO: Unite logic along with handleWeekScrollForward
   const handleWeekScrollBackward = () => {
     const scrollRef = backwardTarget?.current ?? allRefs?.current?.[0].current;
     scrollRef?.scrollIntoView({
@@ -145,8 +116,8 @@ export const ScrollableWeekdays: React.FC<ScrollableWeekDaysProps> = ({
     recalculateSkipToValues(scrollRef);
   };
 
-  // triggered on arrow click, sets prev arrow value to {currentIntersectingDay - 7} or the first day
-  // and next arrow value to {currentIntersectingDay + 14} or the last day
+  // TODO: Unite logic along with recalculateSkipPrevValues/updateIntersected
+  // recalculates forward/backward arrow values once one of them are clicked
   const recalculateSkipToValues = (scrollRef: HTMLButtonElement | null) => {
     const newIndex =
       allRefs.current.findIndex(
@@ -170,7 +141,24 @@ export const ScrollableWeekdays: React.FC<ScrollableWeekDaysProps> = ({
 
   return (
     <div className={CN.scheduleDaysWrapper}>
-      <div className={CN.scheduleDays}>{weekdays}</div>
+      <div className={CN.scheduleDays}>
+        {dayDifference > 0 &&
+          range(dayDifference).map((dayIndex, i) => (
+            <ScheduleDay
+              key={dayIndex}
+              isScheduleTimeshifted={isScheduleTimeshifted}
+              dayDifference={dayDifference}
+              liveAndFutureEvents={liveAndFutureEvents}
+              firstScheduleDate={firstScheduleDate}
+              selectedDayIndex={selectedDayIndex}
+              onIndexSelect={onIndexSelect}
+              allRefs={allRefs}
+              updateIntersected={updateIntersected}
+              dayIndex={dayIndex}
+              index={i}
+            />
+          ))}
+      </div>
       <div className={CN.scheduleDaysArrows}>
         <FontAwesomeIcon
           icon={angleLeft}

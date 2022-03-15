@@ -62,13 +62,13 @@ export const ScheduleOverlay: React.FC = () => {
       />
       {dayDifference <= minWeekDaysScrollValue ? (
         <Weekdays
-          setSelectedDayIndex={setSelectedDayIndex}
+          onIndexSelect={setSelectedDayIndex}
           selectedDayIndex={selectedDayIndex}
           isScheduleTimeshifted={isScheduleTimeshifted}
         />
       ) : (
         <ScrollableWeekdays
-          setSelectedDayIndex={setSelectedDayIndex}
+          onIndexSelect={setSelectedDayIndex}
           selectedDayIndex={selectedDayIndex}
           dayDifference={dayDifference}
           isScheduleTimeshifted={isScheduleTimeshifted}

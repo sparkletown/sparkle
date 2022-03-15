@@ -1,21 +1,23 @@
-import React, { useMemo } from "react";
+import React from "react";
+import { range } from "lodash";
 
 import { ALWAYS_EMPTY_OBJECT } from "settings";
 
 import { useUser } from "hooks/useUser";
 import useVenueScheduleEvents from "hooks/useVenueScheduleEvents";
 
-import { generatedWeekDays } from "./helpers";
+import { ScheduleDay } from "./ScheduleDay";
 
 import CN from "./ScheduleOverlay.module.scss";
 
-type WeekDaysProps = {
-  setSelectedDayIndex: React.Dispatch<React.SetStateAction<number>>;
+export type WeekDaysProps = {
+  onIndexSelect: React.Dispatch<React.SetStateAction<number>>;
   selectedDayIndex: number;
   isScheduleTimeshifted: boolean;
 };
+
 export const Weekdays: React.FC<WeekDaysProps> = ({
-  setSelectedDayIndex,
+  onIndexSelect,
   selectedDayIndex,
   isScheduleTimeshifted,
 }) => {
@@ -29,29 +31,24 @@ export const Weekdays: React.FC<WeekDaysProps> = ({
     liveAndFutureEvents,
   } = useVenueScheduleEvents({ userEventIds });
 
-  const weekdays = useMemo(
-    () =>
-      generatedWeekDays({
-        isScheduleTimeshifted,
-        dayDifference,
-        liveAndFutureEvents,
-        firstScheduleDate,
-        selectedDayIndex,
-        setSelectedDayIndex,
-      }),
-    [
-      isScheduleTimeshifted,
-      dayDifference,
-      liveAndFutureEvents,
-      firstScheduleDate,
-      selectedDayIndex,
-      setSelectedDayIndex,
-    ]
-  );
-
   return (
     <div className={CN.scheduleDaysWrapper}>
-      <div className={CN.scheduleDays}>{weekdays}</div>
+      <div className={CN.scheduleDays}>
+        {dayDifference > 0 &&
+          range(dayDifference).map((dayIndex, i) => (
+            <ScheduleDay
+              key={dayIndex}
+              isScheduleTimeshifted={isScheduleTimeshifted}
+              dayDifference={dayDifference}
+              liveAndFutureEvents={liveAndFutureEvents}
+              firstScheduleDate={firstScheduleDate}
+              selectedDayIndex={selectedDayIndex}
+              onIndexSelect={onIndexSelect}
+              dayIndex={dayIndex}
+              index={i}
+            />
+          ))}
+      </div>
     </div>
   );
 };
