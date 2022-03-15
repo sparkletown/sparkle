@@ -1,21 +1,12 @@
-import { ButtonHTMLAttributes, RefObject, useEffect } from "react";
+import { ButtonHTMLAttributes, RefObject, useEffect, useRef } from "react";
 import { useIntersection } from "react-use";
-import { Button } from "components/attendee/Button";
-
-// Button And Border variant types are the same to allow variant mixing.
-// But we might have different variants for either button or border in the future
-type ButtonVariant = "primary" | "alternative";
-type BorderVariant = ButtonVariant;
+import { Button, ButtonProps } from "components/attendee/Button";
 
 interface IntersectingButtonProps
-  extends ButtonHTMLAttributes<HTMLButtonElement> {
-  onClick?: () => void;
-  variant?: ButtonVariant;
-  transparent?: boolean;
-  border?: BorderVariant;
-  className?: string;
-  forwardRef: RefObject<HTMLButtonElement>;
+  extends ButtonHTMLAttributes<HTMLButtonElement>,
+    ButtonProps {
   updateIntersected: (el: RefObject<HTMLButtonElement>) => void;
+  onClick?: () => void;
 }
 
 export const IntersectingButton: React.FC<IntersectingButtonProps> = ({
@@ -24,15 +15,17 @@ export const IntersectingButton: React.FC<IntersectingButtonProps> = ({
   updateIntersected,
   ...rest
 }) => {
-  const buttonIntersect = useIntersection(forwardRef, {
+  const fallbackRef = useRef<HTMLButtonElement>(null);
+  const targetRef = forwardRef ?? fallbackRef;
+  const buttonIntersect = useIntersection(targetRef, {
     rootMargin: "0px",
   });
 
   useEffect(() => {
     if (buttonIntersect?.isIntersecting) {
-      updateIntersected(forwardRef);
+      updateIntersected(targetRef);
     }
-  }, [buttonIntersect, updateIntersected, forwardRef]);
+  }, [buttonIntersect, updateIntersected, targetRef]);
 
-  return <Button {...rest} forwardRef={forwardRef} onClick={onClick} />;
+  return <Button {...rest} forwardRef={targetRef} onClick={onClick} />;
 };
