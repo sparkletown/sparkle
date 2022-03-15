@@ -23,8 +23,6 @@ import { SparkleLogo } from "components/atoms/SparkleLogo";
 
 import SHAPE_DENIED from "assets/images/access-forbidden.svg";
 
-import "./AdminRestricted.scss";
-
 type Props = WithAuthProps & WithSlugsProps & Partial<ReturnType<UseAdminRole>>;
 
 export const AdminRestricted: React.FC<Props> = ({
