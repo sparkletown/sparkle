@@ -1,8 +1,18 @@
 @use "scss/attendee/space";
 @use "scss/attendee/border";
+@use "scss/attendee/font";
+@use "scss/attendee/icon";
 @use "scss/attendee/theme";
+@use "scss/attendee/effects/error";
 
 .input {
+  display: flex;
+  flex-direction: column;
+
+  label {
+    width: 100%;
+  }
+
   label::after {
     content: attr(data-label);
     position: absolute;
@@ -13,7 +23,7 @@
     height: 26px;
     color: theme.$c-glass-panel-text;
     right: space.empty(0.8);
-    border-left: border.$radius--s3 solid theme.$sparkle--border;
+    border-left: border.$width--slim solid theme.$sparkle--border;
     color: theme.$c-inverted-text;
     cursor: pointer;
   }
@@ -24,5 +34,32 @@
 }
 
 .border {
-  border: border.$radius--s3 solid theme.$sparkle--border;
+  border: border.$width--slim solid theme.$sparkle--border;
+}
+
+.invalid {
+  @include error.input-error;
+}
+
+.errorIcon {
+  background-image: url(/assets/icons/input-error-icon.svg);
+  height: icon.$size--input-error-icon;
+  width: icon.$size--input-error-icon;
+  // pull icon inside input field
+  margin-left: space.empty(-2);
+}
+
+.inputWrapper {
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.inputError {
+  @include font.core;
+  margin-top: space.empty(0.5);
+}
+
+.inputField {
+  outline: none;
 }

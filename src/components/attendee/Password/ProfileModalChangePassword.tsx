@@ -66,6 +66,7 @@ export const ProfileModalChangePassword: React.FC<ProfileModalChangePasswordProp
           inputClassName={styles.ProfileModalChangePassword__field}
           error={errors?.oldPassword}
           type="password"
+          autoComplete="off"
         />
       </div>
       <div className={styles.ProfileModalChangePassword__input}>

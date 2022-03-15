@@ -1,6 +1,9 @@
 @use "scss/attendee/theme";
 @use "scss/attendee/space";
 @use "scss/attendee/font";
+@use "scss/attendee/border";
+@use "scss/attendee/icon";
+@use "scss/attendee/effects/error";
 
 .wrapper {
   @include font.core;
@@ -16,9 +19,9 @@
   padding: space.empty(0.33) 5em space.empty(0.33) space.empty(1);
   border-radius: space.empty(0.33) 0px 0px space.empty(0.33);
   box-sizing: border-box;
-  width: 80%;
+  width: 100%;
   border: none;
-  border-right: 1px solid theme.$c-glass-panel-background;
+  border-right: border.$width--slim solid theme.$c-glass-panel-background;
 }
 
 .select {
@@ -28,5 +31,30 @@
   box-sizing: border-box;
   width: 20%;
   border: none;
-  border-right: 5px solid transparent;
+  border-right: border.$radius--xs solid transparent;
+}
+
+.errorIcon {
+  background-image: url(/assets/icons/input-error-icon.svg);
+  height: icon.$size--input-error-icon;
+  width: icon.$size--input-error-icon;
+  // pull icon inside input field
+  margin-left: space.empty(-2);
+}
+
+.inputWrapper {
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.invalid {
+  input {
+    @include error.input-error;
+  }
+}
+
+.error {
+  @include font.core;
+  margin-top: space.empty(0.5);
 }

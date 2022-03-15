@@ -1,0 +1,9 @@
+.container {
+  border-radius: 50%;
+  animation: ripple 4s linear infinite;
+}
+
+.dragPreview {
+  display: inline-block;
+  border: 1px solid white;
+}

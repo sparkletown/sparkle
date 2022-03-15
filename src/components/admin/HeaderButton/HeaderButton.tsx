@@ -8,7 +8,7 @@ import {
 
 import * as TW from "./HeaderButton.tailwind";
 
-type HeaderButtonVariant = "primary" | "secondary" | "multicolor";
+type HeaderButtonVariant = "primary" | "secondary" | "multicolor" | "danger";
 
 export interface HeaderButtonProps {
   name?: string;

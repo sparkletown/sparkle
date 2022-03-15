@@ -25,7 +25,7 @@ export const TableComponent: React.FunctionComponent<TableComponentPropsType> = 
   onJoinClicked,
   table,
   tableLocked,
-  venue,
+  space,
   userId,
 }) => {
   const locked = tableLocked(table.reference);
@@ -43,19 +43,19 @@ export const TableComponent: React.FunctionComponent<TableComponentPropsType> = 
   } = useShowHide(false);
 
   const [{ loading: isDeletingTable }, removeTable] = useAsyncFn(async () => {
-    if (!venue.id) return;
+    if (!space.id) return;
 
     await deleteTable({
-      venueId: venue.id,
+      venueId: space.id,
       tableName: table.reference,
       defaultTables:
-        venue.template === VenueTemplate.jazzbar
+        space.template === VenueTemplate.jazzbar
           ? JAZZBAR_TABLES
           : CONVERSATION_TABLES,
     });
 
     toggleModal();
-  }, [table.reference, venue.id, venue.template, toggleModal]);
+  }, [table.reference, space.id, space.template, toggleModal]);
 
   const renderedUserPictures = useMemo(
     () =>
@@ -79,6 +79,8 @@ export const TableComponent: React.FunctionComponent<TableComponentPropsType> = 
   return (
     <div className={styles.tableContainer}>
       <div className={styles.tableHeader}>
+        <span className={styles.tableTitle}>{table.title}</span>
+
         {isRemoveButtonShown && (
           <img
             className={styles.deleteButton}
@@ -91,7 +93,6 @@ export const TableComponent: React.FunctionComponent<TableComponentPropsType> = 
           {locked && "locked"}
           {!locked && full && "full"}
         </div>
-        <span>{table.title}</span>
       </div>
       <div className={styles.tableUsers}>
         {renderedUserPictures}

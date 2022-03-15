@@ -398,6 +398,8 @@ export const TwilioClient = (onStateUpdateCallback: StateUpdateCallback) => {
         continue;
       }
       track.track.disable();
+      track.track.stop();
+      track.unpublish();
     }
     isTransmittingVideo = false;
     recalculateStatus();

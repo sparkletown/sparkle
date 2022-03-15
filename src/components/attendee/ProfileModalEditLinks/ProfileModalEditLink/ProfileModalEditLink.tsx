@@ -55,6 +55,7 @@ export const ProfileModalEditLink: React.FC<ProfileModalEditLinkProps> = ({
       }}
       register={register}
       error={error?.url}
+      autoComplete="off"
     />
   );
 };

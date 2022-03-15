@@ -14,17 +14,26 @@
   white-space: nowrap;
   cursor: pointer;
   border: none;
+
+  &:focus {
+    // removes blue highlighting on mobile tap
+    -webkit-tap-highlight-color: transparent;
+  }
 }
 
-.buttonPrimary {
+.primary {
   @include sparkle.color--glass;
 }
 
-.buttonAlternative {
+.alternative {
   background: transparent;
 }
 
-.buttonAlternativeBorder {
+.borderAlternative {
+  border: border.$width--slim solid theme.$c-button-fg;
+}
+
+.transparent {
   background: transparent;
-  border: 1px solid white;
+  backdrop-filter: none;
 }

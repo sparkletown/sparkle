@@ -1,3 +1,4 @@
+@use "scss/attendee/border";
 @use "scss/attendee/space";
 @use "scss/attendee/effects/sparkle";
 @use "scss/attendee/effects/rounded";
@@ -34,6 +35,11 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+  width: 100%;
+}
+
+.tableTitle {
+  flex: 1;
 }
 
 .deleteButton {
@@ -71,7 +77,8 @@
   margin: space.empty(0.5);
   width: space.empty(4);
   height: space.empty(4);
-  border-radius: 100%;
+  border-radius: border.$radius--mx;
+  overflow: hidden;
   display: flex;
 
   @media (min-width: breakpoint.$md) {

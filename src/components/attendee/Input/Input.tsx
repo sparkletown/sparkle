@@ -34,25 +34,38 @@ export const Input: React.ForwardRefRenderFunction<
   border = "borderless",
   ...extraInputProps
 }) => {
-  const inputClassNames = classNames(inputClassName, CN[border]);
+  const inputClassNames = classNames(
+    CN.inputField,
+    inputClassName,
+    CN[border],
+    {
+      [CN.invalid]: error,
+    }
+  );
   const registerProps = name && register ? register(name, rules) : {};
 
   return (
     <div className={CN.input}>
       {label ? (
-        <label data-label={label} onClick={onLabelClick}>
+        <div className={CN.inputWrapper}>
+          <label data-label={label} onClick={onLabelClick}>
+            <input
+              {...registerProps}
+              className={inputClassNames}
+              {...extraInputProps}
+            />
+            {error && <span className={CN.errorIcon}></span>}
+          </label>
+        </div>
+      ) : (
+        <div className={CN.inputWrapper}>
           <input
             {...registerProps}
             className={inputClassNames}
             {...extraInputProps}
           />
-        </label>
-      ) : (
-        <input
-          {...registerProps}
-          className={inputClassNames}
-          {...extraInputProps}
-        />
+          {error && <span className={CN.errorIcon}></span>}
+        </div>
       )}
       {error && <span className={CN.inputError}>{error.message}</span>}
     </div>

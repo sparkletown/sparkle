@@ -5,8 +5,6 @@ import classNames from "classnames";
 import { UserProfileModalFormData } from "types/profileModal";
 import { ContainerClassName } from "types/utility";
 
-import { isDefined } from "utils/types";
-
 import styles from "./Select.module.scss";
 
 const urlSources: Record<string, string> = {
@@ -38,14 +36,14 @@ export const Select: React.FC<SelectProps> = ({
   const containerClassNames = classNames(
     styles.select,
     {
-      [styles.invalid]: isDefined(error),
+      [styles.invalid]: error,
     },
     containerClassName
   );
   const selectContainerClassNames = classNames(
     styles.select,
     {
-      [styles.invalid]: isDefined(error),
+      [styles.invalid]: error,
     },
     containerClassName
   );

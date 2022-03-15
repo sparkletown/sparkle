@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 
 type MediaType = "isMobile" | "isTablet" | "isLaptop";
+
 const mediaBreakpoints: Record<MediaType, string> = {
   isMobile: "(max-width: 320px)",
   isTablet: "(max-width: 768px)",
   isLaptop: "(max-width: 1024px)",
 };
+
 export const useMediaQuery = () => {
   const getMatches = (): Record<MediaType, boolean> => {
     const matches: Record<string, boolean> = {

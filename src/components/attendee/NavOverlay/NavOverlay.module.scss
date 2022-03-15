@@ -24,7 +24,6 @@ $-z-index-base: 1;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 100vw;
 }
 
 .navOverlayClose {
@@ -108,4 +107,27 @@ $-z-index-base: 1;
   border-radius: border.$radius--xs;
   padding: 0;
   font-size: font.$size--xl;
+  // removes blue highlighting on mobile tap
+  -webkit-tap-highlight-color: transparent;
+}
+
+.navOverlayBack {
+  display: none;
+  align-items: center;
+  padding: 0 space.empty(1);
+  height: space.item(1);
+  border-radius: border.$radius--xs;
+  position: fixed;
+  top: space.empty(1);
+  left: space.empty(1);
+  cursor: pointer;
+  z-index: layer.level($-z-index-base);
+
+  @media (max-width: breakpoint.$md) {
+    display: flex;
+  }
+}
+
+.navOverlayBackIcon {
+  margin-right: space.empty(0.33);
 }
