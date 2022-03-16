@@ -53,7 +53,7 @@ const _ChatBox: React.FC<ChatboxProps> = ({ messages, hasMore, loadMore }) => {
       <div
         className={styles.chatboxMessages}
         ref={scrollableComponentRef}
-        id={"Chatbox_scrollable_div"}
+        id="Chatbox_scrollable_div"
       >
         <InfiniteScroll
           className={styles.messageScroller}

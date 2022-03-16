@@ -7,6 +7,8 @@
 }
 
 .chatboxMessages {
+  display: flex;
+  flex-direction: column-reverse;
   flex-grow: 1;
   // Start tiny and grow so that the send box is always visible
   flex-basis: 1px;
