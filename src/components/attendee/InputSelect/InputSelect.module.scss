@@ -9,7 +9,7 @@
   @include font.core;
   display: flex;
   width: 100%;
-  align-items: center;
+  align-items: flex-start;
   width: 100%;
   padding: space.empty(0.33) 0px;
 }
@@ -29,7 +29,7 @@
   padding: space.empty(0.33) space.empty(0.33) space.empty(0.33) 16px;
   border-radius: 0px space.empty(0.33) space.empty(0.33) 0px;
   box-sizing: border-box;
-  width: 20%;
+  width: 100%;
   border: none;
   border-right: border.$radius--xs solid transparent;
 }
@@ -48,8 +48,16 @@
   align-items: center;
 }
 
+.selectWrapper {
+  width: 20%;
+  display: flex;
+  flex-direction: column;
+  align-self: flex-end;
+}
+
 .invalid {
-  input {
+  input,
+  select {
     @include error.input-error;
   }
 }
