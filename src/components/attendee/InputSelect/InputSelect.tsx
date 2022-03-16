@@ -40,6 +40,7 @@ export const InputSelect: React.FC<InputSelectProps> = ({
   inputPlaceholder,
   selectPlaceholder,
   register,
+  // TODO: possibly unite rules into a single object
   inputRules = {},
   selectRules = {},
 }) => {
