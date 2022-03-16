@@ -8,6 +8,7 @@ import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
 import { GetUserByPosition } from "../useGetUserByPosition";
 
+// @debt move the components and its styles in their own directory under ./src/components
 import styles from "./seats.module.scss";
 
 export interface UseAuditoriumGridProps {

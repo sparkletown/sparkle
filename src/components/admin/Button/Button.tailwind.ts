@@ -9,3 +9,4 @@ export const danger =
 
 export const rounded = "h-10 text-center px-3.5 text-sm leading-4 rounded-full";
 export const regular = "rounded-md";
+export const none = "border-none shadow-none";

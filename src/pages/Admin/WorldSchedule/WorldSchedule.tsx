@@ -12,6 +12,7 @@ import { AdminLayout } from "components/layouts/AdminLayout";
 import { updateWorldScheduleSettings } from "api/world";
 
 import { WorldWithId } from "types/id";
+import { WorldScheduleFormInput } from "types/world";
 
 import {
   convertDateFromUtcSeconds,
@@ -28,13 +29,6 @@ import { TimingEventModal } from "components/organisms/TimingEventModal";
 import { AdminRestricted } from "components/atoms/AdminRestricted";
 
 import * as TW from "./WorldSchedule.tailwind";
-
-export interface WorldScheduleFormInput {
-  startDate: string;
-  startTime: string;
-  endDate: string;
-  endTime: string;
-}
 
 export interface WorldScheduleProps {
   world: WorldWithId;
@@ -171,9 +165,7 @@ export const WorldSchedule: React.FC<WorldScheduleProps> = ({ world }) => {
         {isShownCreateEventModal && (
           <TimingEventModal
             show={isShownCreateEventModal}
-            onHide={() => {
-              hideCreateEventModal();
-            }}
+            onHide={hideCreateEventModal}
             worldId={world.id}
           />
         )}
