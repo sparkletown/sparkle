@@ -78,9 +78,7 @@ export const useSeating = <T>({
   });
 
   const takenSeat = useMemo(() => {
-    const reuslt = seatedUsers.find(({ id }) => id === user.id);
-    console.log("new seat", reuslt);
-    return reuslt;
+    return seatedUsers.find(({ id }) => id === user.id);
   }, [seatedUsers, user.id]);
   const isSat = !!takenSeat;
 
