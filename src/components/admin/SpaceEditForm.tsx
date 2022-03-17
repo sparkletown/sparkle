@@ -4,6 +4,7 @@ import { useAsyncFn } from "react-use";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Checkbox } from "components/admin/Checkbox";
 import { ImageInput } from "components/admin/ImageInput";
+import { SpaceUsersManager } from "components/admin/SpaceUsersManager";
 
 import {
   ADMIN_IA_SPACE_BASE_PARAM_URL,
@@ -49,7 +50,6 @@ import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { BackgroundSelect } from "pages/Admin/BackgroundSelect";
 
 import { AdminSidebarButtons } from "components/organisms/AdminVenueView/components/AdminSidebarButtons";
-import { RunTabUsers } from "components/organisms/AdminVenueView/components/RunTabUsers/RunTabUsers";
 
 import { AdminInput } from "components/molecules/AdminInput";
 import { AdminSidebarAccordion } from "components/molecules/AdminSectionAccordion";
@@ -528,7 +528,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
             </>
           )}
           <AdminSidebarAccordion title="Space admins" open>
-            <RunTabUsers />
+            <SpaceUsersManager />
           </AdminSidebarAccordion>
           <FormErrors errors={errors} omitted={HANDLED_ERRORS} />
           <SubmitError error={updateError} />

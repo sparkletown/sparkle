@@ -12,9 +12,9 @@ import { VenueOwnersModal } from "pages/Admin/VenueOwnersModal";
 
 import { RunTabUserInfo } from "components/organisms/AdminVenueView/components/RunTabUserInfo";
 
-import "./RunTabUsers.scss";
+import "./SpaceUsersManager.scss";
 
-export const RunTabUsers: React.FC = () => {
+export const SpaceUsersManager: React.FC = () => {
   const { space, world } = useWorldAndSpaceByParams();
   const {
     isShown: isShownInviteAdminModal,
@@ -40,14 +40,17 @@ export const RunTabUsers: React.FC = () => {
   }
 
   return (
-    <div className="RunTabUsers">
+    <div className="SpaceUsersManager">
       <span>Owners</span>
       {ownerArray.map((user) => (
         <RunTabUserInfo key={user.id} user={user} />
       ))}
-      <div className="RunTabUsers__row RunTabUsers__manage">
+      <div className="SpaceUsersManager__row SpaceUsersManager__manage">
         <span>Editors</span>
-        <span className="RunTabUsers__invite" onClick={showInviteAdminModal}>
+        <span
+          className="SpaceUsersManager__invite"
+          onClick={showInviteAdminModal}
+        >
           {STRING_PLUS} Add editor
         </span>
       </div>

@@ -563,12 +563,12 @@ export const deleteScreeningRoomVideo = async (
   });
 };
 
-export const getSpaceOwners = async (spaceOwners: string[]) =>
+export const getSpaceOwners = async (spaceOwnerIds: string[]) =>
   Promise.all(
-    spaceOwners.map((admin) => getUserRef(admin).get())
+    spaceOwnerIds.map((admin) => getUserRef(admin).get())
   ).then((docs) => docs.map((doc) => withId(doc.data() as User, doc.id)));
 
-export const getSpaceEditors = async (spaceEditors: string[]) =>
+export const getSpaceEditors = async (spaceEditorIds: string[]) =>
   Promise.all(
-    spaceEditors.map((admin) => getUserRef(admin).get())
+    spaceEditorIds.map((admin) => getUserRef(admin).get())
   ).then((docs) => docs.map((doc) => withId(doc.data() as User, doc.id)));
