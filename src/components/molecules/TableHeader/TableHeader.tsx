@@ -10,9 +10,9 @@ import { TableSeatData } from "components/attendee/TableGrid/TableGrid";
 import { Toggler } from "components/attendee/Toggler";
 import firebase from "firebase/compat/app";
 
-import { MAX_TABLE_CAPACITY, STATIC_SECTION_ID } from "settings";
+import { MAX_TABLE_CAPACITY } from "settings";
 
-import { unsetSeat } from "api/venue";
+import { unsetSeat } from "api/world";
 
 import { Table } from "types/Table";
 
@@ -30,6 +30,7 @@ import "./TableHeader.scss";
 export interface TableHeaderProps {
   seatedAtTable: string;
   setSeatedAtTable: (val: string) => void;
+  worldId: string;
   venueId: string;
   venueName: string;
   tables: Table[];
@@ -39,6 +40,7 @@ export interface TableHeaderProps {
 export const TableHeader: React.FC<TableHeaderProps> = ({
   seatedAtTable,
   setSeatedAtTable,
+  worldId,
   venueId,
   venueName,
   tables,
@@ -73,8 +75,8 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
   const isCurrentTableLocked = isTruthy(!!allTables?.[seatedAtTable]?.locked);
 
   const { users: seatedTableUsers } = useSeatedUsers<TableSeatData>({
+    worldId: worldId,
     spaceId: venueId,
-    sectionId: STATIC_SECTION_ID,
   });
   const currentTableHasSeatedUsers = seatedTableUsers.some(
     (user) => user.seatData.tableReference === seatedAtTable
@@ -117,11 +119,10 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
     if (!userId || !profile) return;
     await unsetSeat({
       userId,
-      spaceId: venueId,
-      sectionId: STATIC_SECTION_ID,
+      worldId,
     });
     setSeatedAtTable("");
-  }, [userId, profile, venueId, setSeatedAtTable]);
+  }, [userId, profile, worldId, setSeatedAtTable]);
 
   useEffect(() => {
     window.addEventListener("beforeunload", leaveSeat);

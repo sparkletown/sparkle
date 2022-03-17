@@ -4,6 +4,8 @@ import firebase from "firebase/compat/app";
 
 import {
   ALWAYS_EMPTY_OBJECT,
+  COLLECTION_SEATED_USERS_CHECKINS,
+  COLLECTION_WORLDS,
   VENUE_RECENT_SEATED_USERS_UPDATE_INTERVAL,
 } from "settings";
 
@@ -18,16 +20,17 @@ import { getCurrentTimeInMilliseconds } from "utils/time";
 
 import { useUser } from "hooks/useUser";
 
-const getRecentSeatedUserRef = (venueId: string, userId: string) =>
+const getRecentSeatedUserRef = (worldId: string, userId: string) =>
   firebase
     .firestore()
-    .collection("venues")
-    .doc(venueId)
-    .collection("recentSeatedUsers")
+    .collection(COLLECTION_WORLDS)
+    .doc(worldId)
+    .collection(COLLECTION_SEATED_USERS_CHECKINS)
     .doc(userId);
 
 const updateSeatedData = async <T extends VenueTemplate>(
   template: T,
+  worldId: string,
   venueId: string | undefined,
   userId: string | undefined,
   venueSpecificData:
@@ -40,16 +43,18 @@ const updateSeatedData = async <T extends VenueTemplate>(
 
   const withTimestamp: RecentSeatedUserTimestamp<T> = {
     template,
-    venueId,
+    worldId,
+    spaceId: venueId,
     venueSpecificData,
     lastSittingTimeMs: getCurrentTimeInMilliseconds(),
   };
 
-  return getRecentSeatedUserRef(venueId, userId).set(withTimestamp);
+  return getRecentSeatedUserRef(worldId, userId).set(withTimestamp);
 };
 
 const useUpdateRecentSeatedUsers = <T extends VenueTemplate>(
   template: T,
+  worldId: string,
   venueId: string | undefined,
   venueSpecificData:
     | RecentSeatedUserData<T>["venueSpecificData"]
@@ -62,27 +67,41 @@ const useUpdateRecentSeatedUsers = <T extends VenueTemplate>(
   const intervalRunning = Boolean(venueSpecificData && venueId);
   useInterval(
     () => {
-      void updateSeatedData(template, venueId, userId, venueSpecificData);
+      void updateSeatedData(
+        template,
+        worldId,
+        venueId,
+        userId,
+        venueSpecificData
+      );
     },
     intervalRunning ? VENUE_RECENT_SEATED_USERS_UPDATE_INTERVAL : null
   );
 
   useEffect(() => {
-    void updateSeatedData(template, venueId, userId, venueSpecificData);
+    void updateSeatedData(
+      template,
+      worldId,
+      venueId,
+      userId,
+      venueSpecificData
+    );
 
     return () => {
       if (venueId && userId)
         void getRecentSeatedUserRef(venueId, userId).delete();
     };
-  }, [template, userId, venueId, venueSpecificData]);
+  }, [template, userId, venueId, venueSpecificData, worldId]);
 };
 
 export const useUpdateAuditoriumRecentSeatedUsers = (
+  worldId: string,
   venueId: string | undefined,
   sectionId: string | undefined | null | false
 ) => {
   useUpdateRecentSeatedUsers(
     VenueTemplate.auditorium,
+    worldId,
     venueId,
     useMemo(() => (sectionId ? { sectionId } : undefined), [sectionId])
   );
@@ -90,7 +109,8 @@ export const useUpdateAuditoriumRecentSeatedUsers = (
 
 export const useUpdateTableRecentSeatedUsers = (
   template: TableSeatedUsersVenuesTemplates,
+  worldId: string,
   venueId: string | undefined
 ) => {
-  useUpdateRecentSeatedUsers(template, venueId, ALWAYS_EMPTY_OBJECT);
+  useUpdateRecentSeatedUsers(template, worldId, venueId, ALWAYS_EMPTY_OBJECT);
 };

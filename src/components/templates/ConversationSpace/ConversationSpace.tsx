@@ -8,6 +8,9 @@ import { GenericVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
+import { useUser } from "hooks/useUser";
+
+import { Loading } from "components/molecules/Loading";
 import { SpaceInfoText } from "components/molecules/SpaceInfoText";
 
 export interface ConversationSpaceProps {
@@ -23,6 +26,12 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
 
   const tables = space?.config?.tables ?? CONVERSATION_TABLES;
 
+  const { userWithId } = useUser();
+
+  if (!userWithId) {
+    return <Loading />;
+  }
+
   return (
     <>
       <SpaceInfoText space={space} />
@@ -32,7 +41,7 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
         customTables={tables}
         defaultTables={CONVERSATION_TABLES}
         space={space}
-        userId={userId}
+        user={userWithId}
       />
     </>
   );

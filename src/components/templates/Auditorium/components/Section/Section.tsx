@@ -36,7 +36,11 @@ export const Section: React.FC<SectionProps> = ({ venue, sectionId }) => {
     sectionId,
   });
 
-  useUpdateAuditoriumRecentSeatedUsers(venueId, isUserSeated && sectionId);
+  useUpdateAuditoriumRecentSeatedUsers(
+    venue.worldId,
+    venueId,
+    isUserSeated && sectionId
+  );
 
   const analytics = useAnalytics({ venue });
 

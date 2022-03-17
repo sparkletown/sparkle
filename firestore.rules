@@ -145,6 +145,15 @@ service cloud.firestore {
       allow get: if !resource.data.isHidden;
       allow list: if !resource.data.isHidden;
       allow update, delete: if request.auth.uid in role('admin').users && request.auth.uid in world().owners;
+
+      match /seatedUsers/{userId} {
+        allow read: if request.auth.uid != null;
+        allow write: if request.auth.uid == userId;
+      }
+      match /recentSeatedUsers/{userId} {
+        allow read: if request.auth.uid != null;
+        allow write: if request.auth.uid == userId;
+      }
     }
     match /worldEvents/{eventId} {
       allow update, delete: if request.auth.uid in worldFromResource().owners;

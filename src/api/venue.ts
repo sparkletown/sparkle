@@ -11,11 +11,9 @@ import {
   CompatQueryDocumentSnapshot,
 } from "types/Firestore";
 import { UserId } from "types/id";
-import { DisplayUser, SeatedUser } from "types/User";
 import { AnyVenue } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
 
-import { pickDisplayUserFromUser } from "utils/chat";
 import { WithId, withId } from "utils/id";
 
 export const getVenueCollectionRef: () => CompatCollectionReference<CompatDocumentData> = () =>
@@ -146,54 +144,4 @@ export const updateVenueNG = async (venue: VenueInputForm, userId: UserId) => {
   }
 
   return updateResponse;
-};
-
-const getUserInSectionRef = (
-  userId: string,
-  spaceId: string,
-  sectionId: string
-) => {
-  return firebase
-    .firestore()
-    .collection("venues")
-    .doc(spaceId)
-    .collection("sections")
-    .doc(sectionId)
-    .collection("seatedSectionUsers")
-    .doc(userId);
-};
-interface setSeatOptions<T> {
-  user: WithId<DisplayUser>;
-  spaceId: string;
-  sectionId: string;
-  seatData: T;
-}
-
-export const setSeat = async <T>({
-  user,
-  spaceId,
-  sectionId,
-  seatData,
-}: setSeatOptions<T>) => {
-  const data: SeatedUser<T> = {
-    ...pickDisplayUserFromUser(user),
-    spaceId,
-    sectionId,
-    seatData,
-  };
-  return getUserInSectionRef(user.id, spaceId, sectionId).set(data);
-};
-
-interface unsetSeatOptions {
-  userId: string;
-  spaceId: string;
-  sectionId: string;
-}
-
-export const unsetSeat = async ({
-  userId,
-  spaceId,
-  sectionId,
-}: unsetSeatOptions) => {
-  getUserInSectionRef(userId, spaceId, sectionId).delete();
 };

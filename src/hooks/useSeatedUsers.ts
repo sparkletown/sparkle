@@ -1,7 +1,11 @@
 import { useFirestore, useFirestoreCollectionData } from "reactfire";
-import { collection, query } from "firebase/firestore";
+import { collection, query, QueryConstraint, where } from "firebase/firestore";
 
-import { COLLECTION_SECTIONS, COLLECTION_SPACES } from "settings";
+import {
+  ALWAYS_EMPTY_ARRAY,
+  COLLECTION_SEATED_USERS,
+  COLLECTION_WORLDS,
+} from "settings";
 
 import { SeatedUser } from "types/User";
 
@@ -9,24 +13,22 @@ import { withIdConverter } from "utils/converters";
 import { WithId } from "utils/id";
 
 interface useSeatedUsersOptions {
+  worldId: string;
   spaceId: string;
-  sectionId: string;
+  additionalWhere?: QueryConstraint[];
 }
 
 export const useSeatedUsers = <T>({
+  worldId,
   spaceId,
-  sectionId,
-}: useSeatedUsersOptions) => {
+  additionalWhere = ALWAYS_EMPTY_ARRAY,
+}: // TODO additional query args (e.g. section)
+useSeatedUsersOptions) => {
   const firestore = useFirestore();
   const seatedUsersRef = query(
-    collection(
-      firestore,
-      COLLECTION_SPACES,
-      spaceId,
-      COLLECTION_SECTIONS,
-      sectionId,
-      "seatedSectionUsers"
-    )
+    collection(firestore, COLLECTION_WORLDS, worldId, COLLECTION_SEATED_USERS),
+    where("spaceId", "==", spaceId),
+    ...additionalWhere
   ).withConverter(withIdConverter<SeatedUser<T>>());
 
   const { data: users, status } = useFirestoreCollectionData<

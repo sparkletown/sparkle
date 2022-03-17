@@ -2,14 +2,11 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useVideoHuddle } from "components/attendee/VideoHuddle/useVideoHuddle";
 import { groupBy } from "lodash";
 
-import { ALLOWED_EMPTY_TABLES_NUMBER, STATIC_SECTION_ID } from "settings";
-
-import { setSeat, unsetSeat } from "api/venue";
+import { ALLOWED_EMPTY_TABLES_NUMBER } from "settings";
 
 import { Table } from "types/Table";
-import { SeatedUser } from "types/User";
+import { SeatedUser, User } from "types/User";
 import { AnyVenue } from "types/venues";
-import { VenueTemplate } from "types/VenueTemplate";
 
 import { WithId } from "utils/id";
 import { generateTable } from "utils/table";
@@ -17,10 +14,8 @@ import { arrayIncludes, isTruthy } from "utils/types";
 
 import { useAnalytics } from "hooks/useAnalytics";
 import { useExperience } from "hooks/useExperience";
-import { useSeatedUsers } from "hooks/useSeatedUsers";
+import { useSeating } from "hooks/useSeating";
 import { useShowHide } from "hooks/useShowHide";
-import { useUpdateTableRecentSeatedUsers } from "hooks/useUpdateRecentSeatedUsers";
-import { useUser } from "hooks/useUser";
 
 import { Loading } from "components/molecules/Loading";
 import { Modal } from "components/molecules/Modal";
@@ -39,12 +34,15 @@ interface TableGridProps {
   joinMessage: boolean;
   leaveText?: string;
   space: WithId<AnyVenue>;
-  userId: string;
+  user: WithId<User>;
 }
 
 export interface TableSeatData {
   tableReference: string;
 }
+
+const generateHuddleId = (spaceId: string, tableReference: string) =>
+  `${spaceId}-${tableReference}`;
 
 export const TableGrid: React.FC<TableGridProps> = ({
   customTables,
@@ -52,66 +50,104 @@ export const TableGrid: React.FC<TableGridProps> = ({
   showOnlyAvailableTables = false,
   joinMessage,
   space,
-  userId,
+  user,
 }) => {
   const analytics = useAnalytics({ venue: space });
-  const [seatedAtTable, setSeatedAtTable] = useState<string>();
 
-  useUpdateTableRecentSeatedUsers(
-    VenueTemplate.jazzbar,
-    seatedAtTable && space?.id
-  );
+  const [joiningTable, setJoiningTable] = useState<string>();
+
+  const {
+    takeSeat,
+    leaveSeat,
+    takenSeat,
+    seatedUsers,
+    isSeatedUsersLoaded,
+  } = useSeating<TableSeatData>({
+    user,
+    worldId: space.worldId,
+    spaceId: space.id,
+  });
+
+  const isSeatedAtTable = !!takenSeat;
 
   useEffect(() => {
-    seatedAtTable && analytics.trackSelectTableEvent();
-  }, [analytics, seatedAtTable]);
+    takenSeat && analytics.trackSelectTableEvent();
+  }, [analytics, takenSeat]);
 
   const { joinHuddle, leaveHuddle, inHuddle } = useVideoHuddle();
 
-  const wasPrevAtTable = !!seatedAtTable;
-  const joinTable = useCallback(
-    (table) => {
-      // If the user is already in a huddle and was previously at another
-      // table then make sure to leave the huddle first. This covers the
-      // scenario where a user clicks "join" when already at a different
-      // table
-      if (wasPrevAtTable && table) {
+  // Track the previous huddle ID so that we know when someone is leaving
+  // a huddle by clicking the "leave huddle" button as this should trigger
+  // leaving the seat too.
+  const [prevHuddleId, setPrevHuddleId] = useState<string>();
+
+  // @debt
+  // Breaking this up into multiple effect hooks might make this less likely
+  // to break. There is still the occasional warning from the twilio
+  // implementation that the user is attempting to join a huddle without
+  // disconnecting first.
+  // It might also be a lot cleaner if we stopped dropping people into calls
+  // when they refresh their browser
+  useEffect(() => {
+    // We allow the database to drive what seat we're in and derive the huddle
+    // we're in. This gives us a few scenarios that we have to cope with:
+    //  1. User going from no seat to a specific seat
+    //  2. User moving between seats
+    //  3. User leaving their seat
+    //  4. The user has left the huddle and needs to leave their seat too
+    // Each of these require a bit of logic to make them happen
+    if (isSeatedAtTable && !inHuddle) {
+      const expectedHuddleId = generateHuddleId(
+        space.id,
+        takenSeat.seatData.tableReference
+      );
+
+      if (prevHuddleId === expectedHuddleId) {
+        // Scenario 4
+        leaveSeat();
+      } else {
+        // Scenario 1
+        joinHuddle(user.id, expectedHuddleId);
+      }
+    } else if (isSeatedAtTable && inHuddle) {
+      // If the huddle ID doesn't match what we expect then the user has changed
+      // seat. This is scenario 2. Leave the huddle and then this hook will get
+      // called later and fall into scenario 1
+      const expectedHuddleId = generateHuddleId(
+        space.id,
+        takenSeat.seatData.tableReference
+      );
+      if (inHuddle !== expectedHuddleId) {
         leaveHuddle();
       }
-      joinHuddle(userId, `${space.id}-${table}`);
-      setSeatedAtTable(table);
-    },
-    [wasPrevAtTable, joinHuddle, userId, space.id, leaveHuddle]
-  );
-
-  const leaveTable = useCallback(async () => {
-    await unsetSeat({
-      userId,
-      spaceId: space.id,
-      sectionId: STATIC_SECTION_ID,
-    });
-    setSeatedAtTable(undefined);
-  }, [userId, space.id]);
-
-  useEffect(() => {
-    if (!inHuddle && seatedAtTable) {
-      leaveTable();
+    } else if (!isSeatedAtTable && inHuddle) {
+      // Scenario 3
+      leaveHuddle();
     }
-  }, [inHuddle, leaveTable, seatedAtTable]);
+    setPrevHuddleId(inHuddle);
+  }, [
+    // Take care when modifying these. This effect should not be recalculated
+    // except when state has -actually- changed and not just because a new
+    // object has been created.
+    inHuddle,
+    isSeatedAtTable,
+    joinHuddle,
+    leaveHuddle,
+    leaveSeat,
+    prevHuddleId,
+    space.id,
+    takenSeat?.seatData.tableReference,
+    user.id,
+  ]);
 
   useEffect(() => {
+    // Ensure the user leaves their seat and the huddle if they are leaving the
+    // space
     return () => {
-      (async () => {
-        // Always leave the table when leaving the space
-        await unsetSeat({
-          userId,
-          spaceId: space.id,
-          sectionId: STATIC_SECTION_ID,
-        });
-        leaveHuddle();
-      })();
+      leaveSeat();
+      leaveHuddle();
     };
-  }, [leaveTable, leaveHuddle, userId, space.id]);
+  }, [leaveHuddle, leaveSeat]);
 
   // NOTE: custom tables can already contain default tables and this check here is to only doubleconfrim the data coming from the above
   const tables: Table[] = customTables || defaultTables;
@@ -128,63 +164,24 @@ export const TableGrid: React.FC<TableGridProps> = ({
     hide: hideJoinMessage,
   } = useShowHide(false);
 
-  const [joiningTable, setJoiningTable] = useState("");
-
-  const { userWithId } = useUser();
   const { data: experience } = useExperience();
 
-  const isCurrentUserAdmin = arrayIncludes(space.owners, userId);
-
-  const {
-    users: seatedTableUsers,
-    isLoaded: isSeatedTableUsersLoaded,
-  } = useSeatedUsers<TableSeatData>({
-    spaceId: venueId,
-    sectionId: STATIC_SECTION_ID,
-  });
-
-  const userTableReference = useMemo(
-    () =>
-      seatedTableUsers.find((u) => u.id === userWithId?.id)?.seatData
-        .tableReference,
-    [seatedTableUsers, userWithId?.id]
-  );
-
-  useEffect(() => {
-    if (userTableReference && userTableReference !== seatedAtTable) {
-      joinTable(userTableReference);
-    }
-  }, [joinTable, userTableReference, seatedAtTable]);
-
-  const isSeatedAtTable = !!seatedAtTable;
-
-  const takeSeat = useCallback(
-    async (table: string) => {
-      if (!userWithId) return;
-
-      await setSeat<TableSeatData>({
-        user: userWithId,
-        spaceId: space.id,
-        sectionId: STATIC_SECTION_ID,
-        seatData: {
-          tableReference: table,
-        },
-      });
-    },
-    [userWithId, space.id]
-  );
+  const isCurrentUserAdmin = arrayIncludes(space.owners, user.id);
 
   const usersSeatedAtTables: Record<
     string,
     WithId<SeatedUser<TableSeatData>>[]
   > = useMemo(() => {
+    if (!isSeatedUsersLoaded) {
+      return {};
+    }
     const tableReferences = tables.map((t) => t.reference);
 
-    const filteredUsers = seatedTableUsers.filter((user) =>
+    const filteredUsers = seatedUsers.filter((user) =>
       tableReferences.includes(user.seatData.tableReference)
     );
     return groupBy(filteredUsers, (user) => user.seatData.tableReference);
-  }, [seatedTableUsers, tables]);
+  }, [isSeatedUsersLoaded, seatedUsers, tables]);
 
   const isFullTable = useCallback(
     (table: Table) => {
@@ -208,13 +205,15 @@ export const TableGrid: React.FC<TableGridProps> = ({
   );
 
   const onAcceptJoinMessage = useCallback(
-    async (table: string) => {
+    async (table?: string) => {
+      if (!table) {
+        return;
+      }
       window.scrollTo(0, 0);
       hideJoinMessage();
-      await takeSeat(table);
-      setSeatedAtTable(table);
+      await takeSeat({ tableReference: table });
     },
-    [hideJoinMessage, setSeatedAtTable, takeSeat]
+    [hideJoinMessage, takeSeat]
   );
 
   const acceptJoiningTable = useCallback(
@@ -260,7 +259,7 @@ export const TableGrid: React.FC<TableGridProps> = ({
         tableLocked={tableLocked}
         onJoinClicked={onJoinClicked}
         space={space}
-        userId={userId}
+        userId={user.id}
       />
     ));
   }, [
@@ -271,10 +270,10 @@ export const TableGrid: React.FC<TableGridProps> = ({
     usersSeatedAtTables,
     onJoinClicked,
     space,
-    userId,
+    user.id,
   ]);
 
-  if (!isSeatedTableUsersLoaded) return <Loading />;
+  if (!isSeatedUsersLoaded) return <Loading />;
 
   return (
     <>
@@ -285,7 +284,7 @@ export const TableGrid: React.FC<TableGridProps> = ({
           newTable={generateTable({
             tableNumber: tables.length + 1,
           })}
-          space={space}
+          venue={space}
         />
       )}
       <Modal show={isLockedMessageVisible} onHide={hideLockedMessage}>

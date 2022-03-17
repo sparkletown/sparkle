@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from "react";
 import { useFirestore, useFirestoreDocData } from "reactfire";
-import { doc } from "firebase/firestore";
+import { doc, where } from "firebase/firestore";
 
 import {
   COLLECTION_SECTIONS,
@@ -10,10 +10,10 @@ import {
   SECTION_DEFAULT_ROWS_COUNT,
 } from "settings";
 
-import { setSeat, unsetSeat } from "api/venue";
+import { setSeat, unsetSeat } from "api/world";
 
 import { AuditoriumSection } from "types/auditorium";
-import { GridPosition } from "types/grid";
+import { GridPosition, SectionGridData } from "types/grid";
 import { AuditoriumVenue } from "types/venues";
 
 import { getVideoSizeInSeats } from "utils/auditorium";
@@ -72,9 +72,10 @@ export const useAuditoriumSection = ({
     videoHeightInSeats + REACTIONS_CONTAINER_HEIGHT_IN_SEATS;
   const screenWidthInSeats = videoWidthInSeats;
 
-  const { users: seatedUsers } = useSeatedUsers<GridPosition>({
+  const { users: seatedUsers } = useSeatedUsers<SectionGridData>({
+    worldId: venue.worldId,
     spaceId: venueId,
-    sectionId,
+    additionalWhere: [where("seatedData.sectionId", "==", sectionId)],
   });
 
   const isUserSeated = useMemo(
@@ -90,24 +91,25 @@ export const useAuditoriumSection = ({
     ({ row, column }: GridPosition) => {
       if (!sectionId || !venueId || !userWithId) return;
 
-      return setSeat<GridPosition>({
+      return setSeat<SectionGridData>({
         user: userWithId,
+        worldId: venue.worldId,
         spaceId: venueId,
-        sectionId,
         seatData: {
+          sectionId,
           row,
           column,
         },
       });
     },
-    [sectionId, venueId, userWithId]
+    [sectionId, venueId, userWithId, venue.worldId]
   );
 
   const leaveSeat: () => Promise<void> | undefined = useCallback(() => {
     if (!venueId || !userId || !sectionId) return;
 
-    return unsetSeat({ userId, spaceId: venueId, sectionId });
-  }, [venueId, userId, sectionId]);
+    return unsetSeat({ userId, worldId: venue.worldId });
+  }, [venueId, userId, sectionId, venue.worldId]);
 
   return {
     auditoriumSection: section,

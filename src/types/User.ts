@@ -60,8 +60,8 @@ export type TableSeatedUser = DisplayUser & {
 };
 
 export type SeatedUser<T> = DisplayUser & {
+  worldId: string;
   spaceId: string;
-  sectionId: string;
   seatData: T;
 };
 
