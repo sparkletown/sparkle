@@ -6,7 +6,7 @@ import { Loading } from "components/molecules/Loading";
 import * as TW from "./Button.tailwind";
 
 export type ButtonVariant = "primary" | "secondary" | "danger";
-export type ButtonBorders = "regular" | "rounded";
+export type ButtonBorders = "regular" | "rounded" | "none";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;

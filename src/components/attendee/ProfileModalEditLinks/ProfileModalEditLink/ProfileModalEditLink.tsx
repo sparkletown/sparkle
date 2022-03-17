@@ -10,26 +10,16 @@ import { urlRegex } from "utils/types";
 
 export interface ProfileModalEditLinkProps extends ContainerClassName {
   index: number;
-  initialTitle?: string;
-  link: Partial<ProfileLink>;
   otherUrls: (string | undefined)[];
-  setTitle?: (title: string) => void;
   register: UseFormRegister<UserProfileModalFormData>;
   error?: FieldErrors<ProfileLink>;
-  onDelete: () => void;
 }
 
 export const ProfileModalEditLink: React.FC<ProfileModalEditLinkProps> = ({
   index,
-  initialTitle,
-  link,
   otherUrls,
-  setTitle,
   register,
   error,
-  onDelete,
-  containerClassName,
-  ...props
 }) => {
   const validateURLUnique: (url: string) => ValidateResult = useCallback(
     (url: string) => {
@@ -43,19 +33,18 @@ export const ProfileModalEditLink: React.FC<ProfileModalEditLinkProps> = ({
       inputName={`profileLinks.${index}.url`}
       selectName={`profileLinks.${index}.title`}
       inputPlaceholder="url"
-      selectPlaceholder="Select link type"
-      selectRules={{ required: "Title cannot empty" }}
+      selectPlaceholder="Select type"
       inputRules={{
-        required: "URL cannot be empty",
         pattern: {
           value: urlRegex,
           message: "URL must be valid",
         },
         validate: validateURLUnique,
       }}
+      selectRules={{ required: "Title cannot empty" }}
       register={register}
-      error={error?.url}
-      autoComplete="off"
+      errorInput={error?.url}
+      errorSelect={error?.title}
     />
   );
 };

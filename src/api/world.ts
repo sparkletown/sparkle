@@ -10,7 +10,7 @@ import { ACCEPTED_IMAGE_TYPES, COLLECTION_WORLDS, FIELD_SLUG } from "settings";
 import { createSlug } from "api/admin";
 
 import { EntranceStepConfig } from "types/EntranceStep";
-import { WorldSlug } from "types/id";
+import { UserId, WorldId, WorldSlug } from "types/id";
 import { Question } from "types/Question";
 import { UserStatus } from "types/User";
 import {
@@ -256,6 +256,19 @@ export const updateWorldScheduleSettings = async (
     FIREBASE.functions,
     "world-updateWorld"
   )(await createFirestoreWorldScheduleInput(world));
+};
+
+export const addWorldAdmin = async (worldId: WorldId, userId: UserId) =>
+  await httpsCallable(
+    FIREBASE.functions,
+    "world-addWorldAdmin"
+  )({ worldId, userId });
+
+export const removeWorldAdmin = async (worldId: WorldId, userId: UserId) => {
+  return await httpsCallable(
+    FIREBASE.functions,
+    "world-removeWorldAdmin"
+  )({ worldId, userId });
 };
 
 export type FindWorldBySlugOptions = {

@@ -1,58 +1,62 @@
 import { useMemo } from "react";
 import { useAsync } from "react-use";
-import { useFirestore } from "reactfire";
-import { QueryConstraint } from "@firebase/firestore";
-import { collection, getDocs, query } from "firebase/firestore";
+import { collection, getDocs, getFirestore, query } from "firebase/firestore";
+
+import { ALWAYS_EMPTY_ARRAY } from "settings";
 
 import { withIdConverter } from "utils/converters";
+import {
+  CollectionQueryOptions,
+  createConstraintsError,
+  createPathError,
+  parseCollectionQueryOptions,
+} from "utils/query";
 
-type UseFireCollectionOptions =
-  | string[]
-  | {
-      path: string[];
-      constraints?: (QueryConstraint | null | undefined)[];
-    };
-
-export const useFireCollection = <T extends object>(
-  options: UseFireCollectionOptions
+export const useFireCollection = <T extends object, ID extends string = string>(
+  options: CollectionQueryOptions
 ) => {
-  const firestore = useFirestore();
+  const {
+    path,
+    first,
+    rest,
+    hasPathError,
+    hasConstraintsError,
+    hasDeferred,
+    constraints,
+    filteredConstraints,
+  } = parseCollectionQueryOptions(options);
 
-  const path = useMemo(
-    () => (Array.isArray(options) ? options : options?.path) ?? [],
-    [options]
-  );
-  const constraints = useMemo(
-    () => (Array.isArray(options) ? [] : options?.constraints) ?? [],
-    [options]
-  );
-
-  const { error, loading, value } = useAsync(async () => {
-    if (!path?.length || path.some((segment) => !segment)) return;
-
-    if (
-      constraints?.length &&
-      constraints.some((segment) => segment === null || segment === undefined)
-    )
-      return;
-
-    const [first, ...rest] = path;
+  const { error: fireError, loading, value } = useAsync(async () => {
+    // construction of the query is where the Firestore SDK may break if invalid values are given
+    if (hasPathError || hasConstraintsError || hasDeferred) return;
 
     return (
       await getDocs(
         query(
-          collection(firestore, first, ...rest),
-          // the check above weeds out falsy values, but isn't a type guard, so TS complains
-          ...(constraints as QueryConstraint[])
-        ).withConverter(withIdConverter<T>())
+          collection(getFirestore(), first, ...rest),
+          ...filteredConstraints
+        ).withConverter(withIdConverter<T, ID>())
       )
     )?.docs?.map((d) => d.data());
-  }, [firestore, path, constraints]);
+  }, [
+    first,
+    rest,
+    filteredConstraints,
+    hasPathError,
+    hasConstraintsError,
+    hasDeferred,
+  ]);
+
+  const error = hasPathError
+    ? createPathError(path)
+    : hasConstraintsError
+    ? createConstraintsError(constraints)
+    : fireError;
 
   return useMemo(() => {
     return {
       error,
-      data: value ?? [],
+      data: value ?? ALWAYS_EMPTY_ARRAY,
       isLoading: loading,
       isLoaded: !loading,
     };
