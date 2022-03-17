@@ -46,11 +46,7 @@ export const JazzBar: React.FC<JazzProps> = ({ space }) => {
 
       <TableGrid
         customTables={jazzbarTables}
-<<<<<<< HEAD
         space={space}
-=======
-        space={venue}
->>>>>>> aa02d53e8... Basic run at seating
         defaultTables={JAZZBAR_TABLES}
         user={userWithId}
       />

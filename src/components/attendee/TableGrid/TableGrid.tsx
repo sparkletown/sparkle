@@ -351,7 +351,7 @@ export const TableGrid: React.FC<TableGridProps> = ({
           newTable={generateTable({
             tableNumber: tables.length + 1,
           })}
-          venue={space}
+          space={space}
         />
       )}
       <Modal show={isLockedMessageVisible} onHide={hideLockedMessage}>
