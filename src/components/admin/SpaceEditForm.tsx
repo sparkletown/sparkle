@@ -470,7 +470,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
           {space.template === VenueTemplate.conversationspace && (
             <div>
               <Toggle
-                label="Show Content"
+                label="Show content"
                 register={register}
                 name="showContent"
                 checked={values.showContent}
