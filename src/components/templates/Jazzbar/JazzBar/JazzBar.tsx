@@ -45,7 +45,6 @@ export const JazzBar: React.FC<JazzProps> = ({ space }) => {
       <SpaceInfoText space={space} />
 
       <TableGrid
-        joinMessage={false}
         customTables={jazzbarTables}
 <<<<<<< HEAD
         space={space}

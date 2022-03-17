@@ -29,7 +29,6 @@ interface TableGridProps {
   customTables: Table[];
   defaultTables: Table[];
   showOnlyAvailableTables?: boolean;
-  joinMessage: boolean;
   leaveText?: string;
   space: WithId<AnyVenue>;
   user: WithId<User>;
@@ -65,7 +64,6 @@ export const TableGrid: React.FC<TableGridProps> = ({
   customTables,
   defaultTables,
   showOnlyAvailableTables = false,
-  joinMessage,
   space,
   user,
 }) => {

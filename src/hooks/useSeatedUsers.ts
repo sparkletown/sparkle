@@ -22,8 +22,7 @@ export const useSeatedUsers = <T>({
   worldId,
   spaceId,
   additionalWhere = ALWAYS_EMPTY_ARRAY,
-}: // TODO additional query args (e.g. section)
-useSeatedUsersOptions) => {
+}: useSeatedUsersOptions) => {
   const firestore = useFirestore();
   const seatedUsersRef = query(
     collection(firestore, COLLECTION_WORLDS, worldId, COLLECTION_SEATED_USERS),

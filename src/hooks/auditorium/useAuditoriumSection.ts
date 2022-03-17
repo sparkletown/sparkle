@@ -1,38 +1,35 @@
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import { useFirestore, useFirestoreDocData } from "reactfire";
 import { doc, where } from "firebase/firestore";
 
 import { COLLECTION_SECTIONS, COLLECTION_SPACES } from "settings";
 
-import { setSeat, unsetSeat } from "api/world";
-
 import { AuditoriumSection } from "types/auditorium";
-import { SeatPosition, SectionGridData } from "types/grid";
+import { SeatPosition, SectionPositionData } from "types/grid";
+import { UserWithId } from "types/id";
 import { AuditoriumVenue } from "types/venues";
 
 import { withIdConverter } from "utils/converters";
 import { WithId } from "utils/id";
 
-import { useSeatedUsers } from "hooks/useSeatedUsers";
+import { useSeating } from "hooks/useSeating";
 
 import { useGetUserByPosition } from "../useGetUserByPosition";
-import { useUser } from "../useUser";
 
 export interface UseAuditoriumSectionProps {
+  user: UserWithId;
   venue: WithId<AuditoriumVenue>;
   sectionId: string;
 }
 
 export const useAuditoriumSection = ({
+  user,
   venue,
   sectionId,
 }: UseAuditoriumSectionProps) => {
   const { id: venueId } = venue;
 
   const firestore = useFirestore();
-
-  const { userWithId } = useUser();
-  const userId = userWithId?.id;
 
   const sectionRef = doc(
     firestore,
@@ -48,52 +45,42 @@ export const useAuditoriumSection = ({
 
   const isSectionLoaded = status !== "loading";
 
-  const { users: seatedUsers } = useSeatedUsers<SectionGridData>({
+  const {
+    takeSeat,
+    leaveSeat,
+    seatedUsers,
+    isSeatedUsersLoaded,
+    takenSeat,
+  } = useSeating<SectionPositionData>({
+    user,
     worldId: venue.worldId,
-    spaceId: venueId,
-    additionalWhere: [where("seatedData.sectionId", "==", sectionId)],
+    spaceId: venue.id,
+    additionalWhere: [where("seatData.sectionId", "==", sectionId)],
   });
-
-  const isUserSeated = useMemo(
-    () => seatedUsers?.some((seatedUser) => seatedUser.id === userId),
-    [seatedUsers, userId]
-  );
 
   const getUserBySeat = useGetUserByPosition(seatedUsers);
 
-  const takeSeat: (
+  const wrappedTakeSeat: (
     gridPosition: SeatPosition
-  ) => Promise<void> | undefined = useCallback(
+  ) => Promise<void> = useCallback(
     ({ seatIndex }: SeatPosition) => {
-      if (!sectionId || !venueId || !userWithId) return;
-
-      return setSeat<SectionGridData>({
-        user: userWithId,
-        worldId: venue.worldId,
-        spaceId: venueId,
-        seatData: {
-          sectionId,
-          seatIndex,
-        },
+      return takeSeat({
+        sectionId,
+        seatIndex,
       });
     },
-    [sectionId, venueId, userWithId, venue.worldId]
+    [takeSeat, sectionId]
   );
-
-  const leaveSeat: () => Promise<void> | undefined = useCallback(() => {
-    if (!venueId || !userId || !sectionId) return;
-
-    return unsetSeat({ userId, worldId: venue.worldId });
-  }, [venueId, userId, sectionId, venue.worldId]);
 
   return {
     auditoriumSection: section,
     isAuditoriumSectionLoaded: isSectionLoaded,
 
-    isUserSeated,
+    takenSeat,
+    isSeatedUsersLoaded,
 
     getUserBySeat,
-    takeSeat,
+    takeSeat: wrappedTakeSeat,
     leaveSeat,
   };
 };

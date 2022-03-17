@@ -2,45 +2,41 @@ import React, { useEffect } from "react";
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+import { UserWithId } from "types/id";
 import { AuditoriumVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
 import { useAuditoriumGrid, useAuditoriumSection } from "hooks/auditorium";
 import { useAnalytics } from "hooks/useAnalytics";
-import { useUpdateAuditoriumRecentSeatedUsers } from "hooks/useUpdateRecentSeatedUsers";
 
 import { Loading } from "components/molecules/Loading";
 
 import styles from "./Section.module.scss";
 
 export interface SectionProps {
+  user: UserWithId;
   venue: WithId<AuditoriumVenue>;
   sectionId: string;
 }
 
-export const Section: React.FC<SectionProps> = ({ venue, sectionId }) => {
-  const { id: venueId } = venue;
-
+export const Section: React.FC<SectionProps> = ({ user, venue, sectionId }) => {
   const {
     auditoriumSection,
     isAuditoriumSectionLoaded,
 
-    isUserSeated,
+    takenSeat,
 
     getUserBySeat,
     takeSeat,
     leaveSeat,
   } = useAuditoriumSection({
+    user,
     venue,
     sectionId,
   });
 
-  useUpdateAuditoriumRecentSeatedUsers(
-    venue.worldId,
-    venueId,
-    isUserSeated && sectionId
-  );
+  const isUserSeated = !!takenSeat;
 
   const analytics = useAnalytics({ venue });
 

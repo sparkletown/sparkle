@@ -37,7 +37,6 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
       <SpaceInfoText space={space} />
 
       <TableGrid
-        joinMessage={space.hideVideo === false}
         customTables={tables}
         defaultTables={CONVERSATION_TABLES}
         space={space}
