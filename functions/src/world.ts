@@ -147,15 +147,15 @@ export const deleteWorld = functions.https.onCall(async (data, context) => {
   admin.firestore().collection("worlds").doc(worldId).delete();
 });
 
-export const addWorldAdmin = functions.https.onCall(async (data, context) => {
+export const addWorldAdmins = functions.https.onCall(async (data, context) => {
   assertValidAuth(context);
 
   const worldId = data.worldId;
-  const userId = data.userId;
+  const userIds = data.userIds;
 
   await throwErrorIfNotWorldOwner({
     worldId,
-    userId,
+    userId: context.auth?.token.user_id,
   });
 
   const worldRef = await admin
@@ -172,13 +172,16 @@ export const addWorldAdmin = functions.https.onCall(async (data, context) => {
 
   const owners = worldData.owners as string[];
 
-  if (!Array.isArray(owners) || owners.includes(userId)) {
+  if (!Array.isArray(owners)) {
     return;
   }
 
-  const newOwners = [...owners, userId];
+  const newOwners = [...owners, ...userIds];
 
-  const newWorldData = { ...worldData, owners: newOwners };
+  //Removes duplicates from the concat array.
+  const uniqueOwners = [...new Set(newOwners)];
+
+  const newWorldData = { ...worldData, owners: uniqueOwners };
 
   admin.firestore().collection("worlds").doc(worldId).set(newWorldData);
 });
