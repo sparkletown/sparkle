@@ -1,10 +1,9 @@
-export interface GridPosition {
-  row: number;
-  column: number;
+export interface SeatPosition {
+  seatIndex: number;
 }
 
-export interface SectionGridData extends GridPosition {
+export interface SectionGridData extends SeatPosition {
   sectionId: string;
 }
 
-export type AnyGridData = GridPosition | SectionGridData;
+export type AnyGridData = SeatPosition | SectionGridData;

@@ -21,8 +21,6 @@ import { Loading } from "components/molecules/Loading";
 import { Modal } from "components/molecules/Modal";
 import { StartTable } from "components/molecules/StartTable";
 
-import { ButtonNG } from "components/atoms/ButtonNG";
-
 import { TableComponent } from "../TableComponent";
 
 import styles from "./TableGrid.module.scss";
@@ -249,12 +247,6 @@ export const TableGrid: React.FC<TableGridProps> = ({
     hide: hideLockedMessage,
   } = useShowHide(false);
 
-  const {
-    isShown: isJoinMessageVisible,
-    show: showJoinMessage,
-    hide: hideJoinMessage,
-  } = useShowHide(false);
-
   const { data: experience } = useExperience();
 
   const isCurrentUserAdmin = arrayIncludes(space.owners, user.id);
@@ -295,24 +287,6 @@ export const TableGrid: React.FC<TableGridProps> = ({
     [experience?.tables, usersSeatedAtTables]
   );
 
-  const onAcceptJoinMessage = useCallback(
-    async (table?: string) => {
-      if (!table) {
-        return;
-      }
-      window.scrollTo(0, 0);
-      hideJoinMessage();
-      console.log("Starting to take seat");
-      setSeatedStatus(SEATED_STATUS_TAKING_SEAT);
-    },
-    [hideJoinMessage]
-  );
-
-  const acceptJoiningTable = useCallback(
-    () => onAcceptJoinMessage(desiredTable),
-    [desiredTable, onAcceptJoinMessage]
-  );
-
   const onJoinClicked = useCallback(
     (table: string, locked: boolean) => {
       if (locked) {
@@ -320,10 +294,12 @@ export const TableGrid: React.FC<TableGridProps> = ({
       } else {
         console.log("Setting desired table", table);
         setDesiredTable(table);
-        joinMessage ? showJoinMessage() : onAcceptJoinMessage(table);
+        window.scrollTo(0, 0);
+        console.log("Starting to take seat");
+        setSeatedStatus(SEATED_STATUS_TAKING_SEAT);
       }
     },
-    [joinMessage, onAcceptJoinMessage, showJoinMessage, showLockedMessage]
+    [showLockedMessage]
   );
 
   const emptyTables = useMemo(
@@ -393,27 +369,6 @@ export const TableGrid: React.FC<TableGridProps> = ({
           >
             Back
           </button>
-        </div>
-      </Modal>
-
-      <Modal
-        show={isJoinMessageVisible}
-        onHide={hideJoinMessage}
-        autoHide={false}
-      >
-        <div>
-          <p>
-            You are now entering a video chat space. Please ALLOW camera &
-            microphone access. You will be able to turn them back off again once
-            inside, should you choose to do so. To avoid feedback from the
-            music, we recommend wearing headphones.
-          </p>
-
-          <p>You can also adjust the volume on the live stream.</p>
-
-          <ButtonNG onClick={acceptJoiningTable} variant="primary">
-            OK
-          </ButtonNG>
         </div>
       </Modal>
     </>
