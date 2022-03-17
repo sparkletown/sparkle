@@ -1,0 +1,1 @@
+export { UserProfileModal } from "./UserProfileModal";

@@ -1,7 +1,6 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { UseFormRegister } from "react-hook-form";
 import { useAsyncFn } from "react-use";
-import classNames from "classnames";
 import { ImageOverlay } from "components/shared/ImageOverlay";
 
 import { ACCEPTED_IMAGE_TYPES } from "settings";
@@ -19,8 +18,6 @@ import { UserAvatar } from "components/atoms/UserAvatar";
 
 import "firebase/storage";
 
-import styles from "./ProfileModalAvatar.module.scss";
-
 export interface ProfileModalAvatarProps extends ContainerClassName {
   user: WithId<User>;
   editMode?: boolean;
@@ -35,7 +32,6 @@ export const ProfileModalAvatar: React.FC<ProfileModalAvatarProps> = ({
   register,
   pictureUrl,
   setPictureUrl,
-  containerClassName,
 }: ProfileModalAvatarProps) => {
   const uploadRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState("");
@@ -70,18 +66,18 @@ export const ProfileModalAvatar: React.FC<ProfileModalAvatarProps> = ({
   );
 
   return (
-    <div className={classNames(styles.profileModalAvatar, containerClassName)}>
-      <div onClick={uploadProfilePic}>
+    <div className="ProfileModalAvatar flex-shrink-0 h-20 w-20">
+      <div className="ProfileModalAvatar__upload-new-container relative">
         <UserAvatar
-          imageClassName={styles.image}
+          imageClassName="rounded-full w-20 h-20"
           user={userWithOverriddenPictureUrl}
           size="full"
           showStatus
         />
         {editMode && (
-          <div className={styles.text}>
+          <div onClick={uploadProfilePic}>
             <ImageOverlay disabled={uploadingState.loading}>
-              {uploadingState.loading ? "Uploading..." : "Change"}
+              {uploadingState.loading ? "Uploading..." : "Upload new"}
             </ImageOverlay>
           </div>
         )}
@@ -91,12 +87,15 @@ export const ProfileModalAvatar: React.FC<ProfileModalAvatarProps> = ({
         onChange={handleFileChange}
         accept={ACCEPTED_IMAGE_TYPES}
         ref={uploadRef}
-        className={styles.input}
+        className="ProfileModalAvatar__input invisible"
       />
       {register && (
-        <input className={styles.input} {...register("pictureUrl")} />
+        <input
+          className="ProfileModalAvatar__input invisible"
+          {...register("pictureUrl")}
+        />
       )}
-      {error && <div>{error}</div>}
+      {error && <div className="ProfileModalAvatar__error">{error}</div>}
     </div>
   );
 };

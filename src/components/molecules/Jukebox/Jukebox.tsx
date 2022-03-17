@@ -10,6 +10,7 @@ import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import classNames from "classnames";
 
+import { UserId } from "types/id";
 import { AnyVenue } from "types/venues";
 
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
@@ -92,7 +93,7 @@ export const Jukebox: React.FC<JukeboxTypeProps> = ({
           <div key={msg.id} className="Jukebox__chat-messages">
             <span
               className="Jukebox__chat-author button--a"
-              onClick={() => openUserProfileModal(msg.fromUser.id)}
+              onClick={() => openUserProfileModal(msg.fromUser.id as UserId)}
             >
               {msg.fromUser.partyName}
             </span>{" "}

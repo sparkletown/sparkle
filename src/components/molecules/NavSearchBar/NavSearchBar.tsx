@@ -13,6 +13,7 @@ import {
 } from "settings";
 
 import { AlgoliaSearchIndex } from "types/algolia";
+import { UserId } from "types/id";
 import { Room } from "types/rooms";
 
 import { isDefined, isTruthy } from "utils/types";
@@ -118,7 +119,7 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({
           title={hit?.partyName ?? DEFAULT_PARTY_NAME}
           user={userFields}
           onClick={() => {
-            openUserProfileModal(hit.objectID);
+            openUserProfileModal(hit.objectID as UserId);
             clearSearch();
           }}
         />

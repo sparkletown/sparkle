@@ -1,6 +1,7 @@
 import React, { useCallback } from "react";
 import classNames from "classnames";
 
+import { UserId } from "types/id";
 import { User } from "types/User";
 import { ContainerClassName } from "types/utility";
 
@@ -42,10 +43,10 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
 
   const { openUserProfileModal } = useProfileModalControls();
 
-  const openProfileModal = useCallback(() => openUserProfileModal(user?.id), [
-    openUserProfileModal,
-    user?.id,
-  ]);
+  const openProfileModal = useCallback(
+    () => openUserProfileModal(user?.id as UserId),
+    [openUserProfileModal, user?.id]
+  );
 
   // @debt useImage tries to load the images twice, which is made worse by us not caching images retrieved from firebase,
   //  it's only used to handle the edgecase of showing a default when images are missing. Can we live without it?

@@ -10,6 +10,7 @@ import React, {
 import { useDrop } from "react-dnd";
 import ReactResizeDetector, { useResizeDetector } from "react-resize-detector";
 import classNames from "classnames";
+import { MapBackgroundPlaceholder } from "components/admin/MapBackgroundPlaceholder";
 import update from "immutability-helper";
 
 import { Room } from "types/rooms";
@@ -20,8 +21,6 @@ import { DraggableSubvenue } from "pages/Account/Venue/VenueMapEditor/DraggableS
 import { DragItem } from "pages/Account/Venue/VenueMapEditor/interfaces";
 import { ItemTypes } from "pages/Account/Venue/VenueMapEditor/ItemTypes";
 import { snapToGrid as doSnapToGrid } from "pages/Account/Venue/VenueMapEditor/snapToGrid";
-
-import { MapBackgroundPlaceholder } from "components/molecules/MapBackgroundPlaceholder";
 
 export interface RoomIcon {
   title: string;

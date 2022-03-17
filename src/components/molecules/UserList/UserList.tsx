@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 import classNames from "classnames";
 
+import { UserId } from "types/id";
 import { User } from "types/User";
 import { ContainerClassName } from "types/utility";
 
@@ -56,7 +57,9 @@ export const UserList: React.FC<UserListProps> = ({
             user={user}
             containerClassName="UserList__avatar"
             onClick={
-              hasClickableAvatars ? () => openUserProfileModal(user.id) : noop
+              hasClickableAvatars
+                ? () => openUserProfileModal(user.id as UserId)
+                : noop
             }
           />
         </div>

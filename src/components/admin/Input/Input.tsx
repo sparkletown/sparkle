@@ -1,5 +1,6 @@
 import React, { ReactNode } from "react";
 import {
+  FieldError,
   FieldErrors,
   FieldValues,
   RegisterOptions,
@@ -26,6 +27,7 @@ export interface InputProps
   rules?: RegisterOptions;
   description?: ReactNode | string;
   errors?: FieldErrors<FieldValues>;
+  error?: FieldError;
   hidden?: boolean;
 }
 
@@ -35,12 +37,13 @@ export const Input: React.FC<InputProps> = ({
   register,
   rules = ALWAYS_EMPTY_OBJECT,
   errors,
+  error: errorProp,
   hidden,
   description,
   required,
   ...inputProps
 }) => {
-  const error = get(errors, name);
+  const error = get(errors, name) ?? errorProp;
 
   const parentClasses = classNames("relative", {
     [TW.hidden]: hidden,
