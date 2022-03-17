@@ -10,39 +10,40 @@ const { formatSecondsAsHHMMSS } = require("./src/utils/time");
 const { checkIsAdmin } = require("./src/utils/permissions");
 const { checkAuth } = require("./src/utils/assert");
 
-const { chunk } = lodash;
+const { chunk, flatten } = lodash;
 
 const functionsConfig = functions.config();
 
 const getUsersWithVisits = async (venueIdsArray) => {
-  const dto = await chunk(venueIdsArray, 10)
-    .map(async (idsArray) => {
-      return await admin
-        .firestore()
-        .collection("users")
-        .where("enteredVenueIds", "array-contains-any", idsArray)
-        .get()
-        .then((usersSnapshot) =>
-          usersSnapshot.docs.map(async (userDoc) => {
-            const user = { ...userDoc.data(), id: userDoc.id };
+  const dto = flatten(
+    await chunk(venueIdsArray, 10)
+      .map(async (idsArray) => {
+        return await admin
+          .firestore()
+          .collection("users")
+          .where("enteredVenueIds", "array-contains-any", idsArray)
+          .get()
+          .then((usersSnapshot) =>
+            usersSnapshot.docs.map(async (userDoc) => {
+              const user = { ...userDoc.data(), id: userDoc.id };
 
-            // eslint-disable-next-line promise/no-nesting
-            const visits = await userDoc.ref
-              .collection("visits")
-              .get()
-              .then((visitsSnapshot) =>
-                visitsSnapshot.docs.map((visitDoc) => ({
-                  ...visitDoc.data(),
-                  id: visitDoc.id,
-                }))
-              );
+              // eslint-disable-next-line promise/no-nesting
+              const visits = await userDoc.ref
+                .collection("visits")
+                .get()
+                .then((visitsSnapshot) =>
+                  visitsSnapshot.docs.map((visitDoc) => ({
+                    ...visitDoc.data(),
+                    id: visitDoc.id,
+                  }))
+                );
 
-            return { user, visits };
-          })
-        );
-    })
-    .map((el) => el.then((res) => res.flat()))
-    .flat();
+              return { user, visits };
+            })
+          );
+      })
+      .map((el) => el.then((res) => flatten(res)))
+  );
   return Promise.all(await dto);
 };
 
@@ -99,7 +100,7 @@ exports.generateAnalytics = functions.https.onCall(async (data, context) => {
   // TODO: CHECK IF ADMIN
   // TODO: extract this as a generic helper function?
   const usersWithVisits = await Promise.all(
-    await getUsersWithVisits(spaceIds).then((res) => res.flat())
+    await getUsersWithVisits(spaceIds).then((res) => flatten(res))
   );
 
   // TODO: extract this as a generic helper function?
@@ -114,7 +115,7 @@ exports.generateAnalytics = functions.https.onCall(async (data, context) => {
 
       return authUsersResult.users;
     })
-  ).then((result) => result.flat());
+  ).then((result) => flatten(result));
 
   const authUsersById = authUsers.reduce(
     (acc, authUser) => ({ ...acc, [authUser.uid]: authUser }),
