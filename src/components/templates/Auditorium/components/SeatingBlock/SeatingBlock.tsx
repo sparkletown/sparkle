@@ -1,7 +1,9 @@
+import React from "react";
 import { Route, Switch, useParams, useRouteMatch } from "react-router-dom";
 
 import { AuditoriumVenue } from "types/venues";
 
+import { captureError, SparkleAssertError } from "utils/error";
 import { WithId } from "utils/id";
 
 import { useAllAuditoriumSections } from "hooks/auditorium";
@@ -27,11 +29,20 @@ export const SeatingBlock: React.FC<SeatingBlockProps> = ({ space }) => {
   // same first section. The consistency is important - not the actual order.
   const sortedSections = [...allSections];
   sortedSections.sort(({ id: idA }, { id: idB }) => idA.localeCompare(idB));
-  const sectionId = urlSectionId || sortedSections[0].id;
+  const sectionId = urlSectionId || sortedSections[0]?.id;
+
+  if (!sectionId) {
+    captureError(
+      new SparkleAssertError({
+        message: `Invalid sectionId:${String(sectionId)}`,
+        where: "SeatingBlock",
+      })
+    );
+  }
 
   return (
     <Switch>
-      <Section venue={space} sectionId={sectionId} />
+      {sectionId && <Section venue={space} sectionId={sectionId} />}
       <Route path={`${match.path}`}>
         <AllSectionPreviews venue={space} />
       </Route>
