@@ -7,7 +7,6 @@ import { SpaceWithId } from "types/id";
 import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
 import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
 import { AdminSidebar } from "components/organisms/AdminVenueView/components/AdminSidebar";
-import { RunTabUsers } from "components/organisms/AdminVenueView/components/RunTabUsers";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 import { UserList } from "components/molecules/UserList";
@@ -35,9 +34,6 @@ export const RunTabView: React.FC<RunTabViewProps> = ({ space }) => {
         <AdminSidebarSectionTitle>
           Run your {SPACE_TAXON.lower}
         </AdminSidebarSectionTitle>
-        <div className="RunTabView__content">
-          <RunTabUsers space={space} />
-        </div>
       </AdminSidebar>
       <div className="RunTabView__body">
         <div className="RunTabView__user-list">
