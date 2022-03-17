@@ -6,19 +6,20 @@ import {
   faPen,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { TableSeatData } from "components/attendee/TableGrid/TableGrid";
 import { Toggler } from "components/attendee/Toggler";
 import firebase from "firebase/compat/app";
 
 import { MAX_TABLE_CAPACITY } from "settings";
 
-import { unsetTableSeat } from "api/venue";
+import { unsetSeat } from "api/world";
 
 import { Table } from "types/Table";
 
 import { isTruthy } from "utils/types";
 
 import { useExperience } from "hooks/useExperience";
-import { useSeatedTableUsers } from "hooks/useSeatedTableUsers";
+import { useSeatedUsers } from "hooks/useSeatedUsers";
 import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 
@@ -29,6 +30,7 @@ import "./TableHeader.scss";
 export interface TableHeaderProps {
   seatedAtTable: string;
   setSeatedAtTable: (val: string) => void;
+  worldId: string;
   venueId: string;
   venueName: string;
   tables: Table[];
@@ -38,6 +40,7 @@ export interface TableHeaderProps {
 export const TableHeader: React.FC<TableHeaderProps> = ({
   seatedAtTable,
   setSeatedAtTable,
+  worldId,
   venueId,
   venueName,
   tables,
@@ -71,9 +74,12 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
 
   const isCurrentTableLocked = isTruthy(!!allTables?.[seatedAtTable]?.locked);
 
-  const [seatedTableUsers] = useSeatedTableUsers(venueId);
+  const { users: seatedTableUsers } = useSeatedUsers<TableSeatData>({
+    worldId: worldId,
+    spaceId: venueId,
+  });
   const currentTableHasSeatedUsers = seatedTableUsers.some(
-    (user) => user.path.tableReference === seatedAtTable
+    (user) => user.seatData.tableReference === seatedAtTable
   );
 
   const tableTitle = tableOfUser?.title ?? "Table";
@@ -111,9 +117,12 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
   // @debt This should be extracted into the api layer
   const leaveSeat = useCallback(async () => {
     if (!userId || !profile) return;
-    await unsetTableSeat(userId, { venueId });
+    await unsetSeat({
+      userId,
+      worldId,
+    });
     setSeatedAtTable("");
-  }, [userId, profile, venueId, setSeatedAtTable]);
+  }, [userId, profile, worldId, setSeatedAtTable]);
 
   useEffect(() => {
     window.addEventListener("beforeunload", leaveSeat);

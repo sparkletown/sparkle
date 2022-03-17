@@ -1,52 +1,35 @@
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import { useFirestore, useFirestoreDocData } from "reactfire";
-import { doc } from "firebase/firestore";
+import { doc, where } from "firebase/firestore";
 
-import {
-  COLLECTION_SECTIONS,
-  COLLECTION_SPACES,
-  REACTIONS_CONTAINER_HEIGHT_IN_SEATS,
-  SECTION_DEFAULT_COLUMNS_COUNT,
-  SECTION_DEFAULT_ROWS_COUNT,
-} from "settings";
-
-import {
-  setAuditoriumSectionSeat,
-  unsetAuditoriumSectionSeat,
-} from "api/venue";
+import { COLLECTION_SECTIONS, COLLECTION_SPACES } from "settings";
 
 import { AuditoriumSection } from "types/auditorium";
-import { GridPosition } from "types/grid";
+import { SeatPosition, SectionPositionData } from "types/grid";
+import { UserWithId } from "types/id";
 import { AuditoriumVenue } from "types/venues";
 
-import { getVideoSizeInSeats } from "utils/auditorium";
 import { withIdConverter } from "utils/converters";
 import { WithId } from "utils/id";
 
-import { useAuditoriumSeatedUsers } from "hooks/useAuditoriumSeatedUsers";
+import { useSeating } from "hooks/useSeating";
 
 import { useGetUserByPosition } from "../useGetUserByPosition";
-import { useUser } from "../useUser";
 
 export interface UseAuditoriumSectionProps {
+  user: UserWithId;
   venue: WithId<AuditoriumVenue>;
   sectionId: string;
 }
 
 export const useAuditoriumSection = ({
+  user,
   venue,
   sectionId,
 }: UseAuditoriumSectionProps) => {
-  const {
-    id: venueId,
-    auditoriumColumns: venueColumnsCount,
-    auditoriumRows: venueRowsCount,
-  } = venue;
+  const { id: venueId } = venue;
 
   const firestore = useFirestore();
-
-  const { userWithId } = useUser();
-  const userId = userWithId?.id;
 
   const sectionRef = doc(
     firestore,
@@ -62,69 +45,42 @@ export const useAuditoriumSection = ({
 
   const isSectionLoaded = status !== "loading";
 
-  const baseRowsCount =
-    section?.rowsCount ?? venueRowsCount ?? SECTION_DEFAULT_ROWS_COUNT;
-  const baseColumnsCount =
-    section?.columnsCount ?? venueColumnsCount ?? SECTION_DEFAULT_COLUMNS_COUNT;
-
-  const { videoHeightInSeats, videoWidthInSeats } = getVideoSizeInSeats(
-    baseColumnsCount
-  );
-
-  const screenHeightInSeats =
-    videoHeightInSeats + REACTIONS_CONTAINER_HEIGHT_IN_SEATS;
-  const screenWidthInSeats = videoWidthInSeats;
-
-  const seatedUsers = useAuditoriumSeatedUsers({ venueId, sectionId });
-
-  const isUserSeated = useMemo(
-    () => seatedUsers?.some((seatedUser) => seatedUser.id === userId),
-    [seatedUsers, userId]
-  );
+  const {
+    takeSeat,
+    leaveSeat,
+    seatedUsers,
+    isSeatedUsersLoaded,
+    takenSeat,
+  } = useSeating<SectionPositionData>({
+    user,
+    worldId: venue.worldId,
+    spaceId: venue.id,
+    additionalWhere: [where("seatData.sectionId", "==", sectionId)],
+  });
 
   const getUserBySeat = useGetUserByPosition(seatedUsers);
 
-  const takeSeat: (
-    gridPosition: GridPosition
-  ) => Promise<void> | undefined = useCallback(
-    ({ row, column }: GridPosition) => {
-      if (!sectionId || !venueId || !userWithId) return;
-
-      return setAuditoriumSectionSeat(
-        userWithId,
-        {
-          row,
-          column,
-        },
-        {
-          venueId,
-          sectionId,
-        }
-      );
+  const wrappedTakeSeat: (
+    gridPosition: SeatPosition
+  ) => Promise<void> = useCallback(
+    ({ seatIndex }: SeatPosition) => {
+      return takeSeat({
+        sectionId,
+        seatIndex,
+      });
     },
-    [sectionId, venueId, userWithId]
+    [takeSeat, sectionId]
   );
-
-  const leaveSeat: () => Promise<void> | undefined = useCallback(() => {
-    if (!venueId || !userId || !sectionId) return;
-
-    return unsetAuditoriumSectionSeat(userId, { venueId, sectionId });
-  }, [venueId, userId, sectionId]);
 
   return {
     auditoriumSection: section,
     isAuditoriumSectionLoaded: isSectionLoaded,
 
-    baseRowsCount,
-    baseColumnsCount,
-
-    screenWidthInSeats,
-    screenHeightInSeats,
-
-    isUserSeated,
+    takenSeat,
+    isSeatedUsersLoaded,
 
     getUserBySeat,
-    takeSeat,
+    takeSeat: wrappedTakeSeat,
     leaveSeat,
   };
 };
