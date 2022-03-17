@@ -9,6 +9,7 @@ export interface InputGroupProps {
   withLabel?: boolean;
   isRequired?: boolean;
   isOptional?: boolean;
+  ml?: string;
 }
 
 export const InputGroup: React.FC<InputGroupProps> = ({
@@ -18,6 +19,7 @@ export const InputGroup: React.FC<InputGroupProps> = ({
   isRequired,
   isOptional,
   children,
+  ml,
 }) => {
   const required = isRequired ? "required" : isOptional ? "optional" : "none";
 
@@ -29,7 +31,7 @@ export const InputGroup: React.FC<InputGroupProps> = ({
   );
 
   return (
-    <section className="mb-6 mt-6 flow-root">
+    <section className={`mb-6 mt-6 flow-root ${ml && `ml-${ml}`}`}>
       {withLabel ? <label>{contents}</label> : contents}
       {children}
     </section>

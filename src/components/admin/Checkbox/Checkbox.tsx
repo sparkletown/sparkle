@@ -11,6 +11,7 @@ export interface CheckboxProps
   errors?: FieldErrors<FieldValues>;
   label?: ReactNode | string;
   name: string;
+  ml?: string;
   displayOn?: ReactNode | string;
   displayOff?: ReactNode | string;
   register: UseFormRegister<AnyForm>;
@@ -29,12 +30,16 @@ export const Checkbox: React.FC<CheckboxProps> = ({
   subtext,
   variant = "checkbox",
   tabIndex,
+  ml,
   ...inputProps
 }) => {
   const error = get(errors, name);
 
   return (
-    <fieldset className="Checkbox mb-7" tabIndex={tabIndex}>
+    <fieldset
+      className={`Checkbox mb-7 mt-4 ${ml && `ml-${ml}`}`}
+      tabIndex={tabIndex}
+    >
       <div className="relative flex items-start">
         <div className="flex items-center h-5">
           <input

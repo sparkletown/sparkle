@@ -135,6 +135,7 @@ export interface BaseVenue {
   end_utc_seconds?: number;
   ticketUrl?: string;
   showReactions?: boolean;
+  showContent?: boolean;
   isReactionsMuted?: boolean;
   showShoutouts?: boolean;
   auditoriumColumns?: number;
