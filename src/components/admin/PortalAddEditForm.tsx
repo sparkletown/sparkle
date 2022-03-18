@@ -2,8 +2,9 @@ import React, { useCallback, useEffect, useMemo } from "react";
 import { useForm, useFormState } from "react-hook-form";
 import { useAsyncFn, useToggle } from "react-use";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Checkbox } from "components/admin/Checkbox";
 import { ImageInput } from "components/admin/ImageInput";
+import { Input } from "components/admin/Input";
+import { Toggle } from "components/admin/Toggle";
 
 import {
   DEFAULT_PORTAL_INPUT,
@@ -29,7 +30,6 @@ import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams"
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useUser } from "hooks/useUser";
 
-import { AdminInput } from "components/molecules/AdminInput";
 import { AdminSection } from "components/molecules/AdminSection";
 import { SubmitError } from "components/molecules/SubmitError";
 
@@ -90,11 +90,14 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
     setValue,
     reset,
     control,
+    watch,
   } = useForm({
     reValidateMode: "onChange",
     resolver: yupResolver(roomSchema),
     defaultValues,
   });
+
+  const values = watch();
 
   const { errors } = useFormState({ control });
 
@@ -201,33 +204,27 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
   );
 
   return (
-    <form
-      className="PortalAddEditForm__form"
-      onSubmit={handleSubmit(addPortal)}
-    >
+    <form className="bg-white" onSubmit={handleSubmit(addPortal)}>
       <div className="PortalAddEditForm__title">{title}</div>
-      <AdminInput
+      Link portal to a space
+      <SpacesDropdown
+        spaces={backButtonOptionList}
+        parentSpace={parentSpace}
+        setValue={setValue}
+        register={register}
+        fieldName="spaceId"
+        error={errors?.spaceId}
+      />
+      Name
+      <Input
         type="text"
         autoComplete="off"
         placeholder={`${SPACE_TAXON.capital} name`}
-        label="Name (required)"
         errors={errors}
         name="title"
         register={register}
         disabled={isLoading}
       />
-
-      <AdminSection title="Which space should we open to?" withLabel>
-        <SpacesDropdown
-          spaces={backButtonOptionList}
-          parentSpace={parentSpace}
-          setValue={setValue}
-          register={register}
-          fieldName="spaceId"
-          error={errors?.spaceId}
-        />
-      </AdminSection>
-
       <AdminSection
         withLabel
         title={`${ROOM_TAXON.capital} image`}
@@ -250,42 +247,30 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
         title="Change label appearance"
         subtitle="(overrides general)"
       >
-        <Checkbox
+        <Toggle
           checked={isOverrideAppearanceEnabled}
           onChange={toggleOverrideAppearance}
-          name="isAppearanceOverriden"
           label="Override appearance"
-          register={register}
         />
       </AdminSection>
-
-      {isOverrideAppearanceEnabled && (
-        <PortalVisibility
-          getValues={getValues}
-          name="visibility"
-          register={register}
-          setValue={setValue}
-        />
-      )}
-
-      {isOverrideAppearanceEnabled && (
-        <Checkbox
-          register={register}
-          name="isEnabled"
-          variant="toggler"
-          label="Portal is visible"
-        />
-      )}
-
-      {isOverrideAppearanceEnabled && (
-        <Checkbox
-          name="isClickable"
-          register={register}
-          variant="toggler"
-          label="Portal is clickable"
-        />
-      )}
-
+      <PortalVisibility
+        getValues={getValues}
+        name="visibility"
+        register={register}
+        setValue={setValue}
+      />
+      <Toggle
+        register={register}
+        checked={values.isEnabled}
+        name="isEnabled"
+        label="Portal is visible"
+      />
+      <Toggle
+        name="isClickable"
+        register={register}
+        checked={values.isClickable}
+        label="Portal is clickable"
+      />
       <SubmitError error={submitError || deleteError} />
       <div className="PortalAddEditForm__buttons">
         {isEditMode && (

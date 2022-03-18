@@ -5,7 +5,6 @@ import {
   UseFormRegister,
   UseFormSetValue,
 } from "react-hook-form";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { get } from "lodash";
 
@@ -40,46 +39,29 @@ export const PortalVisibility: React.FC<PortalVisibilityProps> = ({
 
   const renderedItems = useMemo(
     () =>
-      Object.values(LABEL_VISIBILITY_OPTIONS).map(
-        ({ subtitle, label, value }) => {
-          const isSelected = isDefined(selected) && selected === value;
-          const itemClasses = classNames({
-            "PortalVisibility__item PortalVisibility__item--selected": isSelected,
-            "PortalVisibility__item PortalVisibility__item--unselected": !isSelected,
-          });
+      Object.values(LABEL_VISIBILITY_OPTIONS).map(({ label, value }) => {
+        const isSelected = isDefined(selected) && selected === value;
+        const imageClasses = classNames({
+          "bg-indigo-600 border-transparent text-white hover:bg-indigo-700 border rounded-md py-3 px-3 flex items-center justify-center text-sm font-medium uppercase sm:flex-1 bg-white border-gray-200 text-gray-900 hover:bg-white": isSelected,
+          "bg-white border-gray-200 text-gray-900 hover:bg-gray-50 border rounded-md py-3 px-3 flex items-center justify-center text-sm font-medium uppercase sm:flex-1 bg-white border-gray-200 text-gray-900 hover:bg-white": !isSelected,
+        });
 
-          return (
-            <div
-              key={label}
-              onClick={(e) => {
-                e.preventDefault();
-                setSelected(value);
-                setValue(name, value, { shouldValidate: true });
-              }}
-              className={itemClasses}
-            >
-              <div className="PortalVisibility__image">
-                {subtitle && (
-                  <div className="PortalVisibility__subtitle">
-                    {subtitle.map(({ text, icon }, index) => (
-                      <div
-                        key={`${text}-${index}`}
-                        className="PortalVisibility__subtitle-item"
-                      >
-                        <FontAwesomeIcon icon={icon} />
-                        <span className="PortalVisibility__subtitle-text">
-                          {text}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-              <span className="PortalVisibility__caption">{label}</span>
+        return (
+          <div
+            key={label}
+            onClick={(e) => {
+              e.preventDefault();
+              setSelected(value);
+              setValue(name, value, { shouldValidate: true });
+            }}
+          >
+            <div className={imageClasses}>
+              <img src="#" alt="" />
             </div>
-          );
-        }
-      ),
+            <span className="text-gray-300 text-sm my-2">{label}</span>
+          </div>
+        );
+      }),
     [selected, setValue, setSelected, name]
   );
 
@@ -102,7 +84,7 @@ export const PortalVisibility: React.FC<PortalVisibilityProps> = ({
   }, [name, getValues, setSelected]);
 
   return (
-    <div className="PortalVisibility">
+    <div className="mt-1">
       {label ? (
         <label className="PortalVisibility__label">
           {label}
@@ -112,7 +94,9 @@ export const PortalVisibility: React.FC<PortalVisibilityProps> = ({
         renderedInput
       )}
 
-      {renderedItems}
+      <div className="grid grid-cols-3 gap-3 sm:grid-cols-5">
+        {renderedItems}
+      </div>
 
       {error && (
         <span className="PortalVisibility__error">{error?.message}</span>

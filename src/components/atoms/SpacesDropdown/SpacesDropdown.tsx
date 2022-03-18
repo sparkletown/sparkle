@@ -88,14 +88,14 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
               setSelected({ name, template, id });
               setValue(fieldName, id, { shouldValidate: true });
             }}
-            className="SpacesDropdown__item"
             data-dropdown-value={name}
+            className="flex items-center w-max"
           >
             {name !== spaceNoneOption.name ? (
               <img
                 alt={`space-icon-${spaceIcon}`}
                 src={spaceIcon}
-                className="SpacesDropdown__item-icon"
+                className="h-0.5"
               />
             ) : null}
             {name || noneOptionName}
@@ -115,15 +115,12 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
     const spaceIcon = PORTAL_INFO_ICON_MAPPING[space?.template ?? ""];
 
     return (
-      <span
-        className="SpacesDropdown__value"
-        data-dropdown-value={selected.name}
-      >
+      <span data-dropdown-value={selected.name}>
         {selected.name !== spaceNoneOption.name ? (
           <img
             alt={`space-icon-${spaceIcon}`}
             src={spaceIcon}
-            className="SpacesDropdown__item-icon"
+            className="h-0.5 w-0.5"
           />
         ) : null}
         {selected.name || noneOptionName}
@@ -133,7 +130,7 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
 
   return (
     <>
-      <div className="SpacesDropdown">
+      <div>
         <Dropdown title={renderedTitle}>{renderedOptions}</Dropdown>
         <input type="hidden" {...register} name={fieldName} />
       </div>

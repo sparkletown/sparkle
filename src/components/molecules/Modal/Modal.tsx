@@ -50,11 +50,11 @@ export const Modal: React.FC<ModalProps> = ({
     >
       <div
         className={
-          "max-h-screen relative px-4 w-full max-w-2xl h-full md:h-auto"
+          "max-h-screen relative px-4 w-full max-w-2xl h-full md:h-auto sm:max-w-lg sm:w-full"
         }
         ref={containerRef}
       >
-        <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
+        <div className="inline-block align-middle bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:max-w-lg sm:w-full sm:p-6">
           {hasHeader && (
             <div className="flex justify-between items-start p-5 rounded-t border-b dark:border-gray-600">
               <span className="Modal__title">{title}</span>
@@ -68,7 +68,7 @@ export const Modal: React.FC<ModalProps> = ({
               )}
             </div>
           )}
-          <div className="p-6 space-y-6">{children}</div>
+          <div>{children}</div>
         </div>
       </div>
     </div>
