@@ -6,8 +6,12 @@
     "outDir": "lib",
     "sourceMap": true,
     "strict": true,
-    "target": "es2017"
+    "target": "es2017",
+    "baseUrl": "..",
   },
   "compileOnSave": true,
-  "include": ["src", "decs.d.ts"]
+  "include": [
+    "src",
+    "decs.d.ts"
+  ]
 }

@@ -6,7 +6,7 @@ import { COLLECTION_SECTIONS, COLLECTION_SPACES } from "settings";
 
 import { AuditoriumSection } from "types/auditorium";
 import { SeatPosition, SectionPositionData } from "types/grid";
-import { UserWithId } from "types/id";
+import { SectionId, UserWithId } from "types/id";
 import { AuditoriumVenue } from "types/venues";
 
 import { withIdConverter } from "utils/converters";
@@ -19,7 +19,7 @@ import { useGetUserByPosition } from "../useGetUserByPosition";
 export interface UseAuditoriumSectionProps {
   user: UserWithId;
   venue: WithId<AuditoriumVenue>;
-  sectionId: string;
+  sectionId: SectionId;
 }
 
 export const useAuditoriumSection = ({

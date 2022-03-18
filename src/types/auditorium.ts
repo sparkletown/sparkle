@@ -1,3 +1,4 @@
+import { SectionId, SpaceId } from "types/id";
 import { DisplayUser, GridSeatedUser } from "types/User";
 
 import { WithId } from "utils/id";
@@ -19,8 +20,8 @@ export enum AuditoriumSize {
 }
 
 export type AuditoriumSectionPath = {
-  venueId: string;
-  sectionId: string;
+  venueId: SpaceId;
+  sectionId: SectionId;
 };
 
 export const AuditoriumEmptyBlocksCount: Record<AuditoriumSize, number> = {

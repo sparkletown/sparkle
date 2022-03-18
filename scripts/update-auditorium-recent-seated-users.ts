@@ -2,6 +2,8 @@
 
 import { chunk } from "lodash";
 
+import { COLLECTION_SEATED_USERS_CHECKINS } from "settings";
+
 import {
   checkFileExists,
   initFirebaseAdminApp,
@@ -83,7 +85,7 @@ const now = Date.now();
               .firestore()
               .collection("venues")
               .doc(venueId)
-              .collection("recentSeatedUsers")
+              .collection(COLLECTION_SEATED_USERS_CHECKINS)
               .doc(userDoc.id),
             withTimestamp
           );

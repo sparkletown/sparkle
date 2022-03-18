@@ -10,6 +10,12 @@ import {
   sum,
   uniq,
 } from "lodash";
+import { SectionId, SpaceId, WorldId } from "src/types/id";
+
+import {
+  COLLECTION_SEATED_USERS,
+  COLLECTION_SEATED_USERS_CHECKINS,
+} from "src/settings";
 
 const DEFAULT_RECENT_USERS_IN_VENUE_CHUNK_SIZE = 6;
 const SECTION_PREVIEW_USER_DISPLAY_COUNT = 14;
@@ -22,7 +28,7 @@ const removeDanglingSeatedUsers = async () => {
   const expiredSittingTimeMs = Date.now() - USER_INACTIVE_THRESHOLD;
 
   const { docs: recentSeatedUsers } = await firestore
-    .collectionGroup("recentSeatedUsers")
+    .collectionGroup(COLLECTION_SEATED_USERS_CHECKINS)
     .where("lastSittingTimeMs", "<", expiredSittingTimeMs)
     .get();
 
@@ -46,7 +52,7 @@ const removeDanglingSeatedUsers = async () => {
             firestore
               .collection("worlds")
               .doc(worldId)
-              .collection("seatedUsers")
+              .collection(COLLECTION_SEATED_USERS)
               .doc(userId)
           );
 
@@ -54,7 +60,7 @@ const removeDanglingSeatedUsers = async () => {
             firestore
               .collection("worlds")
               .doc(worldId)
-              .collection("recentSeatedUsers")
+              .collection(COLLECTION_SEATED_USERS_CHECKINS)
               .doc(userId)
           );
           removedUsersCount += 1;
@@ -70,10 +76,10 @@ const removeDanglingSeatedUsers = async () => {
 
 interface SeatedUser {
   id: string;
-  worldId: string;
-  spaceId: string;
+  worldId: WorldId;
+  spaceId: SpaceId;
   seatData: {
-    sectionId?: string;
+    sectionId?: SectionId;
   };
 }
 
@@ -86,7 +92,7 @@ const updateSeatedUsersCountInAuditorium = async () => {
   ];
 
   const { bySectionByAuditorium, allOccupiedSectionIds } = await firestore
-    .collectionGroup("seatedUsers")
+    .collectionGroup(COLLECTION_SEATED_USERS)
     .get()
     .then(({ docs }) => {
       const seatedUsers = docs

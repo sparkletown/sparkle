@@ -3,6 +3,8 @@ import { strict as assert } from "assert";
 import chalk from "chalk";
 import admin from "firebase-admin";
 
+import { COLLECTION_SEATED_USERS_CHECKINS } from "settings";
+
 import { User } from "types/User";
 
 import { DocumentReference, GridSize, SimContext, TableInfo } from "./types";
@@ -43,7 +45,7 @@ export const getRecentSeatedUsersUserRef: (
     .firestore()
     .collection("venues")
     .doc(venueId)
-    .collection("recentSeatedUsers")
+    .collection(COLLECTION_SEATED_USERS_CHECKINS)
     .doc(userId);
 
 export const getSeatedTableUserRef: (
