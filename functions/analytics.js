@@ -15,6 +15,7 @@ const { chunk, flatten } = lodash;
 const functionsConfig = functions.config();
 
 const getUsersWithVisits = async (venueIdsArray) => {
+  // @debt see if JS built in .flatMap is good fit for this logic (maybe would require polyfill to be set)
   const dto = flatten(
     await chunk(venueIdsArray, 10)
       .map(async (idsArray) => {
