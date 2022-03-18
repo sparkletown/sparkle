@@ -196,9 +196,13 @@ export const isValidUrl = (urlString: string) => {
   }
 };
 
-export const externalUrlAdditionalProps = {
-  target: "_blank",
+export const reloadUrlAdditionalProps = {
   rel: "noopener noreferrer",
+};
+
+export const externalUrlAdditionalProps = {
+  ...reloadUrlAdditionalProps,
+  target: "_blank",
 };
 
 export const getExtraLinkProps = (isExternal: boolean) =>

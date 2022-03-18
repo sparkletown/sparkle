@@ -61,7 +61,7 @@ export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
   });
 
   const handleBannerModalClose = () => {
-    if (banner?.isForceFunnel) return;
+    if (banner?.isForceFunnel || isAnnouncementUserView) return;
     hideAnnouncementMessage();
   };
 
@@ -89,6 +89,7 @@ export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
               href={banner.buttonUrl}
               className={actionButtonClasses}
               onClick={hideAnnouncementMessage}
+
             >
               {banner.buttonDisplayText}
             </LinkButton>
