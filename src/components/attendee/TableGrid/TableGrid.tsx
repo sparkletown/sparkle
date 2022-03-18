@@ -236,6 +236,19 @@ export const TableGrid: React.FC<TableGridProps> = ({
     takenSeat?.seatData.tableReference,
   ]);
 
+  // When the user leaves the space they should leave any huddle too
+  // The boolean below is used so that the hook doesn't get invoked at the wrong
+  // time.
+  const isInHuddle = !!inHuddle;
+  useEffect(() => {
+    return () => {
+      if (isInHuddle) {
+        console.log("Leaving space: leaving huddle");
+        leaveHuddle();
+      }
+    };
+  }, [isInHuddle, leaveHuddle]);
+
   // NOTE: custom tables can already contain default tables and this check here is to only doubleconfrim the data coming from the above
   const tables: Table[] = customTables || defaultTables;
 
