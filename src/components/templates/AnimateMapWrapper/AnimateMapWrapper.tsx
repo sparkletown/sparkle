@@ -3,17 +3,22 @@ import { useStore } from "react-redux";
 
 import {
   enterAnimateMapFireBarrel,
-  exitAnimateMapFireBarrel,
+  exitAnimateMapFireBarrel, setAnimateMapFireBarrel,
+  setAnimateMapFirstEntrance, setAnimateMapLastZoom, setAnimateMapPointer, setAnimateMapRoom,
+  setAnimateMapUsers, setAnimateMapZoom,
   updateAnimateMapFireBarrel
 } from "store/actions/AnimateMap";
 
+import { Room } from "types/rooms";
 import { User } from "types/User";
+import { Point } from "types/utility";
 import { AnimateMapVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
 import { useDispatch } from "hooks/useDispatch";
 
+import { ReplicatedUser } from "../../../store/reducers/AnimateMap";
 import { AnimateMap } from "../AnimateMap";
 import { CloudDataProviderWrapper } from "../AnimateMap/bridges/CloudDataProviderWrapper";
 import { CloudDataProvider } from "../AnimateMap/bridges/DataProvider/CloudDataProvider";
@@ -21,6 +26,7 @@ import { configs } from "../AnimateMap/configs";
 import { GameConfig } from "../AnimateMap/configs/GameConfig";
 import { GameInstance } from "../AnimateMap/game/GameInstance";
 import { useRelatedPartymapRooms } from "../AnimateMap/hooks/useRelatedPartymapRooms";
+
 
 export type AnimateMapWrapperProps = {
   space: WithId<AnimateMapVenue>;
@@ -38,6 +44,28 @@ export const AnimateMapWrapper: React.VFC<AnimateMapWrapperProps> = (props) => {
 
   const dispatch = useDispatch();
 
+  const handleSetAnimateMapFirstEntrance = (firstEntrance: string) => {
+    store.dispatch(setAnimateMapFirstEntrance(firstEntrance));
+  };
+  const handleSetAnimateMapUsers = (users: Map<string, ReplicatedUser>) => {
+    store.dispatch(setAnimateMapUsers(users));
+  }
+  const handleSetAnimateMapRoom = (room: Room) => {
+    store.dispatch(setAnimateMapRoom(room));
+  }
+  const handleSetAnimateMapFireBarrel = (firebarrelId: string) => {
+    store.dispatch(setAnimateMapFireBarrel(firebarrelId));
+  }
+  const handleSetAnimateMapPointer = (pointer: Point) => {
+    store.dispatch(setAnimateMapPointer(pointer));
+  }
+  const handleSetAnimateMapZoom = (value: number) => {
+    store.dispatch(setAnimateMapZoom(value));
+  }
+  const handleSetAnimateMapLastZoom = (lastZoom: number) => {
+    store.dispatch(setAnimateMapLastZoom(lastZoom));
+  }
+
   useEffect(() => {
     if (game || !dataProvider || !containerRef || !containerRef.current) {
       return;
@@ -47,12 +75,28 @@ export const AnimateMapWrapper: React.VFC<AnimateMapWrapperProps> = (props) => {
       ? new GameConfig(props.space.gameOptions)
       : configs.animateMap;
 
-    const gameInstance = new GameInstance(
+    // const gameInstance = new GameInstance(
+    //   config,
+    //   store,
+    //   dataProvider,
+    //   containerRef.current as HTMLDivElement
+    // );
+
+    const gameInstance = new GameInstance({
       config,
-      store,
       dataProvider,
-      containerRef.current as HTMLDivElement
-    );
+      containerElement: containerRef.current,
+      handleSetAnimateMapFirstEntrance,
+      handleSetAnimateMapUsers,
+      handleSetAnimateMapRoom,
+      handleSetAnimateMapFireBarrel,
+      handleSetAnimateMapPointer,
+      handleSetAnimateMapZoom,
+      handleSetAnimateMapLastZoom,
+      animatemap: store.getState().animatemap
+    });
+
+    console.log("get store => ", store.getState());
 
     setGame(gameInstance);
     //eslint-disable-next-line react-hooks/exhaustive-deps

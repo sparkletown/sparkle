@@ -1,17 +1,16 @@
 import { Renderer } from "pixi.js";
-import { Store } from "redux";
-
-import { AnimateMapState } from "store/reducers/AnimateMap";
 
 import { GameConfig } from "../AnimateMap/configs/GameConfig";
 import { MapContainer } from "../AnimateMap/game/map/MapContainer";
+import { DataProvider } from "../DataProvider";
+import { GameInstanceProvider } from "../GameInstanceProvider";
 
 export type GameInstanceInterface = {
+  gameInstanceProvider: GameInstanceProvider;
+  dataProvider: DataProvider;
   init: () => Promise<void>;
   start: () => Promise<void>;
   release: () => Promise<void>;
-  getStore: () => Store;
-  getState: () => AnimateMapState;
   getConfig: () => GameConfig;
   getMapContainer: () => MapContainer | undefined;
   getRenderer: () => Renderer | undefined;

@@ -220,17 +220,15 @@ export const createVenueEntity = (
     .add(
       new ClickableSpriteComponent(() => {
         const currentVenue = getCurrentReplicatedVenue(venueComponent);
-        GameInstance.instance.getStore().dispatch(
-          setAnimateMapRoom({
-            ...DEFAULT_PORTAL_BOX,
-            title: currentVenue.data.title,
-            subtitle: currentVenue.data.subtitle,
-            url: currentVenue.data.url,
-            about: currentVenue.data.about,
-            isEnabled: currentVenue.data.isEnabled,
-            image_url: currentVenue.data.image_url,
-          })
-        );
+        GameInstance.instance.gameInstanceProvider.handleSetAnimateMapRoom({
+          ...DEFAULT_PORTAL_BOX,
+          title: currentVenue.data.title,
+          subtitle: currentVenue.data.subtitle,
+          url: currentVenue.data.url,
+          about: currentVenue.data.about,
+          isEnabled: currentVenue.data.isEnabled,
+          image_url: currentVenue.data.image_url,
+        });
       })
     );
 

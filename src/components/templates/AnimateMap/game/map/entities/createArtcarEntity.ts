@@ -105,17 +105,15 @@ export const createArtcarEntity = (
     .add(
       new ClickableSpriteComponent(() => {
         const currentVenueArtcar = getCurrentArtcar(artcarComponent);
-        GameInstance.instance.getStore().dispatch(
-          setAnimateMapRoom({
-            ...DEFAULT_PORTAL_BOX,
-            title: currentVenueArtcar.data.title,
-            subtitle: "",
-            url: currentVenueArtcar.data.url,
-            about: currentVenueArtcar.data.about,
-            isEnabled: currentVenueArtcar.data.isEnabled,
-            image_url: currentVenueArtcar.data.image_url,
-          })
-        );
+        GameInstance.instance.gameInstanceProvider.handleSetAnimateMapRoom({
+          ...DEFAULT_PORTAL_BOX,
+          title: currentVenueArtcar.data.title,
+          subtitle: "",
+          url: currentVenueArtcar.data.url,
+          about: currentVenueArtcar.data.about,
+          isEnabled: currentVenueArtcar.data.isEnabled,
+          image_url: currentVenueArtcar.data.image_url,
+        });
       })
     );
 

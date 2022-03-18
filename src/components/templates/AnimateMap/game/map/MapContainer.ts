@@ -99,12 +99,10 @@ export class MapContainer extends Container {
     this.initMap(MAP_JSON);
 
     this._viewport?.on("clicked", (e: { world: Point }) =>
-      GameInstance.instance.getStore().dispatch(
-        setAnimateMapPointer({
-          x: e.world.x,
-          y: e.world.y,
-        })
-      )
+      GameInstance.instance.gameInstanceProvider.handleSetAnimateMapPointer({
+        x: e.world.x,
+        y: e.world.y,
+      })
     );
   }
 
@@ -314,7 +312,7 @@ export class MapContainer extends Container {
           if (this.entityFactory) {
             const map: PlaygroundMap = GameInstance.instance.getConfig()
               .playgroundMap;
-            const bots = GameInstance.instance.getState().users;
+            const bots = GameInstance.instance.gameInstanceProvider.animatemap.users;
             const itrb: IterableIterator<ReplicatedUser> = bots.values();
             const self: MapContainer = this;
             const loop = async () => {

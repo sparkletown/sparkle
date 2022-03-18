@@ -6,17 +6,13 @@ import {
   Renderer,
   settings,
 } from "pixi.js";
-import { Store } from "redux";
 import { subscribeActionAfter } from "redux-subscribe-action";
 
 import {
   AnimateMapActionTypes,
   setAnimateMapEnvironmentSoundAction,
-  setAnimateMapFirstEntrance,
-  setAnimateMapUsers,
 } from "store/actions/AnimateMap";
 import {
-  AnimateMapState,
   ReplicatedFirebarrel,
   ReplicatedUser,
   ReplicatedVenue,
@@ -25,7 +21,8 @@ import {
 import { Point } from "types/utility";
 
 import { DataProvider } from "../../DataProvider";
-import { GameInstanceInterface } from "../../GameInstanseInterface";
+import { GameInstanceInterface } from "../../GameInstanceInterface";
+import { GameInstanceProvider } from "../../GameInstanceProvider";
 import { DataProviderEvent } from "../bridges/DataProvider/Providers/DataProviderEvent";
 import EventProvider, {
   EventType,
@@ -53,19 +50,24 @@ export class GameInstance implements GameInstanceInterface {
   private _stage?: Container;
   public _mapContainer?: MapContainer;
   private _eventProvider = EventProvider;
+
+  public gameInstanceProvider: GameInstanceProvider;
+
+  public dataProvider: DataProvider;
+
   get eventProvider() {
     return this._eventProvider;
   }
 
-  constructor(
-    private _config: GameConfig,
-    private _store: Store,
-    public dataProvider: DataProvider,
-    private _containerElement: HTMLDivElement,
-    private _pictureUrl?: string
-  ) {
+  constructor(args: GameInstanceProvider) {
     if (GameInstance.instance) console.error("Multiply instancing!");
+
+    this.gameInstanceProvider = args;
+    this.dataProvider = args.dataProvider;
+
     GameInstance.instance = this;
+    console.log(GameInstance.instance);
+    console.log('game instance constructor => ',args, this);
   }
 
   public async init(): Promise<void> {
@@ -79,7 +81,7 @@ export class GameInstance implements GameInstanceInterface {
     this._app = new Application({
       transparent: true,
       antialias: true,
-      resizeTo: this._containerElement,
+      resizeTo: this.gameInstanceProvider.containerElement,
       backgroundColor: 0xe7d4c3,
       resolution: 1,
     });
@@ -87,12 +89,12 @@ export class GameInstance implements GameInstanceInterface {
     this._renderer = this._app.renderer;
     this._stage = this._app.stage;
 
-    this._containerElement.appendChild(this._app.view);
+    this.gameInstanceProvider.containerElement.appendChild(this._app.view);
   }
 
   private async initMap(): Promise<void> {
     if (!this._app) return console.error();
-    this._store.dispatch(setAnimateMapUsers(stubUsersData()));
+    this.gameInstanceProvider.handleSetAnimateMapUsers(stubUsersData());
 
     this._mapContainer = new MapContainer(this._app);
     this._stage?.addChild(this._mapContainer);
@@ -129,7 +131,7 @@ export class GameInstance implements GameInstanceInterface {
 
     window.addEventListener("resize", this.resize);
 
-    if (this.getState().firstEntrance === "false") {
+    if (this.gameInstanceProvider.animatemap.firstEntrance === "false") {
       return await this._play();
     } else {
       this.getConfig().firstEntrance = true;
@@ -141,7 +143,7 @@ export class GameInstance implements GameInstanceInterface {
           // })
           .then(async (command: WaitClickForHeroCreation) => {
             await this._play(command.clickPoint);
-            this.getStore().dispatch(setAnimateMapFirstEntrance("false"));
+            this.gameInstanceProvider.handleSetAnimateMapFirstEntrance('false');
           })
       );
     }
@@ -199,16 +201,8 @@ export class GameInstance implements GameInstanceInterface {
     }
   }
 
-  public getStore(): Store {
-    return this._store;
-  }
-
-  public getState(): AnimateMapState {
-    return this._store.getState().animatemap;
-  }
-
   public getConfig(): GameConfig {
-    return this._config;
+    return this.gameInstanceProvider.config;
   }
 
   public getMapContainer() {
