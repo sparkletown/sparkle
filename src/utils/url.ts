@@ -201,8 +201,8 @@ export const reloadUrlAdditionalProps = {
 };
 
 export const externalUrlAdditionalProps = {
+  ...reloadUrlAdditionalProps,
   target: "_blank",
-  rel: "noopener noreferrer",
 };
 
 export const getExtraLinkProps = (isExternal: boolean) =>
