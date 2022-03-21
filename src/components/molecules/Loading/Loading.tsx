@@ -5,8 +5,6 @@ import { ContainerClassName } from "types/utility";
 
 import { LoadingIcon } from "./LoadingIcon";
 
-import "./Loading.scss";
-
 export interface LoadingProps extends ContainerClassName {
   label?: string;
 }
