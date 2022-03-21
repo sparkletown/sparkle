@@ -2,7 +2,7 @@ import React, { PropsWithChildren, useMemo } from "react";
 
 import { hoistHocStatics } from "utils/hoc";
 
-import { useUserNG } from "hooks/user/useUserNG";
+import { useUser } from "hooks/user/useUser";
 
 export const withUserNG = <T = {}>(Component: React.FC<T>) => {
   const WithUserNG = (props: PropsWithChildren<T>) => {
@@ -15,7 +15,7 @@ export const withUserNG = <T = {}>(Component: React.FC<T>) => {
       userId,
       profile,
       isTester,
-    } = useUserNG();
+    } = useUser();
 
     const memoizedProps = useMemo(
       () => ({
