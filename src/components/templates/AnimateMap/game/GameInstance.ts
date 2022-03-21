@@ -4,28 +4,25 @@ import {
   Loader,
   LoaderResource,
   Renderer,
-  settings,
+  settings
 } from "pixi.js";
-import { subscribeActionAfter } from "redux-subscribe-action";
-
-import {
-  AnimateMapActionTypes,
-  setAnimateMapEnvironmentSoundAction,
-} from "store/actions/AnimateMap";
-import {
-  ReplicatedFirebarrel,
-  ReplicatedUser,
-  ReplicatedVenue,
-} from "store/reducers/AnimateMap";
 
 import { Point } from "types/utility";
 
 import { DataProvider } from "../../DataProvider";
+import {
+  AnimateMapActionTypes,
+  ReplicatedFirebarrel,
+  ReplicatedUser,
+  ReplicatedVenue,
+  setAnimateMapEnvironmentSoundAction,
+  subscribeActionAfter
+} from "../../GameInstanceCommonInterfaces";
 import { GameInstanceInterface } from "../../GameInstanceInterface";
 import { GameInstanceProvider } from "../../GameInstanceProvider";
 import { DataProviderEvent } from "../bridges/DataProvider/Providers/DataProviderEvent";
 import EventProvider, {
-  EventType,
+  EventType
 } from "../bridges/EventProvider/EventProvider";
 import { GameConfig } from "../configs/GameConfig";
 
@@ -66,8 +63,6 @@ export class GameInstance implements GameInstanceInterface {
     this.dataProvider = args.dataProvider;
 
     GameInstance.instance = this;
-    console.log(GameInstance.instance);
-    console.log('game instance constructor => ',args, this);
   }
 
   public async init(): Promise<void> {
@@ -83,7 +78,7 @@ export class GameInstance implements GameInstanceInterface {
       antialias: true,
       resizeTo: this.gameInstanceProvider.containerElement,
       backgroundColor: 0xe7d4c3,
-      resolution: 1,
+      resolution: 1
     });
 
     this._renderer = this._app.renderer;
@@ -143,7 +138,7 @@ export class GameInstance implements GameInstanceInterface {
           // })
           .then(async (command: WaitClickForHeroCreation) => {
             await this._play(command.clickPoint);
-            this.gameInstanceProvider.handleSetAnimateMapFirstEntrance('false');
+            this.gameInstanceProvider.handleSetAnimateMapFirstEntrance("false");
           })
       );
     }
@@ -229,6 +224,7 @@ export class GameInstance implements GameInstanceInterface {
     });
 
     EventProvider.on(EventType.USER_MOVED, (user: ReplicatedUser) => {
+      console.log("user", user);
       this._mapContainer?.entityFactory?.updateUserPositionById(user);
     });
 
@@ -236,6 +232,7 @@ export class GameInstance implements GameInstanceInterface {
     this.dataProvider.on(
       DataProviderEvent.VENUE_ADDED,
       (venue: ReplicatedVenue) => {
+        console.log("venue", venue);
         this._mapContainer?.entityFactory?.createVenue(venue);
       }
     );
@@ -243,6 +240,7 @@ export class GameInstance implements GameInstanceInterface {
     this.dataProvider.on(
       DataProviderEvent.VENUE_REMOVED,
       (venue: ReplicatedVenue) => {
+        console.log("venue", venue);
         this._mapContainer?.entityFactory?.removeVenue(venue);
       }
     );
@@ -250,6 +248,7 @@ export class GameInstance implements GameInstanceInterface {
     this.dataProvider.on(
       DataProviderEvent.VENUE_UPDATED,
       (venue: ReplicatedVenue) => {
+        console.log("venue", venue);
         this._mapContainer?.entityFactory?.updateVenue(venue);
       }
     );
@@ -258,6 +257,7 @@ export class GameInstance implements GameInstanceInterface {
     this.dataProvider.on(
       DataProviderEvent.FIREBARREL_ADDED,
       (firebarrel: ReplicatedFirebarrel) => {
+        console.log("firebarell", firebarrel);
         this._mapContainer?.entityFactory?.createFireBarrel(firebarrel);
       }
     );
@@ -265,6 +265,7 @@ export class GameInstance implements GameInstanceInterface {
     this.dataProvider.on(
       DataProviderEvent.FIREBARREL_REMOVED,
       (firebarrel: ReplicatedFirebarrel) => {
+        console.log("firebarell", firebarrel);
         this._mapContainer?.entityFactory?.removeBarrel(firebarrel);
       }
     );
@@ -272,6 +273,7 @@ export class GameInstance implements GameInstanceInterface {
     this.dataProvider.on(
       DataProviderEvent.FIREBARREL_UPDATED,
       (firebarrel: ReplicatedFirebarrel) => {
+        console.log("firebarell", firebarrel);
         this._mapContainer?.entityFactory?.updateBarrel(firebarrel);
       }
     );

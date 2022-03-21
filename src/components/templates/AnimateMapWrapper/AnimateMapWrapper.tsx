@@ -96,8 +96,6 @@ export const AnimateMapWrapper: React.VFC<AnimateMapWrapperProps> = (props) => {
       animatemap: store.getState().animatemap
     });
 
-    console.log("get store => ", store.getState());
-
     setGame(gameInstance);
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataProvider]);
