@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { MediaPlayer } from "components/attendee/MediaPlayer";
 import { TableGrid } from "components/attendee/TableGrid";
-import { useBackgroundGradient } from "components/attendee/useBackgroundGradient";
 
 import { JAZZBAR_TABLES } from "settings";
 
@@ -21,8 +20,6 @@ interface JazzProps {
 
 export const JazzBar: React.FC<JazzProps> = ({ space }) => {
   const analytics = useAnalytics({ venue: space });
-
-  useBackgroundGradient();
 
   const jazzbarTables = space.config?.tables ?? JAZZBAR_TABLES;
 
