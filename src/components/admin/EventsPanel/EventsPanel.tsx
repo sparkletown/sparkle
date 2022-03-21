@@ -41,7 +41,7 @@ export const EventsPanel: React.FC<EventsPanelProps> = ({
     [spaces]
   );
 
-  const hasSpaceEvents = events?.length !== 0;
+  const hasSpaceEvents = !!events?.length;
 
   const renderedEvents = useMemo(
     () =>
