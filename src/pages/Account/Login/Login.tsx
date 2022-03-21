@@ -1,6 +1,5 @@
 import React, { useCallback, useState } from "react";
 import { useAsync } from "react-use";
-import { useBackgroundGradient } from "components/attendee/useBackgroundGradient";
 
 import { fetchCustomAuthConfig } from "api/auth";
 
@@ -45,8 +44,6 @@ export const Login: React.FC<LoginProps> = ({
   const { signInWithSAML, hasSamlAuthProviderId } = useSAMLSignIn(
     sovereignSpace?.samlAuthProviderId
   );
-
-  useBackgroundGradient();
 
   const {
     loading: isCustomAuthConfigLoading,

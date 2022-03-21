@@ -4,12 +4,11 @@ import { DEFAULT_MAP_BACKGROUND, IFRAME_TEMPLATES } from "settings";
 
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useValidImage } from "hooks/useCheckImage";
-import { useUserNG } from "hooks/user/useUserNG";
+import { useUser } from "hooks/user/useUser";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useShowHide } from "hooks/useShowHide";
 
 import { BannerAdmin } from "components/organisms/BannerAdmin";
-import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
 import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
 import { IframeAdmin } from "components/molecules/IframeAdmin";
@@ -20,7 +19,7 @@ import { AnnouncementOptions } from "./AnnouncementOptions";
 import "./VenueAdminPage.scss";
 
 export const VenueAdminPage: React.FC = () => {
-  const { profile, auth: user, userId } = useUserNG();
+  const { profile, auth: user, userId } = useUser();
   const { space, spaceId, isLoaded } = useWorldAndSpaceByParams();
   const { currentVenue, parentVenue } = useRelatedVenues({
     currentVenueId: spaceId,
@@ -69,7 +68,7 @@ export const VenueAdminPage: React.FC = () => {
   const isIframeVenue = IFRAME_TEMPLATES.includes(space.template);
 
   return (
-    <WithNavigationBar>
+    <>
       <div className="VenueAdminPage">
         <h4 className="VenueAdminPage__title">
           Current Announcement in {space?.name}
@@ -97,6 +96,6 @@ export const VenueAdminPage: React.FC = () => {
         )}
       </div>
       {isIframeVenue && <IframeAdmin venueId={spaceId} venue={space} />}
-    </WithNavigationBar>
+    </>
   );
 };

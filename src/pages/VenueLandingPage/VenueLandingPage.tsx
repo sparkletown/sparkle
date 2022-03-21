@@ -8,8 +8,6 @@ import {
   WorldWithId,
 } from "types/id";
 
-import { WithNavigationBar } from "components/organisms/WithNavigationBar";
-
 import { NotFound } from "components/atoms/NotFound";
 
 import { VenueLandingPageContent } from "./VenueLandingPageContent";
@@ -34,13 +32,5 @@ export const VenueLandingPage: React.FC<VenueLandingPageProps> = (props) => {
     }
   }, [hostname, redirectUrl]);
 
-  return space && world ? (
-    <WithNavigationBar hasBackButton withSchedule>
-      <VenueLandingPageContent {...props} />
-    </WithNavigationBar>
-  ) : (
-    <WithNavigationBar hasBackButton withHiddenLoginButton>
-      <NotFound />
-    </WithNavigationBar>
-  );
+  return space && world ? <VenueLandingPageContent {...props} /> : <NotFound />;
 };

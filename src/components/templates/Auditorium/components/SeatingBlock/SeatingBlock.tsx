@@ -44,7 +44,7 @@ export const SeatingBlock: React.FC<SeatingBlockProps> = ({ space }) => {
 
   return (
     <Switch>
-      <Section venue={space} sectionId={sectionId} user={user} />
+      {sectionId && <Section venue={space} sectionId={sectionId} user={user} />}
       <Route path={`${match.path}`}>
         <AllSectionPreviews venue={space} />
       </Route>
