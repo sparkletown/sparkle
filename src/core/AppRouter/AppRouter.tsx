@@ -20,7 +20,6 @@ import {
   LOGIN_CUSTOM_TOKEN_PARAM_URL,
   ROOT_URL,
   SPARKLEVERSE_REDIRECT_URL,
-  VERSION_URL,
 } from "settings";
 
 import { SpaceSlug, WorldSlug } from "types/id";
@@ -34,9 +33,6 @@ import {
 import { useUserNG } from "hooks/user/useUserNG";
 
 import { LoginWithCustomToken } from "pages/Account/LoginWithCustomToken";
-import { VersionPage } from "pages/VersionPage/VersionPage";
-
-import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
@@ -213,11 +209,6 @@ export const AppRouter: React.FC = () => {
               </AnalyticsCheck>
             </Provided>
           </Route>
-          <Route path={VERSION_URL}>
-            <AnalyticsCheck>
-              <VersionPage />
-            </AnalyticsCheck>
-          </Route>
           <Route
             path={SPARKLEVERSE_REDIRECT_URL}
             render={() => {
@@ -251,9 +242,7 @@ export const AppRouter: React.FC = () => {
 
               return (
                 <AnalyticsCheck>
-                  <WithNavigationBar>
-                    <Forbidden />
-                  </WithNavigationBar>
+                  <Forbidden />
                 </AnalyticsCheck>
               );
             }}

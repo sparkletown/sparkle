@@ -17,6 +17,8 @@ export const COLLECTION_SPACE_CHATS = "chats";
 export const COLLECTION_USERS = "users";
 export const COLLECTION_WORLDS = "worlds";
 export const COLLECTION_WORLD_EVENTS = "worldEvents";
+export const COLLECTION_SEATED_USERS = "seatedUsers";
+export const COLLECTION_SEATED_USERS_CHECKINS = "recentSeatedUsers";
 
 // common search fields, please keep the list short and simple
 export const FIELD_HIDDEN = "isHidden";

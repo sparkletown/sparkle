@@ -341,7 +341,8 @@ export type TableSeatedUsersVenuesTemplates =
 
 export type RecentSeatedUserData<T extends VenueTemplate> = {
   template: T;
-  venueId: string;
+  spaceId: string;
+  worldId: string;
   venueSpecificData: T extends VenueTemplate.auditorium
     ? Pick<AuditoriumSectionPath, "sectionId">
     : T extends TableSeatedUsersVenuesTemplates

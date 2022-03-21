@@ -10,7 +10,7 @@ import { JazzbarVenue } from "types/venues";
 import { WithId } from "utils/id";
 
 import { useAnalytics } from "hooks/useAnalytics";
-import { useUserId } from "hooks/user/useUserId";
+import { useUser } from "hooks/useUser";
 
 import { Loading } from "components/molecules/Loading";
 import { SpaceInfoText } from "components/molecules/SpaceInfoText";
@@ -26,13 +26,13 @@ export const JazzBar: React.FC<JazzProps> = ({ space }) => {
 
   const jazzbarTables = space.config?.tables ?? JAZZBAR_TABLES;
 
-  const { userId } = useUserId();
+  const { userWithId } = useUser();
 
   useEffect(() => {
     analytics.trackEnterJazzBarEvent();
   }, [analytics]);
 
-  if (!userId) {
+  if (!userWithId) {
     return <Loading />;
   }
 
@@ -45,11 +45,10 @@ export const JazzBar: React.FC<JazzProps> = ({ space }) => {
       <SpaceInfoText space={space} />
 
       <TableGrid
-        joinMessage={false}
         customTables={jazzbarTables}
         space={space}
         defaultTables={JAZZBAR_TABLES}
-        userId={userId}
+        user={userWithId}
       />
     </>
   );

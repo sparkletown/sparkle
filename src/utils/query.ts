@@ -12,17 +12,21 @@ import { SparkleQueryError } from "./error";
 
 type CreatePathError = (path: FirePath) => SparkleQueryError;
 export const createPathError: CreatePathError = (path) =>
-  new SparkleQueryError(`Invalid query path: ${path.map(String).join("/")}`);
+  new SparkleQueryError({
+    message: `Invalid query path: ${path.map(String).join("/")}`,
+    where: "createPathError",
+  });
 
 type CreateConstraintsError = (
   constraints?: FireConstraint[]
 ) => SparkleQueryError;
 export const createConstraintsError: CreateConstraintsError = (constraints) =>
-  new SparkleQueryError(
-    `Invalid query constraints: ${
+  new SparkleQueryError({
+    message: `Invalid query constraints: ${
       constraints ? constraints.map(String).join(" AND ") : constraints
-    }`
-  );
+    }`,
+    where: "createConstraintsError",
+  });
 
 export const dataWithId = <T extends object>(d: QueryDocumentSnapshot<T>) =>
   withId(d.data(), d.id);
