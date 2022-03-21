@@ -22,6 +22,8 @@ export const EventsPanel: React.FC<EventsPanelProps> = ({
 }) => {
   const spacesIds = spaces.map((space) => space.id);
 
+  const hasMultipleSpaces = spaces.length > 1;
+
   const { events, isLoaded: isEventsLoaded } = useSpaceEvents({
     worldId: worldId,
     spaceIds: spacesIds,
@@ -39,7 +41,7 @@ export const EventsPanel: React.FC<EventsPanelProps> = ({
     [spaces]
   );
 
-  const hasVenueEvents = events?.length !== 0;
+  const hasSpaceEvents = events?.length !== 0;
 
   const renderedEvents = useMemo(
     () =>
@@ -83,26 +85,30 @@ export const EventsPanel: React.FC<EventsPanelProps> = ({
   return (
     <div className="space-y-6 lg:col-start-2 lg:col-span-2">
       <div className="px-4 sm:px-0">
-        <div className="flex justify-end mb-4">
-          <Toggle
-            checked={showSplittedEvents}
-            onChange={toggleSplittedEvents}
-            label="Split by space"
-          />
-        </div>
+        {hasMultipleSpaces && (
+          <div className="flex justify-end mb-4">
+            <Toggle
+              checked={showSplittedEvents}
+              onChange={toggleSplittedEvents}
+              label="Split by space"
+            />
+          </div>
+        )}
         <div className="flex flex-col">
-          <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-            <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-              <div className="min-w-full divide-y divide-gray-200">
-                <div className="bg-white divide-y divide-gray-200">
-                  {showSplittedEvents ? renderedSpaces : renderedEvents}
+          {hasSpaceEvents && (
+            <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+              <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+                <div className="min-w-full divide-y divide-gray-200">
+                  <div className="bg-white divide-y divide-gray-200">
+                    {showSplittedEvents ? renderedSpaces : renderedEvents}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          )}
 
-          {!hasVenueEvents && (
-            <div className="EventsView__no-events">
+          {!hasSpaceEvents && (
+            <div className="flex justify-center p-4 text-lg">
               <p>No events yet, lets start planning!</p>
             </div>
           )}
