@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo } from "react";
 import { useForm, useFormState } from "react-hook-form";
 import { useAsyncFn, useToggle } from "react-use";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { Button } from "components/admin/Button";
 import { ImageInput } from "components/admin/ImageInput";
 import { Input } from "components/admin/Input";
 import { Toggle } from "components/admin/Toggle";
@@ -13,7 +14,6 @@ import {
   DEFAULT_VENUE_LOGO,
   PORTAL_INFO_ICON_MAPPING,
   PortalInfoItem,
-  ROOM_TAXON,
   SPACE_TAXON,
 } from "settings";
 
@@ -28,12 +28,13 @@ import { roomSchema } from "forms/roomSchema";
 
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 
 import { AdminSection } from "components/molecules/AdminSection";
 import { SubmitError } from "components/molecules/SubmitError";
 
-import { ButtonNG } from "components/atoms/ButtonNG";
+import { ConfirmationModal } from "components/atoms/ConfirmationModal/ConfirmationModal";
 import { PortalVisibility } from "components/atoms/PortalVisibility";
 import { SpacesDropdown } from "components/atoms/SpacesDropdown";
 
@@ -54,6 +55,11 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
 }) => {
   const { user } = useUser();
   const { spaceId: currentSpaceId, world, space } = useWorldAndSpaceByParams();
+  const {
+    isShown: isPortalDeleteShown,
+    show: showPortalDelete,
+    hide: hidePortalDelete,
+  } = useShowHide();
 
   const { icon } = item ?? {};
   const spaceLogoImage =
@@ -204,93 +210,108 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
   );
 
   return (
-    <form className="bg-white" onSubmit={handleSubmit(addPortal)}>
-      <div className="PortalAddEditForm__title">{title}</div>
-      Link portal to a space
-      <SpacesDropdown
-        spaces={backButtonOptionList}
-        parentSpace={parentSpace}
-        setValue={setValue}
-        register={register}
-        fieldName="spaceId"
-        error={errors?.spaceId}
-      />
-      Name
-      <Input
-        type="text"
-        autoComplete="off"
-        placeholder={`${SPACE_TAXON.capital} name`}
-        errors={errors}
-        name="title"
-        register={register}
-        disabled={isLoading}
-      />
-      <AdminSection
-        withLabel
-        title={`${ROOM_TAXON.capital} image`}
-        subtitle="(overrides global settings)"
-      >
-        {/* @debt: Create AdminImageInput to wrap ImageInput with error handling and labels */}
-        {/* ie. PortalVisibility/AdminInput */}
-        <ImageInput
-          onChange={changeRoomImageUrl}
-          name="image"
+    <div>
+      <form className="bg-white" onSubmit={handleSubmit(addPortal)}>
+        <div className="text-lg leading-6 font-medium text-gray-900 mb-6">
+          {title}
+        </div>
+        <SpacesDropdown
+          spaces={backButtonOptionList}
+          parentSpace={parentSpace}
           setValue={setValue}
           register={register}
-          nameWithUnderscore
-          imgUrl={portal?.image_url ?? icon}
-          error={errors?.image_url}
+          fieldName="spaceId"
+          error={errors?.spaceId}
         />
-      </AdminSection>
-      <AdminSection
-        withLabel
-        title="Change label appearance"
-        subtitle="(overrides general)"
-      >
+        <Input
+          type="text"
+          autoComplete="off"
+          placeholder={`${SPACE_TAXON.capital} name`}
+          errors={errors}
+          name="title"
+          register={register}
+          disabled={isLoading}
+          label="Name"
+        />
+        <AdminSection>
+          {/* @debt: Create AdminImageInput to wrap ImageInput with error handling and labels */}
+          {/* ie. PortalVisibility/AdminInput */}
+          <ImageInput
+            onChange={changeRoomImageUrl}
+            name="image"
+            setValue={setValue}
+            register={register}
+            nameWithUnderscore
+            imgUrl={portal?.image_url ?? icon}
+            error={errors?.image_url}
+            label="Highlight image"
+            buttonLabel="Change highlight image"
+          />
+        </AdminSection>
+        <AdminSection>
+          <Toggle
+            checked={isOverrideAppearanceEnabled}
+            onChange={toggleOverrideAppearance}
+            label="Override appearance"
+            title="Change label appearance (overrides general)"
+          />
+        </AdminSection>
+        <PortalVisibility
+          getValues={getValues}
+          name="visibility"
+          register={register}
+          setValue={setValue}
+        />
         <Toggle
-          checked={isOverrideAppearanceEnabled}
-          onChange={toggleOverrideAppearance}
-          label="Override appearance"
+          register={register}
+          checked={values.isEnabled}
+          name="isEnabled"
+          label="Portal is visible"
         />
-      </AdminSection>
-      <PortalVisibility
-        getValues={getValues}
-        name="visibility"
-        register={register}
-        setValue={setValue}
-      />
-      <Toggle
-        register={register}
-        checked={values.isEnabled}
-        name="isEnabled"
-        label="Portal is visible"
-      />
-      <Toggle
-        name="isClickable"
-        register={register}
-        checked={values.isClickable}
-        label="Portal is clickable"
-      />
-      <SubmitError error={submitError || deleteError} />
-      <div className="PortalAddEditForm__buttons">
-        {isEditMode && (
-          <ButtonNG
-            variant="danger"
+        <Toggle
+          name="isClickable"
+          register={register}
+          checked={values.isClickable}
+          label="Portal is clickable"
+        />
+        <SubmitError error={submitError || deleteError} />
+        <div className="mt-5 sm:mt-4 sm:flex justify-end">
+          {isEditMode && (
+            <Button
+              variant="danger"
+              disabled={isLoading || isDeleting}
+              onClick={showPortalDelete}
+              className="mr-auto"
+            >
+              Delete
+            </Button>
+          )}
+          <Button
+            variant="secondary"
             disabled={isLoading || isDeleting}
-            onClick={deletePortal}
+            onClick={onDone}
           >
-            Delete
-          </ButtonNG>
-        )}
-        <ButtonNG
-          variant="primary"
-          disabled={isLoading || isDeleting}
-          title={title}
-          type="submit"
-        >
-          Save
-        </ButtonNG>
-      </div>
-    </form>
+            Cancel
+          </Button>
+          <Button
+            variant="primary"
+            disabled={isLoading || isDeleting}
+            title={title}
+            type="submit"
+          >
+            {portal ? "Save" : "Create"}
+          </Button>
+        </div>
+      </form>
+      {isPortalDeleteShown && (
+        <ConfirmationModal
+          header={"Delete portal"}
+          message="Are you sure you want to delete this portal?"
+          onConfirm={deletePortal}
+          onCancel={hidePortalDelete}
+          confirmVariant="danger"
+        />
+      )}
+    </div>
   );
 };

@@ -11,6 +11,7 @@ export interface ToggleProps {
   onChange?: React.ReactEventHandler<SyntheticEvent>;
   register?: UseFormRegister<AnyForm>;
   name?: string;
+  title?: string;
 }
 
 export const Toggle: React.FC<ToggleProps> = ({
@@ -19,12 +20,13 @@ export const Toggle: React.FC<ToggleProps> = ({
   onChange,
   register,
   name = "",
+  title,
 }) => {
   // NOTE: the click handlers needs to be on the label to capture all its children clicks and there must always be a <label>
   const handleClick = useCallback(
     (event) => {
       // default action has to be prevented in order to avoid `double click`
-      event.preventDefault();
+      onChange && event.preventDefault();
       onChange?.(event);
     },
     [onChange]
@@ -35,8 +37,16 @@ export const Toggle: React.FC<ToggleProps> = ({
   const trackClasses = TW[`${!!checked}Track`];
 
   return (
-    <div className="flex w-full">
-      <label className="flex items-center cursor-pointer" onClick={handleClick}>
+    <div className="flex flex-col w-full mb-3">
+      {title && (
+        <label className="block text-sm font-medium text-gray-700">
+          {title}
+        </label>
+      )}
+      <label
+        className="flex items-center cursor-pointer mt-3"
+        onClick={handleClick}
+      >
         <div className="relative">
           <input className="sr-only " type="checkbox" {...register?.(name)} />
           <div className={trackClasses} />

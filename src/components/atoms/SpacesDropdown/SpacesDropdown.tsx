@@ -19,12 +19,14 @@ const spaceNoneOption = Object.freeze({
   id: "",
   name: "",
   template: undefined,
+  host: { icon: "" },
 });
 
 type SpacesDropdownPortal = {
   template?: PortalTemplate;
   name: string;
   id?: string;
+  icon?: string;
 };
 
 interface SpacesDropdownProps {
@@ -78,7 +80,7 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
 
   const renderedOptions = useMemo(
     () =>
-      spaceOptions.map(({ id, name, template }) => {
+      spaceOptions.map(({ id, name, template, host }) => {
         const spaceIcon = PORTAL_INFO_ICON_MAPPING[template ?? ""];
 
         return (
@@ -94,8 +96,8 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
             {name !== spaceNoneOption.name ? (
               <img
                 alt={`space-icon-${spaceIcon}`}
-                src={spaceIcon}
-                className="h-0.5"
+                src={host?.icon || spaceIcon}
+                className="w-6 h-6 mr-2 rounded-full"
               />
             ) : null}
             {name || noneOptionName}
@@ -120,7 +122,7 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
           <img
             alt={`space-icon-${spaceIcon}`}
             src={spaceIcon}
-            className="h-0.5 w-0.5"
+            className="w-6 h-6 mr-2 rounded-full"
           />
         ) : null}
         {selected.name || noneOptionName}
@@ -130,7 +132,10 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
 
   return (
     <>
-      <div>
+      <div className="mb-2">
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Link portal to a space
+        </label>
         <Dropdown title={renderedTitle}>{renderedOptions}</Dropdown>
         <input type="hidden" {...register} name={fieldName} />
       </div>

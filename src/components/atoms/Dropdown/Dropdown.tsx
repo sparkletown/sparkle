@@ -106,17 +106,29 @@ export const Dropdown: React.FC<DropdownProps> = ({
           !isOpened && "hidden"
         } absolute z-10 w-44 text-base list-none bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700`}
       >
-        <ul className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-56 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
-          {options.map((option) => (
-            <li key={option.value}>
-              <div
-                className="text-gray-900 cursor-default select-none relative py-2 pl-3 pr-9 cursor-pointer"
+        <ul className="absolute z-10 mt-1 min-w-full w-auto bg-white shadow-lg max-h-56 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
+          {options.map((option) => {
+            const isSelected =
+              option.value === selectedOption?.value ||
+              (!selectedOption && !option.value);
+            const textContainerClasses = isSelected
+              ? "font-semibold select-none relative py-2 pl-3 pr-9"
+              : "select-none relative py-2 pl-3 pr-9";
+            const checkmarkClasses = isSelected
+              ? "dropdownSelected text-white inset-y-0 right-0 flex items-center pr-4 h-5 w-5 mr-2 bg-indigo-600"
+              : "dropdownSelected text-indigo-600 inset-y-0 right-0 flex items-center pr-4 h-5 w-5 mr-2 bg-white";
+
+            return (
+              <li
+                key={option.value}
+                className="optionContainer text-gray-900 cursor-pointer hover:bg-indigo-600 hover:text-white flex justify-between items-center"
                 onClick={() => selectOption(option)}
               >
-                {option.label}
-              </div>
-            </li>
-          ))}
+                <div className={textContainerClasses}>{option.label}</div>
+                {isSelected && <span className={checkmarkClasses}></span>}
+              </li>
+            );
+          })}
         </ul>
       </div>
     </>

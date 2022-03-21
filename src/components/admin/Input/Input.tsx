@@ -27,6 +27,7 @@ export interface InputProps
   description?: ReactNode | string;
   errors?: FieldErrors<FieldValues>;
   hidden?: boolean;
+  label?: string;
 }
 
 export const Input: React.FC<InputProps> = ({
@@ -38,6 +39,7 @@ export const Input: React.FC<InputProps> = ({
   hidden,
   description,
   required,
+  label,
   ...inputProps
 }) => {
   const error = get(errors, name);
@@ -62,6 +64,11 @@ export const Input: React.FC<InputProps> = ({
   ) : (
     <div className="Input">
       <div className={parentClasses}>
+        {label && (
+          <label className="block text-sm font-medium text-gray-700">
+            {label}
+          </label>
+        )}
         <input
           {...inputProps}
           {...register(name, rules)}
