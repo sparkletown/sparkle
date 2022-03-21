@@ -1,7 +1,10 @@
 import React, { AnchorHTMLAttributes, DetailedHTMLProps } from "react";
 import classNames from "classnames";
 
-import { externalUrlAdditionalProps, reloadUrlAdditionalProps } from "utils/url";
+import {
+  externalUrlAdditionalProps,
+  reloadUrlAdditionalProps,
+} from "utils/url";
 
 import "./LinkButton.scss";
 
@@ -23,7 +26,9 @@ export const LinkButton: React.FC<LinkButtonProps> = ({
   ...extraProps
 }) => {
   const linkClasses = classNames("LinkButton", className);
-  const linkBehaviorProps = isBlank ? externalUrlAdditionalProps : reloadUrlAdditionalProps;
+  const linkBehaviorProps = isBlank
+    ? externalUrlAdditionalProps
+    : reloadUrlAdditionalProps;
 
   return (
     <a

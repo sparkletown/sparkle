@@ -201,7 +201,7 @@ export const reloadUrlAdditionalProps = {
 };
 
 export const externalUrlAdditionalProps = {
-  ...reloadUrlAdditionalProps,
+  rel: "noopener noreferrer",
   target: "_blank",
 };
 
