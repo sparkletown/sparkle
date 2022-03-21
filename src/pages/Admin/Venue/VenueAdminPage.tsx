@@ -9,7 +9,6 @@ import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useShowHide } from "hooks/useShowHide";
 
 import { BannerAdmin } from "components/organisms/BannerAdmin";
-import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
 import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
 import { IframeAdmin } from "components/molecules/IframeAdmin";
@@ -69,7 +68,7 @@ export const VenueAdminPage: React.FC = () => {
   const isIframeVenue = IFRAME_TEMPLATES.includes(space.template);
 
   return (
-    <WithNavigationBar>
+    <>
       <div className="VenueAdminPage">
         <h4 className="VenueAdminPage__title">
           Current Announcement in {space?.name}
@@ -97,6 +96,6 @@ export const VenueAdminPage: React.FC = () => {
         )}
       </div>
       {isIframeVenue && <IframeAdmin venueId={spaceId} venue={space} />}
-    </WithNavigationBar>
+    </>
   );
 };

@@ -20,8 +20,6 @@ import useVenueScheduleEvents from "hooks/useVenueScheduleEvents";
 
 import { Login } from "pages/Account/Login";
 
-import { WithNavigationBar } from "components/organisms/WithNavigationBar";
-
 import { LoadingPage } from "components/molecules/LoadingPage";
 import { ScheduleEventSubList } from "components/molecules/ScheduleEventList/ScheduleEventSubList";
 
@@ -106,11 +104,7 @@ export const EmergencyViewPage: React.FC = () => {
   const containerClasses = classNames("EmergencyView");
 
   if (!spaceId || (isCurrentVenueLoaded && !space)) {
-    return (
-      <WithNavigationBar withHiddenLoginButton>
-        <NotFound />
-      </WithNavigationBar>
-    );
+    return <NotFound />;
   }
 
   if (!space) {
@@ -126,17 +120,15 @@ export const EmergencyViewPage: React.FC = () => {
   }
 
   return (
-    <WithNavigationBar>
-      <div className={containerClasses}>
-        <EmergencyViewTabs updateTab={updateTab} selectedTab={selectedTab} />
-        <div className="EmergencyView__main">
-          {!selectedTab ? (
-            <EmergencyViewPagePortals descendantVenues={descendantVenues} />
-          ) : (
-            <ul className="EmergencyView__weekdays">{weekdays}</ul>
-          )}
-        </div>
+    <div className={containerClasses}>
+      <EmergencyViewTabs updateTab={updateTab} selectedTab={selectedTab} />
+      <div className="EmergencyView__main">
+        {!selectedTab ? (
+          <EmergencyViewPagePortals descendantVenues={descendantVenues} />
+        ) : (
+          <ul className="EmergencyView__weekdays">{weekdays}</ul>
+        )}
       </div>
-    </WithNavigationBar>
+    </div>
   );
 };
