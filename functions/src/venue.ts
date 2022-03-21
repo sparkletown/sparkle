@@ -226,6 +226,7 @@ interface CreateBaseUpdateVenueDataPayload {
   primaryColor?: string;
   logoImageUrl?: string;
   entrance?: string;
+  backgroundImageUrl?: string;
   mapBackgroundImageUrl?: string;
   roomVisibility?: string;
   parentId?: string;
@@ -246,6 +247,7 @@ interface Venue {
   showRadio?: boolean;
   radioStations: string[];
   entrance?: string;
+  backgroundImageUrl?: string;
   mapBackgroundImageUrl?: string;
   roomVisibility?: string;
   parentId?: string;
@@ -313,6 +315,10 @@ const createBaseUpdateVenueData = (
 
   if (data.mapBackgroundImageUrl) {
     updated.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
+  }
+
+  if (data.backgroundImageUrl) {
+    updated.backgroundImageUrl = data.backgroundImageUrl;
   }
 
   if (data.roomVisibility) {
@@ -853,6 +859,10 @@ export const updateVenueNG = functions.https.onCall(async (data, context) => {
 
   if (data.mapBackgroundImageUrl) {
     updated.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
+  }
+
+  if (data.backgroundImageUrl) {
+    updated.backgroundImageUrl = data.backgroundImageUrl;
   }
 
   // @debt perhaps await is more appropriate in front of admin so the function will return the error
