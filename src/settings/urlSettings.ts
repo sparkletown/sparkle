@@ -35,7 +35,6 @@ export const ROOT_URL = "/";
 export const ACCOUNT_ROOT_URL = "/account";
 export const ADMIN_ROOT_URL = "/admin";
 export const SPARKLEVERSE_REDIRECT_URL = "/sparkleverse";
-export const VERSION_URL = "/version";
 
 // Attendee URLs
 const EMERGENCY_BASE_URL = "/m";
