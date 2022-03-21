@@ -5,8 +5,8 @@ import {
   Route,
   Switch,
 } from "react-router-dom";
+import { LoginRestricted } from "components/shared/LoginRestricted";
 import { AnalyticsCheck } from "core/AnalyticsCheck";
-import { Provided } from "core/Provided";
 
 import {
   ACCOUNT_ROOT_URL,
@@ -30,7 +30,8 @@ import {
   generateAttendeeSpaceLandingUrl,
 } from "utils/url";
 
-import { useUserNG } from "hooks/user/useUserNG";
+import { useUserId } from "hooks/user/useUserId";
+import { RelatedVenuesProvider } from "hooks/useRelatedVenues";
 
 import { LoginWithCustomToken } from "pages/Account/LoginWithCustomToken";
 
@@ -106,7 +107,7 @@ const TEMP_HONEYCOMB_INSIDE = `/in/${TEMP_HONEYCOMB_SLUG}`;
 /////////////////////////////////////////////////////////////////////////////////////
 
 export const AppRouter: React.FC = () => {
-  const { auth, isLoading } = useUserNG();
+  const { userId, isLoading } = useUserId();
 
   return (
     <Router basename="/">
@@ -165,9 +166,9 @@ export const AppRouter: React.FC = () => {
             // Subs get their analytics treatment inside them
           }
           <Route path={ACCOUNT_ROOT_URL}>
-            <Provided withRelatedVenues>
+            <RelatedVenuesProvider>
               <SubAccount />
-            </Provided>
+            </RelatedVenuesProvider>
           </Route>
           <Route path={ADMIN_ROOT_URL}>
             <SubAdmin />
@@ -182,32 +183,38 @@ export const AppRouter: React.FC = () => {
             </AnalyticsCheck>
           </Route>
           <Route path={ATTENDEE_LANDING_URL}>
-            <Provided withRelatedVenues>
+            <RelatedVenuesProvider>
               <AnalyticsCheck>
                 <VenueLandingPage />
               </AnalyticsCheck>
-            </Provided>
+            </RelatedVenuesProvider>
           </Route>
           <Route path={ATTENDEE_STEPPING_PARAM_URL}>
-            <Provided withRelatedVenues>
-              <AnalyticsCheck>
-                <VenueEntrancePage />
-              </AnalyticsCheck>
-            </Provided>
+            <LoginRestricted>
+              <RelatedVenuesProvider>
+                <AnalyticsCheck>
+                  <VenueEntrancePage />
+                </AnalyticsCheck>
+              </RelatedVenuesProvider>
+            </LoginRestricted>
           </Route>
           <Route path={ATTENDEE_INSIDE_URL}>
-            <Provided withRelatedVenues>
-              <AnalyticsCheck>
-                <AttendeeLayout />
-              </AnalyticsCheck>
-            </Provided>
+            <LoginRestricted>
+              <RelatedVenuesProvider>
+                <AnalyticsCheck>
+                  <AttendeeLayout />
+                </AnalyticsCheck>
+              </RelatedVenuesProvider>
+            </LoginRestricted>
           </Route>
           <Route path={ATTENDEE_EMERGENCY_PARAM_URL}>
-            <Provided withRelatedVenues>
-              <AnalyticsCheck>
-                <EmergencyViewPage />
-              </AnalyticsCheck>
-            </Provided>
+            <LoginRestricted>
+              <RelatedVenuesProvider>
+                <AnalyticsCheck>
+                  <EmergencyViewPage />
+                </AnalyticsCheck>
+              </RelatedVenuesProvider>
+            </LoginRestricted>
           </Route>
           <Route
             path={SPARKLEVERSE_REDIRECT_URL}
@@ -232,7 +239,7 @@ export const AppRouter: React.FC = () => {
                 return <LoadingPage />;
               }
 
-              if (auth) {
+              if (userId) {
                 return (
                   <AnalyticsCheck>
                     <NotFound />

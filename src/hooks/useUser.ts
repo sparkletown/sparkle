@@ -26,6 +26,9 @@ export interface UseUserResult {
   profileError: RefiError;
 }
 
+/**
+ * @deprecated Use src/hooks/user/useUser.ts hook instead.
+ */
 export const useUser = (): UseUserResult => {
   const {
     status: authStatus,
