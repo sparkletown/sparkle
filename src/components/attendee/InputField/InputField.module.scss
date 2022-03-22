@@ -1,0 +1,21 @@
+@use "scss/attendee/space";
+
+.inputFieldWrapper {
+  position: relative;
+}
+
+.inputWrapper {
+  display: flex;
+}
+
+.iconEnd {
+  margin-left: space.empty(-2);
+  margin-top: space.$sm;
+  height: space.empty(2);
+  width: space.empty(2);
+  display: flex;
+
+  svg {
+    margin: auto 0;
+  }
+}

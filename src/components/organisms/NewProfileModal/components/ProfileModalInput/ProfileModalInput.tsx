@@ -2,13 +2,12 @@ import React from "react";
 import { FieldError, RegisterOptions, UseFormRegister } from "react-hook-form";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import classNames from "classnames";
+import { InputField } from "components/attendee/InputField";
 
 import { ALWAYS_EMPTY_OBJECT } from "settings";
 
 import { UserProfileModalFormData } from "types/profileModal";
 import { ContainerClassName } from "types/utility";
-
-import { InputField } from "components/atoms/InputField";
 
 import "./ProfileModalInput.scss";
 

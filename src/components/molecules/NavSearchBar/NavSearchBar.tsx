@@ -2,6 +2,7 @@ import React, { ChangeEvent, useCallback, useMemo, useState } from "react";
 import { faSearch, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
+import { InputField } from "components/attendee/InputField";
 
 import {
   ALWAYS_NOOP_FUNCTION,
@@ -25,8 +26,6 @@ import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { PortalModal } from "components/templates/PartyMap/components/PortalModal";
 
 import { Loading } from "components/molecules/Loading";
-
-import { InputField } from "components/atoms/InputField";
 
 import { NavSearchResult } from "./NavSearchResult";
 
