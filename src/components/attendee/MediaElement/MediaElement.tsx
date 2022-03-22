@@ -10,14 +10,14 @@ import { IFRAME_ALLOW } from "settings";
 
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 
-import styles from "./MediaPlayer.module.scss";
+import styles from "./MediaElement.module.scss";
 
 interface MediaPlayerProps {
   url: string;
   autoPlay: boolean;
 }
 
-export const MediaPlayer: React.FC<MediaPlayerProps> = ({ url, autoPlay }) => {
+export const MediaElement: React.FC<MediaPlayerProps> = ({ url, autoPlay }) => {
   const embedIframeUrl = convertToEmbeddableUrl({
     url,
     autoPlay,
