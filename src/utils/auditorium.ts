@@ -5,10 +5,7 @@ import {
 } from "settings";
 
 import { AuditoriumSection, AuditoriumSize } from "types/auditorium";
-import { User } from "types/User";
 import { AuditoriumVenue } from "types/venues";
-
-import { WithId } from "./id";
 
 export const chooseAuditoriumSize = (sectionsCount: number) => {
   if (sectionsCount <= 4) return AuditoriumSize.EXTRASMALL;
@@ -62,9 +59,3 @@ export const getSectionCapacity = (
 
   return generalSeatsCount - notValidSeats;
 };
-
-export interface GetSeatedUsersProps {
-  auditoriumUsers: readonly WithId<User>[];
-  venueId?: string;
-  sectionId?: string;
-}

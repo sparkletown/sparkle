@@ -101,6 +101,7 @@ export const ViewingWindow: React.FC<ViewingWindowProps> = ({ venue }) => {
           {isWithParticipants && (
             <div className="ViewingWindow__video-chat-wrapper">
               <Room
+                worldId={venue.worldId}
                 venueId={venue.id}
                 roomName={name}
                 hasChairs={false}

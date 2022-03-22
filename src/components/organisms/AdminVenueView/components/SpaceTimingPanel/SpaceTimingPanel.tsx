@@ -1,13 +1,12 @@
 import React from "react";
+import { Button } from "components/admin/Button";
+import { EventsPanel } from "components/admin/EventsPanel";
 
-import { SpaceWithId } from "types/id";
+import { SpaceWithId, WorldId } from "types/id";
 
-import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
-import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
-import { AdminSidebar } from "components/organisms/AdminVenueView/components/AdminSidebar";
-import { SpaceTimingForm } from "components/organisms/SpaceTimingForm";
+import { useShowHide } from "hooks/useShowHide";
 
-import { AdminSidebarSectionTitle } from "../AdminSidebarSectionTitle";
+import { TimingEventModal } from "components/organisms/TimingEventModal";
 
 import "./SpaceTimingPanel.scss";
 
@@ -17,12 +16,27 @@ interface SpaceTimingPanelProps {
 
 export const SpaceTimingPanel: React.FC<SpaceTimingPanelProps> = ({
   space,
-}) => (
-  <AdminPanel variant="bound" className="SpaceTimingPanel">
-    <AdminSidebar>
-      <AdminSidebarSectionTitle>Plan your event</AdminSidebarSectionTitle>
-      <SpaceTimingForm venue={space} />
-    </AdminSidebar>
-    <AdminShowcase></AdminShowcase>
-  </AdminPanel>
-);
+}) => {
+  const {
+    isShown: isShownCreateEventModal,
+    show: showCreateEventModal,
+    hide: hideCreateEventModal,
+  } = useShowHide();
+
+  return (
+    <>
+      <div className="flex justify-end sm:px-6 lg:px-8">
+        <Button onClick={showCreateEventModal}>Create new experience</Button>
+      </div>
+      <EventsPanel worldId={space.worldId as WorldId} spaces={[space]} />
+      {isShownCreateEventModal && (
+        <TimingEventModal
+          venue={space}
+          show={isShownCreateEventModal}
+          onHide={hideCreateEventModal}
+          worldId={space.worldId}
+        />
+      )}
+    </>
+  );
+};

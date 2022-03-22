@@ -1,10 +1,13 @@
+import React from "react";
 import { Route, Switch, useParams, useRouteMatch } from "react-router-dom";
 
 import { AuditoriumVenue } from "types/venues";
 
+import { captureError, SparkleAssertError } from "utils/error";
 import { WithId } from "utils/id";
 
 import { useAllAuditoriumSections } from "hooks/auditorium";
+import { useUser } from "hooks/useUser";
 
 import { AllSectionPreviews } from "../AllSectionPreviews";
 import { Section } from "../Section";
@@ -18,8 +21,9 @@ export const SeatingBlock: React.FC<SeatingBlockProps> = ({ space }) => {
 
   const { allSections, isLoading } = useAllAuditoriumSections(space);
   const { sectionId: urlSectionId } = useParams<{ sectionId: string }>();
+  const { userWithId: user, isLoading: isUserLoading } = useUser();
 
-  if (isLoading) {
+  if (isLoading || isUserLoading || !user) {
     return null;
   }
 
@@ -27,11 +31,20 @@ export const SeatingBlock: React.FC<SeatingBlockProps> = ({ space }) => {
   // same first section. The consistency is important - not the actual order.
   const sortedSections = [...allSections];
   sortedSections.sort(({ id: idA }, { id: idB }) => idA.localeCompare(idB));
-  const sectionId = urlSectionId || sortedSections[0].id;
+  const sectionId = urlSectionId || sortedSections[0]?.id;
+
+  if (!sectionId) {
+    captureError(
+      new SparkleAssertError({
+        message: `Invalid sectionId:${String(sectionId)}`,
+        where: "SeatingBlock",
+      })
+    );
+  }
 
   return (
     <Switch>
-      <Section venue={space} sectionId={sectionId} />
+      {sectionId && <Section venue={space} sectionId={sectionId} user={user} />}
       <Route path={`${match.path}`}>
         <AllSectionPreviews venue={space} />
       </Route>

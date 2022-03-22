@@ -1,6 +1,7 @@
 @use "scss/attendee/font";
 @use "scss/attendee/space";
 @use "scss/attendee/theme";
+@use "scss/attendee/breakpoint";
 @use "scss/attendee/effects/rounded";
 @use "scss/attendee/effects/sparkle";
 
@@ -39,4 +40,14 @@
   svg {
     margin-left: space.empty(0.5);
   }
+}
+
+.gridContainer {
+  display: flex;
+  max-width: 100vw;
+  @media (min-width: breakpoint.$md) {
+    max-width: 50vw;
+  }
+  flex-wrap: wrap;
+  justify-content: center;
 }

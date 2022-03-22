@@ -111,11 +111,11 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
       numberOfSections: space.sectionsCount ?? DEFAULT_SECTIONS_AMOUNT,
       roomVisibility: space.roomVisibility,
       zoomUrl: space?.zoomUrl ?? "",
-      bannerImage: undefined,
-      bannerImageUrl: space?.config?.landingPageConfig?.coverImageUrl ?? "",
       logoImage: undefined,
       logoImageUrl: space?.host?.icon ?? spaceLogoImage,
       showContent: space.showContent ?? false,
+      backgroundImage: undefined,
+      backgroundImageUrl: space.backgroundImageUrl,
     }),
     [
       space.name,
@@ -134,10 +134,10 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
       space.parentId,
       space.sectionsCount,
       space.roomVisibility,
-      space.zoomUrl,
+      space?.zoomUrl,
       space?.host?.icon,
-      space?.config?.landingPageConfig?.coverImageUrl,
       space.showContent,
+      space.backgroundImageUrl,
       spaceLogoImage,
     ]
   );
@@ -230,7 +230,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
 
   const changeBackgroundImageUrl = useCallback(
     (val: string) => {
-      setValue("bannerImageUrl", val, { shouldValidate: false });
+      setValue("backgroundImageUrl", val, { shouldValidate: false });
     },
     [setValue]
   );
@@ -307,16 +307,15 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
 
           <SidebarHeader>Appearance</SidebarHeader>
           <InputGroup
-            title="Upload a highlight image"
+            title="Upload a background image"
             subtitle="A plain 1920 x 1080px image works best."
             withLabel
           >
             <ImageInput
               onChange={changeBackgroundImageUrl}
-              name="bannerImage"
-              imgUrl={values.bannerImageUrl}
-              error={errors.bannerImageUrl}
-              // isInputHidden={!values.bannerImageUrl}
+              name="backgroundImage"
+              imgUrl={values.backgroundImageUrl}
+              error={errors.backgroundImageUrl}
               register={register}
               setValue={setValue}
             />

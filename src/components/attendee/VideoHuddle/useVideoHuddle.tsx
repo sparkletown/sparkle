@@ -35,7 +35,7 @@ export const useVideoHuddle = () => {
         enableAudio: false,
         enableVideo: false,
       });
-      setInHuddle(() => true);
+      setInHuddle(() => huddleId);
     };
   }, [joinChannel, setInHuddle]);
 
@@ -47,7 +47,7 @@ export const useVideoHuddle = () => {
         if (prevInHuddle) {
           disconnect();
         }
-        return false;
+        return undefined;
       });
     };
   }, [disconnect, setInHuddle]);

@@ -1,6 +1,5 @@
 import React from "react";
 import { MediaPlayer } from "components/attendee/MediaPlayer";
-import { useBackgroundGradient } from "components/attendee/useBackgroundGradient";
 
 import { AuditoriumVenue } from "types/venues";
 
@@ -13,8 +12,6 @@ export interface AuditoriumProps {
 }
 
 export const Auditorium: React.FC<AuditoriumProps> = ({ venue }) => {
-  useBackgroundGradient();
-
   return (
     <>
       {!venue.hideVideo && venue.iframeUrl && (

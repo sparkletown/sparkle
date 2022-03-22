@@ -2,7 +2,7 @@
 
 import * as Yup from "yup";
 
-import { GridPosition } from "types/grid";
+import { SeatPosition } from "types/grid";
 import { VenueTablePath } from "types/venues";
 
 // Store all things related to video chat where they can't be tampered with by other users
@@ -52,11 +52,17 @@ export interface User extends Profile {
 export type DisplayUser = Pick<User, "partyName" | "pictureUrl" | "anonMode">;
 
 export type GridSeatedUser = DisplayUser & {
-  position: Partial<GridPosition>;
+  position: Partial<SeatPosition>;
 };
 
 export type TableSeatedUser = DisplayUser & {
   path: VenueTablePath;
+};
+
+export type SeatedUser<T> = DisplayUser & {
+  worldId: string;
+  spaceId: string;
+  seatData: T;
 };
 
 export interface UserStatus {

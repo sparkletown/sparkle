@@ -1,7 +1,7 @@
 import React, { Fragment, useCallback, useMemo } from "react";
 import { VideoCommsParticipant } from "components/attendee/VideoComms/VideoCommsParticipant";
 
-import { unsetTableSeat } from "api/venue";
+import { unsetSeat } from "api/world";
 
 import { useVideoRoomState } from "hooks/twilio/useVideoRoomState";
 import { useUser } from "hooks/useUser";
@@ -12,6 +12,7 @@ import "./Room.scss";
 
 interface RoomProps {
   roomName: string;
+  worldId: string;
   venueId: string;
   setSeatedAtTable?: (val: string) => void;
   hasChairs?: boolean;
@@ -20,6 +21,7 @@ interface RoomProps {
 
 export const Room: React.FC<RoomProps> = ({
   roomName,
+  worldId,
   venueId,
   setSeatedAtTable,
   hasChairs = true,
@@ -37,10 +39,10 @@ export const Room: React.FC<RoomProps> = ({
   const leaveSeat = useCallback(async () => {
     if (!userId || !venueId) return;
 
-    await unsetTableSeat(userId, { venueId });
+    await unsetSeat({ userId, worldId });
 
     setSeatedAtTable?.("");
-  }, [setSeatedAtTable, userId, venueId]);
+  }, [setSeatedAtTable, userId, venueId, worldId]);
 
   // Video stream and local participant take up 2 slots
   // Ensure capacity is always even, so the grid works

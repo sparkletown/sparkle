@@ -155,6 +155,7 @@ export interface BaseVenue {
   enableJukebox?: boolean;
   requiresDateOfBirth?: boolean;
   showBadges?: boolean;
+  backgroundImageUrl?: string;
 }
 
 export interface GenericVenue extends BaseVenue {
@@ -342,7 +343,8 @@ export type TableSeatedUsersVenuesTemplates =
 
 export type RecentSeatedUserData<T extends VenueTemplate> = {
   template: T;
-  venueId: string;
+  spaceId: string;
+  worldId: string;
   venueSpecificData: T extends VenueTemplate.auditorium
     ? Pick<AuditoriumSectionPath, "sectionId">
     : T extends TableSeatedUsersVenuesTemplates

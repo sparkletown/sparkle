@@ -38,7 +38,7 @@ export const TimingEvent: React.FC<TimingEventProps> = ({ event, space }) => {
     <>
       <div key={event.id} className="">
         <div className="bg-white divide-y divide-gray-200">
-          <div className="flex justify-start items-start">
+          <div className="flex">
             <div className="px-6 py-4 w-96">
               <div className="text-sm font-medium text-gray-900">
                 {format(eventStartTime({ event }), DAYJS_EVENT_TIME_FORMAT)}
@@ -60,12 +60,7 @@ export const TimingEvent: React.FC<TimingEventProps> = ({ event, space }) => {
               </p>
             </div>
             <div className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex justify-end items-center gap-x-5">
-              <button
-                className="flex"
-                onClick={() => {
-                  showCreateEventModal();
-                }}
-              >
+              <button className="flex" onClick={showCreateEventModal}>
                 <FontAwesomeIcon icon={faPen} className="px-1" size="lg" />
 
                 <div>Edit</div>
