@@ -253,7 +253,8 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
           <div key={`${room.title}-${index}`}>{renderSelectedRoom(index)}</div>
         ) : (
           <div
-            className={classNames("Container__room-preview", {
+            data-bem="VenueRoomsEditor__room-preview"
+            className={classNames({
               "Container__room-image--disabled": !room.isEnabled,
             })}
             style={{
@@ -266,7 +267,7 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
             key={`${room.title}-${index}`}
             onClick={() => setSelectedRoom(room)}
           >
-            <div className="Container__room-title">{room.title}</div>
+            <div data-bem="VenueRoomsEditor__room-title">{room.title}</div>
           </div>
         )
       ),
@@ -283,8 +284,9 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
           <MapBackgroundPlaceholder />
         ) : (
           <img
+            data-bem="VenueRoomsEditor__background-image"
             alt="draggable background "
-            className={`Container__background-image ${backgroundImageClassName}`}
+            className={backgroundImageClassName}
             src={backgroundImage}
           />
         )}

@@ -7,11 +7,10 @@ import {
 import { Input } from "components/admin/Input";
 
 import { UserProfileModalFormData } from "types/profileModal";
-import { ContainerClassName } from "types/utility";
 
 import { ProfileModalSectionHeader } from "./ProfileModalSectionHeader";
 
-export interface ProfileModalChangePasswordProps extends ContainerClassName {
+export interface ProfileModalChangePasswordProps {
   errors?: Pick<
     FieldErrors<UserProfileModalFormData>,
     "oldPassword" | "newPassword" | "confirmNewPassword"
@@ -21,7 +20,6 @@ export interface ProfileModalChangePasswordProps extends ContainerClassName {
 }
 
 export const ProfileModalChangePassword: React.FC<ProfileModalChangePasswordProps> = ({
-  containerClassName,
   register,
   getValues,
   errors,
@@ -53,7 +51,7 @@ export const ProfileModalChangePassword: React.FC<ProfileModalChangePasswordProp
   );
 
   return (
-    <div className={containerClassName}>
+    <div data-bem="ProfileModalChangePassword">
       <ProfileModalSectionHeader text="Change password" />
       <Input
         placeholder="Old Password"

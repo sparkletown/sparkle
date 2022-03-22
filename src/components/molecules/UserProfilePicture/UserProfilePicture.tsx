@@ -3,7 +3,6 @@ import classNames from "classnames";
 
 import { UserId } from "types/id";
 import { User } from "types/User";
-import { ContainerClassName } from "types/utility";
 
 import { WithId } from "utils/id";
 
@@ -17,7 +16,7 @@ import { UserAvatarSize } from "../../atoms/UserAvatar/UserAvatar";
 
 import "./UserProfilePicture.scss";
 
-export interface UserProfilePictureProp extends ContainerClassName {
+export interface UserProfilePictureProp {
   user?: WithId<User>;
   isAudioEffectDisabled?: boolean;
   reactionPosition?: "left" | "right";
@@ -33,7 +32,6 @@ export interface UserProfilePictureProp extends ContainerClassName {
 export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   user,
   isAudioEffectDisabled = true,
-  containerClassName,
   reactionPosition = "right",
   showStatus = false,
   isVideoEnabled = true,
@@ -60,20 +58,17 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   // const pictureUrl = getAvatarUrl({ user, miniAvatars });
   //
 
-  const containerClasses = classNames(
-    "UserProfilePicture",
-    { "UserProfilePicture--only-icon": !isVideoEnabled },
-    containerClassName
-  );
+  const containerClasses = classNames("UserProfilePicture", {
+    "UserProfilePicture--only-icon": !isVideoEnabled,
+  });
 
   return (
-    <div className={containerClasses} onClick={openProfileModal}>
-      <UserAvatar
-        user={user}
-        containerClassName="UserProfilePicture__avatar"
-        showStatus={showStatus}
-        size={size}
-      />
+    <div
+      data-bem="UserProfilePicture"
+      className={containerClasses}
+      onClick={openProfileModal}
+    >
+      <UserAvatar user={user} showStatus={showStatus} size={size} />
 
       {userId && (
         <UserReactions

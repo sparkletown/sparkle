@@ -16,10 +16,13 @@ export const ProfileModalBasicInfo: React.FC<ProfileModalBasicInfoProps> = ({
   user,
 }) => {
   return (
-    <div className="ProfileModalBasicInfo mt-3 text-left sm:mt-0">
+    <div data-bem="ProfileModalBasicInfo" className="mt-3 text-left sm:mt-0">
       <ModalTitle>My profile</ModalTitle>
 
-      <div className="ProfileModalBasicInfo__main-container mt-7 mb-5 flex flex-row gap-3">
+      <div
+        data-bem="ProfileModalBasicInfo__main-container"
+        className="mt-7 mb-5 flex flex-row gap-3"
+      >
         <ProfileModalAvatar user={user} editMode={false} />
         <ProfileModalBasicTextInfo user={user} />
       </div>

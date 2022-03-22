@@ -59,7 +59,11 @@ export const ChatMessageInfo: React.FC<ChatMessageInfoProps> = ({
   });
 
   return (
-    <div onClick={openAuthorProfile} className={containerClassnames}>
+    <div
+      data-bem="ChatMessageInfo"
+      onClick={openAuthorProfile}
+      className={containerClassnames}
+    >
       <span className={styles.authorName}>{fromUser.partyName}</span>
       &nbsp;
       <span className={styles.messageTime}>

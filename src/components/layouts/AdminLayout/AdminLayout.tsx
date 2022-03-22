@@ -42,7 +42,7 @@ export const AdminLayout: React.FC<AdminLayoutPropsType> = ({ children }) => {
   }, [pageLayout.sidebarOpen]);
 
   return (
-    <div className="AdminLayout">
+    <div data-bem="AdminLayout">
       <Sidebar
         sidebarOpen={pageLayout.sidebarOpen}
         onCloseSidebar={closeSidebar}

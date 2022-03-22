@@ -1,14 +1,12 @@
 import React, { useEffect, useMemo } from "react";
-import classNames from "classnames";
 
 import { UserStatus } from "types/User";
-import { ContainerClassName } from "types/utility";
 
 import { useVenueUserStatuses } from "hooks/useVenueUserStatuses";
 
 import { Dropdown } from "components/atoms/Dropdown";
 
-export interface UserStatusDropdownProps extends ContainerClassName {
+export interface UserStatusDropdownProps {
   userStatuses: UserStatus[];
   showDropdown?: boolean;
 }
@@ -16,7 +14,6 @@ export interface UserStatusDropdownProps extends ContainerClassName {
 export const UserStatusDropdown: React.FC<UserStatusDropdownProps> = ({
   userStatuses,
   showDropdown,
-  containerClassName,
 }) => {
   const { userStatus, changeUserStatus } = useVenueUserStatuses();
 
@@ -47,10 +44,9 @@ export const UserStatusDropdown: React.FC<UserStatusDropdownProps> = ({
   );
 
   return (
-    <div className={classNames("UserStatusDropdown flex", containerClassName)}>
-      <div className="UserStatusDropdown__status">
-        {userStatus.status}&nbsp;
-      </div>
+    <div data-bem="UserStatusDropdown" className="flex">
+      <div data-bem="UserStatusDropdown__status">{userStatus.status}&nbsp;</div>
+
       {showDropdown && (
         <Dropdown title="change status" noArrow>
           {userStatusDropdownOptions}

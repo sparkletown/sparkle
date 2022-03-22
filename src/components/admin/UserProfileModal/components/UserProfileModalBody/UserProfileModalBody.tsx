@@ -53,7 +53,7 @@ export const UserProfileModalBody: React.FC<UserProfileModalBodyProps> = ({
 
   if (!profile) {
     return (
-      <div className="ProfileModalFetchUser">
+      <div data-bem="UserProfileModalBody--fetch-user">
         <div>
           Oops, an error occurred while trying to load user data.
           {STRING_NEWLINE}

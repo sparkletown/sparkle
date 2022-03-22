@@ -63,7 +63,7 @@ export const Input: React.FC<InputProps> = ({
       type="hidden"
     />
   ) : (
-    <div className="Input">
+    <div data-bem="Input">
       <div className={parentClasses}>
         <input
           {...inputProps}

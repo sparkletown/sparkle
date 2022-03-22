@@ -1,17 +1,15 @@
 import React, { useMemo } from "react";
 import { FieldErrors, UseFormRegister } from "react-hook-form";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import classNames from "classnames";
 import { ProfileModalRoundIcon } from "components/admin/UserProfileModal/components/ProfileModalRoundIcon";
 import { ProfileModalSectionHeader } from "components/admin/UserProfileModal/components/ProfileModalSectionHeader";
 
 import { UserProfileModalFormData } from "types/profileModal";
 import { ProfileLink } from "types/User";
-import { ContainerClassName } from "types/utility";
 
 import { ProfileModalEditLink } from "./ProfileModalEditLink";
 
-export interface ProfileModalEditLinksProps extends ContainerClassName {
+export interface ProfileModalEditLinksProps {
   initialLinks: ProfileLink[];
   links: ProfileLink[];
   register: UseFormRegister<UserProfileModalFormData>;
@@ -27,7 +25,6 @@ export const ProfileModalEditLinks: React.FC<ProfileModalEditLinksProps> = ({
   errors,
   onDeleteLink,
   onAddLink,
-  containerClassName,
 }) => {
   const renderedLinks = useMemo(
     () =>
@@ -39,7 +36,6 @@ export const ProfileModalEditLinks: React.FC<ProfileModalEditLinksProps> = ({
 
         return (
           <ProfileModalEditLink
-            containerClassName="ProfileModalEditLinks__link-group"
             key={index}
             index={index}
             register={register}
@@ -55,8 +51,8 @@ export const ProfileModalEditLinks: React.FC<ProfileModalEditLinksProps> = ({
   );
 
   return (
-    <div className={classNames("ProfileModalEditLinks", containerClassName)}>
-      <div className="ProfileModalEditLinks__header-container">
+    <div data-bem="ProfileModalEditLinks">
+      <div data-bem="ProfileModalEditLinks__header-container">
         <ProfileModalSectionHeader text="Profile links" />
         <ProfileModalRoundIcon onClick={onAddLink} iconName={faPlus} />
       </div>

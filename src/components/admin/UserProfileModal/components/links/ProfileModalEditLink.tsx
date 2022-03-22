@@ -1,18 +1,16 @@
 import React, { useCallback } from "react";
 import { FieldErrors, UseFormRegister, ValidateResult } from "react-hook-form";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import classNames from "classnames";
 import { Input } from "components/admin/Input";
 import { InputGroup } from "components/admin/InputGroup";
 import { ProfileModalRoundIcon } from "components/admin/UserProfileModal/components/ProfileModalRoundIcon";
 
 import { UserProfileModalFormData } from "types/profileModal";
 import { ProfileLink } from "types/User";
-import { ContainerClassName } from "types/utility";
 
 import { urlRegex } from "utils/types";
 
-export interface ProfileModalEditLinkProps extends ContainerClassName {
+export interface ProfileModalEditLinkProps {
   index: number;
   initialTitle?: string;
   link: Partial<ProfileLink>;
@@ -30,7 +28,6 @@ export const ProfileModalEditLink: React.FC<ProfileModalEditLinkProps> = ({
   register,
   error,
   onDelete,
-  containerClassName,
 }) => {
   const validateURLUnique: (url: string) => ValidateResult = useCallback(
     (url: string) => {
@@ -40,12 +37,10 @@ export const ProfileModalEditLink: React.FC<ProfileModalEditLinkProps> = ({
   );
 
   return (
-    <div
-      className={classNames("ProfileModalEditLink flex", containerClassName)}
-    >
+    <div data-bem="ProfileModalEditLink" className="flex">
       <div className="flex-1 mr-2">
         <InputGroup title={`Profile Link ${index + 1}`}>
-          <div className="ProfileModalEditLink__url mb-1">
+          <div data-bem="ProfileModalEditLink__url" className="mb-1">
             <Input
               placeholder="Link URL"
               name={`profileLinks.${index}.url`}
@@ -61,7 +56,7 @@ export const ProfileModalEditLink: React.FC<ProfileModalEditLinkProps> = ({
               error={error?.url}
             />
           </div>
-          <div className="ProfileModalEditLink__text">
+          <div data-bem="ProfileModalEditLink__text">
             <Input
               placeholder="Link Title"
               register={register}

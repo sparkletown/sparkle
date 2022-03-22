@@ -29,7 +29,7 @@ export const ProfileModalContent: React.FC<ProfileModalContentProps> = ({
   const { questions, answers } = useProfileQuestions(user, worldId);
 
   return (
-    <div className="ProfileModalContent">
+    <div data-bem="ProfileModalContent">
       <div className="sm:flex sm:items-start">
         <div>
           <ProfileModalBasicInfo user={user} />

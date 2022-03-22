@@ -156,7 +156,7 @@ export const MapPreview: React.FC<MapPreviewProps> = ({
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <div className="MapPreview">
+      <div data-bem="MapPreview">
         <Legend text={`${venueName}'s Map`} />
 
         {mapBackground &&

@@ -25,17 +25,23 @@ export const ProfileModalBasicTextInfo: React.FC<ProfileModalBasicTextInfoProps>
   const userStatus = world?.showUserStatus && world?.userStatuses?.[0];
 
   return (
-    <div className="ProfileModalBasicTextInfo flex flex-col">
-      <h2 className="ProfileModalBasicTextInfo__name font-sm">
+    <div data-bem="ProfileModalBasicTextInfo" className="flex flex-col">
+      <h2 data-bem="ProfileModalBasicTextInfo__name" className="font-sm">
         {user.partyName || DEFAULT_PARTY_NAME}
       </h2>
       {isCurrentUser && firebaseUser?.email && (
-        <div className="ProfileModalBasicTextInfo--light font-sm text-gray-700">
+        <div
+          data-bem="ProfileModalBasicTextInfo--light"
+          className="font-sm text-gray-700"
+        >
           {firebaseUser?.email}
         </div>
       )}
       {userStatus && world?.userStatuses && (
-        <div className="ProfileModalBasicTextInfo__status font-xs flex">
+        <div
+          data-bem="ProfileModalBasicTextInfo__status"
+          className="font-xs flex"
+        >
           is&nbsp;
           <UserStatusDropdown
             userStatuses={world?.userStatuses}

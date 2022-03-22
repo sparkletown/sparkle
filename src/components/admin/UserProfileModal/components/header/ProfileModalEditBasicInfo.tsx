@@ -5,7 +5,6 @@ import {
   UseFormSetValue,
   UseFormWatch,
 } from "react-hook-form";
-import classNames from "classnames";
 import { Input } from "components/admin/Input";
 import { ProfileModalAvatar } from "components/admin/UserProfileModal/components/header/ProfileModalAvatar";
 
@@ -13,13 +12,12 @@ import { DISPLAY_NAME_MAX_CHAR_COUNT } from "settings";
 
 import { UserProfileModalFormData } from "types/profileModal";
 import { User } from "types/User";
-import { ContainerClassName } from "types/utility";
 
 import { WithId } from "utils/id";
 
 import { DefaultAvatars } from "components/molecules/DefaultAvatars/DefaultAvatars";
 
-export interface ProfileModalEditBasicInfoProps extends ContainerClassName {
+export interface ProfileModalEditBasicInfoProps {
   user: WithId<User>;
   register: UseFormRegister<UserProfileModalFormData>;
   setValue: UseFormSetValue<UserProfileModalFormData>;
@@ -33,7 +31,6 @@ export const ProfileModalEditBasicInfo: React.FC<ProfileModalEditBasicInfoProps>
   setValue,
   watch,
   partyNameError,
-  containerClassName,
 }) => {
   const pictureUrl = watch?.("pictureUrl");
   const setPictureUrl = useCallback(
@@ -48,9 +45,7 @@ export const ProfileModalEditBasicInfo: React.FC<ProfileModalEditBasicInfoProps>
   );
 
   return (
-    <div
-      className={classNames("ProfileModalEditBasicInfo", containerClassName)}
-    >
+    <div data-bem="ProfileModalEditBasicInfo">
       <ProfileModalAvatar
         user={user}
         editMode={true}
@@ -58,8 +53,11 @@ export const ProfileModalEditBasicInfo: React.FC<ProfileModalEditBasicInfoProps>
         pictureUrl={pictureUrl}
         register={register}
       />
-      <div className="ProfileModalEditBasicInfo__default-avatars mb-2">
-        <div className="ProfileModalEditBasicInfo__choose-text">
+      <div
+        data-bem="ProfileModalEditBasicInfo__default-avatars"
+        className="mb-2"
+      >
+        <div data-bem="ProfileModalEditBasicInfo__choose-text">
           or pick one from our Sparkle profile pics
         </div>
         <DefaultAvatars

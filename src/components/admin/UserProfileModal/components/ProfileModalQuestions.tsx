@@ -1,6 +1,5 @@
 import React, { useMemo } from "react";
 import { UseFormRegister } from "react-hook-form";
-import classNames from "classnames";
 import { Input } from "components/admin/Input";
 import { InputGroup } from "components/admin/InputGroup";
 
@@ -8,11 +7,10 @@ import { STRING_DASH_SPACE } from "settings";
 
 import { UserProfileModalFormData } from "types/profileModal";
 import { Question } from "types/Question";
-import { ContainerClassName } from "types/utility";
 
 import { ProfileModalSectionHeader } from "./ProfileModalSectionHeader";
 
-export interface ProfileModalQuestionsProps extends ContainerClassName {
+export interface ProfileModalQuestionsProps {
   editMode?: boolean;
   register?: UseFormRegister<UserProfileModalFormData>;
   questions: Question[];
@@ -24,13 +22,13 @@ export const ProfileModalQuestions: React.FC<ProfileModalQuestionsProps> = ({
   register,
   questions,
   answers,
-  containerClassName,
 }) => {
   const renderedProfileQuestionAnswers = useMemo(
     () =>
       questions?.map((question, i) => (
         <div
-          className="ProfileModalQuestions__question-container"
+          data-bem="ProfileModalQuestions__question-container"
+          data-order={i}
           key={question.text}
         >
           <InputGroup title={question.text}>
@@ -51,7 +49,7 @@ export const ProfileModalQuestions: React.FC<ProfileModalQuestionsProps> = ({
     [answers, editMode, questions, register]
   );
   return (
-    <div className={classNames("ProfileModalQuestions", containerClassName)}>
+    <div data-bem="ProfileModalQuestions">
       {questions.length > 0 && editMode && (
         <ProfileModalSectionHeader text="Questions" />
       )}

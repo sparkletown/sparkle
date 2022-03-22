@@ -16,14 +16,10 @@ export const ProfileModalLinks: React.FC<ProfileModalLinksProps> = ({
   const renderedProfileLinks = useMemo(
     () =>
       user?.profileLinks?.map((link, i) => (
-        <ProfileModalLink
-          containerClassName="ProfileModalLinks__link"
-          link={link}
-          key={`${link.title}-${link.url}`}
-        />
+        <ProfileModalLink link={link} key={`${link.title}-${link.url}`} />
       )),
     [user?.profileLinks]
   );
 
-  return <div className="ProfileModalLinks">{renderedProfileLinks}</div>;
+  return <div data-bem="ProfileModalLinks">{renderedProfileLinks}</div>;
 };

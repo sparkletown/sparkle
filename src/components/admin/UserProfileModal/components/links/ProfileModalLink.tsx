@@ -1,20 +1,17 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import classNames from "classnames";
 
 import { ProfileLink } from "types/User";
-import { ContainerClassName } from "types/utility";
 
 import { useProfileModalLinkIcon } from "utils/profileModalLinkUtilities";
 
-export const ProfileModalLink: React.FC<
-  { link: ProfileLink } & ContainerClassName
-> = ({ link, containerClassName }) => {
+export const ProfileModalLink: React.FC<{ link: ProfileLink }> = ({ link }) => {
   const linkIcon = useProfileModalLinkIcon(link.url);
 
   return (
     <a
-      className={classNames("ProfileModalLink mr-4", containerClassName)}
+      data-bem="ProfileModalLink"
+      className="mr-4"
       href={link.url}
       target="_blank"
       rel="noreferrer"

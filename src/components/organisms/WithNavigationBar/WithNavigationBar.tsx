@@ -62,13 +62,11 @@ export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
     <MobileWarning />
 
     {variant === "internal-scroll" ? (
-      <div className="WithNavigationBar__wrapper WithNavigationBar__wrapper--internal-scroll">
-        <div className="WithNavigationBar__slider WithNavigationBar__slider--internal-scroll">
-          {children}
-        </div>
+      <div data-bem="WithNavigationBar__wrapper">
+        <div data-bem="WithNavigationBar__slider">{children}</div>
       </div>
     ) : (
-      <div className="WithNavigationBar__wrapper">{children}</div>
+      <div data-bem="WithNavigationBar__wrapper">{children}</div>
     )}
 
     <Footer />

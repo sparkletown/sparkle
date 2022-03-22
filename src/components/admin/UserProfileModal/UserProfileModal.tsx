@@ -21,8 +21,9 @@ export const UserProfileModal = () => {
   return (
     <Transition.Root show={hasSelectedProfile} as={Fragment}>
       <Dialog
+        data-bem="AdminProfileModal"
         as="div"
-        className={classNames("AdminProfileModal", TW.general)}
+        className={TW.general}
         initialFocus={cancelButtonRef}
         onClose={closeUserProfileModal}
       >

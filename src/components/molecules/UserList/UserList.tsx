@@ -3,7 +3,6 @@ import classNames from "classnames";
 
 import { UserId } from "types/id";
 import { User } from "types/User";
-import { ContainerClassName } from "types/utility";
 
 import { WithId } from "utils/id";
 
@@ -15,7 +14,7 @@ import "./UserList.scss";
 
 const noop = () => {};
 
-interface UserListProps extends ContainerClassName {
+interface UserListProps {
   usersSample: readonly WithId<User>[];
   userCount: number;
   activity?: string;
@@ -30,7 +29,6 @@ export const UserList: React.FC<UserListProps> = ({
   usersSample,
   userCount,
   activity = "partying",
-  containerClassName,
   cellClassName,
   hasClickableAvatars = false,
   showEvenWhenNoUsers = false,
@@ -44,7 +42,6 @@ export const UserList: React.FC<UserListProps> = ({
     attendeesTitle ?? (userCount === 1 ? "person" : "people")
   } ${activity}`;
 
-  const containerClasses = classNames("UserList", containerClassName);
   const cellClasses = classNames("UserList__cell", cellClassName);
 
   const { openUserProfileModal } = useProfileModalControls();
@@ -70,15 +67,15 @@ export const UserList: React.FC<UserListProps> = ({
   if (!showEvenWhenNoUsers && userCount < 1) return null;
 
   return (
-    <div className={containerClasses}>
-      <div className="UserList__label">
-        {showTitle && <p className="UserList__label-text">{label}</p>}
+    <div data-bem="UserList">
+      <div data-bem="UserList__label">
+        {showTitle && <p data-bem="UserList__label-text">{label}</p>}
       </div>
 
-      <div className="UserList__avatars">
+      <div data-bem="UserList__avatars">
         {renderedUserAvatars}
         {excessiveUserCount > 0 && (
-          <div className="UserList__excessive-number">
+          <div data-bem="UserList__excessive-number">
             and {excessiveUserCount} more
           </div>
         )}

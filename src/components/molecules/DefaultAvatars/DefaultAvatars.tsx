@@ -5,15 +5,13 @@ import firebase from "firebase/compat/app";
 
 import { DEFAULT_AVATAR_LIST } from "settings";
 
-import { ContainerClassName } from "types/utility";
-
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import "firebase/storage";
 
 import styles from "./DefaultAvatars.module.scss";
 
-export interface DefaultAvatarsProps extends ContainerClassName {
+export interface DefaultAvatarsProps {
   onAvatarClick: (url: string) => void;
   isLoadingExternal?: boolean;
   avatarClassName?: string;
@@ -25,7 +23,6 @@ export const DefaultAvatars: React.FC<DefaultAvatarsProps> = ({
   isLoadingExternal,
   avatarClassName,
   avatarPictureClassName,
-  containerClassName,
 }) => {
   const {
     sovereignVenueId,
@@ -61,20 +58,16 @@ export const DefaultAvatars: React.FC<DefaultAvatarsProps> = ({
   const avatarImages = useMemo(() => {
     return defaultAvatars.map((avatar, index) => (
       <button
+        data-bem="DefaultAvatars__preview-container"
         key={`${avatar}-${index}`}
-        className={classNames(
-          "DefaultAvatars__preview-container w-12 h-12 mr-1",
-          avatarClassName
-        )}
+        className={classNames("w-12 h-12 mr-1", avatarClassName)}
         onClick={(event) => uploadDefaultAvatar(event, avatar)}
         type="button"
       >
         <img
+          data-bem="DefaultAvatars__picture-preview"
           src={avatar}
-          className={classNames(
-            "DefaultAvatars__picture-preview profile-icon",
-            avatarPictureClassName
-          )}
+          className={classNames("profile-icon", avatarPictureClassName)}
           alt={`default avatar ${index}`}
         />
       </button>
@@ -91,6 +84,8 @@ export const DefaultAvatars: React.FC<DefaultAvatarsProps> = ({
     (customAvatars !== undefined || isLoadingExternal !== undefined);
 
   return (
-    <div className={styles.defaultAvatars}>{!isLoading && avatarImages}</div>
+    <div data-bem="DefaultAvatars" className={styles.defaultAvatars}>
+      {!isLoading && avatarImages}
+    </div>
   );
 };

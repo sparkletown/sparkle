@@ -39,7 +39,6 @@ export const useAuditoriumGrid = ({
                 <UserProfilePicture
                   key={columnIndex}
                   user={user}
-                  containerClassName="Section__user-avatar"
                   isAudioEffectDisabled={isUserAudioMuted}
                   size="medium"
                 />

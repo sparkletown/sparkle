@@ -66,8 +66,11 @@ export const ProfileModalAvatar: React.FC<ProfileModalAvatarProps> = ({
   );
 
   return (
-    <div className="ProfileModalAvatar flex-shrink-0 h-20 w-20">
-      <div className="ProfileModalAvatar__upload-new-container relative">
+    <div data-bem="ProfileModalAvatar" className="flex-shrink-0 h-20 w-20">
+      <div
+        data-bem="ProfileModalAvatar__upload-new-container"
+        className="relative"
+      >
         <UserAvatar
           imageClassName="rounded-full w-20 h-20"
           user={userWithOverriddenPictureUrl}
@@ -83,19 +86,21 @@ export const ProfileModalAvatar: React.FC<ProfileModalAvatarProps> = ({
         )}
       </div>
       <input
+        data-bem="ProfileModalAvatar__input"
         type="file"
         onChange={handleFileChange}
         accept={ACCEPTED_IMAGE_TYPES}
         ref={uploadRef}
-        className="ProfileModalAvatar__input invisible"
+        className="invisible"
       />
       {register && (
         <input
-          className="ProfileModalAvatar__input invisible"
+          data-bem="ProfileModalAvatar__input"
+          className="invisible"
           {...register("pictureUrl")}
         />
       )}
-      {error && <div className="ProfileModalAvatar__error">{error}</div>}
+      {error && <div data-bem="ProfileModalAvatar__error">{error}</div>}
     </div>
   );
 };

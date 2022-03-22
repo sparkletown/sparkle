@@ -165,13 +165,12 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
   );
 
   return (
-    <div className="EditingProfileModalContent">
+    <div data-bem="EditingProfileModalContent">
       <ModalTitle>Edit profile</ModalTitle>
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <ProfileModalEditBasicInfo
           user={user}
-          containerClassName="EditingProfileModalContent__section"
           register={register}
           watch={watch}
           setValue={setValue}
@@ -179,13 +178,11 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
         />
         <ProfileModalQuestions
           editMode
-          containerClassName="EditingProfileModalContent__section"
           questions={questions}
           answers={answers}
           register={register}
         />
         <ProfileModalEditLinks
-          containerClassName="EditingProfileModalContent__section"
           register={register}
           initialLinks={defaultValues.profileLinks ?? []}
           links={links}
@@ -195,7 +192,6 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
         />
         {isChangePasswordShown && (
           <ProfileModalChangePassword
-            containerClassName="EditingProfileModalContent__section"
             register={register}
             getValues={getValues}
             errors={passwordErrors}
@@ -207,7 +203,6 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
             onChangePasswordClick={showChangePassword}
             onCancelClick={cancelEditing}
             isSubmitting={isSubmitting}
-            containerClassName="EditingProfileModalContent__edit-buttons"
           />
         </div>
       </form>
