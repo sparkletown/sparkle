@@ -65,9 +65,7 @@ export const Input: React.FC<InputProps> = ({
     <div className="Input">
       <div className={parentClasses}>
         {label && (
-          <label className="block text-sm font-medium text-gray-700">
-            {label}
-          </label>
+          <div className="block text-sm font-medium text-gray-700">{label}</div>
         )}
         <input
           {...inputProps}

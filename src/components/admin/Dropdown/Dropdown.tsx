@@ -7,7 +7,15 @@ import {
   ALWAYS_NO_STYLE_FUNCTION,
 } from "settings";
 
-import "./Dropdown.scss";
+import {
+  buttonTailwind,
+  checkmarkSelected,
+  checkmarkTailwind,
+  listTailwind,
+  optionWrapper,
+} from "./Dropdown.tailwind";
+
+import "./Dropdown.module.scss";
 
 // if these are undefined, the 3rd party library will provide own defaults
 const NO_INLINE_STYLES_PLEASE = {
@@ -82,7 +90,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
     <>
       <button
         onClick={() => setOpened((value) => !value)}
-        className="relative w-full bg-white border border-gray-300 rounded-md shadow-sm pl-3 pr-3 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm flex justify-between"
+        className={buttonTailwind}
         type="button"
       >
         {selectedOption?.label ?? title}
@@ -101,12 +109,8 @@ export const Dropdown: React.FC<DropdownProps> = ({
           />
         </svg>
       </button>
-      <div
-        className={`${
-          !isOpened && "hidden"
-        } absolute z-10 w-44 text-base list-none bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700`}
-      >
-        <ul className="absolute z-10 mt-1 min-w-full w-auto bg-white shadow-lg max-h-56 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
+      <div className={`${!isOpened && "hidden"} ${optionWrapper}`}>
+        <ul className={listTailwind}>
           {options.map((option) => {
             const isSelected =
               option.value === selectedOption?.value ||
@@ -115,8 +119,8 @@ export const Dropdown: React.FC<DropdownProps> = ({
               ? "font-semibold select-none relative py-2 pl-3 pr-9"
               : "select-none relative py-2 pl-3 pr-9";
             const checkmarkClasses = isSelected
-              ? "dropdownSelected text-white inset-y-0 right-0 flex items-center pr-4 h-5 w-5 mr-2 bg-indigo-600"
-              : "dropdownSelected text-indigo-600 inset-y-0 right-0 flex items-center pr-4 h-5 w-5 mr-2 bg-white";
+              ? checkmarkSelected
+              : checkmarkTailwind;
 
             return (
               <li

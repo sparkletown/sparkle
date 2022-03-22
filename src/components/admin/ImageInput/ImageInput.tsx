@@ -43,7 +43,7 @@ export interface ImageInputProps {
   subtext?: string;
   // isInputHidden?: boolean;
   variant?: ImageInputVariant;
-  label?: string;
+  inputLabel?: string;
   buttonLabel?: string;
 }
 
@@ -58,7 +58,7 @@ export const ImageInput: React.FC<ImageInputProps> = ({
   // isInputHidden = false,
   subtext = "",
   variant = "wide",
-  label,
+  inputLabel,
   buttonLabel = "Upload",
 }) => {
   const inputFileRef = useRef<HTMLInputElement>(null);
@@ -131,10 +131,10 @@ export const ImageInput: React.FC<ImageInputProps> = ({
 
   return (
     <>
-      {label && (
-        <label className="block text-sm font-medium text-gray-700 mb-1 mt-4">
-          {label}
-        </label>
+      {inputLabel && (
+        <div className="block text-sm font-medium text-gray-700 mb-1 mt-4">
+          {inputLabel}
+        </div>
       )}
       <label className="ImageInput__container">
         <input

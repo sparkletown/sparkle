@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useForm, useFormState } from "react-hook-form";
 import { useHistory } from "react-router-dom";
+import { ConfirmationModal } from "components/admin/ConfirmationModal/ConfirmationModal";
 import { differenceInYears, parseISO } from "date-fns";
 import firebase from "firebase/compat/app";
 
@@ -33,7 +34,6 @@ import { LoginFormData } from "components/organisms/AuthenticationModal/LoginFor
 import { TicketCodeField } from "components/organisms/TicketCodeField";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
-import { ConfirmationModal } from "components/atoms/ConfirmationModal/ConfirmationModal";
 
 import fIcon from "assets/icons/facebook-social-icon.svg";
 import gIcon from "assets/icons/google-social-icon.svg";

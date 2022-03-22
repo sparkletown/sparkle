@@ -2,6 +2,7 @@ import React, { useCallback, useEffect } from "react";
 import { useForm, useFormState } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import classNames from "classnames";
+import { ConfirmationModal } from "components/admin/ConfirmationModal/ConfirmationModal";
 
 import { updateBanner } from "api/bannerAdmin";
 
@@ -12,7 +13,6 @@ import { useShowHide } from "hooks/useShowHide";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { Checkbox } from "components/atoms/Checkbox";
-import { ConfirmationModal } from "components/atoms/ConfirmationModal/ConfirmationModal";
 import { InputField } from "components/atoms/InputField";
 
 import "./BannerAdmin.scss";

@@ -3,8 +3,11 @@ import { useForm, useFormState } from "react-hook-form";
 import { useAsyncFn, useToggle } from "react-use";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button } from "components/admin/Button";
+import { ConfirmationModal } from "components/admin/ConfirmationModal/ConfirmationModal";
 import { ImageInput } from "components/admin/ImageInput";
 import { Input } from "components/admin/Input";
+import { PortalVisibility } from "components/admin/PortalVisibility";
+import { SpacesDropdown } from "components/admin/SpacesDropdown";
 import { Toggle } from "components/admin/Toggle";
 
 import {
@@ -33,10 +36,6 @@ import { useUser } from "hooks/useUser";
 
 import { AdminSection } from "components/molecules/AdminSection";
 import { SubmitError } from "components/molecules/SubmitError";
-
-import { ConfirmationModal } from "components/atoms/ConfirmationModal/ConfirmationModal";
-import { PortalVisibility } from "components/atoms/PortalVisibility";
-import { SpacesDropdown } from "components/atoms/SpacesDropdown";
 
 interface PortalAddEditFormProps {
   item?: PortalInfoItem;
@@ -244,7 +243,7 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
             nameWithUnderscore
             imgUrl={portal?.image_url ?? icon}
             error={errors?.image_url}
-            label="Highlight image"
+            inputLabel="Highlight image"
             buttonLabel="Change highlight image"
           />
         </AdminSection>
@@ -277,14 +276,15 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
         <SubmitError error={submitError || deleteError} />
         <div className="mt-5 sm:mt-4 sm:flex justify-end">
           {isEditMode && (
-            <Button
-              variant="danger"
-              disabled={isLoading || isDeleting}
-              onClick={showPortalDelete}
-              className="mr-auto"
-            >
-              Delete
-            </Button>
+            <div className="mr-auto">
+              <Button
+                variant="danger"
+                disabled={isLoading || isDeleting}
+                onClick={showPortalDelete}
+              >
+                Delete
+              </Button>
+            </div>
           )}
           <Button
             variant="secondary"
@@ -305,7 +305,7 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
       </form>
       {isPortalDeleteShown && (
         <ConfirmationModal
-          header={"Delete portal"}
+          header="Delete portal"
           message="Are you sure you want to delete this portal?"
           onConfirm={deletePortal}
           onCancel={hidePortalDelete}

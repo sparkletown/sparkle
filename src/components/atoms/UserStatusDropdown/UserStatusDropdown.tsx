@@ -1,12 +1,11 @@
 import React, { useEffect, useMemo } from "react";
 import classNames from "classnames";
+import { Dropdown } from "components/admin/Dropdown";
 
 import { UserStatus } from "types/User";
 import { ContainerClassName } from "types/utility";
 
 import { useVenueUserStatuses } from "hooks/useVenueUserStatuses";
-
-import { Dropdown } from "components/atoms/Dropdown";
 
 import "./UserStatusDropdown.scss";
 

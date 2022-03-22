@@ -1,4 +1,10 @@
-import React, { ReactNode, useEffect, useMemo, useState } from "react";
+import React, {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import {
   FieldErrors,
   FieldValues,
@@ -15,7 +21,10 @@ import { AnyForm } from "types/utility";
 
 import { isDefined } from "utils/types";
 
-import "./PortalVisibility.scss";
+import {
+  imageSelectedTailwind,
+  imageTailwind,
+} from "./PortalVisibility.tailwind";
 
 interface PortalVisibilityProps {
   errors?: FieldErrors<FieldValues>;
@@ -37,32 +46,37 @@ export const PortalVisibility: React.FC<PortalVisibilityProps> = ({
   const error = get(errors, name);
   const [selected, setSelected] = useState<RoomVisibility | undefined>();
 
+  const handleClick = useCallback(
+    ({ value, name }) => {
+      setSelected(value);
+      setValue(name, value, { shouldValidate: true });
+    },
+    [setValue]
+  );
+
   const renderedItems = useMemo(
     () =>
-      Object.values(LABEL_VISIBILITY_OPTIONS).map(({ label, value }) => {
+      Object.values(LABEL_VISIBILITY_OPTIONS).map(({ label, value }, i) => {
         const isSelected = isDefined(selected) && selected === value;
         const imageClasses = classNames({
-          "portalImage bg-indigo-600 border-transparent text-white hover:bg-indigo-700 border rounded-md py-3 px-3 flex items-center justify-center text-sm font-medium uppercase sm:flex-1 bg-white border-gray-200 text-gray-900 hover:bg-white": isSelected,
-          "portalImage bg-white border-gray-200 text-gray-900 hover:bg-gray-50 border rounded-md py-3 px-3 flex items-center justify-center text-sm font-medium uppercase sm:flex-1 bg-white border-gray-200 text-gray-900 hover:bg-white": !isSelected,
+          [imageSelectedTailwind]: isSelected,
+          [imageTailwind]: !isSelected,
         });
 
         return (
           <div
-            key={label}
-            onClick={(e) => {
-              e.preventDefault();
-              setSelected(value);
-              setValue(name, value, { shouldValidate: true });
-            }}
+            key={`${label}-${i}`}
+            onClick={() => handleClick({ value, name })}
           >
             <div className={imageClasses}>
+              {/* @debt: add portal visibility images */}
               <img src="#" alt="" />
             </div>
             <span className="text-gray-300 text-sm my-2">{label}</span>
           </div>
         );
       }),
-    [selected, setValue, setSelected, name]
+    [selected, name, handleClick]
   );
 
   const renderedInput = useMemo(

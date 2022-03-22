@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { FieldError, UseFormRegister, UseFormSetValue } from "react-hook-form";
+import { Dropdown } from "components/admin/Dropdown";
 import { omit, omitBy } from "lodash";
 
 import { ALWAYS_EMPTY_ARRAY, PORTAL_INFO_ICON_MAPPING } from "settings";
@@ -9,8 +10,6 @@ import { AnyVenue, PortalTemplate } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
 
 import { WithId } from "utils/id";
-
-import { Dropdown } from "components/atoms/Dropdown";
 
 import "./SpacesDropdown.scss";
 

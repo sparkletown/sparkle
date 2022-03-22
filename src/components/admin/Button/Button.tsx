@@ -13,7 +13,6 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   borders?: ButtonBorders;
   loading?: boolean;
   forwardRef?: RefObject<HTMLButtonElement>;
-  className?: string;
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -23,13 +22,12 @@ export const Button: React.FC<ButtonProps> = ({
   loading = false,
   forwardRef,
   type = "button",
-  className,
   ...extraParams
 }) => (
   <button
     {...extraParams}
     type={type}
-    className={cn("Button", TW.general, TW[variant], TW[borders], className)}
+    className={cn("Button", TW.general, TW[variant], TW[borders])}
     ref={forwardRef}
   >
     {loading && <Loading />}

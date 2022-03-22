@@ -5,8 +5,6 @@ import { isTruthy } from "utils/types";
 
 import { Modal } from "components/molecules/Modal";
 
-import "./ConfirmationModal.scss";
-
 interface ConfirmationModalProps {
   show?: boolean;
   header?: string;
@@ -53,18 +51,10 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
         {hasHeader && <h4>{header}</h4>}
         <div>{message}</div>
         <div className="mt-4">
-          <Button
-            onClick={cancel}
-            variant="secondary"
-            className="mt-3 mb-3 ml-2 mr-2"
-          >
+          <Button onClick={cancel} variant="secondary">
             {cancelBtnLabel}
           </Button>
-          <Button
-            variant={confirmVariant}
-            onClick={confirm}
-            className="mt-3 mb-3 ml-2 mr-2"
-          >
+          <Button variant={confirmVariant} onClick={confirm}>
             {saveBtnLabel}
           </Button>
         </div>

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm, useFormState } from "react-hook-form";
 import { useAsync, useAsyncFn } from "react-use";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
@@ -74,6 +74,13 @@ export const PortalStripForm: React.FC<PortalStripFormProps> = ({
   const { errors } = useFormState({ control });
 
   const values = getValues();
+
+  useEffect(() => {
+    reset({
+      isClickable: convertPortalTypeToClickability(portal?.type),
+      isEnabled: portal?.isEnabled ?? DEFAULT_PORTAL_IS_ENABLED,
+    });
+  }, [portal, reset]);
 
   const [{ loading, error: submitError }, submit] = useAsyncFn(
     async (field: typeof FIELD_ENABLED | typeof FIELD_CLICKABLE) => {

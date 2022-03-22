@@ -20,16 +20,14 @@ export const Toggle: React.FC<ToggleProps> = ({
   onChange,
   register,
   name = "",
-  title,
+  title = "",
 }) => {
   // NOTE: the click handlers needs to be on the label to capture all its children clicks and there must always be a <label>
   const handleClick = useCallback(
     (event) => {
-      // default action has to be prevented in order to avoid `double click`
-      onChange && event.preventDefault();
-      onChange?.(event);
+      !register && onChange?.(event);
     },
-    [onChange]
+    [onChange, register]
   );
 
   // NOTE: the thumb is a little circle sliding left-right inside a horizontal track
@@ -43,12 +41,14 @@ export const Toggle: React.FC<ToggleProps> = ({
           {title}
         </label>
       )}
-      <label
-        className="flex items-center cursor-pointer mt-3"
-        onClick={handleClick}
-      >
+      <label className="flex items-center cursor-pointer mt-3">
         <div className="relative">
-          <input className="sr-only " type="checkbox" {...register?.(name)} />
+          <input
+            className="sr-only"
+            type="checkbox"
+            onClick={handleClick}
+            {...register?.(name)}
+          />
           <div className={trackClasses} />
           <div className={thumbClasses} />
         </div>

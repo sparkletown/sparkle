@@ -1,8 +1,7 @@
 import React from "react";
+import { Dropdown } from "components/admin/Dropdown";
 
 import { SortingOptions } from "utils/venue";
-
-import { Dropdown } from "components/atoms/Dropdown";
 
 import "./SortDropDown.scss";
 
