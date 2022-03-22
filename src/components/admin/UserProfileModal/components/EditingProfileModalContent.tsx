@@ -1,10 +1,5 @@
-import React, { useCallback } from "react";
-import {
-  FieldErrors,
-  useFieldArray,
-  useForm,
-  useFormState,
-} from "react-hook-form";
+import React, { useCallback, useMemo } from "react";
+import { useFieldArray, useForm, useFormState } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import firebase from "firebase/compat/app";
 import { pick, uniq } from "lodash";
@@ -164,6 +159,11 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
     ]
   );
 
+  const passwordErrors = useMemo(
+    () => pick(errors, ["oldPassword", "newPassword", "confirmNewPassword"]),
+    [errors]
+  );
+
   return (
     <div className="EditingProfileModalContent">
       <ModalTitle>Edit profile</ModalTitle>
@@ -198,10 +198,7 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
             containerClassName="EditingProfileModalContent__section"
             register={register}
             getValues={getValues}
-            errors={pick<
-              FieldErrors<UserProfileModalFormData>,
-              "oldPassword" | "newPassword" | "confirmNewPassword"
-            >(errors, ["oldPassword", "newPassword", "confirmNewPassword"])}
+            errors={passwordErrors}
           />
         )}
         <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
