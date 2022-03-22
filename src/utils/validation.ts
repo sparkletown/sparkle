@@ -5,7 +5,7 @@ import { createSlug } from "api/admin";
 
 import { WorldId } from "types/id";
 
-import { SparkleFetchError } from "utils/error";
+import { SparkleFetchError } from "./error";
 
 export const messageMustBeMinimum = (fieldName: string, min: number) =>
   `${fieldName} must be at least ${min} characters`;
@@ -32,31 +32,32 @@ export const testVenueByNameExists = async (value: unknown) => {
 export const testWorldBySlugExists = (worldId: WorldId) => async (
   value: unknown
 ) => {
-  // @debt unsure how test logic at the bottom should work for creating new world
-  // but keep this check and throw of error, TS just declares worldId defined, doesn't make it so
-  if (!worldId) {
+  const slug = createSlug(value);
+  if (!slug) return false;
+
+  // @debt Replace with a function from api/worlds
+  const basePath = firebase
+    .firestore()
+    .collection("worlds")
+    .where("slug", "==", slug)
+    .where("isHidden", "==", false);
+
+  const path = worldId
+    ? basePath.where(firebase.firestore.FieldPath.documentId(), "!=", worldId)
+    : basePath;
+
+  try {
+    const { docs: foundWorlds } = await path.get();
+
+    return !foundWorlds.length;
+  } catch (error) {
     throw new SparkleFetchError({
-      message: `Invalid worldId: ${String(worldId)} for value: ${String(
-        value
-      )}`,
+      message: "Invalid fetch worlds request",
       args: {
+        error,
         worldId,
         value,
       },
     });
   }
-
-  const slug = createSlug(value);
-  if (!slug) return false;
-
-  // @debt Replace with a function from api/worlds
-  const snap = await firebase
-    .firestore()
-    .collection("worlds")
-    .where("slug", "==", slug)
-    .where("isHidden", "==", false)
-    .where(firebase.firestore.FieldPath.documentId(), "!=", worldId)
-    .get();
-
-  return !snap.docs.length;
 };

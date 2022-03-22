@@ -3,6 +3,7 @@ import classNames from "classnames";
 
 import { UserId } from "types/id";
 import { User } from "types/User";
+import { ContainerClassName } from "types/utility";
 
 import { WithId } from "utils/id";
 
@@ -16,7 +17,7 @@ import { UserAvatarSize } from "../../atoms/UserAvatar/UserAvatar";
 
 import "./UserProfilePicture.scss";
 
-export interface UserProfilePictureProp {
+export interface UserProfilePictureProp extends ContainerClassName {
   user?: WithId<User>;
   isAudioEffectDisabled?: boolean;
   reactionPosition?: "left" | "right";
@@ -36,6 +37,7 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   showStatus = false,
   isVideoEnabled = true,
   size,
+  containerClassName,
 }) => {
   const userId = user?.id;
 
@@ -60,6 +62,7 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
 
   const containerClasses = classNames("UserProfilePicture", {
     "UserProfilePicture--only-icon": !isVideoEnabled,
+    containerClassName,
   });
 
   return (

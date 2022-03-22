@@ -1,8 +1,8 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { GridPosition } from "types/grid";
+import { SeatPosition } from "types/grid";
 
 import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
@@ -11,10 +11,27 @@ import { GetUserByPosition } from "../useGetUserByPosition";
 // @debt move the components and its styles in their own directory under ./src/components
 import styles from "./seats.module.scss";
 
+interface SeatProps {
+  takeSeat: (gridData: SeatPosition) => Promise<void>;
+  seatIndex: number;
+}
+
+const Seat = ({ takeSeat, seatIndex }: SeatProps) => {
+  const takeSpecificSeat = useCallback(() => takeSeat({ seatIndex }), [
+    seatIndex,
+    takeSeat,
+  ]);
+  return (
+    <div className={styles.seat} onClick={takeSpecificSeat}>
+      <FontAwesomeIcon icon={faPlus} />
+    </div>
+  );
+};
+
 export interface UseAuditoriumGridProps {
   isUserAudioMuted: boolean;
   getUserBySeat: GetUserByPosition;
-  takeSeat: (gridData: GridPosition) => Promise<void> | undefined;
+  takeSeat: (gridData: SeatPosition) => Promise<void>;
 }
 
 export const useAuditoriumGrid = ({
@@ -22,41 +39,26 @@ export const useAuditoriumGrid = ({
   getUserBySeat,
   takeSeat,
 }: UseAuditoriumGridProps) => {
-  const rows = 9;
-  const columns = 24;
-  return useMemo(
-    () =>
-      Array.from(Array(rows)).map((_, rowIndex) => (
-        <div key={rowIndex} className={styles.seatsRow}>
-          {Array.from(Array(columns)).map((_, columnIndex) => {
-            const user = getUserBySeat({
-              row: rowIndex,
-              column: columnIndex,
-            });
+  const seatCount = 225;
+  return useMemo(() => {
+    return Array.from(Array(seatCount)).map((_, seatIndex) => {
+      const user = getUserBySeat({
+        seatIndex,
+      });
 
-            if (user) {
-              return (
-                <UserProfilePicture
-                  key={columnIndex}
-                  user={user}
-                  isAudioEffectDisabled={isUserAudioMuted}
-                  size="medium"
-                />
-              );
-            }
+      if (user) {
+        return (
+          <UserProfilePicture
+            key={seatIndex}
+            user={user}
+            containerClassName={styles.takenSeat}
+            isAudioEffectDisabled={isUserAudioMuted}
+            size="medium"
+          />
+        );
+      }
 
-            return (
-              <div
-                key={columnIndex}
-                className={styles.seat}
-                onClick={() => takeSeat({ row: rowIndex, column: columnIndex })}
-              >
-                <FontAwesomeIcon icon={faPlus} />
-              </div>
-            );
-          })}
-        </div>
-      )),
-    [rows, columns, takeSeat, getUserBySeat, isUserAudioMuted]
-  );
+      return <Seat key={seatIndex} takeSeat={takeSeat} seatIndex={seatIndex} />;
+    });
+  }, [takeSeat, getUserBySeat, isUserAudioMuted]);
 };

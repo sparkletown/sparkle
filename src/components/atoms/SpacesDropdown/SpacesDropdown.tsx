@@ -107,7 +107,7 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
 
   const renderedTitle = useMemo(() => {
     if (!selected) {
-      return { value: "", label: "Select a space" };
+      return "Select a space";
     }
 
     const space = spaces?.[selected.id ?? ""] ?? parentSpace;

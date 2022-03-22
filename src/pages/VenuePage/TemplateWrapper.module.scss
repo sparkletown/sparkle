@@ -4,10 +4,33 @@
 .templateContainer {
   width: 100%;
   height: 100%;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 .shrunk {
   @media (min-width: breakpoint.$md) {
     width: calc(100% - layout.$w-sidebar);
+  }
+}
+
+.gradients {
+  min-height: 100vh;
+  background: linear-gradient(#ff8888, transparent),
+    linear-gradient(to top left, #88ff88, transparent),
+    linear-gradient(to top right, #8888ff, transparent),
+    repeating-linear-gradient(#000, #060606 7px),
+    repeating-linear-gradient(90deg, #060606, #000 11px),
+    repeating-linear-gradient(30deg, #060606, #000 13px);
+  background-blend-mode: screen;
+
+  @media (prefers-color-scheme: dark) {
+    background: linear-gradient(#441111, transparent),
+      linear-gradient(to top left, #115511, transparent),
+      linear-gradient(to top right, #111155, transparent),
+      repeating-linear-gradient(#000, #030303 7px),
+      repeating-linear-gradient(90deg, #030303, #000 11px),
+      repeating-linear-gradient(30deg, #030303, #000 13px);
   }
 }

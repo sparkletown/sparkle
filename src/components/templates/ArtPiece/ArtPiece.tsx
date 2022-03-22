@@ -90,6 +90,7 @@ export const ArtPiece: React.FC<ArtPieceProps> = ({ venue }) => {
           </div>
           <div className="ArtPiece__video-chat-wrapper">
             <Room
+              worldId={venue.worldId}
               venueId={venue.id}
               roomName={venue.id}
               hasChairs={false}
