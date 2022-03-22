@@ -40,6 +40,10 @@
   &__expanded {
     max-width: breakpoint.$lg;
   }
+
+  &__fullWidth {
+    max-width: breakpoint.$xl;
+  }
 }
 
 .iframe {
