@@ -2,12 +2,15 @@ import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import { Hit } from "@algolia/client-search";
+import classNames from "classnames";
 
 import { addWorldAdmins } from "api/world";
 
 import { AlgoliaSearchIndex } from "types/algolia";
 import { UserId } from "types/id";
 import { UserWithLocation } from "types/User";
+
+import { pluralize } from "utils/string";
 
 import { useAlgoliaSearch } from "hooks/algolia/useAlgoliaSearch";
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
@@ -67,14 +70,11 @@ export const InviteAdminModal: React.FC<InviteAdminModalProps> = ({
 
   const selectUser = (user: User) => {
     setSelectedUsers((selectedUsers) => {
-      if (selectedUsers.includes(user)) {
-        const newUsers = selectedUsers.filter(
-          (selectedUser) => selectedUser !== user
-        );
-        return newUsers;
-      }
+      const newUsers = selectedUsers.filter(
+        (selectedUser) => selectedUser !== user
+      );
 
-      return [...selectedUsers, user];
+      return selectedUsers.includes(user) ? newUsers : [...selectedUsers, user];
     });
   };
 
@@ -83,11 +83,14 @@ export const InviteAdminModal: React.FC<InviteAdminModalProps> = ({
   const hasFoundUsers = !!foundUsers?.length;
   const hasSelectedUsers = selectedUsers?.length;
 
+  const pluralizedUser = pluralize<User>("user", foundUsers);
+
   return (
     <Modal show={show} onHide={onHide} autoHide>
       {hasFoundUsers && (
-        <div className="flex justify-center">{`${foundUsers.length} users found`}</div>
+        <div className="flex justify-center">{`${foundUsers.length} ${pluralizedUser} found`}</div>
       )}
+
       {!hasFoundUsers && searchQuery && (
         <div className="flex justify-center">No users found</div>
       )}
@@ -95,22 +98,29 @@ export const InviteAdminModal: React.FC<InviteAdminModalProps> = ({
       <Input placeholder="Type user name" name="userName" register={register} />
 
       <div className="max-h-40 overflow-auto">
-        {foundUsers?.map((user) => (
-          <div
-            key={user.objectID}
-            className={`flex flex-row py-4 px-2 border-y hover:bg-gray-200 cursor-pointer ${
-              checkAdminAccess(user) && "bg-blue-100 hover:bg-blue-200"
-            }`}
-            onClick={() => selectUser(user)}
-          >
-            <img
-              className="h-10 w-10 rounded-full"
-              src={user?.pictureUrl}
-              alt="profileUrl"
-            />
-            <div className="px-2 flex self-center">{user.partyName}</div>
-          </div>
-        ))}
+        {foundUsers?.map((user) => {
+          const foundUserClasses = classNames(
+            "flex flex-row py-4 px-2 border-y hover:bg-gray-200 cursor-pointer",
+            {
+              "bg-blue-100 hover:bg-blue-200": checkAdminAccess(user),
+            }
+          );
+
+          return (
+            <div
+              key={user.objectID}
+              className={foundUserClasses}
+              onClick={() => selectUser(user)}
+            >
+              <img
+                className="h-10 w-10 rounded-full"
+                src={user.pictureUrl}
+                alt="profileUrl"
+              />
+              <div className="px-2 flex self-center">{user.partyName}</div>
+            </div>
+          );
+        })}
       </div>
       <div className="flex flex-row">
         <Button variant="secondary" onClick={onHide}>

@@ -1,7 +1,7 @@
 import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
 import { HttpsError } from "firebase-functions/v1/https";
-import { isEmpty, isNil } from "lodash";
+import { isEmpty, isNil, uniq } from "lodash";
 
 import { LandingPageConfig } from "./types/venue";
 import { assertValidAuth } from "./utils/assert";
@@ -178,8 +178,7 @@ export const addWorldAdmins = functions.https.onCall(async (data, context) => {
 
   const newOwners = [...owners, ...userIds];
 
-  //Removes duplicates from the concat array.
-  const uniqueOwners = [...new Set(newOwners)];
+  const uniqueOwners = uniq(newOwners);
 
   const newWorldData = { ...worldData, owners: uniqueOwners };
 
