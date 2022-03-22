@@ -475,7 +475,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                 name="showContent"
                 checked={values.showContent}
               />
-              <InputGroup title="Livestream URL" ml="4">
+              <InputGroup title="Livestream URL" margin="medium">
                 <Input
                   placeholder="Livestream or embed URL"
                   register={register}
@@ -496,13 +496,14 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                 name="showReactions"
                 checked={values.showReactions}
               />
-              <Checkbox
-                register={register}
-                label="Audible"
-                name="isReactionsMuted"
-                disabled={isReactionsMutedDisabled}
-                ml="4"
-              />
+              <InputGroup margin="medium">
+                <Checkbox
+                  register={register}
+                  label="Audible"
+                  name="isReactionsMuted"
+                  disabled={isReactionsMutedDisabled}
+                />
+              </InputGroup>
               <Toggle
                 label="Show shoutouts"
                 register={register}
