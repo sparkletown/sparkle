@@ -20,8 +20,6 @@ import { AdminRestricted } from "components/atoms/AdminRestricted";
 
 import * as TW from "./SpaceCreatePage.tailwind";
 
-import CN from "./SpaceCreatePage.module.scss";
-
 export const SpaceCreatePage: React.FC = () => {
   const { worldSlug } = useSpaceParams();
   const { isLoaded: isWorldLoaded, worldId } = useWorldBySlug(worldSlug);
@@ -41,7 +39,7 @@ export const SpaceCreatePage: React.FC = () => {
   return (
     <AdminLayout>
       <AdminRestricted>
-        <div className={CN.spaceCreatePage}>
+        <div data-bem="SpaceCreatePage" className={TW.container}>
           <Header
             title="Create Space"
             subtitleItems={subtitle}

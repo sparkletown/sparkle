@@ -11,6 +11,7 @@ import {
   buttonTailwind,
   checkmarkSelected,
   checkmarkTailwind,
+  listItem,
   listTailwind,
   optionWrapper,
 } from "./Dropdown.tailwind";
@@ -111,7 +112,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
       </button>
       <div className={`${!isOpened && "hidden"} ${optionWrapper}`}>
         <ul className={listTailwind}>
-          {options.map((option) => {
+          {options.map((option, index) => {
             const isSelected =
               option.value === selectedOption?.value ||
               (!selectedOption && !option.value);
@@ -124,8 +125,8 @@ export const Dropdown: React.FC<DropdownProps> = ({
 
             return (
               <li
-                key={option.value}
-                className="optionContainer text-gray-900 cursor-pointer hover:bg-indigo-600 hover:text-white flex justify-between items-center"
+                key={`${index}-${option.value}`}
+                className={listItem}
                 onClick={() => selectOption(option)}
               >
                 <div className={textContainerClasses}>{option.label}</div>

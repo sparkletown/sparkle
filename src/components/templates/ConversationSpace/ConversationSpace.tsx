@@ -1,6 +1,5 @@
 import React from "react";
 import { TableGrid } from "components/attendee/TableGrid";
-import { useBackgroundGradient } from "components/attendee/useBackgroundGradient";
 
 import { CONVERSATION_TABLES } from "settings";
 
@@ -22,8 +21,6 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
   space,
   userId,
 }) => {
-  useBackgroundGradient();
-
   const tables = space?.config?.tables ?? CONVERSATION_TABLES;
 
   const { userWithId } = useUser();

@@ -154,6 +154,7 @@ export interface BaseVenue {
   enableJukebox?: boolean;
   requiresDateOfBirth?: boolean;
   showBadges?: boolean;
+  backgroundImageUrl?: string;
 }
 
 export interface GenericVenue extends BaseVenue {
