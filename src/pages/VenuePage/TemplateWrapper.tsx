@@ -1,4 +1,5 @@
 import React, { lazy, Suspense } from "react";
+import { useCss } from "react-use";
 import classNames from "classnames";
 
 import { AnyVenue } from "types/venues";
@@ -129,16 +130,26 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       template = <div>Unknown Template: ${(venue as AnyVenue).template}</div>;
   }
 
-  const venueShrinksForChat = venue.template !== VenueTemplate.partymap;
+  const isPartyMap = venue.template === VenueTemplate.partymap;
+  const venueShrinksForChat = !isPartyMap;
 
-  const containerClassnames = classNames(styles.templateContainer, {
-    [styles.shrunk]: isChatExpanded && venueShrinksForChat,
+  const backgroundCss = useCss({
+    backgroundImage:
+      venue.backgroundImageUrl && `url(${venue.backgroundImageUrl})`,
   });
+
+  const containerClassnames = classNames(
+    styles.templateContainer,
+    backgroundCss,
+    {
+      [styles.shrunk]: isChatExpanded && venueShrinksForChat,
+      [styles.gradients]: !venue.backgroundImageUrl && !isPartyMap,
+    }
+  );
 
   return (
     <ReactionsProvider venueId={venue.id}>
       {/* TODO <AnnouncementMessage isAnnouncementUserView /> */}
-
       <div className={containerClassnames}>{template}</div>
 
       {/* TODO {shouldShowChat && <ChatSidebar venue={venue} />} */}
