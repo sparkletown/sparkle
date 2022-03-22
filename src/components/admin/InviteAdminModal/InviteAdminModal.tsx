@@ -10,8 +10,6 @@ import { AlgoliaSearchIndex } from "types/algolia";
 import { UserId } from "types/id";
 import { UserWithLocation } from "types/User";
 
-import { pluralize } from "utils/string";
-
 import { useAlgoliaSearch } from "hooks/algolia/useAlgoliaSearch";
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 
@@ -83,7 +81,8 @@ export const InviteAdminModal: React.FC<InviteAdminModalProps> = ({
   const hasFoundUsers = !!foundUsers?.length;
   const hasSelectedUsers = selectedUsers?.length;
 
-  const pluralizedUser = pluralize<User>("user", foundUsers);
+  const pluralizedUser =
+    hasFoundUsers && foundUsers.length % 10 === 1 ? "user" : "users";
 
   return (
     <Modal show={show} onHide={onHide} autoHide>
