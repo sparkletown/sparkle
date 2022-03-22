@@ -1,5 +1,8 @@
 import React, { createContext, useCallback, useContext, useMemo } from "react";
+import { withSlugs } from "components/hocs/context/withSlugs";
+import { withWorldAndSpace } from "components/hocs/db/withWorldAndSpace";
 import { where } from "firebase/firestore";
+import { compose } from "lodash/fp";
 
 import {
   ALWAYS_EMPTY_ARRAY,
@@ -222,7 +225,7 @@ const WorldSpacesProvider: React.FC<WorldIdLocation> = ({
   );
 };
 
-export const RelatedVenuesProvider: React.FC<{
+const _RelatedVenuesProvider: React.FC<{
   spaceId?: SpaceId;
   worldId?: WorldId;
 }> = ({ worldId, spaceId, children }) => {
@@ -258,6 +261,11 @@ export const RelatedVenuesProvider: React.FC<{
     </LegacyRelatedVenuesProvider>
   );
 };
+
+export const RelatedVenuesProvider = compose(
+  withSlugs,
+  withWorldAndSpace
+)(_RelatedVenuesProvider);
 
 export const useRelatedVenuesContext = (): RelatedVenuesContextState => {
   const relatedVenuesState = useContext(RelatedVenuesContext);
