@@ -1,0 +1,51 @@
+@use "scss/attendee/effects/sparkle.scss";
+@use "scss/attendee/effects/rounded.scss";
+@use "scss/attendee/breakpoint.scss";
+@use "scss/attendee/layout.scss";
+@use "scss/attendee/space.scss";
+@use "scss/attendee/theme.scss";
+
+@mixin participantPanel {
+  display: flex;
+  justify-content: center;
+
+  overflow: hidden;
+  height: layout.$h-video-chat;
+  margin: space.empty(0.5);
+}
+
+.participant {
+  @include participantPanel();
+}
+
+.WebcamGrid {
+  @include sparkle.panel--normal;
+  @include rounded.normal;
+
+  margin: 0 auto;
+  padding: space.gap(10);
+  width: fit-content;
+
+  @media (min-width: breakpoint.$md) {
+    display: flex;
+  }
+}
+
+.container {
+  margin: space.gap(10);
+}
+
+.joinButton {
+  @include participantPanel();
+  flex-direction: column;
+  text-align: center;
+  cursor: pointer;
+
+  width: layout.$w-video-chat-participant;
+  border: 1px solid theme.$sparkle--border;
+}
+
+.leaveButton {
+  opacity: 0.5;
+  cursor: pointer;
+}
