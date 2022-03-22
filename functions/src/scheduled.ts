@@ -1,4 +1,4 @@
-import { hoursToMilliseconds } from "date-fns";
+import { minutesToMilliseconds } from "date-fns";
 import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
 import {
@@ -6,7 +6,6 @@ import {
   differenceWith,
   flatten,
   groupBy,
-  has,
   sampleSize,
   sum,
   uniq,
@@ -14,7 +13,7 @@ import {
 
 const DEFAULT_RECENT_USERS_IN_VENUE_CHUNK_SIZE = 6;
 const SECTION_PREVIEW_USER_DISPLAY_COUNT = 14;
-const USER_INACTIVE_THRESHOLD = hoursToMilliseconds(3);
+const USER_INACTIVE_THRESHOLD = minutesToMilliseconds(1);
 export const BATCH_MAX_OPS = 500;
 
 const removeDanglingSeatedUsers = async () => {
@@ -35,52 +34,30 @@ const removeDanglingSeatedUsers = async () => {
         userDocsBatch.forEach((userDoc) => {
           const seatedUserData = userDoc.data();
           const userId = userDoc.id;
-          const venueId = seatedUserData.venueId;
+          const worldId = seatedUserData.worldId;
+
+          if (!worldId) {
+            // Delete this record as it is in the old format
+            batch.delete(userDoc.ref);
+            return;
+          }
 
           batch.delete(
             firestore
-              .collection("venues")
-              .doc(venueId)
+              .collection("worlds")
+              .doc(worldId)
+              .collection("seatedUsers")
+              .doc(userId)
+          );
+
+          batch.delete(
+            firestore
+              .collection("worlds")
+              .doc(worldId)
               .collection("recentSeatedUsers")
               .doc(userId)
           );
           removedUsersCount += 1;
-
-          switch (seatedUserData.template) {
-            case "auditorium":
-              if (!has(seatedUserData.venueSpecificData, "sectionId")) {
-                console.error(
-                  "No sectionId prop in seatedUserData.venueSpecificData in" +
-                    `/venues/${venueId}/recentSeatedUsers/${userId}`
-                );
-                break;
-              }
-              batch.delete(
-                firestore
-                  .collection("venues")
-                  .doc(venueId)
-                  .collection("sections")
-                  .doc(seatedUserData.venueSpecificData.sectionId)
-                  .collection("seatedSectionUsers")
-                  .doc(userId)
-              );
-              break;
-            case "jazzbar":
-            case "conversationspace":
-              batch.delete(
-                firestore
-                  .collection("venues")
-                  .doc(venueId)
-                  .collection("seatedTableUsers")
-                  .doc(userId)
-              );
-              break;
-            default:
-              console.warn(
-                `Found unsupported venue template ${seatedUserData.template}`
-              );
-              break;
-          }
         });
         return batch.commit();
       } catch (e) {
@@ -93,9 +70,10 @@ const removeDanglingSeatedUsers = async () => {
 
 interface SeatedUser {
   id: string;
-  path: {
-    venueId: string;
-    sectionId: string;
+  worldId: string;
+  spaceId: string;
+  seatData: {
+    sectionId?: string;
   };
 }
 
@@ -108,16 +86,18 @@ const updateSeatedUsersCountInAuditorium = async () => {
   ];
 
   const { bySectionByAuditorium, allOccupiedSectionIds } = await firestore
-    .collectionGroup("seatedSectionUsers")
+    .collectionGroup("seatedUsers")
     .get()
     .then(({ docs }) => {
-      const seatedUsers = docs.map(
-        (doc) => ({ ...doc.data(), id: doc.id } as SeatedUser)
-      );
+      const seatedUsers = docs
+        .filter((doc) => doc.data().seatData?.sectionId)
+        .map((doc) => {
+          return { ...doc.data(), id: doc.id } as SeatedUser;
+        });
 
       const byAuditorium = groupBy(
         seatedUsers,
-        (seatedUser) => seatedUser.path.venueId
+        (seatedUser) => seatedUser.spaceId
       );
       const bySectionByAuditorium: Record<
         string,
@@ -126,12 +106,12 @@ const updateSeatedUsersCountInAuditorium = async () => {
       for (const auditoriumId in byAuditorium) {
         bySectionByAuditorium[auditoriumId] = groupBy(
           byAuditorium[auditoriumId],
-          (seatedUser) => seatedUser.path.sectionId
+          (seatedUser) => seatedUser.seatData?.sectionId
         );
       }
 
       const allOccupiedSectionIds = uniq(
-        seatedUsers.map((u) => u.path.sectionId)
+        seatedUsers.map((u) => u.seatData?.sectionId)
       );
 
       return { bySectionByAuditorium, allOccupiedSectionIds };
@@ -313,14 +293,14 @@ export const updateVenuesChatCounters = functions.pubsub
 
     return Promise.all(
       venueRefs.map(async (venue) => {
+        const subcounters = await venue
+          .collection("chatMessagesCounter")
+          .where(admin.firestore.FieldPath.documentId(), "!=", "sum")
+          .get();
+        // If there aren't any subcounters then skip this space
+        if (!subcounters.docs.length) return;
         const counter = sum(
-          await venue
-            .collection("chatMessagesCounter")
-            .where(admin.firestore.FieldPath.documentId(), "!=", "sum")
-            .get()
-            .then(({ docs }) =>
-              docs.map((d) => d.data().count).filter((c) => Boolean(c))
-            )
+          subcounters.docs.map((d) => d.data().count).filter((c) => Boolean(c))
         );
         await venue
           .collection("chatMessagesCounter")

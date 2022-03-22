@@ -7,6 +7,7 @@ import { captureError, SparkleAssertError } from "utils/error";
 import { WithId } from "utils/id";
 
 import { useAllAuditoriumSections } from "hooks/auditorium";
+import { useUser } from "hooks/useUser";
 
 import { AllSectionPreviews } from "../AllSectionPreviews";
 import { Section } from "../Section";
@@ -20,8 +21,9 @@ export const SeatingBlock: React.FC<SeatingBlockProps> = ({ space }) => {
 
   const { allSections, isLoading } = useAllAuditoriumSections(space);
   const { sectionId: urlSectionId } = useParams<{ sectionId: string }>();
+  const { userWithId: user, isLoading: isUserLoading } = useUser();
 
-  if (isLoading) {
+  if (isLoading || isUserLoading || !user) {
     return null;
   }
 
@@ -42,7 +44,7 @@ export const SeatingBlock: React.FC<SeatingBlockProps> = ({ space }) => {
 
   return (
     <Switch>
-      {sectionId && <Section venue={space} sectionId={sectionId} />}
+      {sectionId && <Section venue={space} sectionId={sectionId} user={user} />}
       <Route path={`${match.path}`}>
         <AllSectionPreviews venue={space} />
       </Route>

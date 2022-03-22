@@ -31,8 +31,6 @@ import { SpaceTimingPanel } from "components/organisms/AdminVenueView/components
 import { AdminRestricted } from "components/atoms/AdminRestricted";
 import { NotFound } from "components/atoms/NotFound";
 
-import { WithNavigationBar } from "../WithNavigationBar";
-
 import { RunTabView } from "./components/RunTabView";
 import { Spaces } from "./components/Spaces";
 
@@ -118,15 +116,11 @@ export const AdminVenueView: React.FC<AdminVenueViewProps> = ({
     space.template,
   ]);
 
-  const navBarTitle = `${world?.name ?? ""}`;
-
   if (!space) {
     return (
-      <WithNavigationBar withSchedule withHiddenLoginButton title={navBarTitle}>
-        <AdminRestricted>
-          <NotFound />
-        </AdminRestricted>
-      </WithNavigationBar>
+      <AdminRestricted>
+        <NotFound />
+      </AdminRestricted>
     );
   }
   const visitSpaceUrl = spaceSlug

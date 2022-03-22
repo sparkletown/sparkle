@@ -2,7 +2,6 @@ import React from "react";
 import { useForm, useFormState } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn } from "react-use";
-import { useBackgroundGradient } from "components/attendee/useBackgroundGradient";
 
 import {
   ACCOUNT_PROFILE_QUESTIONS_URL,
@@ -39,8 +38,6 @@ export const Profile: React.FC = () => {
   const { userId, userWithId } = useUser();
 
   const { worldSlug, spaceSlug = DEFAULT_SPACE_SLUG } = useSpaceParams();
-
-  useBackgroundGradient();
 
   const {
     register,

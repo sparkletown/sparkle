@@ -5,14 +5,20 @@ import { httpsCallable } from "firebase/functions";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { isEmpty, omit, pick } from "lodash";
 
-import { ACCEPTED_IMAGE_TYPES, COLLECTION_WORLDS, FIELD_SLUG } from "settings";
+import {
+  ACCEPTED_IMAGE_TYPES,
+  COLLECTION_SEATED_USERS,
+  COLLECTION_SEATED_USERS_CHECKINS,
+  COLLECTION_WORLDS,
+  FIELD_SLUG,
+} from "settings";
 
 import { createSlug } from "api/admin";
 
 import { EntranceStepConfig } from "types/EntranceStep";
 import { UserId, WorldId, WorldSlug } from "types/id";
 import { Question } from "types/Question";
-import { UserStatus } from "types/User";
+import { DisplayUser, SeatedUser, UserStatus } from "types/User";
 import {
   WorldAdvancedFormInput,
   WorldEntranceFormInput,
@@ -20,7 +26,9 @@ import {
   WorldScheduleSettings,
 } from "types/world";
 
+import { pickDisplayUserFromUser } from "utils/chat";
 import { generateFirestoreId, WithId, withId } from "utils/id";
+import { getCurrentTimeInMilliseconds } from "utils/time";
 import { isDefined } from "utils/types";
 
 // NOTE: world might have many fields, please keep them in alphabetic order
@@ -314,4 +322,80 @@ export const findWorldBySlug = async ({
   }
 
   return worlds?.[0];
+};
+
+const getUserInSectionRef = (userId: string, worldId: string) => {
+  return firebase
+    .firestore()
+    .collection(COLLECTION_WORLDS)
+    .doc(worldId)
+    .collection(COLLECTION_SEATED_USERS)
+    .doc(userId);
+};
+interface setSeatOptions<T> {
+  user: WithId<DisplayUser>;
+  worldId: string;
+  spaceId: string;
+  seatData: T;
+}
+
+export const setSeat = async <T>({
+  user,
+  worldId,
+  spaceId,
+  seatData,
+}: setSeatOptions<T>) => {
+  const data: SeatedUser<T> = {
+    ...pickDisplayUserFromUser(user),
+    worldId,
+    spaceId,
+    seatData,
+  };
+  return getUserInSectionRef(user.id, worldId).set(data);
+};
+
+interface unsetSeatOptions {
+  userId: string;
+  worldId: string;
+}
+
+export const unsetSeat = async ({ userId, worldId }: unsetSeatOptions) => {
+  getUserInSectionRef(userId, worldId).delete();
+};
+
+const getRecentSeatedUserRef = (worldId: string, userId: string) =>
+  firebase
+    .firestore()
+    .collection(COLLECTION_WORLDS)
+    .doc(worldId)
+    .collection(COLLECTION_SEATED_USERS_CHECKINS)
+    .doc(userId);
+
+interface updateSeatedDataOptions {
+  userId: string;
+  worldId: string;
+}
+
+/**
+ * Checkins are performed in a separate collection to the seating data itself.
+ * This is to avoid any listeners for changes to the seating data from being
+ * bombarded with lots of change notifications.
+ */
+export const doSeatingCheckin = async ({
+  userId,
+  worldId,
+}: updateSeatedDataOptions) => {
+  const withTimestamp = {
+    worldId,
+    lastSittingTimeMs: getCurrentTimeInMilliseconds(),
+  };
+
+  return getRecentSeatedUserRef(worldId, userId).set(withTimestamp);
+};
+
+export const clearSeatingCheckin = async ({
+  userId,
+  worldId,
+}: updateSeatedDataOptions) => {
+  getRecentSeatedUserRef(worldId, userId).delete();
 };
