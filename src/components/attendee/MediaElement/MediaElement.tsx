@@ -40,8 +40,12 @@ export const MediaElement: React.FC<MediaElementProps> = ({
     [styles.video__fullWidth]: fullWidth,
   });
 
+  const containerClassnames = classNames(styles.componentMediaObject, {
+    [styles.componentMediaObject__fullWidth]: fullWidth,
+  });
+
   return (
-    <div className={styles.componentMediaObject}>
+    <div className={containerClassnames}>
       <div className={videoClassnames}>
         {embedIframeUrl ? (
           <iframe

@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { MediaElement } from "components/attendee/MediaElement";
+import { WebcamGrid } from "components/attendee/WebcamGrid";
 
 import { ArtPieceVenue } from "types/venues";
 
@@ -25,10 +26,12 @@ export const ArtPiece: React.FC<ArtPieceProps> = ({ space }) => {
         <MediaElement
           url={space.iframeUrl}
           autoPlay={space.autoPlay || false}
+          fullWidth
         />
       )}
 
       <SpaceInfoText space={space} />
+      <WebcamGrid space={space} />
     </>
   );
 };
