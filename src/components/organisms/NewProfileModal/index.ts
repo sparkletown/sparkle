@@ -1,1 +1,0 @@
-export { NewProfileModal } from "./NewProfileModal";

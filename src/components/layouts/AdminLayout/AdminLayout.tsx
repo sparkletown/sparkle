@@ -3,8 +3,7 @@ import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Footer } from "components/admin/Footer";
 import { Sidebar } from "components/admin/Sidebar";
-
-import { AdminProfileModal } from "components/organisms/AdminProfileModal";
+import { UserProfileModal } from "components/admin/UserProfileModal";
 
 import "scss/admin/initial.scss";
 
@@ -64,7 +63,7 @@ export const AdminLayout: React.FC<AdminLayoutPropsType> = ({ children }) => {
         <Footer />
       </div>
 
-      <AdminProfileModal />
+      <UserProfileModal />
     </div>
   );
 };

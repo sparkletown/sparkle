@@ -4,7 +4,11 @@ import { faTicketAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import firebase from "firebase/compat/app";
 
-import { DISABLED_DUE_TO_1142, SPARKLE_PHOTOBOOTH_URL } from "settings";
+import {
+  DISABLED_DUE_TO_1142,
+  SPARKLE_PHOTOBOOTH_URL,
+  STRING_NON_BREAKING_SPACE,
+} from "settings";
 
 import {
   SpaceSlugLocation,
@@ -201,7 +205,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                   }`}
                   onClick={toggleEventSchedule}
                 >
-                  {spaceId && navbarTitle} &nbsp;
+                  {spaceId && navbarTitle} {STRING_NON_BREAKING_SPACE}
                   <span className="schedule-text">Schedule</span>
                 </button>
               ) : (

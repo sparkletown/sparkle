@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { MediaPlayer } from "components/attendee/MediaPlayer";
+import { MediaElement } from "components/attendee/MediaElement";
 import { TableGrid } from "components/attendee/TableGrid";
 
 import { JAZZBAR_TABLES } from "settings";
@@ -36,7 +36,10 @@ export const JazzBar: React.FC<JazzProps> = ({ space }) => {
   return (
     <>
       {!space.hideVideo && (
-        <MediaPlayer url={space.iframeUrl} autoPlay={space.autoPlay || false} />
+        <MediaElement
+          url={space.iframeUrl}
+          autoPlay={space.autoPlay || false}
+        />
       )}
 
       <SpaceInfoText space={space} />

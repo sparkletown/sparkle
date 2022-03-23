@@ -1,1 +1,0 @@
-export { ProfileModalRoundIcon } from "./ProfileModalRoundIcon";
