@@ -9,6 +9,7 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { useAsyncFn } from "react-use";
 import { Button } from "components/admin/Button";
+import { MapBackgroundPlaceholder } from "components/admin/MapBackgroundPlaceholder";
 import { isEqual } from "lodash";
 
 import { ROOM_TAXON, ROOMS_TAXON } from "settings";
@@ -25,8 +26,6 @@ import {
   Container,
   SubVenueIcon,
 } from "pages/Account/Venue/VenueMapEditor/Container";
-
-import { MapBackgroundPlaceholder } from "components/molecules/MapBackgroundPlaceholder";
 
 import { Legend } from "components/atoms/Legend";
 
@@ -157,7 +156,7 @@ export const MapPreview: React.FC<MapPreviewProps> = ({
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <div className="MapPreview">
+      <div data-bem="MapPreview">
         <Legend text={`${venueName}'s Map`} />
 
         {mapBackground &&

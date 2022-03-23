@@ -1,1 +1,0 @@
-export { AdminProfileModal } from "./AdminProfileModal";

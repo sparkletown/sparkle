@@ -1,3 +1,4 @@
+import { UserId } from "types/id";
 import { ReduxAction } from "types/redux";
 
 export enum UserProfileActionTypes {
@@ -6,11 +7,11 @@ export enum UserProfileActionTypes {
 
 export type UpdateUserProfileDataAction = ReduxAction<
   UserProfileActionTypes.UPDATE_USER_PROFILE_ID,
-  { userId?: string }
+  { userId?: UserId }
 >;
 
 export const updateUserProfileDataAction = (
-  userId?: string
+  userId?: UserId
 ): UpdateUserProfileDataAction => ({
   type: UserProfileActionTypes.UPDATE_USER_PROFILE_ID,
   payload: { userId },

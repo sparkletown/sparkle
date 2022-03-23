@@ -10,4 +10,5 @@ export const STRING_AMPERSAND = "&";
 export const STRING_PLUS = "+";
 export const STRING_NEWLINE = "\n";
 export const STRING_ZERO_WIDTH_SPACE = String.fromCodePoint(8203);
+export const STRING_NON_BREAKING_SPACE = String.fromCodePoint(8239);
 export const STRING_COPYRIGHT = "©";

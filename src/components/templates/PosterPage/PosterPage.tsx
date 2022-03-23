@@ -155,7 +155,6 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
         usersSample={passiveListeners}
         userCount={passiveListeners.length}
         activity="listening"
-        containerClassName="PosterPage__listeners"
       />
 
       {introVideoUrl && (

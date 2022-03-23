@@ -1,1 +1,0 @@
-export { ProfileModalSectionHeader } from "./ProfileModalSectionHeader";

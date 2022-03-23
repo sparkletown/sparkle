@@ -10,6 +10,7 @@ import React, {
 import { useDrop } from "react-dnd";
 import ReactResizeDetector, { useResizeDetector } from "react-resize-detector";
 import classNames from "classnames";
+import { MapBackgroundPlaceholder } from "components/admin/MapBackgroundPlaceholder";
 import update from "immutability-helper";
 
 import { Room } from "types/rooms";
@@ -20,8 +21,6 @@ import { DraggableSubvenue } from "pages/Account/Venue/VenueMapEditor/DraggableS
 import { DragItem } from "pages/Account/Venue/VenueMapEditor/interfaces";
 import { ItemTypes } from "pages/Account/Venue/VenueMapEditor/ItemTypes";
 import { snapToGrid as doSnapToGrid } from "pages/Account/Venue/VenueMapEditor/snapToGrid";
-
-import { MapBackgroundPlaceholder } from "components/molecules/MapBackgroundPlaceholder";
 
 export interface RoomIcon {
   title: string;
@@ -254,7 +253,8 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
           <div key={`${room.title}-${index}`}>{renderSelectedRoom(index)}</div>
         ) : (
           <div
-            className={classNames("Container__room-preview", {
+            data-bem="VenueRoomsEditor__room-preview"
+            className={classNames({
               "Container__room-image--disabled": !room.isEnabled,
             })}
             style={{
@@ -267,7 +267,7 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
             key={`${room.title}-${index}`}
             onClick={() => setSelectedRoom(room)}
           >
-            <div className="Container__room-title">{room.title}</div>
+            <div data-bem="VenueRoomsEditor__room-title">{room.title}</div>
           </div>
         )
       ),
@@ -284,8 +284,9 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
           <MapBackgroundPlaceholder />
         ) : (
           <img
+            data-bem="VenueRoomsEditor__background-image"
             alt="draggable background "
-            className={`Container__background-image ${backgroundImageClassName}`}
+            className={backgroundImageClassName}
             src={backgroundImage}
           />
         )}
