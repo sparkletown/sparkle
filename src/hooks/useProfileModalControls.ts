@@ -2,6 +2,8 @@ import { useCallback } from "react";
 
 import { updateUserProfileDataAction } from "store/actions/UserProfile";
 
+import { UserId } from "types/id";
+
 import { userProfileSelector } from "utils/selectors";
 import { isDefined } from "utils/types";
 
@@ -15,7 +17,7 @@ export const useProfileModalControls = () => {
   const hasSelectedProfile = isDefined(selectedUserId);
 
   const openUserProfileModal = useCallback(
-    (userId?: string) =>
+    (userId?: UserId) =>
       userId && dispatch(updateUserProfileDataAction(userId)),
     [dispatch]
   );

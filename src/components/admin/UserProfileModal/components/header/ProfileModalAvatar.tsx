@@ -7,6 +7,7 @@ import { ACCEPTED_IMAGE_TYPES } from "settings";
 
 import { UserProfileModalFormData } from "types/profileModal";
 import { User } from "types/User";
+import { ContainerClassName } from "types/utility";
 
 import { WithId } from "utils/id";
 
@@ -17,9 +18,7 @@ import { UserAvatar } from "components/atoms/UserAvatar";
 
 import "firebase/storage";
 
-import styles from "./ProfileModalAvatar.module.scss";
-
-export interface ProfileModalAvatarProps {
+export interface ProfileModalAvatarProps extends ContainerClassName {
   user: WithId<User>;
   editMode?: boolean;
   setPictureUrl?: (url: string) => void;
@@ -67,33 +66,41 @@ export const ProfileModalAvatar: React.FC<ProfileModalAvatarProps> = ({
   );
 
   return (
-    <div data-bem="ProfileModalAvatar" className={styles.profileModalAvatar}>
-      <div onClick={uploadProfilePic}>
+    <div data-bem="ProfileModalAvatar" className="flex-shrink-0 h-20 w-20">
+      <div
+        data-bem="ProfileModalAvatar__upload-new-container"
+        className="relative"
+      >
         <UserAvatar
-          imageClassName={styles.image}
+          imageClassName="rounded-full w-20 h-20"
           user={userWithOverriddenPictureUrl}
           size="full"
           showStatus
         />
         {editMode && (
-          <div className={styles.text}>
+          <div onClick={uploadProfilePic}>
             <CenterContent disabled={uploadingState.loading}>
-              {uploadingState.loading ? "Uploading..." : "Change"}
+              {uploadingState.loading ? "Uploading..." : "Upload new"}
             </CenterContent>
           </div>
         )}
       </div>
       <input
+        data-bem="ProfileModalAvatar__input"
         type="file"
         onChange={handleFileChange}
         accept={ACCEPTED_IMAGE_TYPES}
         ref={uploadRef}
-        className={styles.input}
+        className="invisible"
       />
       {register && (
-        <input className={styles.input} {...register("pictureUrl")} />
+        <input
+          data-bem="ProfileModalAvatar__input"
+          className="invisible"
+          {...register("pictureUrl")}
+        />
       )}
-      {error && <div>{error}</div>}
+      {error && <div data-bem="ProfileModalAvatar__error">{error}</div>}
     </div>
   );
 };

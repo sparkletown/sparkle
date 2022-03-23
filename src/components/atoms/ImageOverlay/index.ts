@@ -1,1 +1,0 @@
-export { ImageOverlay } from "./ImageOverlay";

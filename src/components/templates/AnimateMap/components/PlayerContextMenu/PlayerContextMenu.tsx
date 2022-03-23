@@ -2,6 +2,8 @@ import React, { useCallback, useEffect } from "react";
 
 import { ReplicatedUser } from "store/reducers/AnimateMap";
 
+import { UserId } from "types/id";
+
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 
 import EventProvider, {
@@ -16,7 +18,7 @@ export const UIPlayerClickHandler: React.FC<UIContextMenuProps> = () => {
 
   const viewProfileHandler = useCallback(
     (user: ReplicatedUser, viewportX: number, viewportY: number) => {
-      openUserProfileModal(user.data.id);
+      openUserProfileModal(user.data.id as UserId);
     },
     [openUserProfileModal]
   );

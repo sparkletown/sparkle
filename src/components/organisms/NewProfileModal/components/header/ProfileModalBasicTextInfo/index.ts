@@ -1,1 +1,0 @@
-export { ProfileModalBasicTextInfo } from "./ProfileModalBasicTextInfo";
