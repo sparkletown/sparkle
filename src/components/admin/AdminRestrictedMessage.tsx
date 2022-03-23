@@ -1,49 +1,45 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn } from "react-use";
-import { WithSlugsProps } from "components/hocs/context/withSlugs";
-import { WithAuthProps } from "components/hocs/db/withAuth";
 import firebase from "firebase/compat/app";
 
 import {
-  DEFAULT_SPACE_SLUG,
-  DEFAULT_WORLD_SLUG,
+  ATTENDEE_INSIDE_URL,
+  ATTENDEE_LANDING_URL,
   DISABLED_DUE_TO_1324,
 } from "settings";
 
-import {
-  generateAttendeeInsideUrl,
-  generateAttendeeSpaceLandingUrl,
-} from "utils/url";
+import { generateUrl } from "utils/url";
 
-import { UseAdminRole } from "hooks/user/useAdminRole";
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
+import { useUserId } from "hooks/user/useUserId";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { SparkleLogo } from "components/atoms/SparkleLogo";
 
 import SHAPE_DENIED from "assets/images/access-forbidden.svg";
 
-type Props = WithAuthProps & WithSlugsProps & Partial<ReturnType<UseAdminRole>>;
-
-export const AdminRestricted: React.FC<Props> = ({
-  userId,
-  worldSlug,
-  spaceSlug,
-}) => {
+export const AdminRestrictedMessage: React.FC = () => {
   const history = useHistory();
+  const { worldSlug, spaceSlug } = useSpaceParams();
+  const { userId } = useUserId();
 
   const [{ loading: isLoggingOut }, logout] = useAsyncFn(async () => {
     await firebase.auth().signOut();
     history.push(
-      spaceSlug ? generateAttendeeSpaceLandingUrl(worldSlug, spaceSlug) : "/"
+      generateUrl({
+        route: ATTENDEE_LANDING_URL,
+        params: { worldSlug, spaceSlug },
+        fallback: "/",
+      })
     );
   }, [history, worldSlug, spaceSlug]);
 
   const redirectToDefaultRoute = () =>
     history.push(
-      generateAttendeeInsideUrl({
-        worldSlug: DEFAULT_WORLD_SLUG,
-        spaceSlug: DEFAULT_SPACE_SLUG,
+      generateUrl({
+        route: ATTENDEE_INSIDE_URL,
+        params: { worldSlug, spaceSlug },
       })
     );
 
