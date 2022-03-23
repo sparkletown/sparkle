@@ -15,6 +15,10 @@
   margin-top: space.empty(2);
   margin-bottom: space.empty(4);
   height: min-content;
+
+  &__fullWidth {
+    position: unset;
+  }
 }
 
 .video {
@@ -39,6 +43,13 @@
 
   &__expanded {
     max-width: breakpoint.$lg;
+  }
+
+  &__fullWidth {
+    // This will change as soon as the design team decide what "full width"
+    // actually means
+    max-width: 30vw;
+    margin-right: space.empty(2);
   }
 }
 

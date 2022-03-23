@@ -47,7 +47,7 @@ export const AdminLayout: React.FC<AdminLayoutPropsType> = ({ children }) => {
         sidebarOpen={pageLayout.sidebarOpen}
         onCloseSidebar={closeSidebar}
       />
-      <div className="md:pl-56 flex flex-col flex-1">
+      <div className="md:pl-56 flex flex-col flex-1 min-h-screen">
         <div className="sticky top-0 z-10 md:hidden pl-1 pt-1 sm:pl-3 sm:pt-3 bg-gray-100">
           <button
             type="button"
@@ -58,10 +58,9 @@ export const AdminLayout: React.FC<AdminLayoutPropsType> = ({ children }) => {
             <FontAwesomeIcon className="h-6 w-6" icon={faBars} />
           </button>
         </div>
-        <main className="flex-1">
-          {children}
-          <Footer />
-        </main>
+        <main className="flex-1">{children}</main>
+
+        <Footer />
       </div>
 
       <UserProfileModal />
