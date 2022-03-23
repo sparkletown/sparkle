@@ -46,8 +46,7 @@ export const AnimateMap: React.FC<AnimateMapProps> = (props) => {
       return;
     }
 
-    runApp()
-      .catch((e) => setAppError(e));
+    runApp().catch((e) => setAppError(e));
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.game]);
 
