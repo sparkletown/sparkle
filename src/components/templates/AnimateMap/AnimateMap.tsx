@@ -5,7 +5,7 @@ import { AnimateMapVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
-import { BugsnagNotify } from "../Bugsnag";
+import { bugsnagNotify } from "../Bugsnag";
 
 import { AnimateMapErrorPrompt } from "./components/AnimateMapErrorPrompt";
 import { GameInstance } from "./game/GameInstance";
@@ -47,7 +47,6 @@ export const AnimateMap: React.FC<AnimateMapProps> = (props) => {
     }
 
     runApp()
-      .then(() => console.log("runApp success"))
       .catch((e) => setAppError(e));
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.game]);
@@ -55,7 +54,7 @@ export const AnimateMap: React.FC<AnimateMapProps> = (props) => {
   // NOTE: this is a good to have check for error inside animatemap (and infinite retries due to it)
   if (appError) {
     console.error("AnimateMap error initializing:", appError);
-    BugsnagNotify({
+    bugsnagNotify({
       appError: appError,
       location: "src/components/templates/AnimateMap::AnimateMap",
       space: props.space,

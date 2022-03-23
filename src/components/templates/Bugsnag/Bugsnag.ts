@@ -10,7 +10,7 @@ export type BugsnagType = {
   space: WithId<AnimateMapVenue>;
 };
 
-export const BugsnagNotify = (args: BugsnagType) => {
+export const bugsnagNotify = (args: BugsnagType) => {
   Bugsnag.notify(args.appError, (event) => {
     event.addMetadata("context", {
       location: args.location,
