@@ -61,7 +61,6 @@ export const ProfileModalEditBasicInfo: React.FC<ProfileModalEditBasicInfoProps>
           or pick one from our Sparkle profile pics
         </div>
         <DefaultAvatars
-          avatarClassName="ProfileModalEditBasicInfo__avatar"
           avatarPictureClassName="ProfileModalEditBasicInfo__avatar-picture"
           onAvatarClick={setPictureUrl}
         />

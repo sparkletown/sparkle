@@ -1,5 +1,7 @@
 import React, { useEffect, useMemo } from "react";
 
+import { STRING_NON_BREAKING_SPACE } from "settings";
+
 import { UserStatus } from "types/User";
 
 import { useVenueUserStatuses } from "hooks/useVenueUserStatuses";
@@ -45,7 +47,10 @@ export const UserStatusDropdown: React.FC<UserStatusDropdownProps> = ({
 
   return (
     <div data-bem="UserStatusDropdown" className="flex">
-      <div data-bem="UserStatusDropdown__status">{userStatus.status}&nbsp;</div>
+      <div data-bem="UserStatusDropdown__status">
+        {userStatus.status}
+        {STRING_NON_BREAKING_SPACE}
+      </div>
 
       {showDropdown && (
         <Dropdown title="change status" noArrow>

@@ -1,6 +1,8 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+import { STRING_NON_BREAKING_SPACE } from "settings";
+
 import { ProfileLink } from "types/User";
 
 import { useProfileModalLinkIcon } from "utils/profileModalLinkUtilities";
@@ -17,7 +19,10 @@ export const ProfileModalLink: React.FC<{ link: ProfileLink }> = ({ link }) => {
       rel="noreferrer"
     >
       <FontAwesomeIcon icon={linkIcon} size="sm" />
-      <span>&nbsp;&nbsp;</span>
+      <span>
+        {STRING_NON_BREAKING_SPACE}
+        {STRING_NON_BREAKING_SPACE}
+      </span>
       {link.title}
     </a>
   );

@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { UseFormRegister } from "react-hook-form";
 import { useAsyncFn } from "react-use";
-import { ImageOverlay } from "components/shared/ImageOverlay";
+import { CenterContent } from "components/shared/CenterContent";
 
 import { ACCEPTED_IMAGE_TYPES } from "settings";
 
@@ -79,9 +79,9 @@ export const ProfileModalAvatar: React.FC<ProfileModalAvatarProps> = ({
         />
         {editMode && (
           <div onClick={uploadProfilePic}>
-            <ImageOverlay disabled={uploadingState.loading}>
+            <CenterContent disabled={uploadingState.loading}>
               {uploadingState.loading ? "Uploading..." : "Upload new"}
-            </ImageOverlay>
+            </CenterContent>
           </div>
         )}
       </div>

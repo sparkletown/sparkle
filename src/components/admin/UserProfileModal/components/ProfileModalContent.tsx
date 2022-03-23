@@ -44,7 +44,7 @@ export const ProfileModalContent: React.FC<ProfileModalContentProps> = ({
           onClick={onPrimaryButtonClick}
           onEdit={onEditMode}
           onModalClose={onModalClose}
-          user={user}
+          userId={user.id}
         />
       </div>
     </div>

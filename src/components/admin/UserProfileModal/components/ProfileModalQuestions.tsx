@@ -39,7 +39,7 @@ export const ProfileModalQuestions: React.FC<ProfileModalQuestionsProps> = ({
                 name={question.name}
               />
             ) : (
-              <div className="ProfileModalQuestions__answer">
+              <div data-bem="ProfileModalQuestions__answer">
                 {answers[i] ?? STRING_DASH_SPACE}
               </div>
             )}

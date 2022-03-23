@@ -1,4 +1,4 @@
-export interface ProfileModalSectionHeaderProps {
+interface ProfileModalSectionHeaderProps {
   text: string;
 }
 

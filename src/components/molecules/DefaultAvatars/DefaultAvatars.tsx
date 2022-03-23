@@ -14,14 +14,12 @@ import styles from "./DefaultAvatars.module.scss";
 export interface DefaultAvatarsProps {
   onAvatarClick: (url: string) => void;
   isLoadingExternal?: boolean;
-  avatarClassName?: string;
   avatarPictureClassName?: string;
 }
 
 export const DefaultAvatars: React.FC<DefaultAvatarsProps> = ({
   onAvatarClick,
   isLoadingExternal,
-  avatarClassName,
   avatarPictureClassName,
 }) => {
   const {
@@ -60,7 +58,7 @@ export const DefaultAvatars: React.FC<DefaultAvatarsProps> = ({
       <button
         data-bem="DefaultAvatars__preview-container"
         key={`${avatar}-${index}`}
-        className={classNames("w-12 h-12 mr-1", avatarClassName)}
+        className="w-12 h-12 mr-1"
         onClick={(event) => uploadDefaultAvatar(event, avatar)}
         type="button"
       >
@@ -72,12 +70,7 @@ export const DefaultAvatars: React.FC<DefaultAvatarsProps> = ({
         />
       </button>
     ));
-  }, [
-    avatarClassName,
-    avatarPictureClassName,
-    defaultAvatars,
-    uploadDefaultAvatar,
-  ]);
+  }, [avatarPictureClassName, defaultAvatars, uploadDefaultAvatar]);
 
   const isLoading =
     (isSovereignVenueLoading || isLoadingCustomAvatars) &&

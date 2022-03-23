@@ -27,6 +27,8 @@ export interface InputProps
   rules?: RegisterOptions;
   description?: ReactNode | string;
   errors?: FieldErrors<FieldValues>;
+  // @debt we should use `errors` property, unless it's a nested validation object (see example in the ProfileModalEditLink)
+  // @see the conversation https://github.com/sparkletown/sparkle/pull/2931#discussion_r832017043
   error?: FieldError;
   hidden?: boolean;
 }

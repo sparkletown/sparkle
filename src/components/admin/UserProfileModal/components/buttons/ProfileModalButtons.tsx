@@ -1,9 +1,7 @@
 import React from "react";
 import { Button } from "components/admin/Button";
 
-import { User } from "types/User";
-
-import { WithId } from "utils/id";
+import { UserId } from "types/id";
 
 import { useIsCurrentUser } from "hooks/useIsCurrentUser";
 
@@ -11,16 +9,16 @@ export interface ProfileModalButtonsProps {
   onClick: () => void;
   onEdit?: () => void;
   onModalClose: () => void;
-  user: WithId<User>;
+  userId: UserId;
 }
 
 export const ProfileModalButtons: React.FC<ProfileModalButtonsProps> = ({
   onClick,
   onEdit,
   onModalClose,
-  user,
+  userId,
 }) => {
-  const isCurrentUser = useIsCurrentUser(user.id);
+  const isCurrentUser = useIsCurrentUser(userId);
 
   return (
     <>

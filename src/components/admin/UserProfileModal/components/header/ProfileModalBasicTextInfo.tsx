@@ -1,7 +1,7 @@
 import React from "react";
 import { UserStatusDropdown } from "components/admin/UserStatusDropdown";
 
-import { DEFAULT_PARTY_NAME } from "settings";
+import { DEFAULT_PARTY_NAME, STRING_NON_BREAKING_SPACE } from "settings";
 
 import { User } from "types/User";
 
@@ -42,7 +42,7 @@ export const ProfileModalBasicTextInfo: React.FC<ProfileModalBasicTextInfoProps>
           data-bem="ProfileModalBasicTextInfo__status"
           className="font-xs flex"
         >
-          is&nbsp;
+          is{STRING_NON_BREAKING_SPACE}
           <UserStatusDropdown
             userStatuses={world?.userStatuses}
             showDropdown={isCurrentUser}

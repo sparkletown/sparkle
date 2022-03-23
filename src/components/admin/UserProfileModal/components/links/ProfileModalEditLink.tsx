@@ -53,6 +53,7 @@ export const ProfileModalEditLink: React.FC<ProfileModalEditLinkProps> = ({
                 },
                 validate: validateURLUnique,
               }}
+              // @debt we should use errors property here when we figure out how to deal with nested valication properties
               error={error?.url}
             />
           </div>
@@ -64,6 +65,7 @@ export const ProfileModalEditLink: React.FC<ProfileModalEditLinkProps> = ({
               rules={{
                 required: "Title cannot empty",
               }}
+              // @debt we should use errors property here when we figure out how to deal with nested valication properties
               error={error?.title}
             />
           </div>
