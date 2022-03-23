@@ -8,9 +8,8 @@ export const AnalyticsScript: SelfServeScript = {
   functionLocation: "analytics-generateAnalytics",
   arguments: [
     {
-      name: "venueIds",
-      title:
-        "Venue ids separated with a comma(,) Example: venue1,venue2,venue3",
+      name: "worldSlug",
+      title: "Enter world slug",
       isRequired: true,
     },
   ],

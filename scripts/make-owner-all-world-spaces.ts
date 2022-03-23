@@ -35,6 +35,18 @@ process.on("SIGINT", () => {
 const app = initFirebaseAdminApp(projectId, { credentialPath });
 
 (async () => {
+  console.log("Adding to world owners");
+  const worldDoc = await app
+    .firestore()
+    .collection("worlds")
+    .doc(worldId)
+    .get();
+  const worldData = worldDoc.data();
+  worldData.owners.push(userId);
+  worldDoc.ref.update({
+    owners: worldData.owners,
+  });
+
   const { docs: spaceDocs } = await app
     .firestore()
     .collection("venues")
