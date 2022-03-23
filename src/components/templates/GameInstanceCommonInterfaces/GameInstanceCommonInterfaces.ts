@@ -48,3 +48,14 @@ export type ReplicatedVenueData = Room & {
   countUsers: number;
   withoutPlate?: boolean;
 }
+
+export type ReplicatedArtcar =  {
+  x: number;
+  y: number;
+  radiusX: number;
+  radiusY: number;
+  angle: number;
+  color: number;
+  colorIndex: number;
+  data: ReplicatedVenueData;
+}

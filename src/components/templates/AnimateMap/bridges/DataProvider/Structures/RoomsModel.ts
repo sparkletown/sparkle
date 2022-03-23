@@ -1,7 +1,7 @@
 import { Box, Point as QPoint, QuadTree } from "js-quadtree";
 import { intersection } from "lodash";
 
-import { RoomInfo } from "../../../vendors/playerio/PlayerIO";
+import { RoomInfo } from "../../../../PlayerIO/PlayerIO";
 import EventProvider, { EventType } from "../../EventProvider/EventProvider";
 import {
   RoomMath,

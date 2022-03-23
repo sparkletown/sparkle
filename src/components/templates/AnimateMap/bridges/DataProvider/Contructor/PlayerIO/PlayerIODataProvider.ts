@@ -4,11 +4,11 @@ import { Point } from "types/utility";
 
 import { getRandomInt } from "utils/getRandomInt";
 
+import { PlayerIOInstance } from "../../../../../PlayerIO/PlayerIO";
+import { ProxyClient } from "../../../../../PlayerIO/PromissesWrappers/ProxyClient";
+import { ProxyMultiplayer } from "../../../../../PlayerIO/PromissesWrappers/ProxyMultiplayer";
+import { ProxyPlayerIO } from "../../../../../PlayerIO/PromissesWrappers/ProxyPlayerIO";
 import { PlaygroundMap } from "../../../../game/utils/PlaygroundMap";
-import { PlayerIOInstance } from "../../../../vendors/playerio/PlayerIO";
-import { ProxyClient } from "../../../../vendors/playerio/PromissesWrappers/ProxyClient";
-import { ProxyMultiplayer } from "../../../../vendors/playerio/PromissesWrappers/ProxyMultiplayer";
-import { ProxyPlayerIO } from "../../../../vendors/playerio/PromissesWrappers/ProxyPlayerIO";
 import EventProvider, { EventType } from "../../../EventProvider/EventProvider";
 import { CloudDataProvider } from "../../CloudDataProvider";
 import playerModel from "../../Structures/PlayerModel";

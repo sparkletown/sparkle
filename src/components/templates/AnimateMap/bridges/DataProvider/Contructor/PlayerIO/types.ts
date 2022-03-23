@@ -1,5 +1,5 @@
-import { UInt, ULong } from "../../../../vendors/playerio/PlayerIO";
-import { ProxyDatabaseObject } from "../../../../vendors/playerio/PromissesWrappers/ProxyDatabaseObject";
+import { UInt, ULong } from "../../../../../PlayerIO/PlayerIO";
+import { ProxyDatabaseObject } from "../../../../../PlayerIO/PromissesWrappers/ProxyDatabaseObject";
 
 export const PLAYER_OBJECTS_TABLE = "PlayerObjects";
 

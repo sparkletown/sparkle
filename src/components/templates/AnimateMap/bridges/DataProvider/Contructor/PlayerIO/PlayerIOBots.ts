@@ -2,7 +2,7 @@ import { throttle } from "lodash";
 
 import { getRandomInt } from "utils/getRandomInt";
 
-import { connection } from "../../../../vendors/playerio/PlayerIO";
+import { connection } from "../../../../../PlayerIO/PlayerIO";
 import { CloudDataProvider } from "../../CloudDataProvider";
 
 import { getIntByHash } from "./utils/getIntByHash";

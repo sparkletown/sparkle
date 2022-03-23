@@ -1,6 +1,6 @@
 import { Point } from "types/utility";
 
-import { ProxyMultiplayer } from "../../../../../vendors/playerio/PromissesWrappers/ProxyMultiplayer";
+import { ProxyMultiplayer } from "../../../../../../PlayerIO/PromissesWrappers/ProxyMultiplayer";
 import EventProvider, {
   EventType,
 } from "../../../../EventProvider/EventProvider";
