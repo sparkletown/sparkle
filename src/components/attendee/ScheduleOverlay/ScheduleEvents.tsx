@@ -1,10 +1,16 @@
 import React, { useCallback, useMemo } from "react";
+import { Link } from "react-router-dom";
 import { faBookmark as regularBookmark } from "@fortawesome/free-regular-svg-icons";
 import { faBookmark as solidBookmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { addDays, differenceInCalendarDays } from "date-fns";
 
-import { ALWAYS_EMPTY_OBJECT, STRING_DASH_SPACE, STRING_SPACE } from "settings";
+import {
+  ALWAYS_EMPTY_OBJECT,
+  ATTENDEE_INSIDE_URL,
+  STRING_DASH_SPACE,
+  STRING_SPACE,
+} from "settings";
 
 import {
   addEventToPersonalizedSchedule,
@@ -21,6 +27,7 @@ import {
   isEventWithinDateAndNotFinished,
 } from "utils/event";
 import { formatDateRelativeToNow, formatTimeLocalised } from "utils/time";
+import { generateUrl } from "utils/url";
 
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useUser } from "hooks/useUser";
@@ -108,12 +115,20 @@ export const ScheduleEvents: React.FC<ScheduleEventsProps> = ({
             eventStartTime({ event })
           )
         );
+        // console.log(event)
+        const visitSpaceUrl = generateUrl({
+          route: ATTENDEE_INSIDE_URL,
+          required: ["worldSlug", "spaceSlug"],
+          params: { worldSlug: event.worldId, spaceSlug: event.spaceId },
+        });
 
         return (
           <div key={event.id} className={CN.eventContainer}>
             <div className={CN.eventWrapper}>
               <div className={CN.eventTitle}>
-                <span>{event.name}</span>
+                <Link to={visitSpaceUrl} className={CN.eventName}>
+                  {event.name}
+                </Link>
                 <FontAwesomeIcon
                   icon={event.isSaved ? solidBookmark : regularBookmark}
                   onClick={() => bookmarkEvent(event)}
