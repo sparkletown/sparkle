@@ -1,1 +1,1 @@
-export * from './GameInstanceInterface';
+export * from "./GameInstanceInterface";

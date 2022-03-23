@@ -1,1 +1,1 @@
-export * from './AnimateMapWrapper';
+export * from "./AnimateMapWrapper";

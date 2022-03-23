@@ -1,12 +1,14 @@
 /**
  * Usage interfaces for GameInstance class
  */
-import { ReplicatedFirebarrel, ReplicatedVenue } from "store/reducers/AnimateMap";
+import {
+  ReplicatedFirebarrel,
+  ReplicatedVenue,
+} from "store/reducers/AnimateMap";
 
 import { PlayerDataProviderInterface } from "./PlayerDataProviderInterface";
 
 export interface DataProvider {
-
   on(eventName: string, callback: Function, context?: object): void;
 
   off(eventName: string, callback: Function): void;

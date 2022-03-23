@@ -1,2 +1,2 @@
-export * from './DataProvider';
-export * from './PlayerDataProviderInterface';
+export * from "./DataProvider";
+export * from "./PlayerDataProviderInterface";

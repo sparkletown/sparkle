@@ -4,7 +4,7 @@ import { useStore } from "react-redux";
 import {
   enterAnimateMapFireBarrel,
   exitAnimateMapFireBarrel,
-  updateAnimateMapFireBarrel
+  updateAnimateMapFireBarrel,
 } from "store/actions/AnimateMap";
 
 import { User } from "types/User";
@@ -30,7 +30,9 @@ export const AnimateMapWrapper: React.VFC<AnimateMapWrapperProps> = (props) => {
   const [game, setGame] = useState<GameInstance | null>(null);
   const relatedRooms = useRelatedPartymapRooms({ venue: props.space });
   const [showFirebarrelFlag, setShowFirebarrelFlag] = useState(false);
-  const [dataProvider, setDataProvider] = useState<CloudDataProvider | null>(null);
+  const [dataProvider, setDataProvider] = useState<CloudDataProvider | null>(
+    null
+  );
 
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -58,11 +60,18 @@ export const AnimateMapWrapper: React.VFC<AnimateMapWrapperProps> = (props) => {
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataProvider]);
 
-  const updateAnimateMapFireBarrelDispatch = (roomId: string, userList: User[]) => {
+  const updateAnimateMapFireBarrelDispatch = (
+    roomId: string,
+    userList: User[]
+  ) => {
     dispatch(updateAnimateMapFireBarrel(roomId, userList));
   };
 
-  const onConnectFirebarrelChange = (roomId: string, userList: User[], isConnected: boolean) => {
+  const onConnectFirebarrelChange = (
+    roomId: string,
+    userList: User[],
+    isConnected: boolean
+  ) => {
     if (isConnected) {
       dispatch(enterAnimateMapFireBarrel(roomId, userList));
     } else {

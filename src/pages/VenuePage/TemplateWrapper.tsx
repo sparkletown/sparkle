@@ -34,9 +34,11 @@ import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
 
 const AnimateMap = lazy(() =>
   tracePromise("TemplateWrapper::lazy-import::AnimateMapWrapper", () =>
-    import("components/templates/AnimateMapWrapper").then(({ AnimateMapWrapper }) => ({
-      default: AnimateMapWrapper,
-    }))
+    import("components/templates/AnimateMapWrapper").then(
+      ({ AnimateMapWrapper }) => ({
+        default: AnimateMapWrapper,
+      })
+    )
   )
 );
 

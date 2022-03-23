@@ -15,13 +15,20 @@ import "./AnimateMap.scss";
 
 export interface AnimateMapProps {
   space: WithId<AnimateMapVenue>;
-  updateAnimateMapFireBarrelDispatch: (roomId: string, userList: User[]) => void;
-  onConnectFirebarrelChange: (roomId: string, userList: User[], isConnected: boolean) => void;
+  updateAnimateMapFireBarrelDispatch: (
+    roomId: string,
+    userList: User[]
+  ) => void;
+  onConnectFirebarrelChange: (
+    roomId: string,
+    userList: User[],
+    isConnected: boolean
+  ) => void;
   showFirebarrelFlag: boolean;
   game: GameInstance | null;
   containerRef: {
-    current:  HTMLDivElement | null;
-  }
+    current: HTMLDivElement | null;
+  };
 }
 
 export const AnimateMap: React.FC<AnimateMapProps> = (props) => {
@@ -51,7 +58,7 @@ export const AnimateMap: React.FC<AnimateMapProps> = (props) => {
     BugsnagNotify({
       appError: appError,
       location: "src/components/templates/AnimateMap::AnimateMap",
-      space: props.space
+      space: props.space,
     });
 
     return (

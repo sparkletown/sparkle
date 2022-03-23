@@ -15,4 +15,4 @@ export type GameInstanceInterface = {
   getConfig: () => GameConfig;
   getMapContainer: () => MapContainer | undefined;
   getRenderer: () => Renderer | undefined;
-}
+};

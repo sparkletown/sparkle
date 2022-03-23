@@ -1,1 +1,1 @@
-export * from './Bugsnag';
+export * from "./Bugsnag";

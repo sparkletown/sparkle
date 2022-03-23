@@ -8,7 +8,7 @@ export type BugsnagType = {
   appError: Error;
   location: string;
   space: WithId<AnimateMapVenue>;
-}
+};
 
 export const BugsnagNotify = (args: BugsnagType) => {
   Bugsnag.notify(args.appError, (event) => {
@@ -18,4 +18,4 @@ export const BugsnagNotify = (args: BugsnagType) => {
       space: args.space,
     });
   });
-}
+};
