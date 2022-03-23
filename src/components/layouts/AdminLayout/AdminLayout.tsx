@@ -3,8 +3,7 @@ import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Footer } from "components/admin/Footer";
 import { Sidebar } from "components/admin/Sidebar";
-
-import { AdminProfileModal } from "components/organisms/AdminProfileModal";
+import { UserProfileModal } from "components/admin/UserProfileModal";
 
 import "scss/admin/initial.scss";
 
@@ -43,12 +42,12 @@ export const AdminLayout: React.FC<AdminLayoutPropsType> = ({ children }) => {
   }, [pageLayout.sidebarOpen]);
 
   return (
-    <div className="AdminLayout">
+    <div data-bem="AdminLayout">
       <Sidebar
         sidebarOpen={pageLayout.sidebarOpen}
         onCloseSidebar={closeSidebar}
       />
-      <div className="md:pl-56 flex flex-col flex-1">
+      <div className="md:pl-56 flex flex-col flex-1 min-h-screen">
         <div className="sticky top-0 z-10 md:hidden pl-1 pt-1 sm:pl-3 sm:pt-3 bg-gray-100">
           <button
             type="button"
@@ -59,13 +58,12 @@ export const AdminLayout: React.FC<AdminLayoutPropsType> = ({ children }) => {
             <FontAwesomeIcon className="h-6 w-6" icon={faBars} />
           </button>
         </div>
-        <main className="flex-1">
-          {children}
-          <Footer />
-        </main>
+        <main className="flex-1">{children}</main>
+
+        <Footer />
       </div>
 
-      <AdminProfileModal />
+      <UserProfileModal />
     </div>
   );
 };
