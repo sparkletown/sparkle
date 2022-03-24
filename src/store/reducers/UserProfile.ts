@@ -3,8 +3,10 @@ import {
   UserProfileActionTypes,
 } from "store/actions/UserProfile";
 
+import { UserId } from "types/id";
+
 export type UserProfileState = {
-  userId?: string;
+  userId?: UserId;
 };
 
 const initialState: UserProfileState = {

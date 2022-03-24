@@ -1,1 +1,0 @@
-export { ProfileModalLink } from "./ProfileModalLink";

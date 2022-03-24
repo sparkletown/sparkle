@@ -14,6 +14,7 @@ import {
 } from "settings";
 
 import { AlgoliaSearchIndex } from "types/algolia";
+import { UserId } from "types/id";
 import { Room } from "types/rooms";
 
 import { isDefined, isTruthy } from "utils/types";
@@ -117,7 +118,7 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({
           title={hit?.partyName ?? DEFAULT_PARTY_NAME}
           user={userFields}
           onClick={() => {
-            openUserProfileModal(hit.objectID);
+            openUserProfileModal(hit.objectID as UserId);
             clearSearch();
           }}
         />
@@ -145,10 +146,13 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({
   );
 
   return (
-    <div className="NavSearchBar">
+    <div data-bem="NavSearchBar">
       <div className={navDropdownClassnames}>
-        <div className="NavSearchBar__nav-dropdown__title font-size--small">
-          <strong className="NavSearchBar__search-results-number">
+        <div
+          data-bem="NavSearchBar__nav-dropdown__title"
+          className="font-size--small"
+        >
+          <strong data-bem="NavSearchBar__search-results-number">
             {numberOfSearchResults}
           </strong>
           {STRING_SPACE}
@@ -158,7 +162,7 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({
         {isLoading ? (
           <Loading />
         ) : (
-          <div className="NavSearchBar__search-results">
+          <div data-bem="NavSearchBar__search-results">
             {foundPortals}
             {foundUsers}
           </div>
