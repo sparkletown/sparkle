@@ -47,7 +47,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 
   return (
     <Modal show={isShown} onHide={hide}>
-      <div className="flex flex-col items-center">
+      <div data-bem="ConfirmationModal" className="flex flex-col items-center">
         {hasHeader && <h4>{header}</h4>}
         <div>{message}</div>
         <div className="mt-4">

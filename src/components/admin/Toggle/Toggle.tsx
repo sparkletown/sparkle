@@ -25,6 +25,10 @@ export const Toggle: React.FC<ToggleProps> = ({
   // NOTE: the click handlers needs to be on the label to capture all its children clicks and there must always be a <label>
   const handleClick = useCallback(
     (event) => {
+      // NOTE: for simplicity of forms, register excludes the use of onChange
+      // however, should such need arise that both are needed and this check is removed,
+      // a regression that does double accounting should be handled by parents of this component
+
       !register && onChange?.(event);
     },
     [onChange, register]

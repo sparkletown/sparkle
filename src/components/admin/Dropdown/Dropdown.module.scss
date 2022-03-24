@@ -1,8 +1,3 @@
-@use "scss/attendee/theme";
-
-// @debt: we might need another set of variables for admin, just like we have for attendee
-// to cover cases when tailwind classes are not enough
-
 .dropdownSelected {
   mask-image: url(/assets/icons/checkmark-icon.svg);
 }
@@ -10,7 +5,9 @@
 .optionContainer {
   &:hover {
     span {
-      background-color: theme.$c-button-fg;
+      // @debt: we need another set of scss variables/styles for admin side to use in cases
+      // when tailwind is not enough
+      background-color: white;
     }
   }
 }

@@ -21,6 +21,9 @@ const spaceNoneOption = Object.freeze({
   host: { icon: "" },
 });
 
+// @debt define an interface for spaceNoneOption that also factors in the Space interface to keep both in lockstep
+// NOTE: using host this way matches the space entity type and doesn't trigger TS errors
+
 type SpacesDropdownPortal = {
   template?: PortalTemplate;
   name: string;
@@ -131,7 +134,7 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
 
   return (
     <>
-      <div className="mb-2">
+      <div data-bem="SpacesDropdown" className="mb-2">
         <label className="block text-sm font-medium text-gray-700 mb-1">
           Link portal to a space
         </label>
