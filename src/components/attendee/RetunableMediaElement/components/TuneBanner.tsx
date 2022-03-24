@@ -11,7 +11,7 @@ interface TuneBannerProps {
 
 export const TuneBanner = ({ isTuning, startTuning }: TuneBannerProps) => {
   return (
-    <div>
+    <div className={styles.tuneBanner}>
       <span className={styles.multimediaBanner}>
         <FontAwesomeIcon icon={faSatelliteDish} />
         Multimedia

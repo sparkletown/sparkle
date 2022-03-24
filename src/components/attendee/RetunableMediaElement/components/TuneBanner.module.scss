@@ -1,6 +1,11 @@
 @use "scss/attendee/font.scss";
 @use "scss/attendee/space.scss";
 
+.tuneBanner {
+  width: fit-content;
+  margin: 0 auto;
+}
+
 .multimediaBanner {
   font-size: font.$size--xl;
   margin-right: space.empty(1);

@@ -1,12 +1,15 @@
-import { useCallback, useState } from "react";
-import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useCallback, useMemo, useState } from "react";
 
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
+import { MediaElement } from "../MediaElement";
+import { useVideoComms } from "../VideoComms/hooks";
+import { VideoSource } from "../VideoComms/types";
+
 import { TuneBanner } from "./components/TuneBanner";
+import { Tuner } from "./components/Tuner";
 import { useRetunableMediaElement } from "./hooks";
 import { RetunableMediaSource } from "./types";
 
@@ -25,55 +28,64 @@ export const RetunableMediaElement: React.FC<RetunableMediaElementProps> = ({
   const { isLoading, settings } = useRetunableMediaElement({
     spaceId: space.id,
   });
+  const { localParticipant, remoteParticipants } = useVideoComms();
+
+  const mediaElement = useMemo(() => {
+    if (settings.sourceType === RetunableMediaSource.embed) {
+      return <MediaElement url={settings.embedUrl} autoPlay={true} />;
+    } else if (settings.sourceType === RetunableMediaSource.notTuned) {
+      return <></>;
+    }
+    if (
+      settings.sourceType === RetunableMediaSource.screenshare ||
+      settings.sourceType === RetunableMediaSource.webcam
+    ) {
+      const allParticipants = [...remoteParticipants];
+      if (localParticipant) {
+        allParticipants.push(localParticipant);
+      }
+
+      const desiredSourceType =
+        settings.sourceType === RetunableMediaSource.screenshare
+          ? VideoSource.Screenshare
+          : VideoSource.Webcam;
+      const desiredUserId =
+        settings.sourceType === RetunableMediaSource.screenshare
+          ? settings.screenshareUserId
+          : settings.webcamUserId;
+
+      const participant = allParticipants.find(
+        (p) => p.sparkleId === desiredUserId
+      );
+      if (!participant) {
+        // TODO probably want to warn here
+        return <></>;
+      }
+
+      const videoTrack = participant.videoTracks.find(
+        ({ sourceType }) => sourceType === desiredSourceType
+      );
+
+      if (!videoTrack) {
+        // TODO probably want to warn here
+        return <></>;
+      }
+
+      return <MediaElement track={videoTrack} autoPlay />;
+    }
+    // TODO probably want to warn here
+    return <></>;
+  }, [localParticipant, remoteParticipants, settings]);
 
   if (isLoading) {
     return <></>;
   }
 
-  if (isTuning) {
-    return (
-      <div className={styles.container}>
-        <div className={styles.tuner}>
-          <div className={styles.close} onClick={stopTuning}>
-            Close
-            <FontAwesomeIcon icon={faCircleXmark} />
-          </div>
-          <div>
-            <label htmlFor="webcam">
-              <input type="radio" name="source" value="webcam" id="webcam" />
-              Broadcast my webcam
-            </label>
-            <label htmlFor="screenshare">
-              <input
-                type="radio"
-                name="source"
-                value="screenshare"
-                id="screenshare"
-              />
-              Screen share
-            </label>
-            <div className={styles.divider} />
-            <label htmlFor="channel">
-              <input type="radio" name="source" value="channel" id="channel" />
-              Channels
-            </label>
-            <label htmlFor="embed">
-              <input type="radio" name="source" value="embed" id="embed" />
-              Custom embed URL
-            </label>
-          </div>
-        </div>
-        <TuneBanner isTuning={isTuning} startTuning={startTuning} />
-      </div>
-    );
-  }
-
-  if (settings.sourceType === RetunableMediaSource.notTuned) {
-    return (
-      <div className={styles.container}>
-        <TuneBanner isTuning={isTuning} startTuning={startTuning} />
-      </div>
-    );
-  }
-  return <div>I am media</div>;
+  return (
+    <div className={styles.container}>
+      {mediaElement}
+      {isTuning && <Tuner space={space} stopTuning={stopTuning} />}
+      <TuneBanner isTuning={isTuning} startTuning={startTuning} />
+    </div>
+  );
 };
