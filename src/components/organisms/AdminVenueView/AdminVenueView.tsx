@@ -1,10 +1,13 @@
 import React, { useCallback, useMemo } from "react";
 import { useParams } from "react-router";
 import { useHistory } from "react-router-dom";
+import { AdminRestrictedLoading } from "components/admin/AdminRestrictedLoading";
+import { AdminRestrictedMessage } from "components/admin/AdminRestrictedMessage";
 import { Header } from "components/admin/Header";
 import { HeaderButton } from "components/admin/HeaderButton";
 import { TabBar } from "components/admin/TabBar";
 import { AdminLayout } from "components/layouts/AdminLayout";
+import { WithPermission } from "components/shared/WithPermission";
 
 import { ADMIN_IA_WORLD_PARAM_URL } from "settings";
 
@@ -28,7 +31,6 @@ import VenueDeleteModal from "pages/Admin/Venue/VenueDeleteModal";
 
 import { SpaceTimingPanel } from "components/organisms/AdminVenueView/components/SpaceTimingPanel";
 
-import { AdminRestricted } from "components/atoms/AdminRestricted";
 import { NotFound } from "components/atoms/NotFound";
 
 import { RunTabView } from "./components/RunTabView";
@@ -118,9 +120,13 @@ export const AdminVenueView: React.FC<AdminVenueViewProps> = ({
 
   if (!space) {
     return (
-      <AdminRestricted>
+      <WithPermission
+        check="space"
+        loading={<AdminRestrictedLoading />}
+        fallback={<AdminRestrictedMessage />}
+      >
         <NotFound />
-      </AdminRestricted>
+      </WithPermission>
     );
   }
   const visitSpaceUrl = spaceSlug
@@ -133,7 +139,11 @@ export const AdminVenueView: React.FC<AdminVenueViewProps> = ({
 
   return (
     <AdminLayout>
-      <AdminRestricted>
+      <WithPermission
+        check="space"
+        loading={<AdminRestrictedLoading />}
+        fallback={<AdminRestrictedMessage />}
+      >
         <div className="AdminVenueView">
           <Header
             title={space.name}
@@ -171,7 +181,7 @@ export const AdminVenueView: React.FC<AdminVenueViewProps> = ({
             onCancel={closeDeleteModal}
           />
         </div>
-      </AdminRestricted>
+      </WithPermission>
     </AdminLayout>
   );
 };
