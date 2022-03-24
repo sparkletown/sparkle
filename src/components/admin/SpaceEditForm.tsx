@@ -4,7 +4,7 @@ import { useAsyncFn } from "react-use";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Checkbox } from "components/admin/Checkbox";
 import { ImageInput } from "components/admin/ImageInput";
-import { InputField } from "components/attendee/InputField";
+import { Toggle } from "components/admin/Toggle";
 
 import {
   ADMIN_IA_SPACE_BASE_PARAM_URL,
@@ -112,6 +112,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
       zoomUrl: space?.zoomUrl ?? "",
       logoImage: undefined,
       logoImageUrl: space?.host?.icon ?? spaceLogoImage,
+      showContent: space.showContent ?? false,
       backgroundImage: undefined,
       backgroundImageUrl: space.backgroundImageUrl,
     }),
@@ -134,6 +135,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
       space.roomVisibility,
       space?.zoomUrl,
       space?.host?.icon,
+      space.showContent,
       space.backgroundImageUrl,
       spaceLogoImage,
     ]
@@ -463,6 +465,51 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
               </>
             )}
 
+          {space.template === VenueTemplate.conversationspace && (
+            <div>
+              <Toggle
+                label="Show content"
+                register={register}
+                name="showContent"
+                checked={values.showContent}
+              />
+              <InputGroup title="Livestream URL" margin="medium">
+                <Input
+                  placeholder="Livestream or embed URL"
+                  register={register}
+                  name="iframeUrl"
+                  errors={errors}
+                  disabled={!values.showContent}
+                />
+                <Checkbox
+                  label="Autoplay"
+                  register={register}
+                  name="autoPlay"
+                  disabled={!values.showContent}
+                />
+              </InputGroup>
+              <Toggle
+                label="Show reactions"
+                register={register}
+                name="showReactions"
+                checked={values.showReactions}
+              />
+              <InputGroup margin="medium">
+                <Checkbox
+                  register={register}
+                  label="Audible"
+                  name="isReactionsMuted"
+                  disabled={isReactionsMutedDisabled}
+                />
+              </InputGroup>
+              <Toggle
+                label="Show shoutouts"
+                register={register}
+                name="showShoutouts"
+                checked={values.showShoutouts}
+              />
+            </div>
+          )}
           {space.template === VenueTemplate.auditorium && (
             <>
               <SidebarHeader>Extras</SidebarHeader>
@@ -509,7 +556,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                   <div># Seats</div>
                   <div>Max seats</div>
 
-                  <InputField
+                  <Input
                     register={register}
                     name="numberOfSections"
                     type="number"
