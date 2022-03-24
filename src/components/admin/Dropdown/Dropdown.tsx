@@ -7,7 +7,16 @@ import {
   ALWAYS_NO_STYLE_FUNCTION,
 } from "settings";
 
-import "./Dropdown.scss";
+import {
+  buttonTailwind,
+  checkmarkSelected,
+  checkmarkTailwind,
+  listItem,
+  listTailwind,
+  optionWrapper,
+} from "./Dropdown.tailwind";
+
+import "./Dropdown.module.scss";
 
 // if these are undefined, the 3rd party library will provide own defaults
 const NO_INLINE_STYLES_PLEASE = {
@@ -82,7 +91,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
     <>
       <button
         onClick={() => setOpened((value) => !value)}
-        className="bg-sparkle text-white hover:bg-sparkle-darker focus:ring-red-500 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800"
+        className={buttonTailwind}
         type="button"
       >
         {selectedOption?.label ?? title}
@@ -101,22 +110,30 @@ export const Dropdown: React.FC<DropdownProps> = ({
           />
         </svg>
       </button>
-      <div
-        className={`${
-          !isOpened && "hidden"
-        } absolute z-10 w-44 text-base list-none bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700`}
-      >
-        <ul className="py-1">
-          {options.map((option, index) => (
-            <li key={`${index}-${option.value}`}>
-              <div
-                className="block py-2 px-4 text-sm cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+      <div className={`${!isOpened && "hidden"} ${optionWrapper}`}>
+        <ul className={listTailwind}>
+          {options.map((option, index) => {
+            const isSelected =
+              option.value === selectedOption?.value ||
+              (!selectedOption && !option.value);
+            const textContainerClasses = isSelected
+              ? "font-semibold select-none relative py-2 pl-3 pr-9"
+              : "select-none relative py-2 pl-3 pr-9";
+            const checkmarkClasses = isSelected
+              ? checkmarkSelected
+              : checkmarkTailwind;
+
+            return (
+              <li
+                key={`${index}-${option.value}`}
+                className={listItem}
                 onClick={() => selectOption(option)}
               >
-                {option.label}
-              </div>
-            </li>
-          ))}
+                <div className={textContainerClasses}>{option.label}</div>
+                {isSelected && <span className={checkmarkClasses}></span>}
+              </li>
+            );
+          })}
         </ul>
       </div>
     </>

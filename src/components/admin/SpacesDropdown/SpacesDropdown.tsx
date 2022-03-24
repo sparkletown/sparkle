@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { FieldError, UseFormRegister, UseFormSetValue } from "react-hook-form";
+import { Dropdown } from "components/admin/Dropdown";
 import { omit, omitBy } from "lodash";
 
 import { ALWAYS_EMPTY_ARRAY, PORTAL_INFO_ICON_MAPPING } from "settings";
@@ -10,8 +11,6 @@ import { VenueTemplate } from "types/VenueTemplate";
 
 import { WithId } from "utils/id";
 
-import { Dropdown } from "components/atoms/Dropdown";
-
 import "./SpacesDropdown.scss";
 
 const noneOptionName = "None";
@@ -19,12 +18,17 @@ const spaceNoneOption = Object.freeze({
   id: "",
   name: "",
   template: undefined,
+  host: { icon: "" },
 });
+
+// @debt define an interface for spaceNoneOption that also factors in the Space interface to keep both in lockstep
+// NOTE: using host this way matches the space entity type and doesn't trigger TS errors
 
 type SpacesDropdownPortal = {
   template?: PortalTemplate;
   name: string;
   id?: string;
+  icon?: string;
 };
 
 interface SpacesDropdownProps {
@@ -78,7 +82,7 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
 
   const renderedOptions = useMemo(
     () =>
-      spaceOptions.map(({ id, name, template }) => {
+      spaceOptions.map(({ id, name, template, host }) => {
         const spaceIcon = PORTAL_INFO_ICON_MAPPING[template ?? ""];
 
         return (
@@ -88,14 +92,14 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
               setSelected({ name, template, id });
               setValue(fieldName, id, { shouldValidate: true });
             }}
-            className="SpacesDropdown__item"
             data-dropdown-value={name}
+            className="flex items-center w-max"
           >
             {name !== spaceNoneOption.name ? (
               <img
                 alt={`space-icon-${spaceIcon}`}
-                src={spaceIcon}
-                className="SpacesDropdown__item-icon"
+                src={host?.icon || spaceIcon}
+                className="w-6 h-6 mr-2 rounded-full"
               />
             ) : null}
             {name || noneOptionName}
@@ -107,7 +111,7 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
 
   const renderedTitle = useMemo(() => {
     if (!selected) {
-      return "Select a space";
+      return <span data-dropdown-value="">Select a space</span>;
     }
 
     const space = spaces?.[selected.id ?? ""] ?? parentSpace;
@@ -115,15 +119,12 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
     const spaceIcon = PORTAL_INFO_ICON_MAPPING[space?.template ?? ""];
 
     return (
-      <span
-        className="SpacesDropdown__value"
-        data-dropdown-value={selected.name}
-      >
+      <span data-dropdown-value={selected.name}>
         {selected.name !== spaceNoneOption.name ? (
           <img
             alt={`space-icon-${spaceIcon}`}
             src={spaceIcon}
-            className="SpacesDropdown__item-icon"
+            className="w-6 h-6 mr-2 rounded-full"
           />
         ) : null}
         {selected.name || noneOptionName}
@@ -133,7 +134,10 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
 
   return (
     <>
-      <div className="SpacesDropdown">
+      <div data-bem="SpacesDropdown" className="mb-2">
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Link portal to a space
+        </label>
         <Dropdown title={renderedTitle}>{renderedOptions}</Dropdown>
         <input type="hidden" {...register} name={fieldName} />
       </div>

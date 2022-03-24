@@ -1,14 +1,17 @@
 import React, { ReactNode } from "react";
+import classNames from "classnames";
 
 import { InputGroupSubtitle } from "./InputGroupSubtitle";
 import { InputGroupTitle } from "./InputGroupTitle";
 
+type MarginVariant = "medium";
 export interface InputGroupProps {
   title?: ReactNode | string;
   subtitle?: ReactNode | string;
   withLabel?: boolean;
   isRequired?: boolean;
   isOptional?: boolean;
+  margin?: MarginVariant;
 }
 
 export const InputGroup: React.FC<InputGroupProps> = ({
@@ -18,6 +21,7 @@ export const InputGroup: React.FC<InputGroupProps> = ({
   isRequired,
   isOptional,
   children,
+  margin,
 }) => {
   const required = isRequired ? "required" : isOptional ? "optional" : "none";
 
@@ -28,8 +32,12 @@ export const InputGroup: React.FC<InputGroupProps> = ({
     </>
   );
 
+  const sectionClasses = classNames("mb-6 mt-6 flow-root", {
+    [`ml-4`]: margin === "medium",
+  });
+
   return (
-    <section className="mb-6 mt-6 flow-root">
+    <section className={sectionClasses}>
       {withLabel ? <label>{contents}</label> : contents}
       {children}
     </section>

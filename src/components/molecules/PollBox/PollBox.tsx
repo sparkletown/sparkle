@@ -2,12 +2,11 @@ import React, { useCallback, useMemo } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { faPaperPlane, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { InputField } from "components/attendee/InputField";
 
 import { MAX_POLL_QUESTIONS } from "settings";
 
 import { PollQuestion, PollValues } from "types/chat";
-
-import { InputField } from "components/atoms/InputField";
 
 import "./PollBox.scss";
 

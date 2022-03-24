@@ -31,6 +31,7 @@ export interface InputProps
   // @see the conversation https://github.com/sparkletown/sparkle/pull/2931#discussion_r832017043
   error?: FieldError;
   hidden?: boolean;
+  label?: string;
 }
 
 export const Input: React.FC<InputProps> = ({
@@ -43,6 +44,7 @@ export const Input: React.FC<InputProps> = ({
   hidden,
   description,
   required,
+  label,
   ...inputProps
 }) => {
   const error = get(errors, name) ?? errorProp;
@@ -67,6 +69,9 @@ export const Input: React.FC<InputProps> = ({
   ) : (
     <div data-bem="Input">
       <div className={parentClasses}>
+        {label && (
+          <div className="block text-sm font-medium text-gray-700">{label}</div>
+        )}
         <input
           {...inputProps}
           {...register(name, rules)}

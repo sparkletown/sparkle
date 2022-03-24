@@ -2,8 +2,13 @@ import React, { useCallback, useEffect, useMemo } from "react";
 import { useForm, useFormState } from "react-hook-form";
 import { useAsyncFn, useToggle } from "react-use";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Checkbox } from "components/admin/Checkbox";
+import { Button } from "components/admin/Button";
+import { ConfirmationModal } from "components/admin/ConfirmationModal/ConfirmationModal";
 import { ImageInput } from "components/admin/ImageInput";
+import { Input } from "components/admin/Input";
+import { PortalVisibility } from "components/admin/PortalVisibility";
+import { SpacesDropdown } from "components/admin/SpacesDropdown";
+import { Toggle } from "components/admin/Toggle";
 
 import {
   DEFAULT_PORTAL_INPUT,
@@ -12,7 +17,6 @@ import {
   DEFAULT_VENUE_LOGO,
   PORTAL_INFO_ICON_MAPPING,
   PortalInfoItem,
-  ROOM_TAXON,
   SPACE_TAXON,
 } from "settings";
 
@@ -27,15 +31,11 @@ import { roomSchema } from "forms/roomSchema";
 
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 
-import { AdminInput } from "components/molecules/AdminInput";
 import { AdminSection } from "components/molecules/AdminSection";
 import { SubmitError } from "components/molecules/SubmitError";
-
-import { ButtonNG } from "components/atoms/ButtonNG";
-import { PortalVisibility } from "components/atoms/PortalVisibility";
-import { SpacesDropdown } from "components/atoms/SpacesDropdown";
 
 interface PortalAddEditFormProps {
   item?: PortalInfoItem;
@@ -54,6 +54,11 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
 }) => {
   const { user } = useUser();
   const { spaceId: currentSpaceId, world, space } = useWorldAndSpaceByParams();
+  const {
+    isShown: isPortalDeleteShown,
+    show: showPortalDelete,
+    hide: hidePortalDelete,
+  } = useShowHide();
 
   const { icon } = item ?? {};
   const spaceLogoImage =
@@ -90,11 +95,14 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
     setValue,
     reset,
     control,
+    watch,
   } = useForm({
     reValidateMode: "onChange",
     resolver: yupResolver(roomSchema),
     defaultValues,
   });
+
+  const values = watch();
 
   const { errors } = useFormState({ control });
 
@@ -201,23 +209,11 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
   );
 
   return (
-    <form
-      className="PortalAddEditForm__form"
-      onSubmit={handleSubmit(addPortal)}
-    >
-      <div className="PortalAddEditForm__title">{title}</div>
-      <AdminInput
-        type="text"
-        autoComplete="off"
-        placeholder={`${SPACE_TAXON.capital} name`}
-        label="Name (required)"
-        errors={errors}
-        name="title"
-        register={register}
-        disabled={isLoading}
-      />
-
-      <AdminSection title="Which space should we open to?" withLabel>
+    <div>
+      <form className="bg-white" onSubmit={handleSubmit(addPortal)}>
+        <div className="text-lg leading-6 font-medium text-gray-900 mb-6">
+          {title}
+        </div>
         <SpacesDropdown
           spaces={backButtonOptionList}
           parentSpace={parentSpace}
@@ -226,86 +222,96 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
           fieldName="spaceId"
           error={errors?.spaceId}
         />
-      </AdminSection>
-
-      <AdminSection
-        withLabel
-        title={`${ROOM_TAXON.capital} image`}
-        subtitle="(overrides global settings)"
-      >
-        {/* @debt: Create AdminImageInput to wrap ImageInput with error handling and labels */}
-        {/* ie. PortalVisibility/AdminInput */}
-        <ImageInput
-          onChange={changeRoomImageUrl}
-          name="image"
-          setValue={setValue}
+        <Input
+          type="text"
+          autoComplete="off"
+          placeholder={`${SPACE_TAXON.capital} name`}
+          errors={errors}
+          name="title"
           register={register}
-          nameWithUnderscore
-          imgUrl={portal?.image_url ?? icon}
-          error={errors?.image_url}
+          disabled={isLoading}
+          label="Name"
         />
-      </AdminSection>
-      <AdminSection
-        withLabel
-        title="Change label appearance"
-        subtitle="(overrides general)"
-      >
-        <Checkbox
-          checked={isOverrideAppearanceEnabled}
-          onChange={toggleOverrideAppearance}
-          name="isAppearanceOverriden"
-          label="Override appearance"
-          register={register}
-        />
-      </AdminSection>
-
-      {isOverrideAppearanceEnabled && (
+        <AdminSection>
+          {/* @debt: Create AdminImageInput to wrap ImageInput with error handling and labels */}
+          {/* ie. PortalVisibility/AdminInput */}
+          <ImageInput
+            onChange={changeRoomImageUrl}
+            name="image"
+            setValue={setValue}
+            register={register}
+            nameWithUnderscore
+            imgUrl={portal?.image_url ?? icon}
+            error={errors?.image_url}
+            inputLabel="Highlight image"
+            buttonLabel="Change highlight image"
+          />
+        </AdminSection>
+        <AdminSection>
+          <Toggle
+            checked={isOverrideAppearanceEnabled}
+            onChange={toggleOverrideAppearance}
+            label="Override appearance"
+            title="Change label appearance (overrides general)"
+          />
+        </AdminSection>
         <PortalVisibility
           getValues={getValues}
           name="visibility"
           register={register}
           setValue={setValue}
         />
-      )}
-
-      {isOverrideAppearanceEnabled && (
-        <Checkbox
+        <Toggle
           register={register}
+          checked={values.isEnabled}
           name="isEnabled"
-          variant="toggler"
           label="Portal is visible"
         />
-      )}
-
-      {isOverrideAppearanceEnabled && (
-        <Checkbox
+        <Toggle
           name="isClickable"
           register={register}
-          variant="toggler"
+          checked={values.isClickable}
           label="Portal is clickable"
         />
-      )}
-
-      <SubmitError error={submitError || deleteError} />
-      <div className="PortalAddEditForm__buttons">
-        {isEditMode && (
-          <ButtonNG
-            variant="danger"
+        <SubmitError error={submitError || deleteError} />
+        <div className="mt-5 sm:mt-4 sm:flex justify-end">
+          {isEditMode && (
+            <div className="mr-auto">
+              <Button
+                variant="danger"
+                disabled={isLoading || isDeleting}
+                onClick={showPortalDelete}
+              >
+                Delete
+              </Button>
+            </div>
+          )}
+          <Button
+            variant="secondary"
             disabled={isLoading || isDeleting}
-            onClick={deletePortal}
+            onClick={onDone}
           >
-            Delete
-          </ButtonNG>
-        )}
-        <ButtonNG
-          variant="primary"
-          disabled={isLoading || isDeleting}
-          title={title}
-          type="submit"
-        >
-          Save
-        </ButtonNG>
-      </div>
-    </form>
+            Cancel
+          </Button>
+          <Button
+            variant="primary"
+            disabled={isLoading || isDeleting}
+            title={title}
+            type="submit"
+          >
+            {portal ? "Save" : "Create"}
+          </Button>
+        </div>
+      </form>
+      {isPortalDeleteShown && (
+        <ConfirmationModal
+          header="Delete portal"
+          message="Are you sure you want to delete this portal?"
+          onConfirm={deletePortal}
+          onCancel={hidePortalDelete}
+          confirmVariant="danger"
+        />
+      )}
+    </div>
   );
 };

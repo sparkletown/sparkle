@@ -55,6 +55,7 @@ export const UserStatusInput: React.FC<UserStatusInputProps> = ({
             className="AdminUserStatusInput__text"
             name={inputStatus}
             register={register}
+            label="Status name"
           />
           <input
             className="AdminUserStatusInput__color"
