@@ -39,6 +39,7 @@ export const Checkbox: React.FC<CheckboxProps> = ({
         <div className="flex items-center h-5">
           <input
             {...inputProps}
+            data-bem="AdminCheckbox__input"
             className="checked:bg-blue-500 indeterminate:bg-gray-300 focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
             disabled={disabled}
             type="checkbox"
