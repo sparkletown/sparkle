@@ -1,4 +1,6 @@
 import React, { useMemo } from "react";
+import { AdminRestrictedLoading } from "components/admin/AdminRestrictedLoading";
+import { AdminRestrictedMessage } from "components/admin/AdminRestrictedMessage";
 import { Header } from "components/admin/Header";
 import { HeaderButton } from "components/admin/HeaderButton";
 import { Section } from "components/admin/Section";
@@ -6,6 +8,7 @@ import { SectionHeading } from "components/admin/SectionHeading";
 import { SectionTitle } from "components/admin/SectionTitle";
 import { AdminLayout } from "components/layouts/AdminLayout";
 import { FullWidthLayout } from "components/layouts/FullWidthLayout";
+import { WithPermission } from "components/shared/WithPermission";
 import { uniq } from "lodash/fp";
 
 import { ADMIN_IA_WORLD_CREATE_URL } from "settings";
@@ -18,8 +21,6 @@ import { useOwnWorlds } from "hooks/worlds/useOwnWorlds";
 import { useWorlds } from "hooks/worlds/useWorlds";
 
 import { AdminShowcaseTitle } from "components/organisms/AdminVenueView/components/AdminShowcaseTitle";
-
-import { AdminRestricted } from "components/atoms/AdminRestricted";
 
 import { WorldsTable } from "./WorldsTable";
 
@@ -67,7 +68,11 @@ export const WorldsDashboard: React.FC<WorldsDashboardProps> = ({ userId }) => {
 
   return (
     <AdminLayout>
-      <AdminRestricted>
+      <WithPermission
+        check="super"
+        loading={<AdminRestrictedLoading />}
+        fallback={<AdminRestrictedMessage />}
+      >
         {hasWorlds ? (
           <>
             <Header title="Switch World" />
@@ -104,7 +109,7 @@ export const WorldsDashboard: React.FC<WorldsDashboardProps> = ({ userId }) => {
             {renderedWelcomePage}
           </FullWidthLayout>
         )}
-      </AdminRestricted>
+      </WithPermission>
     </AdminLayout>
   );
 };

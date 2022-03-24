@@ -14,9 +14,6 @@ export enum VenueTemplate {
   zoomroom = "zoomroom",
   experiment = "experiment",
 
-  /**
-   * @deprecated Legacy template is going to be removed soon, try VenueTemplate.viewingwindow instead?
-   */
   artpiece = "artpiece",
   /**
    * @deprecated Legacy template is going to be removed soon, try VenueTemplate.viewingwindow instead?

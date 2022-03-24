@@ -118,6 +118,7 @@ export const ButtonNG: React.FC<ButtonProps> = ({
   if (loading) {
     return (
       <button
+        data-bem="ButtonNG"
         ref={forwardRef}
         className={parentClasses}
         style={style}
@@ -138,6 +139,7 @@ export const ButtonNG: React.FC<ButtonProps> = ({
   if (isLink) {
     return (
       <Link
+        data-bem="ButtonNG"
         className={parentClasses}
         style={style}
         to={disabled ? "#" : linkTo}
@@ -158,6 +160,7 @@ export const ButtonNG: React.FC<ButtonProps> = ({
 
   return (
     <button
+      data-bem="ButtonNG"
       className={parentClasses}
       style={style}
       type={type}

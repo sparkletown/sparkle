@@ -5,14 +5,12 @@ import {
   UseFormSetValue,
   UseFormWatch,
 } from "react-hook-form";
-import classNames from "classnames";
 import { Input } from "components/attendee/Input";
 
 import { DISPLAY_NAME_MAX_CHAR_COUNT } from "settings";
 
 import { UserProfileModalFormData } from "types/profileModal";
 import { User } from "types/User";
-import { ContainerClassName } from "types/utility";
 
 import { WithId } from "utils/id";
 
@@ -20,7 +18,7 @@ import { ProfileModalAvatar } from "./ProfileModalAvatar";
 
 import styles from "./ProfileModalEditBasicInfo.module.scss";
 
-export interface ProfileModalEditBasicInfoProps extends ContainerClassName {
+export interface ProfileModalEditBasicInfoProps {
   user: WithId<User>;
   register: UseFormRegister<UserProfileModalFormData>;
   setValue: UseFormSetValue<UserProfileModalFormData>;
@@ -34,7 +32,6 @@ export const ProfileModalEditBasicInfo: React.FC<ProfileModalEditBasicInfoProps>
   setValue,
   watch,
   partyNameError,
-  containerClassName,
 }) => {
   const pictureUrl = watch?.("pictureUrl");
   const setPictureUrl = useCallback(
@@ -51,10 +48,8 @@ export const ProfileModalEditBasicInfo: React.FC<ProfileModalEditBasicInfoProps>
 
   return (
     <div
-      className={classNames(
-        styles.ProfileModalEditBasicInfo,
-        containerClassName
-      )}
+      data-bem="ProfileModalEditBasicInfo"
+      className={styles.ProfileModalEditBasicInfo}
     >
       <ProfileModalAvatar
         user={user}

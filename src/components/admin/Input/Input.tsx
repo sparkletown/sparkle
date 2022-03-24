@@ -1,5 +1,6 @@
 import React, { ReactNode } from "react";
 import {
+  FieldError,
   FieldErrors,
   FieldValues,
   RegisterOptions,
@@ -26,6 +27,9 @@ export interface InputProps
   rules?: RegisterOptions;
   description?: ReactNode | string;
   errors?: FieldErrors<FieldValues>;
+  // @debt we should use `errors` property, unless it's a nested validation object (see example in the ProfileModalEditLink)
+  // @see the conversation https://github.com/sparkletown/sparkle/pull/2931#discussion_r832017043
+  error?: FieldError;
   hidden?: boolean;
   label?: string;
 }
@@ -36,13 +40,14 @@ export const Input: React.FC<InputProps> = ({
   register,
   rules = ALWAYS_EMPTY_OBJECT,
   errors,
+  error: errorProp,
   hidden,
   description,
   required,
   label,
   ...inputProps
 }) => {
-  const error = get(errors, name);
+  const error = get(errors, name) ?? errorProp;
 
   const parentClasses = classNames("relative", {
     [TW.hidden]: hidden,
@@ -62,7 +67,7 @@ export const Input: React.FC<InputProps> = ({
       type="hidden"
     />
   ) : (
-    <div className="Input">
+    <div data-bem="Input">
       <div className={parentClasses}>
         {label && (
           <div className="block text-sm font-medium text-gray-700">{label}</div>
