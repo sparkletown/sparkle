@@ -19,6 +19,7 @@ export const COLLECTION_WORLDS = "worlds";
 export const COLLECTION_WORLD_EVENTS = "worldEvents";
 export const COLLECTION_SEATED_USERS = "seatedUsers";
 export const COLLECTION_SEATED_USERS_CHECKINS = "recentSeatedUsers";
+export const COLLECTION_RETUNABLE_MEDIA_ELEMENTS = "retunableMediaElements";
 
 // common search fields, please keep the list short and simple
 export const FIELD_HIDDEN = "isHidden";

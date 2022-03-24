@@ -29,6 +29,7 @@ export const Button: React.FC<ButtonProps> = ({
   border,
   unrounded = false,
   marginless = false,
+  disabled,
   ...rest
 }) => {
   const buttonClasses = classNames(CN.button, className, CN[variant], {
@@ -37,6 +38,7 @@ export const Button: React.FC<ButtonProps> = ({
     [CN.borderIntensive]: border === "intensive",
     [CN.borderRadiusNone]: unrounded,
     [CN.buttonMarginNone]: marginless,
+    [CN.disabled]: disabled,
   });
 
   return (
@@ -44,6 +46,7 @@ export const Button: React.FC<ButtonProps> = ({
       className={buttonClasses}
       onClick={onClick}
       ref={forwardRef}
+      disabled={disabled}
       {...rest}
     >
       {children}

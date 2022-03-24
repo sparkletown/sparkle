@@ -53,3 +53,9 @@
   background: transparent;
   backdrop-filter: none;
 }
+
+.disabled {
+  background-color: #b7a9d9;
+  color: #e7e7e7;
+  cursor: default;
+}
