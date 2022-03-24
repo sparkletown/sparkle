@@ -1,6 +1,7 @@
 import React from "react";
 import { useForm, useFormState } from "react-hook-form";
 import { useAsyncFn } from "react-use";
+import { InputField } from "components/attendee/InputField";
 
 import { MAX_TABLE_CAPACITY, MIN_TABLE_CAPACITY } from "settings";
 
@@ -13,7 +14,6 @@ import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams"
 import { Modal } from "components/molecules/Modal";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
-import { InputField } from "components/atoms/InputField";
 
 import "./EditTableTitleModal.scss";
 

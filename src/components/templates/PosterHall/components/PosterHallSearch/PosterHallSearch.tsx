@@ -1,9 +1,8 @@
 import React, { useCallback } from "react";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { InputField } from "components/attendee/InputField";
 
 import { ALWAYS_NOOP_FUNCTION } from "settings";
-
-import { InputField } from "components/atoms/InputField";
 
 import "./PosterHallSearch.scss";
 
