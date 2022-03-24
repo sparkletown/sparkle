@@ -188,7 +188,7 @@ export const ScreeningRoomVideoAddEditForm: React.FC<ScreeningRoomVideoAddEditFo
         register={register}
         imgUrl={video?.thumbnailSrc}
         error={errors?.thumbnailSrcUrl}
-        text="Change thumbnail"
+        buttonLabel="Change thumbnail"
       />
 
       <AdminInput

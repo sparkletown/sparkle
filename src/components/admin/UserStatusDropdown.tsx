@@ -1,12 +1,11 @@
 import React, { useEffect, useMemo } from "react";
+import { Dropdown } from "components/admin/Dropdown";
 
 import { STRING_NON_BREAKING_SPACE } from "settings";
 
 import { UserStatus } from "types/User";
 
 import { useVenueUserStatuses } from "hooks/useVenueUserStatuses";
-
-import { Dropdown } from "components/atoms/Dropdown";
 
 export interface UserStatusDropdownProps {
   userStatuses: UserStatus[];

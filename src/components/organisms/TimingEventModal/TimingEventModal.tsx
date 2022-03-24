@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm, useFormState } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button } from "components/admin/Button";
+import { Dropdown } from "components/admin/Dropdown";
 import { Input } from "components/admin/Input";
 import { Textarea } from "components/admin/Textarea";
 import dayjs from "dayjs";
@@ -24,8 +25,6 @@ import { useUser } from "hooks/useUser";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 import { Modal } from "components/molecules/Modal";
-
-import { Dropdown } from "components/atoms/Dropdown";
 
 import "./TimingEventModal.scss";
 

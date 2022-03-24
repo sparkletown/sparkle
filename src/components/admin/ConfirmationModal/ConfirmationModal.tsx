@@ -1,13 +1,9 @@
 import React, { useCallback, useState } from "react";
+import { Button, ButtonVariant } from "components/admin/Button";
 
 import { isTruthy } from "utils/types";
 
 import { Modal } from "components/molecules/Modal";
-
-import { ButtonNG } from "components/atoms/ButtonNG";
-import { ButtonVariant } from "components/atoms/ButtonNG/ButtonNG";
-
-import "./ConfirmationModal.scss";
 
 interface ConfirmationModalProps {
   show?: boolean;
@@ -51,14 +47,16 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 
   return (
     <Modal show={isShown} onHide={hide}>
-      <div className="ConfirmationModal">
+      <div data-bem="ConfirmationModal" className="flex flex-col items-center">
         {hasHeader && <h4>{header}</h4>}
-        <div className="ConfirmationModal__message">{message}</div>
-        <div className="ConfirmationModal__buttons">
-          <ButtonNG onClick={cancel}>{cancelBtnLabel}</ButtonNG>
-          <ButtonNG variant={confirmVariant} onClick={confirm}>
+        <div>{message}</div>
+        <div className="mt-4">
+          <Button onClick={cancel} variant="secondary">
+            {cancelBtnLabel}
+          </Button>
+          <Button variant={confirmVariant} onClick={confirm}>
             {saveBtnLabel}
-          </ButtonNG>
+          </Button>
         </div>
       </div>
     </Modal>

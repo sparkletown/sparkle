@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo } from "react";
+import { Dropdown } from "components/admin/Dropdown";
 import {
   Participant,
   VideoSource,
@@ -21,8 +22,6 @@ import { WithId } from "utils/id";
 
 import { useRefiDocument } from "hooks/fire/useRefiDocument";
 import { useProfileById } from "hooks/user/useProfileById";
-
-import { Dropdown } from "components/atoms/Dropdown";
 
 import styles from "./ExperimentalSpace.module.scss";
 
