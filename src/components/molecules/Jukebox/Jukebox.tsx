@@ -9,6 +9,7 @@ import React, {
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import classNames from "classnames";
+import { InputField } from "components/attendee/InputField";
 
 import { UserId } from "types/id";
 import { AnyVenue } from "types/venues";
@@ -21,7 +22,6 @@ import { useJukeboxChat } from "hooks/chats/jukebox/useJukeboxChat";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
-import { InputField } from "components/atoms/InputField";
 
 import "./Jukebox.scss";
 

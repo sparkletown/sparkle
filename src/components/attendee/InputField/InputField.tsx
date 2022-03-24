@@ -92,7 +92,7 @@ export const InputField: React.FC<InputFieldProps> = ({
 
   return (
     <div className={containerClassNames}>
-      <div className="InputField__wrapper">
+      <div className={styles.inputWrapper}>
         <input
           className={inputClassNames}
           {...register(name, rules)}

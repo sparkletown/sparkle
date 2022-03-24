@@ -1,7 +1,10 @@
 import React from "react";
+import { AdminRestrictedLoading } from "components/admin/AdminRestrictedLoading";
+import { AdminRestrictedMessage } from "components/admin/AdminRestrictedMessage";
 import { Header } from "components/admin/Header";
 import { WorldNav } from "components/admin/WorldNav";
 import { AdminLayout } from "components/layouts/AdminLayout";
+import { WithPermission } from "components/shared/WithPermission";
 
 import { ALWAYS_EMPTY_ARRAY } from "settings";
 
@@ -15,8 +18,6 @@ import { WorldEditorEntrancePanel } from "pages/WorldEditor/WorldEditorEntranceP
 import { WorldEditorGeneralPanel } from "pages/WorldEditor/WorldEditorGeneralPanel";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
-
-import { AdminRestricted } from "components/atoms/AdminRestricted";
 
 import "./WorldEditor.scss";
 
@@ -46,11 +47,15 @@ export const WorldEditor: React.FC = () => {
   return (
     <AdminLayout>
       <div className="WorldEditor">
-        <AdminRestricted>
+        <WithPermission
+          check="super"
+          loading={<AdminRestrictedLoading />}
+          fallback={<AdminRestrictedMessage />}
+        >
           <Header crumbtrail={crumbtrail} title={adminTitle} />
           {editMode && <WorldNav />}
           <WorldEditorPanel worldSlug={worldSlug} />
-        </AdminRestricted>
+        </WithPermission>
       </div>
     </AdminLayout>
   );

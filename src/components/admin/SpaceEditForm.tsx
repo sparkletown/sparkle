@@ -57,7 +57,6 @@ import { SubmitError } from "components/molecules/SubmitError";
 import { YourUrlDisplay } from "components/molecules/YourUrlDisplay";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
-import { InputField } from "components/atoms/InputField";
 import { PortalVisibility } from "components/atoms/PortalVisibility";
 import { SpacesDropdown } from "components/atoms/SpacesDropdown";
 
@@ -557,7 +556,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                   <div># Seats</div>
                   <div>Max seats</div>
 
-                  <InputField
+                  <Input
                     register={register}
                     name="numberOfSections"
                     type="number"

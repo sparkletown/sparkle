@@ -266,11 +266,11 @@ export const updateWorldScheduleSettings = async (
   )(await createFirestoreWorldScheduleInput(world));
 };
 
-export const addWorldAdmin = async (worldId: WorldId, userId: UserId) =>
+export const addWorldAdmins = async (worldId: WorldId, userIds: UserId[]) =>
   await httpsCallable(
     FIREBASE.functions,
-    "world-addWorldAdmin"
-  )({ worldId, userId });
+    "world-addWorldAdmins"
+  )({ worldId, userIds });
 
 export const removeWorldAdmin = async (worldId: WorldId, userId: UserId) => {
   return await httpsCallable(
