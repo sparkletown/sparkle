@@ -15,6 +15,7 @@ export enum VenueTemplate {
   experiment = "experiment",
 
   artpiece = "artpiece",
+  meetingroom = "meetingroom",
   /**
    * @deprecated Legacy template is going to be removed soon, try VenueTemplate.viewingwindow instead?
    */

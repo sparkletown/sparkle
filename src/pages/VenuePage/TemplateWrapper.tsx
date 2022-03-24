@@ -21,6 +21,7 @@ import { ExperimentalSpace } from "components/templates/ExperimentalSpace";
 import { ExternalRoom } from "components/templates/ExternalRoom";
 import { FireBarrel } from "components/templates/FireBarrel";
 import { JazzBar } from "components/templates/Jazzbar/JazzBar";
+import { MeetingRoom } from "components/templates/MeetingRoom";
 import { PartyMap } from "components/templates/PartyMap";
 import { PosterHall } from "components/templates/PosterHall";
 import { PosterPage } from "components/templates/PosterPage";
@@ -105,6 +106,10 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
 
     case VenueTemplate.screeningroom:
       template = <ScreeningRoom venue={venue} />;
+      break;
+
+    case VenueTemplate.meetingroom:
+      template = <MeetingRoom space={venue} />;
       break;
 
     case VenueTemplate.experiment:
