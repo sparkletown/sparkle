@@ -42,6 +42,7 @@ export const ScrollableWeekdays: React.FC<ScrollableWeekDaysProps> = ({
   const allRefs = useRef<RefObject<HTMLButtonElement>[]>(
     range(dayDifference).map(() => React.createRef())
   );
+
   const firstDayIntersect = useIntersection(allRefs?.current?.[0], {
     rootMargin: "0px",
   });

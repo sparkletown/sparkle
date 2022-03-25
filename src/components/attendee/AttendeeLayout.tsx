@@ -32,9 +32,9 @@ const _AttendeeLayout: React.FC<_AttendeeLayoutProps> = ({ userId }) => {
   const [backButtonSpace, setBackButtonSpace] = useState<SpaceWithId>();
 
   useEffect(() => {
-    document.documentElement.classList.add(styles.html);
+    document.documentElement.classList.add("AttendeeLayout", styles.html);
     return () => {
-      document.documentElement.classList.remove(styles.html);
+      document.documentElement.classList.remove("AttendeeLayout", styles.html);
     };
   }, []);
 
