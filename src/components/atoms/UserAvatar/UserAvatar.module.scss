@@ -2,6 +2,7 @@
 
 @each $sizeName, $sizePixels in layout.$avatarSizes {
   .avatarContainer__#{$sizeName} {
+    position: relative;
     width: $sizePixels;
     height: $sizePixels;
     flex-shrink: 0;
@@ -16,4 +17,6 @@
 .userAvatar {
   width: 100%;
   height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
 }

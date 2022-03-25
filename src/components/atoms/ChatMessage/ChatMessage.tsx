@@ -37,11 +37,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
 
       <div className={styles.chatMessageBody}>
         <ChatMessageInfo message={message} />
-        <div>
-          <div>
-            <RenderMarkdown text={text} allowHeadings={false} />
-          </div>
-        </div>
+        <RenderMarkdown text={text} allowHeadings={false} />
       </div>
     </div>
   );

@@ -1,9 +1,11 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import classNames from "classnames";
-import { isEqual } from "lodash";
+import { MiniProfile } from "components/attendee/MiniProfile";
+import { isEqual, uniqueId } from "lodash";
 
 import { DEFAULT_PARTY_NAME } from "settings";
 
+import { ElementId, UserId } from "types/id";
 import { Profile } from "types/User";
 import { ContainerClassName } from "types/utility";
 
@@ -14,7 +16,10 @@ import {
   ImageResizeOptions,
 } from "utils/image";
 
-import { useVenueUserStatuses } from "hooks/useVenueUserStatuses";
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
+import { useProfileModalControls } from "hooks/useProfileModalControls";
+
+import { UserAvatarStatus } from "./UserStatus";
 
 import styles from "./UserAvatar.module.scss";
 
@@ -30,6 +35,7 @@ export interface UserAvatarProps extends ContainerClassName {
   showStatus?: boolean;
   onClick?: () => void;
   size?: UserAvatarSize;
+  clickable?: boolean;
 }
 
 // @debt The avatar sizes are a duplicate of $avatar-sizes-map inside UserAvatar.module.scss
@@ -46,19 +52,11 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
   user,
   containerClassName,
   imageClassName,
-  onClick,
+  clickable = true,
   showStatus,
   size,
 }) => {
-  // @debt until temporarily disable is online functionality
-  const isOnline = false;
-
-  const {
-    userStatus,
-    venueUserStatuses,
-    isStatusEnabledForVenue,
-  } = useVenueUserStatuses(user);
-
+  const { worldSlug } = useSpaceParams();
   const { src: imageSrc, onError: onImageLoadError } = useMemo(
     () => determineAvatar({ user }),
     [user]
@@ -84,29 +82,34 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
     containerClassName
   );
 
-  const status = user?.status;
-
   const imageClasses = classNames(styles.userAvatar, imageClassName);
 
-  const statusIndicatorClasses = classNames("UserAvatar__status-indicator", {
-    "UserAvatar__status-indicator--online": isOnline,
-    [`UserAvatar__status-indicator--${status}`]: isOnline && status,
-    [`UserAvatar__status-indicator--${size}`]: size,
-  });
+  const {
+    hasSelectedProfile,
+    openUserProfileModal,
+    closeUserProfileModal,
+    selectedElementId,
+  } = useProfileModalControls();
 
-  const statusIndicatorStyles = useMemo(
-    () => ({ backgroundColor: userStatus.color }),
-    [userStatus.color]
-  );
+  const [elementId] = useState<ElementId>(uniqueId("UserAvatar-") as ElementId);
 
-  //'isStatusEnabledForVenue' checks if the user status is enabled from the venue config.
-  //'showStatus' is used to render this conditionally only in some of the screens.
-  const hasUserStatus =
-    isStatusEnabledForVenue &&
-    // @debt until temporarily disable is online functionality
-    // isOnline &&
-    showStatus &&
-    !!venueUserStatuses.length;
+  const onClick = useCallback(() => {
+    if (!clickable) return;
+
+    if (hasSelectedProfile && selectedElementId === elementId) {
+      closeUserProfileModal();
+    } else {
+      openUserProfileModal(user?.id as UserId, elementId);
+    }
+  }, [
+    clickable,
+    closeUserProfileModal,
+    elementId,
+    hasSelectedProfile,
+    openUserProfileModal,
+    selectedElementId,
+    user?.id,
+  ]);
 
   return (
     <div className={containerClasses}>
@@ -118,12 +121,11 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
         onError={onImageLoadError}
       />
 
-      {hasUserStatus && (
-        <span
-          className={statusIndicatorClasses}
-          style={statusIndicatorStyles}
-        />
+      {worldSlug && (
+        <UserAvatarStatus user={user} size={size} showStatus={showStatus} />
       )}
+
+      {clickable && <MiniProfile parentComponent={elementId} />}
     </div>
   );
 };

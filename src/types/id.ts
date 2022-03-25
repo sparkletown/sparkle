@@ -14,6 +14,7 @@ export type UserId = Branded<string, "UserId">;
 export type WorldId = Branded<string, "WorldId">;
 export type WorldEventId = Branded<string, "WorldEventId">;
 export type WorldSlug = Branded<string, "WorldSlug">;
+export type ElementId = Branded<string, "ElementId">;
 
 // complex ID and Slug types for pinpointing spaces
 export type SpaceIdLocation = { spaceId: SpaceId };

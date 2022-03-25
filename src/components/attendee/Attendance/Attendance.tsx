@@ -2,6 +2,8 @@ import React, { useRef } from "react";
 
 import { UserWithId } from "types/id";
 
+import { UserAvatar } from "components/atoms/UserAvatar";
+
 import CN from "./Attendance.module.scss";
 
 type AttendanceOptions = {
@@ -16,11 +18,11 @@ export const Attendance: React.FC<AttendanceOptions> = ({
   const containerRef = useRef(null);
 
   const renderedAvatars = usersSample?.map((user) => (
-    <div key={user.id} className={CN.Attendance__userAvatar}>
-      <div className={CN.Attendance__userAvatarImage}>
-        <img src={user.pictureUrl} alt={`Avatar of ${user.partyName}`} />
-      </div>
-    </div>
+    <UserAvatar
+      key={user.id}
+      containerClassName={CN.Attendance__userAvatar}
+      user={user}
+    />
   ));
 
   return (

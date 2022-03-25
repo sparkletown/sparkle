@@ -1,0 +1,7 @@
+@use "scss/attendee/font";
+@use "scss/attendee/theme";
+
+.general {
+  font-size: font.$size--sm;
+  color: theme.$badges-info;
+}
