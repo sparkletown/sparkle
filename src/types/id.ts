@@ -8,13 +8,13 @@ import { Branded } from "utils/types";
 
 // NOTE: add specific branded strings in alphabetical order
 export type DeferredAction = Branded<symbol, "DeferredAction">;
+export type ElementId = Branded<string, "ElementId">;
 export type SpaceId = Branded<string, "SpaceId">;
 export type SpaceSlug = Branded<string, "SpaceSlug">;
 export type UserId = Branded<string, "UserId">;
 export type WorldId = Branded<string, "WorldId">;
 export type WorldEventId = Branded<string, "WorldEventId">;
 export type WorldSlug = Branded<string, "WorldSlug">;
-export type ElementId = Branded<string, "ElementId">;
 
 // complex ID and Slug types for pinpointing spaces
 export type SpaceIdLocation = { spaceId: SpaceId };

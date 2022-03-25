@@ -1,7 +1,7 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo } from "react";
 import classNames from "classnames";
 import { MiniProfile } from "components/attendee/MiniProfile";
-import { isEqual, uniqueId } from "lodash";
+import { isEqual } from "lodash";
 
 import { DEFAULT_PARTY_NAME } from "settings";
 
@@ -15,6 +15,7 @@ import {
   getFirebaseStorageResizedImage,
   ImageResizeOptions,
 } from "utils/image";
+import { generateId } from "utils/string";
 
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
@@ -56,6 +57,8 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
   showStatus,
   size,
 }) => {
+  const elementId = useMemo(() => generateId("UserAvatar-") as ElementId, []);
+
   const { worldSlug } = useSpaceParams();
   const { src: imageSrc, onError: onImageLoadError } = useMemo(
     () => determineAvatar({ user }),
@@ -90,8 +93,6 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
     closeUserProfileModal,
     selectedElementId,
   } = useProfileModalControls();
-
-  const [elementId] = useState<ElementId>(uniqueId("UserAvatar-") as ElementId);
 
   const onClick = useCallback(() => {
     if (!clickable) return;

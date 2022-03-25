@@ -30,6 +30,7 @@ export const DefaultAvatars: React.FC<DefaultAvatarsProps> = ({
   } = useAsync(async () => {
     if (!worldId) return;
 
+    // @debt access to DB should be move out of components and into `src/api` and/or `src/hooks` layers
     const storageRef = firebase.storage().ref();
     const list = await storageRef.child(`/assets/avatars/${worldId}`).listAll();
 

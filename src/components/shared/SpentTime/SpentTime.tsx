@@ -19,7 +19,7 @@ import { isTruthy } from "utils/types";
 
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 
-import styles from "./SpentTime.module.scss";
+import classes from "./SpentTime.module.scss";
 
 interface SpentTimeProps {
   userId: UserId;
@@ -33,9 +33,9 @@ export const SpentTime: React.FC<SpentTimeProps> = ({ userId }) => {
 
   const firestore = useFirestore();
 
+  // @debt move firestore code from the component + check the logic if it can be updated
   const fetchAllVenues = useCallback(async () => {
-    const userSnapshot = await getUserRef(userId).get();
-    const visitsSnapshot = await userSnapshot.ref.collection("visits").get();
+    const visitsSnapshot = await getUserRef(userId).collection("visits").get();
 
     const visits: WithId<UserVisit>[] =
       visitsSnapshot.docs.map(
@@ -110,7 +110,7 @@ export const SpentTime: React.FC<SpentTimeProps> = ({ userId }) => {
 
   if (isLoading) {
     return (
-      <div data-bem="SpentTime--loading" className={styles.general}>
+      <div data-bem="SpentTime--loading" className={classes.general}>
         Loading...
       </div>
     );
@@ -121,7 +121,7 @@ export const SpentTime: React.FC<SpentTimeProps> = ({ userId }) => {
   }
 
   return (
-    <div data-bem="SpentTime" className={styles.general}>
+    <div data-bem="SpentTime" className={classes.general}>
       {visitHours > 1 ? visitHours : "< 1"} hours spent here
     </div>
   );

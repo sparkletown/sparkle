@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import { useHistory } from "react-router-dom";
+import { useAsyncFn } from "react-use";
 import { Card } from "components/attendee/Card";
 import { SpentTime } from "components/shared/SpentTime";
 import firebase from "firebase/compat/app";
@@ -19,7 +20,7 @@ import { MiniProfileModalLinks } from "./MiniProfileModalLinks";
 
 import styles from "./MiniProfileModal.module.scss";
 
-interface MiniProfileModalProps {
+export interface MiniProfileModalProps {
   profile: UserWithId;
   userId: UserId;
 }
@@ -40,7 +41,7 @@ export const MiniProfileModal: React.FC<MiniProfileModalProps> = ({
     closeUserProfileModal();
   }, [selectRecipientChat, profile, closeUserProfileModal]);
 
-  const logout = useCallback(async () => {
+  const [{ loading: isLoggingOut }, logout] = useAsyncFn(async () => {
     await firebase.auth().signOut();
     closeUserProfileModal();
 
@@ -48,16 +49,6 @@ export const MiniProfileModal: React.FC<MiniProfileModalProps> = ({
   }, [closeUserProfileModal, history, worldSlug, spaceSlug]);
 
   const isCurrentUser = useIsCurrentUser(profile.id);
-
-  const actionButton = isCurrentUser ? (
-    <Card.Button variant="danger" onClick={logout}>
-      Log Out
-    </Card.Button>
-  ) : (
-    <Card.Button variant="intensive" onClick={openChat}>
-      Send message
-    </Card.Button>
-  );
 
   return (
     <div data-bem="MiniProfileModal">
@@ -75,7 +66,15 @@ export const MiniProfileModal: React.FC<MiniProfileModalProps> = ({
           <SpentTime userId={profile.id} />
         </Card.Body>
 
-        {actionButton}
+        {isCurrentUser ? (
+          <Card.Button variant="danger" onClick={logout}>
+            {isLoggingOut ? "Logging Out..." : "Log Out"}
+          </Card.Button>
+        ) : (
+          <Card.Button variant="intensive" onClick={openChat}>
+            Send message
+          </Card.Button>
+        )}
       </Card>
     </div>
   );

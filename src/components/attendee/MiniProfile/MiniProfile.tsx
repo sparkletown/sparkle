@@ -12,7 +12,11 @@ export const MiniProfile: React.FC<MiniProfileProps> = ({
 }) => {
   const { selectedUserId, selectedElementId } = useProfileModalControls();
 
-  if (!(selectedElementId && selectedElementId === parentComponent)) {
+  if (
+    !selectedElementId ||
+    selectedElementId !== parentComponent ||
+    !selectedUserId
+  ) {
     return <></>;
   }
 

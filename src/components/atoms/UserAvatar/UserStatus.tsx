@@ -49,6 +49,10 @@ export const UserAvatarStatus: React.FC<UserAvatarStatusProps> = ({
   if (!hasUserStatus) return null;
 
   return (
-    <span className={statusIndicatorClasses} style={statusIndicatorStyles} />
+    <span
+      data-bem="UserAvatarStatus"
+      className={statusIndicatorClasses}
+      style={statusIndicatorStyles}
+    />
   );
 };
