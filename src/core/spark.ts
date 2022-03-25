@@ -6,10 +6,17 @@ import {
   BUILD_TAG,
 } from "secrets";
 
+import { createErrorCapture } from "utils/error";
+
 import { FIREBASE } from "./firebase";
 
 const logout = () =>
-  void FIREBASE.auth.signOut().then(console.log).catch(console.error);
+  void FIREBASE.auth.signOut().catch(
+    createErrorCapture({
+      message: "Sign out failed",
+      where: "SPARK.logout()",
+    })
+  );
 
 const version = () => ({
   sha1: BUILD_SHA1,
