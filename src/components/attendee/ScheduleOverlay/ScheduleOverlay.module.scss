@@ -113,3 +113,9 @@
   color: theme.$sparkle-disabled;
   pointer-events: none;
 }
+
+.eventName {
+  color: theme.$c-button-fg;
+  text-decoration: none;
+  margin-right: space.$sm;
+}

@@ -5,9 +5,9 @@ import {
   getUnixTime,
   isFuture,
   max,
-  millisecondsToSeconds,
   minutesToSeconds,
   secondsToMilliseconds,
+  startOfDay,
   startOfToday,
 } from "date-fns";
 
@@ -24,7 +24,6 @@ import { useSpaceEvents } from "./events";
 import { useRelatedVenues } from "./useRelatedVenues";
 
 const emptyRelatedEvents: WorldEvent[] = [];
-const minRangeValue = 0;
 const todaysDate = startOfToday();
 
 const useVenueScheduleEvents = ({
@@ -66,31 +65,26 @@ const useVenueScheduleEvents = ({
     ...liveAndFutureEvents.map((event) => event.startUtcSeconds)
   );
 
-  const firstLiveEvent = liveAndFutureEvents.find(
-    (event) => event.startUtcSeconds === liveEventsMinimalStartValue
-  );
-
-  const minDateUtcSeconds = useMemo(
-    () =>
-      firstLiveEvent ? getUnixTime(liveEventsMinimalStartValue) : minRangeValue,
-    [firstLiveEvent, liveEventsMinimalStartValue]
-  );
+  const minDateUtcSeconds = secondsToMilliseconds(liveEventsMinimalStartValue);
 
   const isMinDateWithinToday = isDateRangeStartWithinToday({
-    dateValue: secondsToMilliseconds(minDateUtcSeconds),
-    targetDateValue: millisecondsToSeconds(startOfToday().getTime()),
+    dateValue: secondsToMilliseconds(liveEventsMinimalStartValue),
+    targetDateValue: secondsToMilliseconds(
+      getUnixTime(startOfToday().getTime())
+    ),
   });
 
-  const firstRangeDateInSeconds = getUnixTime(
-    max([new Date(secondsToMilliseconds(minDateUtcSeconds)), todaysDate])
+  const firstRangeDateInSeconds = secondsToMilliseconds(
+    getUnixTime(max([minDateUtcSeconds, todaysDate.getTime()]))
   );
 
   const maxDate = useMemo(
     () =>
       Math.max(
-        ...liveAndFutureEvents.map(
-          (event) =>
+        ...liveAndFutureEvents.map((event) =>
+          secondsToMilliseconds(
             event.startUtcSeconds + minutesToSeconds(event.durationMinutes)
+          )
         ),
         // + 1 is needed to form a `daysInBetween` timeline and mitigate possible range error
         firstRangeDateInSeconds + 1
@@ -105,18 +99,15 @@ const useVenueScheduleEvents = ({
       : undefined;
 
   const daysInBetween = differenceInDays(
-    fromUnixTime(endScheduleDate || maxDate),
-    fromUnixTime(firstRangeDateInSeconds)
+    new Date(endScheduleDate || maxDate),
+    startOfDay(firstRangeDateInSeconds)
   );
 
   // +1 to include the latest day in the schedule (for example, there are events tomorrow and today -> tomorrow - today + 1 = 2 days)
   const dayDifference = daysInBetween + 1;
 
   const firstScheduleDate = useMemo(
-    () =>
-      isMinDateWithinToday
-        ? todaysDate
-        : new Date(secondsToMilliseconds(minDateUtcSeconds)),
+    () => (isMinDateWithinToday ? todaysDate : new Date(minDateUtcSeconds)),
     [isMinDateWithinToday, minDateUtcSeconds]
   );
 
