@@ -5,12 +5,14 @@ import firebase from "firebase/compat/app";
 
 import { SpaceSlug, WorldSlug } from "types/id";
 
-import { isDefined } from "utils/types";
+import { createErrorCapture } from "utils/error";
 import { enterSpace } from "utils/url";
 
-import { useUser } from "hooks/useUser";
+import { useUserId } from "hooks/user/useUserId";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
+
+import sparkleHeaderImage from "assets/images/sparkle-header.png";
 
 import "./Account.scss";
 
@@ -23,9 +25,9 @@ export const LoginWithCustomToken: React.FC<LoginCustomCodeProps> = () => {
     customToken?: string;
   }>();
 
-  const { user } = useUser();
+  const { userId } = useUserId();
 
-  const isLoggedInUser = isDefined(user);
+  const isLoggedInUser = !!userId;
 
   const { replace: replaceUrlUsingRouter } = useHistory();
 
@@ -39,12 +41,12 @@ export const LoginWithCustomToken: React.FC<LoginCustomCodeProps> = () => {
     await firebase
       .auth()
       .signInWithCustomToken(customToken)
-      // .catch((error) => {
-      //   // TODO: Handle this with Bugsnag or similar?
-      //   console.error(error);
-      //
-      //   throw error;
-      // });
+      .catch(
+        createErrorCapture({
+          message: "Sign in with custom token failed",
+          where: "LoginWithCustomToken",
+        })
+      )
       .then(() => {
         enterSpace(worldSlug, spaceSlug, {
           customOpenRelativeUrl: replaceUrlUsingRouter,
@@ -63,7 +65,7 @@ export const LoginWithCustomToken: React.FC<LoginCustomCodeProps> = () => {
   return (
     <div className="auth-container">
       <div className="logo-container">
-        <img src="/sparkle-header.png" alt="" width="100%" />
+        <img src={sparkleHeaderImage} alt="" width="100%" />
       </div>
 
       {error && <div>Error: {error.message}</div>}

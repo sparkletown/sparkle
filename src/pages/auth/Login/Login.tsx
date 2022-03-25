@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from "react";
 import { useAsync } from "react-use";
+import { Button } from "components/attendee/Button";
 
 import { fetchCustomAuthConfig } from "api/auth";
 
@@ -12,22 +13,21 @@ import { openUrl } from "utils/url";
 import { UseAnalyticsResult } from "hooks/useAnalytics";
 import { useSAMLSignIn } from "hooks/useSAMLSignIn";
 
-import { InitialForm } from "components/organisms/AuthenticationModal/InitialForm";
-import { LoginForm } from "components/organisms/AuthenticationModal/LoginForm";
-import { LoginFormData } from "components/organisms/AuthenticationModal/LoginForm/LoginForm";
-import { PasswordResetForm } from "components/organisms/AuthenticationModal/PasswordResetForm";
-import { RegisterForm } from "components/organisms/AuthenticationModal/RegisterForm";
+import { InitialForm } from "pages/auth/InitialForm";
+import { LoginForm, LoginFormData } from "pages/auth/LoginForm";
+import { PasswordResetForm } from "pages/auth/PasswordResetForm";
+import { RegisterForm } from "pages/auth/RegisterForm";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
 import SAMLLoginIcon from "assets/icons/saml-login-icon.png";
+import sparkleHeaderImage from "assets/images/sparkle-header.png";
 
-import styles from "./scss/Login.module.scss";
+import CN from "./Login.module.scss";
 
 export interface LoginProps {
   formType?: "initial" | "login" | "register" | "passwordReset";
   spaceId: SpaceId;
-  space: SpaceWithId;
   sovereignSpace?: SpaceWithId;
   analytics?: UseAnalyticsResult;
 }
@@ -35,7 +35,6 @@ export interface LoginProps {
 export const Login: React.FC<LoginProps> = ({
   formType = "initial",
   spaceId,
-  space,
   sovereignSpace,
   analytics,
 }) => {
@@ -88,17 +87,17 @@ export const Login: React.FC<LoginProps> = ({
   if (isCustomAuthConfigLoading) return <LoadingPage />;
 
   return (
-    <div className={styles.container}>
-      <div className={styles.login}>
-        <div className={styles.logoContainer}>
-          <img src="/sparkle-header.png" alt="" width="100%" />
+    <div data-bem="Login" className={CN.container}>
+      <div data-bem="Login__contents" className={CN.contents}>
+        <div data-bem="Login__logo" className={CN.logo}>
+          <img src={sparkleHeaderImage} alt="" width="100%" />
         </div>
-        <div className="auth-form-container">
+        <div>
           {hasAlternativeLogins && (
-            <div className="Login__login-box">
+            <div data-bem="Login__alternatives">
               <span>Quick log in with</span>
 
-              <button className="Login__alternative-logins">
+              <Button>
                 {hasCustomAuthConnect && (
                   <img
                     className="Login__quick-login-icon"
@@ -117,7 +116,7 @@ export const Login: React.FC<LoginProps> = ({
                     alt="SAML SSO login"
                   />
                 )}
-              </button>
+              </Button>
             </div>
           )}
           {formToDisplay === "initial" && (

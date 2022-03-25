@@ -1,5 +1,4 @@
 import React, { lazy, ReactNode } from "react";
-import { getAuth } from "firebase/auth";
 
 import { tracePromise } from "utils/performance";
 
@@ -12,7 +11,7 @@ import { LoadingPage } from "components/molecules/LoadingPage";
 
 const LoginWithWorldAndSpace = lazy(() =>
   tracePromise("AppRouter::lazy-import::Login", () =>
-    import("pages/Account/Login").then(({ Login }) => ({
+    import("pages/auth/Login").then(({ Login }) => ({
       default: Login,
     }))
   )
@@ -22,6 +21,9 @@ type LoginRestrictedProps = {
   loading?: "spinner" | "page" | ReactNode;
 };
 
+/**
+ * This is a simple check and "redirect" component, no styles, just logic
+ */
 export const LoginRestricted: React.FC<LoginRestrictedProps> = ({
   loading = null,
   children,
@@ -30,8 +32,6 @@ export const LoginRestricted: React.FC<LoginRestrictedProps> = ({
   const { userId, isLoading } = useUserId();
   const isAdmin = useAdminContextCheck();
 
-  // Simple check and "redirect" component, no styles, just logic
-
   if (isLoading) {
     if ("spinner" === loading) return <Loading />;
     if ("page" === loading) return <LoadingPage />;
@@ -39,21 +39,7 @@ export const LoginRestricted: React.FC<LoginRestrictedProps> = ({
   }
 
   if (userId) {
-    // @debt this component should only return the children, remove the logout button
-    return (
-      <>
-        <button
-          style={{
-            zIndex: 999,
-            position: "fixed",
-          }}
-          onClick={() => getAuth().signOut()}
-        >
-          LOG OUT
-        </button>
-        {children}
-      </>
-    );
+    return <>{children}</>;
   }
 
   if (spaceSlug && worldSlug) {

@@ -13,6 +13,9 @@ import { AppRouter } from "core/AppRouter";
 import { BugsnagErrorBoundary } from "core/BugsnagErrorBoundary";
 import { FIREBASE } from "core/firebase";
 import { activatePolyFills } from "core/polyfills";
+import { SPARK } from "core/spark";
+
+import { PLATFORM_BRAND_NAME } from "settings";
 
 import { store } from "store";
 
@@ -60,6 +63,14 @@ traceReactScheduler("initial render", window.performance.now(), () => {
   );
 
   render(element, document.getElementById("root"));
+
+  // NOTE, this message also makes sure the SPARK global is created at proper time
+  console.log(
+    "Welcome to",
+    PLATFORM_BRAND_NAME,
+    "Made with ❤️️, powered by ✨",
+    SPARK.version()
+  );
 });
 
 // If you want your app to work offline and load faster, you can change

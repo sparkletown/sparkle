@@ -2,7 +2,7 @@ import React, { FC } from "react";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 
-import "./InitialForm.scss";
+import CN from "./InitialForm.module.scss";
 
 interface InitialFormProps {
   displayLoginForm: () => void;
@@ -14,7 +14,7 @@ export const InitialForm: FC<InitialFormProps> = ({
   displayRegisterForm,
 }) => {
   return (
-    <div className="InitialForm">
+    <div data-bem="InitialForm" className={CN.container}>
       <ButtonNG variant="primary" onClick={displayRegisterForm}>
         Create your account
       </ButtonNG>
