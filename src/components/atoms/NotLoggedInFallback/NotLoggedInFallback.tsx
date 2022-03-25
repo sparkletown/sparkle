@@ -8,7 +8,7 @@ import { LoadingPage } from "components/molecules/LoadingPage";
 
 const Login = lazy(() =>
   tracePromise("VenuePage::lazy-import::Login", () =>
-    import("pages/Account/Login").then(({ Login }) => ({
+    import("pages/auth/Login").then(({ Login }) => ({
       default: Login,
     }))
   )

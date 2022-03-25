@@ -3,8 +3,7 @@ import firebase from "firebase/compat/app";
 import { ProfileLink, UserLocation } from "types/User";
 
 import { QuestionsFormData } from "pages/Account/ProfileQuestions";
-
-import { RegisterData } from "components/organisms/AuthenticationModal/RegisterForm/RegisterForm";
+import { RegisterData } from "pages/auth/RegisterForm/RegisterForm";
 
 import { CodeOfConductFormData } from "./CodeOfConduct";
 import { ProfileFormData } from "./Profile";
