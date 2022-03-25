@@ -19,7 +19,7 @@ import { isTruthy } from "utils/types";
 
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 
-import classes from "./SpentTime.module.scss";
+import CN from "./SpentTime.module.scss";
 
 interface SpentTimeProps {
   userId: UserId;
@@ -110,7 +110,7 @@ export const SpentTime: React.FC<SpentTimeProps> = ({ userId }) => {
 
   if (isLoading) {
     return (
-      <div data-bem="SpentTime--loading" className={classes.general}>
+      <div data-bem="SpentTime--loading" className={CN.general}>
         Loading...
       </div>
     );
@@ -121,7 +121,7 @@ export const SpentTime: React.FC<SpentTimeProps> = ({ userId }) => {
   }
 
   return (
-    <div data-bem="SpentTime" className={classes.general}>
+    <div data-bem="SpentTime" className={CN.general}>
       {visitHours > 1 ? visitHours : "< 1"} hours spent here
     </div>
   );

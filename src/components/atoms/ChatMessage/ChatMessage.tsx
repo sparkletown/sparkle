@@ -13,7 +13,7 @@ import { ChatMessageInfo } from "components/atoms/ChatMessageInfo";
 
 import { UserAvatar } from "../UserAvatar";
 
-import styles from "./ChatMessage.module.scss";
+import CN from "./ChatMessage.module.scss";
 export interface ChatMessageProps {
   message: WithId<MessageToDisplay>;
 }
@@ -22,20 +22,20 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
   const isMine = useIsCurrentUser(message.fromUser.id);
   const { text, fromUser } = message;
 
-  const rowClassnames = classNames(styles.chatMessageRow, {
-    [styles.chatMessageRow__isMine]: isMine,
+  const rowClassnames = classNames(CN.chatMessageRow, {
+    [CN.chatMessageRow__isMine]: isMine,
   });
 
   return (
     <div className={rowClassnames}>
-      <div className={styles.avatarSpacer} />
+      <div className={CN.avatarSpacer} />
       <UserAvatar
-        containerClassName={styles.avatarContainer}
+        containerClassName={CN.avatarContainer}
         user={fromUser}
         size="medium"
       />
 
-      <div className={styles.chatMessageBody}>
+      <div className={CN.chatMessageBody}>
         <ChatMessageInfo message={message} />
         <RenderMarkdown text={text} allowHeadings={false} />
       </div>

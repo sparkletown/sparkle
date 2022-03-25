@@ -9,7 +9,7 @@ import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams"
 
 import "firebase/storage";
 
-import styles from "./DefaultAvatars.module.scss";
+import CN from "./DefaultAvatars.module.scss";
 
 export interface DefaultAvatarsProps {
   onAvatarClick: (url: string) => void;
@@ -73,7 +73,7 @@ export const DefaultAvatars: React.FC<DefaultAvatarsProps> = ({
     (customAvatars !== undefined || isLoadingExternal !== undefined);
 
   return (
-    <div data-bem="DefaultAvatars" className={styles.defaultAvatars}>
+    <div data-bem="DefaultAvatars" className={CN.defaultAvatars}>
       {!isLoading && avatarImages}
     </div>
   );

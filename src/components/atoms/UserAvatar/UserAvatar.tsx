@@ -22,7 +22,7 @@ import { useProfileModalControls } from "hooks/useProfileModalControls";
 
 import { UserAvatarStatus } from "./UserStatus";
 
-import styles from "./UserAvatar.module.scss";
+import CN from "./UserAvatar.module.scss";
 
 export type UserAvatarSize = "small" | "medium" | "large" | "xlarge" | "full";
 
@@ -80,12 +80,12 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
   const sizeStyleName = `avatarContainer__${size}`;
 
   const containerClasses = classNames(
-    styles.avatarContainer,
-    size && styles[sizeStyleName],
+    CN.avatarContainer,
+    size && CN[sizeStyleName],
     containerClassName
   );
 
-  const imageClasses = classNames(styles.userAvatar, imageClassName);
+  const imageClasses = classNames(CN.userAvatar, imageClassName);
 
   const {
     hasSelectedProfile,

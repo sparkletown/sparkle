@@ -6,7 +6,7 @@ import { ProfileLink } from "types/User";
 import { getProfileModalLinkIcon } from "utils/profileModalLinkUtilities";
 import { externalUrlAdditionalProps } from "utils/url";
 
-import styles from "./MiniProfileModalLinks.module.scss";
+import CN from "./MiniProfileModalLinks.module.scss";
 
 interface MiniProfileModalLinksProps {
   profileLinks?: ProfileLink[];
@@ -23,7 +23,7 @@ export const MiniProfileModalLinks: React.FC<MiniProfileModalLinksProps> = ({
         return (
           <a key={link.url} href={link.url} {...externalUrlAdditionalProps}>
             <FontAwesomeIcon
-              className={styles.profileModalLink}
+              className={CN.profileModalLink}
               icon={linkIcon}
               size="sm"
             />

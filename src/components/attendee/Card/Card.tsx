@@ -4,7 +4,7 @@ import { ButtonProps } from "components/attendee/Button";
 import { CardBody } from "./CardBody";
 import { CardButton } from "./CardButton";
 
-import styles from "./Card.module.scss";
+import CN from "./Card.module.scss";
 
 type CardSize = "small";
 
@@ -17,7 +17,7 @@ export const Card: React.FC<CardProps> & {
   Body: React.FC;
 } = ({ children, size = "small" }) => {
   return (
-    <div data-bem="Card" className={cn(styles.card, styles[size])}>
+    <div data-bem="Card" className={cn(CN.card, CN[size])}>
       {children}
     </div>
   );

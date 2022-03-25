@@ -18,7 +18,7 @@ import { UserAvatar } from "components/atoms/UserAvatar";
 
 import { MiniProfileModalLinks } from "./MiniProfileModalLinks";
 
-import styles from "./MiniProfileModal.module.scss";
+import CN from "./MiniProfileModal.module.scss";
 
 export interface MiniProfileModalProps {
   profile: UserWithId;
@@ -54,10 +54,10 @@ export const MiniProfileModal: React.FC<MiniProfileModalProps> = ({
     <div data-bem="MiniProfileModal">
       <Card>
         <Card.Body>
-          <div className={styles.mainInfo}>
+          <div className={CN.mainInfo}>
             <UserAvatar user={profile} clickable={false} size="medium" />
 
-            <div className={styles.mainInfoText}>
+            <div className={CN.mainInfoText}>
               <span>{profile.partyName}</span>
               <MiniProfileModalLinks profileLinks={profile.profileLinks} />
             </div>
