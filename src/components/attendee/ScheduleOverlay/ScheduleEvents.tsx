@@ -115,7 +115,7 @@ export const ScheduleEvents: React.FC<ScheduleEventsProps> = ({
             eventStartTime({ event })
           )
         );
-        // console.log(event)
+
         const visitSpaceUrl = generateUrl({
           route: ATTENDEE_INSIDE_URL,
           required: ["worldSlug", "spaceSlug"],
