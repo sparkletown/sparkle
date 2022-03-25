@@ -14,8 +14,7 @@ import { UseAnalyticsResult } from "hooks/useAnalytics";
 import { useSAMLSignIn } from "hooks/useSAMLSignIn";
 
 import { InitialForm } from "pages/auth/InitialForm";
-import { LoginForm } from "pages/auth/LoginForm";
-import { LoginFormData } from "pages/auth/LoginForm/LoginForm";
+import { LoginForm, LoginFormData } from "pages/auth/LoginForm";
 import { PasswordResetForm } from "pages/auth/PasswordResetForm";
 import { RegisterForm } from "pages/auth/RegisterForm";
 

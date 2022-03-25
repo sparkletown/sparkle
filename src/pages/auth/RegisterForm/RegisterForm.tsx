@@ -29,7 +29,7 @@ import { useAnalytics } from "hooks/useAnalytics";
 import { useSocialSignIn } from "hooks/useSocialSignIn";
 
 import { updateUserPrivate } from "pages/Account/helpers";
-import { LoginFormData } from "pages/auth/LoginForm/LoginForm";
+import { LoginFormData } from "pages/auth/LoginForm";
 
 import { TicketCodeField } from "components/organisms/TicketCodeField";
 
