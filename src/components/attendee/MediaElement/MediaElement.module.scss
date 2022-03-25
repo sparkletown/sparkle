@@ -1,0 +1,87 @@
+@use "scss/attendee/space";
+@use "scss/attendee/breakpoint";
+@use "scss/attendee/effects/rounded";
+@use "scss/attendee/effects/atom";
+@use "scss/attendee/opacity";
+
+.componentMediaObject {
+  position: sticky;
+  top: 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  z-index: 10;
+  padding: space.empty(2) 0 0;
+  margin-top: space.empty(2);
+  margin-bottom: space.empty(4);
+  height: min-content;
+
+  &__fullWidth {
+    position: unset;
+  }
+}
+
+.video {
+  position: relative;
+  width: 100%;
+  height: auto;
+  max-width: 600px;
+  @media (min-width: breakpoint.$md) {
+    margin-left: space.empty(2);
+    transition: max-width 0.2s ease;
+  }
+
+  // This is needed to force the video to size correctly and so display
+  // @debt explore latest `aspect-ratio` solutions, @see https://web.dev/aspect-ratio/
+  &:before {
+    content: " ";
+    position: relative;
+    display: block;
+    width: 100%;
+    padding-bottom: 56.25%;
+  }
+
+  &__expanded {
+    max-width: breakpoint.$lg;
+  }
+
+  &__fullWidth {
+    // This will change as soon as the design team decide what "full width"
+    // actually means
+    max-width: 30vw;
+    margin-right: space.empty(2);
+  }
+}
+
+.iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  @include rounded.normal;
+  overflow: hidden;
+}
+
+.mediaControls {
+  display: none;
+  position: relative;
+  margin-top: space.empty(-1);
+  width: space.empty(2);
+  flex-direction: column;
+  justify-self: start;
+  margin-left: space.empty(0.25);
+  @media (min-width: breakpoint.$md) {
+    display: flex;
+  }
+  svg {
+    @include atom.icon;
+    opacity: opacity.$md;
+    @media (prefers-color-scheme: dark) {
+      filter: invert(1);
+    }
+    border-radius: 0;
+    width: space.empty(2);
+    position: relative;
+  }
+}

@@ -9,7 +9,9 @@ import React, {
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import classNames from "classnames";
+import { InputField } from "components/attendee/InputField";
 
+import { UserId } from "types/id";
 import { AnyVenue } from "types/venues";
 
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
@@ -20,7 +22,6 @@ import { useJukeboxChat } from "hooks/chats/jukebox/useJukeboxChat";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
-import { InputField } from "components/atoms/InputField";
 
 import "./Jukebox.scss";
 
@@ -92,7 +93,7 @@ export const Jukebox: React.FC<JukeboxTypeProps> = ({
           <div key={msg.id} className="Jukebox__chat-messages">
             <span
               className="Jukebox__chat-author button--a"
-              onClick={() => openUserProfileModal(msg.fromUser.id)}
+              onClick={() => openUserProfileModal(msg.fromUser.id as UserId)}
             >
               {msg.fromUser.partyName}
             </span>{" "}
@@ -108,9 +109,9 @@ export const Jukebox: React.FC<JukeboxTypeProps> = ({
 
   return (
     <>
-      <div className="Jukebox__container">
-        <div className="Jukebox__chat">
-          <span className="Jukebox__chat-messages--info">
+      <div data-bem="Jukebox__container">
+        <div data-bem="Jukebox__chat">
+          <span data-bem="Jukebox__chat-messages--info">
             JUKEBOX RULES: There’s no queue system. If you post up your link,
             it’ll play. Be courteous people, do not post a new link until the
             other one is finished!
@@ -119,7 +120,7 @@ export const Jukebox: React.FC<JukeboxTypeProps> = ({
           <div ref={messagesEndRef} />
         </div>
         <form
-          className="Jukebox__form"
+          data-bem="Jukebox__form"
           onSubmit={handleSubmit(sendMessageToChat)}
         >
           <InputField
@@ -132,7 +133,7 @@ export const Jukebox: React.FC<JukeboxTypeProps> = ({
             autoComplete="off"
           />
 
-          <div className="Jukebox__buttons">
+          <div data-bem="Jukebox__buttons">
             <ButtonNG
               aria-label="Send message"
               className={submitButtonClasses}

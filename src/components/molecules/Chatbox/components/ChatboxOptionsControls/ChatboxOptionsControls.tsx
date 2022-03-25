@@ -1,9 +1,9 @@
 import React, { useCallback, useMemo } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Dropdown } from "components/admin/Dropdown";
 
 import { ChatMessageOptions, ChatOptionType } from "types/chat";
 
-import { Dropdown } from "components/atoms/Dropdown";
 import { TextButton } from "components/atoms/TextButton";
 
 import "./ChatboxOptionsControls.scss";

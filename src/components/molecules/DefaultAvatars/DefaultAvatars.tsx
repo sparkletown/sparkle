@@ -5,27 +5,22 @@ import firebase from "firebase/compat/app";
 
 import { DEFAULT_AVATAR_LIST } from "settings";
 
-import { ContainerClassName } from "types/utility";
-
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import "firebase/storage";
 
 import styles from "./DefaultAvatars.module.scss";
 
-export interface DefaultAvatarsProps extends ContainerClassName {
+export interface DefaultAvatarsProps {
   onAvatarClick: (url: string) => void;
   isLoadingExternal?: boolean;
-  avatarClassName?: string;
   avatarPictureClassName?: string;
 }
 
 export const DefaultAvatars: React.FC<DefaultAvatarsProps> = ({
   onAvatarClick,
   isLoadingExternal,
-  avatarClassName,
   avatarPictureClassName,
-  containerClassName,
 }) => {
   const {
     sovereignVenueId,
@@ -61,36 +56,29 @@ export const DefaultAvatars: React.FC<DefaultAvatarsProps> = ({
   const avatarImages = useMemo(() => {
     return defaultAvatars.map((avatar, index) => (
       <button
+        data-bem="DefaultAvatars__preview-container"
         key={`${avatar}-${index}`}
-        className={classNames(
-          "DefaultAvatars__preview-container",
-          avatarClassName
-        )}
+        className="w-12 h-12 mr-1"
         onClick={(event) => uploadDefaultAvatar(event, avatar)}
         type="button"
       >
         <img
+          data-bem="DefaultAvatars__picture-preview"
           src={avatar}
-          className={classNames(
-            "DefaultAvatars__picture-preview profile-icon",
-            avatarPictureClassName
-          )}
+          className={classNames("profile-icon", avatarPictureClassName)}
           alt={`default avatar ${index}`}
         />
       </button>
     ));
-  }, [
-    avatarClassName,
-    avatarPictureClassName,
-    defaultAvatars,
-    uploadDefaultAvatar,
-  ]);
+  }, [avatarPictureClassName, defaultAvatars, uploadDefaultAvatar]);
 
   const isLoading =
     (isSovereignVenueLoading || isLoadingCustomAvatars) &&
     (customAvatars !== undefined || isLoadingExternal !== undefined);
 
   return (
-    <div className={styles.defaultAvatars}>{!isLoading && avatarImages}</div>
+    <div data-bem="DefaultAvatars" className={styles.defaultAvatars}>
+      {!isLoading && avatarImages}
+    </div>
   );
 };

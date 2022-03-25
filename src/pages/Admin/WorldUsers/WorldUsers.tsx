@@ -1,11 +1,14 @@
 import React, { useMemo } from "react";
 import { useForm } from "react-hook-form";
+import { AdminRestrictedLoading } from "components/admin/AdminRestrictedLoading";
+import { AdminRestrictedMessage } from "components/admin/AdminRestrictedMessage";
 import { Button } from "components/admin/Button";
 import { Header } from "components/admin/Header";
 import { Input } from "components/admin/Input";
 import { InviteAdminModal } from "components/admin/InviteAdminModal";
 import { WorldUserCard } from "components/admin/WorldUserCard";
 import { AdminLayout } from "components/layouts/AdminLayout";
+import { WithPermission } from "components/shared/WithPermission";
 import { includes } from "lodash";
 
 import { UserId, WorldId } from "types/id";
@@ -13,12 +16,10 @@ import { UserId, WorldId } from "types/id";
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useWorldSpaces } from "hooks/spaces/useWorldSpaces";
 import { useProfileByIds } from "hooks/user/useProfileByIds";
+import { useUserId } from "hooks/user/useUserId";
 import { useShowHide } from "hooks/useShowHide";
-import { useUser } from "hooks/useUser";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
-
-import { AdminRestricted } from "components/atoms/AdminRestricted";
 
 import * as TW from "./WorldUsers.tailwind";
 
@@ -29,7 +30,7 @@ export const WorldUsers: React.FC = () => {
     isLoading: isWorldLoading,
   } = useWorldAndSpaceByParams();
 
-  const { userId } = useUser();
+  const { userId } = useUserId();
 
   const {
     isShown: isShownInviteAdminModal,
@@ -85,7 +86,11 @@ export const WorldUsers: React.FC = () => {
 
   return (
     <AdminLayout>
-      <AdminRestricted>
+      <WithPermission
+        check="world"
+        loading={<AdminRestrictedLoading />}
+        fallback={<AdminRestrictedMessage />}
+      >
         <Header title="Users" />
         <div className={TW.content}>
           <div className={TW.panelHeader}>
@@ -136,7 +141,7 @@ export const WorldUsers: React.FC = () => {
             onHide={hideInviteAdminModal}
           />
         )}
-      </AdminRestricted>
+      </WithPermission>
     </AdminLayout>
   );
 };

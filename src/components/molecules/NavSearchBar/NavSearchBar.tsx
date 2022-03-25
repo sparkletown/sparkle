@@ -2,6 +2,7 @@ import React, { ChangeEvent, useCallback, useMemo, useState } from "react";
 import { faSearch, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
+import { InputField } from "components/attendee/InputField";
 
 import {
   ALWAYS_NOOP_FUNCTION,
@@ -13,6 +14,7 @@ import {
 } from "settings";
 
 import { AlgoliaSearchIndex } from "types/algolia";
+import { UserId } from "types/id";
 import { Room } from "types/rooms";
 
 import { isDefined, isTruthy } from "utils/types";
@@ -25,8 +27,6 @@ import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { PortalModal } from "components/templates/PartyMap/components/PortalModal";
 
 import { Loading } from "components/molecules/Loading";
-
-import { InputField } from "components/atoms/InputField";
 
 import { NavSearchResult } from "./NavSearchResult";
 
@@ -118,7 +118,7 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({
           title={hit?.partyName ?? DEFAULT_PARTY_NAME}
           user={userFields}
           onClick={() => {
-            openUserProfileModal(hit.objectID);
+            openUserProfileModal(hit.objectID as UserId);
             clearSearch();
           }}
         />
@@ -146,10 +146,13 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({
   );
 
   return (
-    <div className="NavSearchBar">
+    <div data-bem="NavSearchBar">
       <div className={navDropdownClassnames}>
-        <div className="NavSearchBar__nav-dropdown__title font-size--small">
-          <strong className="NavSearchBar__search-results-number">
+        <div
+          data-bem="NavSearchBar__nav-dropdown__title"
+          className="font-size--small"
+        >
+          <strong data-bem="NavSearchBar__search-results-number">
             {numberOfSearchResults}
           </strong>
           {STRING_SPACE}
@@ -159,7 +162,7 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({
         {isLoading ? (
           <Loading />
         ) : (
-          <div className="NavSearchBar__search-results">
+          <div data-bem="NavSearchBar__search-results">
             {foundPortals}
             {foundUsers}
           </div>

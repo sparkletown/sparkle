@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
-import { MediaPlayer } from "components/attendee/MediaPlayer";
+import { MediaElement } from "components/attendee/MediaElement";
 import { TableGrid } from "components/attendee/TableGrid";
-import { useBackgroundGradient } from "components/attendee/useBackgroundGradient";
 
 import { JAZZBAR_TABLES } from "settings";
 
@@ -22,8 +21,6 @@ interface JazzProps {
 export const JazzBar: React.FC<JazzProps> = ({ space }) => {
   const analytics = useAnalytics({ venue: space });
 
-  useBackgroundGradient();
-
   const jazzbarTables = space.config?.tables ?? JAZZBAR_TABLES;
 
   const { userWithId } = useUser();
@@ -39,7 +36,10 @@ export const JazzBar: React.FC<JazzProps> = ({ space }) => {
   return (
     <>
       {!space.hideVideo && (
-        <MediaPlayer url={space.iframeUrl} autoPlay={space.autoPlay || false} />
+        <MediaElement
+          url={space.iframeUrl}
+          autoPlay={space.autoPlay || false}
+        />
       )}
 
       <SpaceInfoText space={space} />

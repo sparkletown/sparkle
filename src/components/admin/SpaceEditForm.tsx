@@ -4,6 +4,13 @@ import { useAsyncFn } from "react-use";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Checkbox } from "components/admin/Checkbox";
 import { ImageInput } from "components/admin/ImageInput";
+import { Input } from "components/admin/Input";
+import { InputGroup } from "components/admin/InputGroup";
+import { PortalVisibility } from "components/admin/PortalVisibility";
+import { SidebarHeader } from "components/admin/SidebarHeader";
+import { SpacesDropdown } from "components/admin/SpacesDropdown";
+import { Textarea } from "components/admin/Textarea";
+import { Toggle } from "components/admin/Toggle";
 
 import {
   ADMIN_IA_SPACE_BASE_PARAM_URL,
@@ -56,14 +63,6 @@ import { SubmitError } from "components/molecules/SubmitError";
 import { YourUrlDisplay } from "components/molecules/YourUrlDisplay";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
-import { InputField } from "components/atoms/InputField";
-import { PortalVisibility } from "components/atoms/PortalVisibility";
-import { SpacesDropdown } from "components/atoms/SpacesDropdown";
-
-import { Input } from "./Input";
-import { InputGroup } from "./InputGroup";
-import { SidebarHeader } from "./SidebarHeader";
-import { Textarea } from "./Textarea";
 
 const HANDLED_ERRORS = [
   "name",
@@ -110,10 +109,11 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
       numberOfSections: space.sectionsCount ?? DEFAULT_SECTIONS_AMOUNT,
       roomVisibility: space.roomVisibility,
       zoomUrl: space?.zoomUrl ?? "",
-      bannerImage: undefined,
-      bannerImageUrl: space?.config?.landingPageConfig?.coverImageUrl ?? "",
       logoImage: undefined,
       logoImageUrl: space?.host?.icon ?? spaceLogoImage,
+      showContent: space.showContent ?? false,
+      backgroundImage: undefined,
+      backgroundImageUrl: space.backgroundImageUrl,
     }),
     [
       space.name,
@@ -132,9 +132,10 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
       space.parentId,
       space.sectionsCount,
       space.roomVisibility,
-      space.zoomUrl,
+      space?.zoomUrl,
       space?.host?.icon,
-      space?.config?.landingPageConfig?.coverImageUrl,
+      space.showContent,
+      space.backgroundImageUrl,
       spaceLogoImage,
     ]
   );
@@ -227,7 +228,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
 
   const changeBackgroundImageUrl = useCallback(
     (val: string) => {
-      setValue("bannerImageUrl", val, { shouldValidate: false });
+      setValue("backgroundImageUrl", val, { shouldValidate: false });
     },
     [setValue]
   );
@@ -304,16 +305,15 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
 
           <SidebarHeader>Appearance</SidebarHeader>
           <InputGroup
-            title="Upload a highlight image"
+            title="Upload a background image"
             subtitle="A plain 1920 x 1080px image works best."
             withLabel
           >
             <ImageInput
               onChange={changeBackgroundImageUrl}
-              name="bannerImage"
-              imgUrl={values.bannerImageUrl}
-              error={errors.bannerImageUrl}
-              // isInputHidden={!values.bannerImageUrl}
+              name="backgroundImage"
+              imgUrl={values.backgroundImageUrl}
+              error={errors.backgroundImageUrl}
               register={register}
               setValue={setValue}
             />
@@ -464,6 +464,51 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
               </>
             )}
 
+          {space.template === VenueTemplate.conversationspace && (
+            <div>
+              <Toggle
+                label="Show content"
+                register={register}
+                name="showContent"
+                checked={values.showContent}
+              />
+              <InputGroup title="Livestream URL" margin="medium">
+                <Input
+                  placeholder="Livestream or embed URL"
+                  register={register}
+                  name="iframeUrl"
+                  errors={errors}
+                  disabled={!values.showContent}
+                />
+                <Checkbox
+                  label="Autoplay"
+                  register={register}
+                  name="autoPlay"
+                  disabled={!values.showContent}
+                />
+              </InputGroup>
+              <Toggle
+                label="Show reactions"
+                register={register}
+                name="showReactions"
+                checked={values.showReactions}
+              />
+              <InputGroup margin="medium">
+                <Checkbox
+                  register={register}
+                  label="Audible"
+                  name="isReactionsMuted"
+                  disabled={isReactionsMutedDisabled}
+                />
+              </InputGroup>
+              <Toggle
+                label="Show shoutouts"
+                register={register}
+                name="showShoutouts"
+                checked={values.showShoutouts}
+              />
+            </div>
+          )}
           {space.template === VenueTemplate.auditorium && (
             <>
               <SidebarHeader>Extras</SidebarHeader>
@@ -510,7 +555,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                   <div># Seats</div>
                   <div>Max seats</div>
 
-                  <InputField
+                  <Input
                     register={register}
                     name="numberOfSections"
                     type="number"

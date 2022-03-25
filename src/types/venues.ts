@@ -33,6 +33,7 @@ export type GenericVenueTemplates = Exclude<
   | VenueTemplate.auditorium
   | VenueTemplate.viewingwindow
   | VenueTemplate.experiment
+  | VenueTemplate.artpiece
 >;
 
 // We shouldn't include 'Venue' here, that is what 'GenericVenue' is for (which correctly narrows the types; these should remain alphabetically sorted, except with GenericVenue at the top)
@@ -45,7 +46,8 @@ export type AnyVenue =
   | PartyMapVenue
   | PosterPageVenue
   | ViewingWindowVenue
-  | ExperimentalVenue;
+  | ExperimentalVenue
+  | ArtPieceVenue;
 
 // --- VENUE V2
 export interface Venue_v2 extends Venue_v2_Base, VenueAdvancedConfig {}
@@ -135,6 +137,7 @@ export interface BaseVenue {
   end_utc_seconds?: number;
   ticketUrl?: string;
   showReactions?: boolean;
+  showContent?: boolean;
   isReactionsMuted?: boolean;
   showShoutouts?: boolean;
   auditoriumColumns?: number;
@@ -154,6 +157,7 @@ export interface BaseVenue {
   enableJukebox?: boolean;
   requiresDateOfBirth?: boolean;
   showBadges?: boolean;
+  backgroundImageUrl?: string;
 }
 
 export interface GenericVenue extends BaseVenue {
@@ -203,6 +207,11 @@ export interface JazzbarVenue extends BaseVenue {
     icon: string;
   };
   enableJukebox?: boolean;
+}
+
+export interface ArtPieceVenue extends BaseVenue {
+  template: VenueTemplate.artpiece;
+  iframeUrl: string;
 }
 
 export interface ExperimentalVenue extends BaseVenue {

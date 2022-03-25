@@ -1,0 +1,13 @@
+.dropdownSelected {
+  mask-image: url(/assets/icons/checkmark-icon.svg);
+}
+
+.optionContainer {
+  &:hover {
+    span {
+      // @debt: we need another set of scss variables/styles for admin side to use in cases
+      // when tailwind is not enough
+      background-color: white;
+    }
+  }
+}

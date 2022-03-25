@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { faSearch, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { InputField } from "components/attendee/InputField";
 
 import {
   ALWAYS_NOOP_FUNCTION,
@@ -14,7 +15,6 @@ import { GenericVenue } from "types/venues";
 import { WithId } from "utils/id";
 
 import { ButtonOG } from "components/atoms/ButtonOG";
-import { InputField } from "components/atoms/InputField";
 import { PosterCategory } from "components/atoms/PosterCategory";
 
 import { ScreeningVideoPreview } from "./components/ScreeningVideoPreview";
