@@ -4,16 +4,19 @@ import { HttpResponse } from "firebase-admin/lib/utils/api-request";
 type SparkleErrorOptions = {
   message?: string;
   where?: string;
+  args?: unknown;
 };
 
 // NOTE: keep this one private as to only create subclasses for specific uses
 class SparkleError extends Error {
   readonly where?: string;
+  readonly args?: unknown;
 
   constructor(name?: string, options?: SparkleErrorOptions) {
     super(options?.message);
     this.name = name || "SparkleError";
     this.where = options?.where;
+    this.args = options?.args;
   }
 }
 
@@ -30,17 +33,18 @@ export class SparkleHookError extends SparkleError {
 }
 
 export class SparkleFetchError extends SparkleError {
-  readonly args: unknown;
-
-  constructor(options?: SparkleErrorOptions & { args: unknown }) {
+  constructor(options?: SparkleErrorOptions) {
     super("SparkleFetchError", options);
-    this.args = options?.args;
   }
 }
 
 export class SparkleAssertError extends SparkleError {
   constructor(options?: SparkleErrorOptions) {
-    super("SparkleAssertError", options);
+    const args = options?.args;
+    super(
+      "SparkleAssertError" + (args ? " (" + JSON.stringify(args) + ")" : ""),
+      options
+    );
   }
 }
 
