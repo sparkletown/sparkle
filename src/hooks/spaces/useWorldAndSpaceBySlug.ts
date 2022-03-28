@@ -38,6 +38,42 @@ type UseWorldAndSpaceBySlug = (options: {
   spaceId?: SpaceId;
 };
 
+type GenerateError = (options: {
+  isLoaded: boolean;
+  worldSlug?: WorldSlug;
+  spaceSlug?: SpaceSlug;
+  world?: WorldWithId;
+  space?: SpaceWithId;
+}) => SparkleHookError | undefined;
+
+const generateError: GenerateError = ({
+  isLoaded,
+  worldSlug,
+  spaceSlug,
+  world,
+  space,
+}) => {
+  if (!isLoaded) {
+    return undefined;
+  }
+
+  if (!world) {
+    return new SparkleHookError({
+      message: `World with the following slug: ${worldSlug} does not exist.`,
+      args: { worldSlug, spaceSlug },
+    });
+  }
+
+  if (!space) {
+    return new SparkleHookError({
+      message: `Space with the following slug: ${spaceSlug} does not exist.`,
+      args: { worldSlug, spaceSlug },
+    });
+  }
+
+  return undefined;
+};
+
 /**
  * Hook which will return the space when the slug is provided.
  * The intention is to be used on the client side, when the space slug is provided in the url.
@@ -79,7 +115,10 @@ export const useWorldAndSpaceBySlug: UseWorldAndSpaceBySlug = ({
   const space = matchingSpaces?.[0];
   const spaceId = space?.id;
 
-  if (worlds && worlds.length > 1) {
+  const isLoaded = isSpaceLoaded && isWorldLoaded;
+  const isLoading = !isLoaded;
+
+  if (isLoaded && worlds && worlds.length > 1) {
     Bugsnag.notify(
       `Multiple worlds have been found with the following slug: ${worldSlug}.`,
       (event) => {
@@ -92,7 +131,7 @@ export const useWorldAndSpaceBySlug: UseWorldAndSpaceBySlug = ({
     );
   }
 
-  if (matchingSpaces && matchingSpaces?.length > 1) {
+  if (isLoaded && matchingSpaces && matchingSpaces?.length > 1) {
     Bugsnag.notify(
       `Multiple spaces have been found with the following slug: ${spaceSlug}.`,
       (event) => {
@@ -107,18 +146,13 @@ export const useWorldAndSpaceBySlug: UseWorldAndSpaceBySlug = ({
   }
 
   return useMemo(() => {
-    const error = !world
-      ? new SparkleHookError({
-          message: `World with the following slug: ${worldSlug} does not exist.`,
-        })
-      : !space
-      ? new SparkleHookError({
-          message: `Space with the following slug: ${spaceSlug} does not exist.`,
-        })
-      : undefined;
-
-    const isLoaded = isSpaceLoaded && isWorldLoaded;
-    const isLoading = !isLoaded;
+    const error = generateError({
+      isLoaded,
+      world,
+      worldSlug,
+      space,
+      spaceSlug,
+    });
 
     return {
       space,
@@ -136,7 +170,7 @@ export const useWorldAndSpaceBySlug: UseWorldAndSpaceBySlug = ({
     spaceId,
     worldSlug,
     spaceSlug,
-    isWorldLoaded,
-    isSpaceLoaded,
+    isLoaded,
+    isLoading,
   ]);
 };
