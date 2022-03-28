@@ -25,8 +25,9 @@ export const TwilioTrackDisplay: React.FC<TwilioTrackDisplayProps> = ({
   const videoRef = useRef<HTMLVideoElement>(null);
   useEffect(() => {
     if (videoRef.current) {
+      const elForCleanup = videoRef.current;
       track.attach(videoRef.current);
-      return () => void track.detach();
+      return () => void track.detach(elForCleanup);
     }
   }, [track]);
   return <video className={classes} ref={videoRef} autoPlay />;
