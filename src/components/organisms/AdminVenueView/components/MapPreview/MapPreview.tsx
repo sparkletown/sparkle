@@ -47,9 +47,6 @@ export const MapPreview: React.FC<MapPreviewProps> = ({
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="MapPreview">
-        {hasMapBackground && (
-          <div className="MapPreview__header">{`Preview of your space’s map`}</div>
-        )}
         <VenueRoomsEditor
           interactive
           resizable
