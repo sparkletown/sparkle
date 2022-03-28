@@ -518,6 +518,22 @@ export const removeVenueOwner = async (venueId: string, ownerId: string) =>
     ownerId,
   });
 
+export const addSpaceOwnerBulk = async (
+  addedSpacesIds: string[],
+  removedSpacesIds: string[],
+  newOwnerId: string,
+  worldId: string
+) =>
+  await httpsCallable(
+    FIREBASE.functions,
+    "venue-addSpaceOwnerBulk"
+  )({
+    addedSpacesIds,
+    removedSpacesIds,
+    newOwnerId,
+    worldId,
+  });
+
 export const upsertScreeningRoomVideo = async (
   video: ScreeningRoomVideo,
   spaceId: string,

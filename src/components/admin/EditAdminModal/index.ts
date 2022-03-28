@@ -1,0 +1,1 @@
+export { EditAdminModal } from "./EditAdminModal";

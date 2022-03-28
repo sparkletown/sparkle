@@ -55,7 +55,9 @@ export const WorldUsers: React.FC = () => {
 
   const owners = world?.owners;
 
-  const { spaces } = useWorldSpaces({ worldId: worldId ?? ("" as WorldId) });
+  const { spaces: worldSpaces } = useWorldSpaces({
+    worldId: worldId ?? ("" as WorldId),
+  });
 
   const users = useProfileByIds({ userIds: owners as UserId[] });
 
@@ -66,7 +68,7 @@ export const WorldUsers: React.FC = () => {
   const userSpaces = filteredUsers?.map((user) => {
     return {
       user: user,
-      spaces: spaces.filter((space) =>
+      spaces: worldSpaces.filter((space) =>
         space.owners?.includes(user.id as string)
       ),
     };
@@ -129,6 +131,7 @@ export const WorldUsers: React.FC = () => {
                     userId={userId}
                     user={userSpace.user}
                     spaces={userSpace.spaces}
+                    worldSpaces={worldSpaces}
                   />
                 ))}
               </div>
