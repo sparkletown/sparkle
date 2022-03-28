@@ -31,50 +31,49 @@ export const RetunableMediaElement: React.FC<RetunableMediaElementProps> = ({
   const { localParticipant, remoteParticipants } = useVideoComms();
 
   const mediaElement = useMemo(() => {
-    if (settings.sourceType === RetunableMediaSource.embed) {
-      return <MediaElement url={settings.embedUrl} autoPlay={true} />;
-    } else if (settings.sourceType === RetunableMediaSource.notTuned) {
-      return <></>;
-    }
-    if (
-      settings.sourceType === RetunableMediaSource.screenshare ||
-      settings.sourceType === RetunableMediaSource.webcam
-    ) {
-      const allParticipants = [...remoteParticipants];
-      if (localParticipant) {
-        allParticipants.push(localParticipant);
-      }
-
-      const desiredSourceType =
-        settings.sourceType === RetunableMediaSource.screenshare
-          ? VideoSource.Screenshare
-          : VideoSource.Webcam;
-      const desiredUserId =
-        settings.sourceType === RetunableMediaSource.screenshare
-          ? settings.screenshareUserId
-          : settings.webcamUserId;
-
-      const participant = allParticipants.find(
-        (p) => p.sparkleId === desiredUserId
-      );
-      if (!participant) {
-        // TODO probably want to warn here
+    switch (settings.sourceType) {
+      case RetunableMediaSource.embed:
+        return <MediaElement url={settings.embedUrl} autoPlay={true} />;
+      case RetunableMediaSource.notTuned:
         return <></>;
-      }
+      case RetunableMediaSource.screenshare:
+      case RetunableMediaSource.webcam:
+        const allParticipants = [...remoteParticipants];
+        if (localParticipant) {
+          allParticipants.push(localParticipant);
+        }
 
-      const videoTrack = participant.videoTracks.find(
-        ({ sourceType }) => sourceType === desiredSourceType
-      );
+        const desiredSourceType =
+          settings.sourceType === RetunableMediaSource.screenshare
+            ? VideoSource.Screenshare
+            : VideoSource.Webcam;
+        const desiredUserId =
+          settings.sourceType === RetunableMediaSource.screenshare
+            ? settings.screenshareUserId
+            : settings.webcamUserId;
 
-      if (!videoTrack) {
-        // TODO probably want to warn here
-        return <></>;
-      }
+        const participant = allParticipants.find(
+          (p) => p.sparkleId === desiredUserId
+        );
+        if (!participant) {
+          // The participant hasn't been found. Likely cause is that they have
+          // left after sharing their screen - which is valid behaviour. Render
+          // nothing.
+          return <></>;
+        }
 
-      return <MediaElement track={videoTrack} autoPlay />;
+        const videoTrack = participant.videoTracks.find(
+          ({ sourceType }) => sourceType === desiredSourceType
+        );
+
+        if (!videoTrack) {
+          // Similar to the above, the user that shared their screen has probably
+          // left the call.
+          return <></>;
+        }
+
+        return <MediaElement track={videoTrack} autoPlay />;
     }
-    // TODO probably want to warn here
-    return <></>;
   }, [localParticipant, remoteParticipants, settings]);
 
   if (isLoading) {

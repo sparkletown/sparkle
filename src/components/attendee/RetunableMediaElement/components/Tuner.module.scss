@@ -2,7 +2,7 @@
 @use "scss/attendee/theme.scss";
 
 .tuner {
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: theme.$c-tuner-background-color;
   padding: space.empty(2);
   margin: 0 auto space.empty(1) auto;
   width: fit-content;
@@ -12,7 +12,7 @@
     display: grid;
     grid-template-columns: 1em auto;
     gap: 0.5em;
-    color: #fff;
+    color: theme.$c-tuner-text-color;
     margin-bottom: space.empty(1);
   }
 
@@ -20,14 +20,14 @@
   input[type="radio"] {
     appearance: none;
     /* For iOS < 15 to remove gradient background */
-    background-color: rgba(255, 255, 255, 0.16);
+    background-color: theme.$c-tuner-radio-button-background;
     /* Not removed via appearance */
     margin: 0;
 
     font: inherit;
     width: 1rem;
     height: 1rem;
-    border: 1px solid rgba(255, 255, 255, 0.4);
+    border: 1px solid theme.$c-tuner-radio-button-border;
     border-radius: 50%;
 
     margin-top: space.gap(2);
@@ -52,7 +52,7 @@
 }
 
 .divider {
-  background: rgba(255, 255, 255, 0.14);
+  background: theme.$c-tuner-divider-color;
   height: 1px;
   width: 100%;
   margin: space.empty(2) 0 space.empty(2) 0;
@@ -62,7 +62,7 @@
   cursor: pointer;
   position: absolute;
   right: space.empty(2);
-  color: #fff;
+  color: theme.$c-tuner-text-color;
   svg {
     margin-left: space.gap(2);
   }
