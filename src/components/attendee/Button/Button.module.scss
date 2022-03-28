@@ -55,7 +55,7 @@
 }
 
 .disabled {
-  background-color: #b7a9d9;
-  color: #e7e7e7;
+  background-color: theme.$c-button-disabled-background;
+  color: theme.$c-button-disabled-foreground;
   cursor: default;
 }

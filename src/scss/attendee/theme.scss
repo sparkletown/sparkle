@@ -34,6 +34,9 @@
   --profile-links-icons: rgb(89, 89, 89);
   --badges-info: rgb(80, 80, 80);
 
+  --button-disabled-background: rgb(183, 169, 217);
+  --button-disabled-foreground: rgb(231, 231, 231);
+
   @media (prefers-color-scheme: dark) {
     --default-text: rgb(255, 255, 255);
     --chat-input-background: rgb(60, 60, 60);
@@ -87,3 +90,6 @@ $c-light-text-on-dark: rgb(230, 230, 230);
 
 $profile-links-icons: var(--profile-links-icons);
 $badges-info: var(--badges-info);
+
+$c-button-disabled-background: var(--button-disabled-background);
+$c-button-disabled-foreground: var(--button-disabled-foreground);
