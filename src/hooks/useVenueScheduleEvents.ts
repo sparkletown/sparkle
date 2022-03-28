@@ -104,6 +104,7 @@ const useVenueScheduleEvents = ({
   );
 
   // +1 to include the latest day in the schedule (for example, there are events tomorrow and today -> tomorrow - today + 1 = 2 days)
+  // might be NaN, which we need to convert to 0
   const dayDifference = daysInBetween ? daysInBetween + 1 : 0;
 
   const firstScheduleDate = useMemo(
