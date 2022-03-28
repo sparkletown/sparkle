@@ -2,7 +2,7 @@ import { useCallback } from "react";
 
 import { updateUserProfileDataAction } from "store/actions/UserProfile";
 
-import { UserId } from "types/id";
+import { ElementId, UserId } from "types/id";
 
 import { userProfileSelector } from "utils/selectors";
 import { isDefined } from "utils/types";
@@ -12,13 +12,15 @@ import { useSelector } from "./useSelector";
 
 export const useProfileModalControls = () => {
   const dispatch = useDispatch();
-  const selectedUserId = useSelector(userProfileSelector);
+  const { userId: selectedUserId, elementId: selectedElementId } = useSelector(
+    userProfileSelector
+  );
 
   const hasSelectedProfile = isDefined(selectedUserId);
 
   const openUserProfileModal = useCallback(
-    (userId?: UserId) =>
-      userId && dispatch(updateUserProfileDataAction(userId)),
+    (userId?: UserId, elementId?: ElementId) =>
+      userId && dispatch(updateUserProfileDataAction(userId, elementId)),
     [dispatch]
   );
 
@@ -29,6 +31,7 @@ export const useProfileModalControls = () => {
 
   return {
     selectedUserId,
+    selectedElementId,
     hasSelectedProfile,
     openUserProfileModal,
     closeUserProfileModal,

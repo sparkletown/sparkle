@@ -21,3 +21,9 @@ $avatarSizes: (
   large: 504px,
   xlarge: 1000px,
 );
+
+// TODO: at the moment we have only one usage of card.
+// There might be other card sizes in the future, the list can be extended when needed.
+$cardSizes: (
+  small: 200px,
+);

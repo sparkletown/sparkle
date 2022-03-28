@@ -1,0 +1,10 @@
+@use "scss/attendee/space";
+
+.mainInfo {
+  display: flex;
+  flex: 1;
+}
+
+.mainInfoText {
+  margin-left: space.$sm;
+}

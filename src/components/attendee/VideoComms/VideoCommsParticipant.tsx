@@ -78,6 +78,7 @@ export const VideoCommsParticipant: React.FC<VideoCommsParticipantProps> = ({
           <UserAvatar
             containerClassName={styles.avatarContainer}
             user={profile}
+            clickable={false}
           />
         )}
 

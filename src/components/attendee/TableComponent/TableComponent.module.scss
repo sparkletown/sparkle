@@ -78,8 +78,6 @@
   width: space.empty(4);
   height: space.empty(4);
   border-radius: border.$radius--mx;
-  overflow: hidden;
-  display: flex;
 
   @media (min-width: breakpoint.$md) {
     width: space.empty(5);
