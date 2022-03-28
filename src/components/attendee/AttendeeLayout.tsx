@@ -7,7 +7,7 @@ import { withFallback } from "components/hocs/gate/withFallback";
 import { withRequired } from "components/hocs/gate/withRequired";
 import { compose } from "lodash/fp";
 
-import { POPOVER_CONTAINER_ID } from "settings";
+import { ATTENDEE_LAYOUT_CLASSNAME, POPOVER_CONTAINER_ID } from "settings";
 
 import { SpaceWithId } from "types/id";
 
@@ -32,9 +32,15 @@ const _AttendeeLayout: React.FC<_AttendeeLayoutProps> = ({ userId }) => {
   const [backButtonSpace, setBackButtonSpace] = useState<SpaceWithId>();
 
   useEffect(() => {
-    document.documentElement.classList.add("AttendeeLayout", styles.html);
+    document.documentElement.classList.add(
+      ATTENDEE_LAYOUT_CLASSNAME,
+      styles.html
+    );
     return () => {
-      document.documentElement.classList.remove("AttendeeLayout", styles.html);
+      document.documentElement.classList.remove(
+        ATTENDEE_LAYOUT_CLASSNAME,
+        styles.html
+      );
     };
   }, []);
 

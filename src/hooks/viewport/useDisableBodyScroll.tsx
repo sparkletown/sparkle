@@ -1,9 +1,11 @@
 import { useEffect } from "react";
 
+import { ATTENDEE_LAYOUT_CLASSNAME } from "settings";
+
 export const useDisableBodyScroll = (isOpen: boolean) => {
   useEffect(() => {
     const [layoutElement] = document.getElementsByClassName(
-      "AttendeeLayout"
+      ATTENDEE_LAYOUT_CLASSNAME
     ) as HTMLCollectionOf<HTMLElement>;
     if (isOpen) {
       layoutElement.style.overflow = "hidden";
