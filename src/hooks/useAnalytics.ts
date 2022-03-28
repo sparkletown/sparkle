@@ -40,7 +40,7 @@ export const setAnalyticsGroup = (groupKey: string, groupName: string) => {
 
 export const initAnalytics = (opts?: Object) => {
   if (!MIXPANEL_PROJECT_TOKEN) {
-    console.warn("Mixpanel is not set up correctly. The token is missing.");
+    console.info("Mixpanel is not set up correctly. The token is missing.");
     return;
   }
 
