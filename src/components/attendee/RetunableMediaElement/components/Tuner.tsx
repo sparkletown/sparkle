@@ -10,7 +10,7 @@ import { SpaceWithId } from "types/id";
 
 import { useUserId } from "hooks/user/useUserId";
 
-import { RetunableMediaSource } from "../types";
+import { RetunableMediaSource } from "../RetunableMediaElement.types";
 
 import styles from "./Tuner.module.scss";
 

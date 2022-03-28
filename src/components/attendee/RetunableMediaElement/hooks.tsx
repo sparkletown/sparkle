@@ -10,7 +10,7 @@ import {
   NotTunedSettings,
   RetunableMediaElementSettings,
   RetunableMediaSource,
-} from "./types";
+} from "./RetunableMediaElement.types";
 
 type UseRetunableMediaElement = (options: {
   spaceId: string;

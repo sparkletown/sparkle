@@ -1,4 +1,4 @@
-import { RetunableMediaElementSettings } from "components/attendee/RetunableMediaElement/types";
+import { RetunableMediaElementSettings } from "components/attendee/RetunableMediaElement/RetunableMediaElement.types";
 import firebase from "firebase/compat/app";
 
 import { COLLECTION_RETUNABLE_MEDIA_ELEMENTS } from "settings";

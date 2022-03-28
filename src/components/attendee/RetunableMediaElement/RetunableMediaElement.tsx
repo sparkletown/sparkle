@@ -9,7 +9,7 @@ import { VideoSource } from "../VideoComms/types";
 import { TuneBanner } from "./components/TuneBanner";
 import { Tuner } from "./components/Tuner";
 import { useRetunableMediaElement } from "./hooks";
-import { RetunableMediaSource } from "./types";
+import { RetunableMediaSource } from "./RetunableMediaElement.types";
 
 import styles from "./RetunableMediaElement.module.scss";
 
