@@ -1,9 +1,11 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import classNames from "classnames";
+import { MiniProfile } from "components/attendee/MiniProfile";
 import { isEqual } from "lodash";
 
 import { DEFAULT_PARTY_NAME } from "settings";
 
+import { ElementId, UserId } from "types/id";
 import { Profile } from "types/User";
 import { ContainerClassName } from "types/utility";
 
@@ -13,10 +15,14 @@ import {
   getFirebaseStorageResizedImage,
   ImageResizeOptions,
 } from "utils/image";
+import { generateId } from "utils/string";
 
-import { useVenueUserStatuses } from "hooks/useVenueUserStatuses";
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
+import { useProfileModalControls } from "hooks/useProfileModalControls";
 
-import styles from "./UserAvatar.module.scss";
+import { UserAvatarStatus } from "./UserStatus";
+
+import CN from "./UserAvatar.module.scss";
 
 export type UserAvatarSize = "small" | "medium" | "large" | "xlarge" | "full";
 
@@ -30,6 +36,7 @@ export interface UserAvatarProps extends ContainerClassName {
   showStatus?: boolean;
   onClick?: () => void;
   size?: UserAvatarSize;
+  clickable?: boolean;
 }
 
 // @debt The avatar sizes are a duplicate of $avatar-sizes-map inside UserAvatar.module.scss
@@ -46,19 +53,13 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
   user,
   containerClassName,
   imageClassName,
-  onClick,
+  clickable = true,
   showStatus,
   size,
 }) => {
-  // @debt until temporarily disable is online functionality
-  const isOnline = false;
+  const elementId = useMemo(() => generateId("UserAvatar-") as ElementId, []);
 
-  const {
-    userStatus,
-    venueUserStatuses,
-    isStatusEnabledForVenue,
-  } = useVenueUserStatuses(user);
-
+  const { worldSlug } = useSpaceParams();
   const { src: imageSrc, onError: onImageLoadError } = useMemo(
     () => determineAvatar({ user }),
     [user]
@@ -79,34 +80,37 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
   const sizeStyleName = `avatarContainer__${size}`;
 
   const containerClasses = classNames(
-    styles.avatarContainer,
-    size && styles[sizeStyleName],
+    CN.avatarContainer,
+    size && CN[sizeStyleName],
     containerClassName
   );
 
-  const status = user?.status;
+  const imageClasses = classNames(CN.userAvatar, imageClassName);
 
-  const imageClasses = classNames(styles.userAvatar, imageClassName);
+  const {
+    hasSelectedProfile,
+    openUserProfileModal,
+    closeUserProfileModal,
+    selectedElementId,
+  } = useProfileModalControls();
 
-  const statusIndicatorClasses = classNames("UserAvatar__status-indicator", {
-    "UserAvatar__status-indicator--online": isOnline,
-    [`UserAvatar__status-indicator--${status}`]: isOnline && status,
-    [`UserAvatar__status-indicator--${size}`]: size,
-  });
+  const onClick = useCallback(() => {
+    if (!clickable) return;
 
-  const statusIndicatorStyles = useMemo(
-    () => ({ backgroundColor: userStatus.color }),
-    [userStatus.color]
-  );
-
-  //'isStatusEnabledForVenue' checks if the user status is enabled from the venue config.
-  //'showStatus' is used to render this conditionally only in some of the screens.
-  const hasUserStatus =
-    isStatusEnabledForVenue &&
-    // @debt until temporarily disable is online functionality
-    // isOnline &&
-    showStatus &&
-    !!venueUserStatuses.length;
+    if (hasSelectedProfile && selectedElementId === elementId) {
+      closeUserProfileModal();
+    } else {
+      openUserProfileModal(user?.id as UserId, elementId);
+    }
+  }, [
+    clickable,
+    closeUserProfileModal,
+    elementId,
+    hasSelectedProfile,
+    openUserProfileModal,
+    selectedElementId,
+    user?.id,
+  ]);
 
   return (
     <div className={containerClasses}>
@@ -118,12 +122,11 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
         onError={onImageLoadError}
       />
 
-      {hasUserStatus && (
-        <span
-          className={statusIndicatorClasses}
-          style={statusIndicatorStyles}
-        />
+      {worldSlug && (
+        <UserAvatarStatus user={user} size={size} showStatus={showStatus} />
       )}
+
+      {clickable && <MiniProfile parentComponent={elementId} />}
     </div>
   );
 };

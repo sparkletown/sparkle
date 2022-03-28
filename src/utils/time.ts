@@ -14,7 +14,7 @@ import {
   isToday,
   isTomorrow,
   isYesterday,
-  max,
+  min,
   startOfDay,
   startOfToday,
   subDays,
@@ -286,9 +286,7 @@ export const isDateRangeStartWithinToday = ({
 }: {
   dateValue: number;
   targetDateValue: number;
-}) => {
-  return max([dateValue, targetDateValue]) <= startOfToday();
-};
+}) => min([dateValue, targetDateValue]) <= startOfToday();
 
 export type ConvertDateFromUtcSecondsResults = {
   date: Date;

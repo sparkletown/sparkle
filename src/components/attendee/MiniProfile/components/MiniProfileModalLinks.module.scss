@@ -1,0 +1,10 @@
+@use "scss/attendee/font";
+@use "scss/attendee/space";
+@use "scss/attendee/theme";
+
+.profileModalLink {
+  margin-right: space.$sm;
+  margin-top: space.$xs;
+  font-size: font.$size--lg;
+  color: theme.$profile-links-icons;
+}

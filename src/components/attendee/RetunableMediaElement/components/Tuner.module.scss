@@ -1,0 +1,78 @@
+@use "scss/attendee/space.scss";
+@use "scss/attendee/theme.scss";
+
+$radio-button-container-size: 14px;
+$radio-button-size: 9px;
+
+.tuner {
+  background-color: theme.$c-tuner-background-color;
+  padding: space.empty(2);
+  margin: 0 auto space.empty(1) auto;
+  width: fit-content;
+  position: relative;
+
+  label {
+    display: grid;
+    grid-template-columns: 1em auto;
+    gap: space.gap(3);
+    color: theme.$c-tuner-text-color;
+    margin-bottom: space.empty(1);
+  }
+
+  // Custom input styling from https://moderncss.dev/pure-css-custom-styled-radio-buttons/
+  input[type="radio"] {
+    appearance: none;
+    /* For iOS < 15 to remove gradient background */
+    background-color: theme.$c-tuner-radio-button-background;
+    /* Not removed via appearance */
+    margin: 0;
+
+    font: inherit;
+    width: $radio-button-container-size;
+    height: $radio-button-container-size;
+    border: 1px solid theme.$c-tuner-radio-button-border;
+    border-radius: 50%;
+
+    margin-top: space.gap(2);
+    margin-right: space.gap(7);
+
+    display: grid;
+    place-content: center;
+  }
+
+  input[type="radio"]::before {
+    content: "";
+    width: $radio-button-size;
+    height: $radio-button-size;
+    border-radius: 50%;
+    transform: scale(0);
+    box-shadow: inset 1em 1em var(--sparkle--bg);
+  }
+
+  input[type="radio"]:checked::before {
+    transform: scale(1);
+  }
+}
+
+.divider {
+  background: theme.$c-tuner-divider-color;
+  height: 1px;
+  width: 100%;
+  margin: space.empty(2) 0 space.empty(2) 0;
+}
+
+.close {
+  cursor: pointer;
+  position: absolute;
+  right: space.empty(2);
+  color: theme.$c-tuner-text-color;
+  svg {
+    margin-left: space.gap(2);
+  }
+}
+
+.endControls {
+  display: flex;
+  flex-direction: row-reverse;
+  gap: space.gap(5);
+}

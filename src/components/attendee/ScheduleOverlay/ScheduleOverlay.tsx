@@ -2,7 +2,7 @@ import React, { useMemo, useState } from "react";
 import { Toggler } from "components/attendee/Toggler";
 import { fromUnixTime, isToday, startOfDay, startOfToday } from "date-fns";
 
-import { ALWAYS_EMPTY_OBJECT } from "settings";
+import { ALWAYS_EMPTY_OBJECT, WORLD_TAXON } from "settings";
 
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useShowHide } from "hooks/useShowHide";
@@ -20,7 +20,7 @@ import CN from "./ScheduleOverlay.module.scss";
 const minWeekDaysScrollValue = 8;
 
 export const ScheduleOverlay: React.FC = () => {
-  const { space } = useWorldAndSpaceByParams();
+  const { world } = useWorldAndSpaceByParams();
   const { userWithId } = useUser();
   const userEventIds =
     userWithId?.myPersonalizedSchedule ?? ALWAYS_EMPTY_OBJECT;
@@ -52,7 +52,7 @@ export const ScheduleOverlay: React.FC = () => {
   return (
     <div className={CN.scheduleOverlayWrapper}>
       <div className={CN.scheduleOverlayHeader}>
-        {space?.name || "Space"} schedule
+        {world?.name || WORLD_TAXON.title} schedule
       </div>
       <Toggler
         containerClassName={CN.scheduleOverlayButton}

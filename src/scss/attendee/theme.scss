@@ -21,6 +21,8 @@
   --button-fg: rgb(255, 255, 255);
   --button-bg: rgb(99, 42, 199);
 
+  --danger-bg: rgb(237, 33, 37);
+
   --overlay-fg: rgb(255, 255, 255);
   --overlay-bg: rgba(99, 42, 199, 0.7);
 
@@ -28,6 +30,12 @@
   --error-border: #ed2326;
 
   --toggler-off-color: rgba(255, 255, 255, 0.3);
+
+  --profile-links-icons: rgb(89, 89, 89);
+  --badges-info: rgb(80, 80, 80);
+
+  --button-disabled-background: rgb(183, 169, 217);
+  --button-disabled-foreground: rgb(231, 231, 231);
 
   @media (prefers-color-scheme: dark) {
     --default-text: rgb(255, 255, 255);
@@ -60,6 +68,8 @@ $c-color-glass-panel-background: var(--color-glass-panel-background);
 $c-button-fg: var(--button-fg);
 $c-button-bg: var(--button-bg);
 
+$c-danger-bg: var(--danger-bg);
+
 $c-overlay-fg: var(--overlay-fg);
 $c-overlay-bg: var(--overlay-bg);
 
@@ -77,3 +87,15 @@ $light--aux-text: rgba(128, 128, 128);
 $c-chat-input-background: var(--chat-input-background);
 
 $c-light-text-on-dark: rgb(230, 230, 230);
+
+$profile-links-icons: var(--profile-links-icons);
+$badges-info: var(--badges-info);
+
+$c-button-disabled-background: var(--button-disabled-background);
+$c-button-disabled-foreground: var(--button-disabled-foreground);
+
+$c-tuner-background-color: rgba(0, 0, 0, 0.3);
+$c-tuner-text-color: rgb(255, 255, 255);
+$c-tuner-radio-button-background: rgba(255, 255, 255, 0.16);
+$c-tuner-radio-button-border: rgba(255, 255, 255, 0.4);
+$c-tuner-divider-color: rgba(255, 255, 255, 0.14);

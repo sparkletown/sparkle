@@ -9,6 +9,13 @@ export type TAXON = Readonly<{
   upper: string;
 }>;
 
+export const WORLD_TAXON: TAXON = {
+  capital: "World",
+  title: "World",
+  lower: "world",
+  upper: "WORLD",
+};
+
 export const SPACE_TAXON: TAXON = {
   capital: "Space",
   title: "Space",

@@ -9,7 +9,7 @@ import { UserId, UserWithId } from "types/id";
 import { generateAttendeeSpaceLandingUrl } from "utils/url";
 
 import { useChatSidebarControls } from "hooks/chats/util/useChatSidebarControls";
-import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useIsCurrentUser } from "hooks/useIsCurrentUser";
 import { useShowHide } from "hooks/useShowHide";
 
@@ -27,7 +27,7 @@ export const UserProfileModalBody: React.FC<UserProfileModalBodyProps> = ({
   profile,
   closeUserProfileModal,
 }) => {
-  const { worldSlug, spaceSlug } = useWorldAndSpaceByParams();
+  const { worldSlug, spaceSlug } = useSpaceParams();
   const history = useHistory();
   const isCurrentUser = useIsCurrentUser(userId);
 
