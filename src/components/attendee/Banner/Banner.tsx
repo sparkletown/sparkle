@@ -4,6 +4,8 @@ import { Button } from "components/attendee/Button";
 
 import { Banner as TBanner } from "types/banner";
 
+import { openUrl } from "utils/url";
+
 import { useShowHide } from "hooks/useShowHide";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
@@ -45,7 +47,7 @@ export const Banner: React.FC<BannerProps> = ({
   const goToButtonDestination = useCallback(() => {
     if (!banner.buttonUrl) return;
 
-    openUrlUsingRouter(banner.buttonUrl);
+    openUrl(banner.buttonUrl, { customOpenRelativeUrl: openUrlUsingRouter });
   }, [openUrlUsingRouter, banner.buttonUrl]);
 
   if (!isBannerFullScreen || !isBannerShown) return null;
