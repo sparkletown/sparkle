@@ -4,7 +4,7 @@ import { withWorldOrSpace } from "components/hocs/db/withWorldOrSpace";
 import { withFallback } from "components/hocs/gate/withFallback";
 import { compose } from "lodash/fp";
 
-import { Login } from "pages/Account/Login";
+import { Login } from "pages/auth/Login";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 

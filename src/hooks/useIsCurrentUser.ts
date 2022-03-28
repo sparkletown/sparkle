@@ -1,7 +1,7 @@
-import { useUser } from "./useUser";
+import { useUserId } from "./user/useUserId";
 
 export const useIsCurrentUser = (otherUserId?: string) => {
-  const { userId } = useUser();
+  const { userId } = useUserId();
 
   return otherUserId === userId;
 };

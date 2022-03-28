@@ -1,11 +1,10 @@
 import React from "react";
+import { SpentTime } from "components/shared/SpentTime";
 
 import { UserWithId } from "types/id";
 
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useProfileQuestions } from "hooks/useProfileQuestions";
-
-import { Badges } from "components/organisms/Badges";
 
 import { ProfileModalButtons } from "./buttons/ProfileModalButtons";
 import { ProfileModalBasicInfo } from "./header/ProfileModalBasicInfo";
@@ -25,7 +24,7 @@ export const ProfileModalContent: React.FC<ProfileModalContentProps> = ({
   onEditMode,
   onModalClose,
 }) => {
-  const { worldId, space } = useWorldAndSpaceByParams();
+  const { worldId } = useWorldAndSpaceByParams();
   const { questions, answers } = useProfileQuestions(user, worldId);
 
   return (
@@ -35,7 +34,7 @@ export const ProfileModalContent: React.FC<ProfileModalContentProps> = ({
           <ProfileModalBasicInfo user={user} />
           <ProfileModalQuestions questions={questions} answers={answers} />
           <ProfileModalLinks user={user} />
-          {space && <Badges user={user} currentVenue={space} />}
+          <SpentTime userId={user.id} />
         </div>
       </div>
 

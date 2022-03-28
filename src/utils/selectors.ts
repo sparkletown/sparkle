@@ -1,7 +1,8 @@
 import { SpaceInfoItem } from "settings";
 
+import { UserProfileState } from "store/reducers/UserProfile";
+
 import { ChatSettings } from "types/chat";
-import { UserId } from "types/id";
 import { SparkleSelector } from "types/SparkleSelector";
 import { WorldGeneralFormInput } from "types/world";
 
@@ -14,9 +15,8 @@ export const shouldRetainAttendanceSelector: SparkleSelector<boolean> = (
 export const chatVisibilitySelector: SparkleSelector<boolean> = (state) =>
   state.chat.isChatSidebarVisible;
 
-export const userProfileSelector: SparkleSelector<UserId | undefined> = (
-  state
-) => state.userProfile.userId;
+export const userProfileSelector: SparkleSelector<UserProfileState> = (state) =>
+  state.userProfile;
 
 export const selectedChatSettingsSelector: SparkleSelector<ChatSettings> = (
   state

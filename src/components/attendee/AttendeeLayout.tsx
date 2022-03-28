@@ -9,7 +9,7 @@ import { withFallback } from "components/hocs/gate/withFallback";
 import { withRequired } from "components/hocs/gate/withRequired";
 import { compose } from "lodash/fp";
 
-import { POPOVER_CONTAINER_ID } from "settings";
+import { ATTENDEE_LAYOUT_CLASSNAME, POPOVER_CONTAINER_ID } from "settings";
 
 import { SpaceWithId } from "types/id";
 
@@ -43,9 +43,15 @@ const _AttendeeLayout: React.FC<_AttendeeLayoutProps> = ({ userId, space }) => {
   } = useShowHide();
 
   useEffect(() => {
-    document.documentElement.classList.add(styles.html);
+    document.documentElement.classList.add(
+      ATTENDEE_LAYOUT_CLASSNAME,
+      styles.html
+    );
     return () => {
-      document.documentElement.classList.remove(styles.html);
+      document.documentElement.classList.remove(
+        ATTENDEE_LAYOUT_CLASSNAME,
+        styles.html
+      );
     };
   }, []);
 
