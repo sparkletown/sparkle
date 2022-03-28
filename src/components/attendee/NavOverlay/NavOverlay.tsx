@@ -9,6 +9,7 @@ import { SpaceInfo } from "components/attendee/SpaceInfo";
 import { SPACE_TAXON } from "settings";
 
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
+import { useDisableBodyScroll } from "hooks/viewport/useDisableBodyScroll";
 import { useMediaQuery } from "hooks/viewport/useMediaQuery";
 
 import CN from "./NavOverlay.module.scss";
@@ -47,6 +48,9 @@ export const NavOverlay: React.FC<NavOverlayProps> = ({ onClose, type }) => {
 
     return () => setNavMenu("");
   }, [type]);
+
+  const isModalOpen = !!isMenuShown;
+  useDisableBodyScroll(isModalOpen);
 
   const handleMenuItemSelect = (key: string) => {
     setNavMenu(key);

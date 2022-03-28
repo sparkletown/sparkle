@@ -615,6 +615,7 @@ export const DEFAULT_SHOW_MORE_SETTINGS = {
 export const DEFAULT_MISSING_PLACEHOLDER = "Placeholder";
 
 export const POPOVER_CONTAINER_ID = "popoverContainer";
+export const ATTENDEE_LAYOUT_CLASSNAME = "AttendeeLayout";
 export const DEFAULT_SAFE_ZONE = { width: 100.0, height: 100.0 };
 Object.freeze(DEFAULT_SAFE_ZONE);
 
