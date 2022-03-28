@@ -53,3 +53,9 @@
   background: transparent;
   backdrop-filter: none;
 }
+
+.disabled {
+  background-color: theme.$c-button-disabled-background;
+  color: theme.$c-button-disabled-foreground;
+  cursor: default;
+}
