@@ -24,26 +24,15 @@ export const WebcamGrid: React.FC<TableGridProps> = ({ space }) => {
     localParticipant,
     remoteParticipants,
     disconnect,
-    startVideo,
-    startAudio,
-    stopVideo,
-    stopAudio,
   } = useVideoComms();
 
   useEffect(() => {
-    // Only connect once the user ID is set (loaded)
-    if (userId) {
-      joinChannel({
-        userId,
-        channelId: `webcamgrid-${space.id}`,
-        enableAudio: false,
-        enableVideo: false,
-      });
-      return () => {
+    return () => {
+      if (hasJoined) {
         disconnect();
-      };
-    }
-  }, [disconnect, joinChannel, space.id, userId]);
+      }
+    };
+  }, [disconnect, hasJoined]);
 
   const meComponent = useMemo(
     () =>
@@ -77,16 +66,19 @@ export const WebcamGrid: React.FC<TableGridProps> = ({ space }) => {
   );
 
   const joinVideo = useCallback(() => {
-    startVideo();
-    startAudio();
+    joinChannel({
+      userId,
+      channelId: `webcamgrid-${space.id}`,
+      enableAudio: true,
+      enableVideo: true,
+    });
     setHasJoined(true);
-  }, [startAudio, startVideo]);
+  }, [joinChannel, space.id, userId]);
 
   const leaveVideo = useCallback(() => {
-    stopVideo();
-    stopAudio();
+    disconnect();
     setHasJoined(false);
-  }, [stopAudio, stopVideo]);
+  }, [disconnect]);
 
   return (
     <div className={styles.container}>

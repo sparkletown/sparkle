@@ -30,7 +30,7 @@ export const Tuner: React.FC<TunerProps> = ({
     RetunableMediaSource.notTuned
   );
 
-  const { shareScreen } = useVideoComms();
+  const { shareScreen, stopShareScreen } = useVideoComms();
 
   const onTune = useCallback(() => {
     if (selectedSource === RetunableMediaSource.webcam) {
@@ -53,6 +53,13 @@ export const Tuner: React.FC<TunerProps> = ({
       setRetunableMediaSettings(space.id, { sourceType: selectedSource });
     }
   }, [selectedSource, shareScreen, space.id, userId]);
+
+  const stopSharing = useCallback(() => {
+    stopShareScreen();
+    setRetunableMediaSettings(space.id, {
+      sourceType: RetunableMediaSource.notTuned,
+    });
+  }, [space.id, stopShareScreen]);
 
   const onChangeSourceSelection = useCallback(
     (ev) => {
@@ -87,10 +94,6 @@ export const Tuner: React.FC<TunerProps> = ({
           Screen share
         </label>
         <div className={styles.divider} />
-        <label htmlFor="channel">
-          <input type="radio" name="source" value="channel" id="channel" />
-          Channels
-        </label>
         <label htmlFor="embed">
           <input
             type="radio"
@@ -113,7 +116,11 @@ export const Tuner: React.FC<TunerProps> = ({
 
       <div className={styles.endControls}>
         <Button onClick={onTune}>Share content</Button>
-        <Button variant="alternative" border="alternative">
+        <Button
+          variant="alternative"
+          border="alternative"
+          onClick={stopSharing}
+        >
           Stop sharing
         </Button>
       </div>
