@@ -2,7 +2,9 @@ import { useMemo } from "react";
 
 import { COLLECTION_RETUNABLE_MEDIA_ELEMENTS } from "settings";
 
-import { useRefiDocument } from "hooks/fire/useRefiDocument";
+import { LoadStatus } from "types/fire";
+
+import { useLiveDocument } from "hooks/fire/useLiveDocument";
 
 import {
   NotTunedSettings,
@@ -10,17 +12,17 @@ import {
   RetunableMediaSource,
 } from "./types";
 
-interface useRetunableMediaElementDataOptions {
+type UseRetunableMediaElement = (options: {
   spaceId: string;
-}
+}) => { settings: RetunableMediaElementSettings } & LoadStatus;
 
 const NOT_TUNED_SETTINGS: NotTunedSettings = Object.freeze({
   sourceType: RetunableMediaSource.notTuned,
 });
 
-export const useRetunableMediaElement = ({
+export const useRetunableMediaElement: UseRetunableMediaElement = ({
   spaceId,
-}: useRetunableMediaElementDataOptions) => {
+}) => {
   const queryPath = useMemo(
     () => [COLLECTION_RETUNABLE_MEDIA_ELEMENTS, spaceId],
     [spaceId]
@@ -29,23 +31,27 @@ export const useRetunableMediaElement = ({
   const {
     data: settings,
     isLoading,
-  } = useRefiDocument<RetunableMediaElementSettings>(queryPath);
+  } = useLiveDocument<RetunableMediaElementSettings>(queryPath);
 
-  if (isLoading) {
-    return {
-      isLoading,
-      settings: NOT_TUNED_SETTINGS,
-    };
-  }
+  return useMemo(() => {
+    if (isLoading) {
+      return {
+        isLoading,
+        isLoaded: !isLoading,
+        settings: NOT_TUNED_SETTINGS,
+      };
+    }
 
-  if (!settings) {
-    // This happens the first time a media element is loaded. Default to not
-    // tuned
-    return {
-      isLoading,
-      settings: NOT_TUNED_SETTINGS,
-    };
-  }
+    if (!settings) {
+      // This happens when a media element has never been tuned.
+      // Default to not tuned
+      return {
+        isLoading,
+        isLoaded: !isLoading,
+        settings: NOT_TUNED_SETTINGS,
+      };
+    }
 
-  return { isLoading: false, settings };
+    return { isLoading: false, isLoaded: true, settings };
+  }, [isLoading, settings]);
 };

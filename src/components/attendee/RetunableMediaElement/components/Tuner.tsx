@@ -6,9 +6,7 @@ import { useVideoComms } from "components/attendee/VideoComms/hooks";
 
 import { setRetunableMediaSettings } from "api/retunableMediaElement";
 
-import { AnyVenue } from "types/venues";
-
-import { WithId } from "utils/id";
+import { SpaceWithId } from "types/id";
 
 import { useUserId } from "hooks/user/useUserId";
 
@@ -17,7 +15,7 @@ import { RetunableMediaSource } from "../types";
 import styles from "./Tuner.module.scss";
 
 interface TunerProps {
-  space: WithId<AnyVenue>;
+  space: SpaceWithId;
   stopTuning: () => void;
 }
 
@@ -34,30 +32,45 @@ export const Tuner: React.FC<TunerProps> = ({
 
   const onTune = useCallback(() => {
     if (selectedSource === RetunableMediaSource.webcam) {
-      setRetunableMediaSettings(space.id, {
-        sourceType: selectedSource,
-        webcamUserId: userId,
+      setRetunableMediaSettings({
+        spaceId: space.id,
+        settings: {
+          sourceType: selectedSource,
+          webcamUserId: userId,
+        },
       });
     } else if (selectedSource === RetunableMediaSource.screenshare) {
       shareScreen();
-      setRetunableMediaSettings(space.id, {
-        sourceType: selectedSource,
-        screenshareUserId: userId,
+      setRetunableMediaSettings({
+        spaceId: space.id,
+        settings: {
+          sourceType: selectedSource,
+          screenshareUserId: userId,
+        },
       });
     } else if (selectedSource === RetunableMediaSource.embed) {
-      setRetunableMediaSettings(space.id, {
-        sourceType: selectedSource,
-        embedUrl: "https://www.youtube.com/embed/djV11Xbc914",
+      setRetunableMediaSettings({
+        spaceId: space.id,
+        settings: {
+          sourceType: selectedSource,
+          embedUrl: "https://www.youtube.com/embed/djV11Xbc914",
+        },
       });
     } else if (selectedSource === RetunableMediaSource.notTuned) {
-      setRetunableMediaSettings(space.id, { sourceType: selectedSource });
+      setRetunableMediaSettings({
+        spaceId: space.id,
+        settings: { sourceType: selectedSource },
+      });
     }
   }, [selectedSource, shareScreen, space.id, userId]);
 
   const stopSharing = useCallback(() => {
     stopShareScreen();
-    setRetunableMediaSettings(space.id, {
-      sourceType: RetunableMediaSource.notTuned,
+    setRetunableMediaSettings({
+      spaceId: space.id,
+      settings: {
+        sourceType: RetunableMediaSource.notTuned,
+      },
     });
   }, [space.id, stopShareScreen]);
 

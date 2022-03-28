@@ -9,7 +9,10 @@ interface TuneBannerProps {
   startTuning: () => void;
 }
 
-export const TuneBanner = ({ isTuning, startTuning }: TuneBannerProps) => {
+export const TuneBanner: React.FC<TuneBannerProps> = ({
+  isTuning,
+  startTuning,
+}) => {
   return (
     <div className={styles.tuneBanner}>
       <span className={styles.multimediaBanner}>

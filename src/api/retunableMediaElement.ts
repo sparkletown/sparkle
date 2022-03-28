@@ -3,10 +3,17 @@ import firebase from "firebase/compat/app";
 
 import { COLLECTION_RETUNABLE_MEDIA_ELEMENTS } from "settings";
 
-export const setRetunableMediaSettings = async (
-  spaceId: string,
-  settings: RetunableMediaElementSettings
-) => {
+import { SpaceId } from "types/id";
+
+type SetRetunableMediaSettings = (options: {
+  spaceId: SpaceId;
+  settings: RetunableMediaElementSettings;
+}) => Promise<void>;
+
+export const setRetunableMediaSettings: SetRetunableMediaSettings = async ({
+  spaceId,
+  settings,
+}) => {
   firebase
     .firestore()
     .collection(COLLECTION_RETUNABLE_MEDIA_ELEMENTS)

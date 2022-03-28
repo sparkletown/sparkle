@@ -2,6 +2,7 @@ import React, { lazy, Suspense } from "react";
 import { useCss } from "react-use";
 import classNames from "classnames";
 
+import { SpaceWithId } from "types/id";
 import { AnyVenue } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
 
@@ -109,7 +110,7 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       break;
 
     case VenueTemplate.meetingroom:
-      template = <MeetingRoom space={venue} />;
+      template = <MeetingRoom space={venue as SpaceWithId} />;
       break;
 
     case VenueTemplate.experiment:

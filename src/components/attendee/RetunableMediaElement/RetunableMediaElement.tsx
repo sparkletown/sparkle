@@ -1,8 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 
-import { AnyVenue } from "types/venues";
-
-import { WithId } from "utils/id";
+import { SpaceWithId } from "types/id";
 
 import { MediaElement } from "../MediaElement";
 import { useVideoComms } from "../VideoComms/hooks";
@@ -16,7 +14,7 @@ import { RetunableMediaSource } from "./types";
 import styles from "./RetunableMediaElement.module.scss";
 
 interface RetunableMediaElementProps {
-  space: WithId<AnyVenue>;
+  space: SpaceWithId;
 }
 
 export const RetunableMediaElement: React.FC<RetunableMediaElementProps> = ({
@@ -30,6 +28,10 @@ export const RetunableMediaElement: React.FC<RetunableMediaElementProps> = ({
   });
   const { localParticipant, remoteParticipants } = useVideoComms();
 
+  // @debt Ideally this would be done using a map of type -> render method
+  // rather than a switch statement. However, I couldn't immediately see a way
+  // to do that which works nicely with the type inference that occurs below
+  // with the type of the settings variable.
   const mediaElement = useMemo(() => {
     switch (settings.sourceType) {
       case RetunableMediaSource.embed:
@@ -77,6 +79,10 @@ export const RetunableMediaElement: React.FC<RetunableMediaElementProps> = ({
   }, [localParticipant, remoteParticipants, settings]);
 
   if (isLoading) {
+    // Deliberately display nothing, this will load quickly as the fetch is a
+    // single quick one.
+    // @debt We should think about a loading spinner that only displays on slow
+    // loads
     return <></>;
   }
 

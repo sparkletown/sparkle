@@ -2,14 +2,12 @@ import React from "react";
 import { RetunableMediaElement } from "components/attendee/RetunableMediaElement";
 import { WebcamGrid } from "components/attendee/WebcamGrid";
 
-import { MeetingRoomVenue } from "types/venues";
-
-import { WithId } from "utils/id";
+import { SpaceWithId } from "types/id";
 
 import styles from "./MeetingRoom.module.scss";
 
 interface MeetingRoomProps {
-  space: WithId<MeetingRoomVenue>;
+  space: SpaceWithId;
 }
 export const MeetingRoom: React.FC<MeetingRoomProps> = ({ space }) => {
   return (
