@@ -1,7 +1,8 @@
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button } from "components/attendee/Button";
+import { Input } from "components/attendee/Input";
 import { useVideoComms } from "components/attendee/VideoComms/hooks";
 
 import { setRetunableMediaSettings } from "api/retunableMediaElement";
@@ -10,6 +11,7 @@ import { SpaceWithId } from "types/id";
 
 import { useUserId } from "hooks/user/useUserId";
 
+import { useRetunableMediaElement } from "../hooks";
 import { RetunableMediaSource } from "../RetunableMediaElement.types";
 
 import styles from "./Tuner.module.scss";
@@ -27,6 +29,9 @@ export const Tuner: React.FC<TunerProps> = ({
   const [selectedSource, setSelectedSource] = useState<RetunableMediaSource>(
     RetunableMediaSource.notTuned
   );
+  const { settings } = useRetunableMediaElement({
+    spaceId: space.id,
+  });
 
   const { shareScreen, stopShareScreen } = useVideoComms();
 
@@ -49,13 +54,16 @@ export const Tuner: React.FC<TunerProps> = ({
         },
       });
     } else if (selectedSource === RetunableMediaSource.embed) {
-      setRetunableMediaSettings({
-        spaceId: space.id,
-        settings: {
-          sourceType: selectedSource,
-          embedUrl: "https://www.youtube.com/embed/djV11Xbc914",
-        },
-      });
+      const value = embedUrlInputEl?.current?.value;
+      if (value) {
+        setRetunableMediaSettings({
+          spaceId: space.id,
+          settings: {
+            sourceType: selectedSource,
+            embedUrl: value,
+          },
+        });
+      }
     } else if (selectedSource === RetunableMediaSource.notTuned) {
       setRetunableMediaSettings({
         spaceId: space.id,
@@ -80,6 +88,14 @@ export const Tuner: React.FC<TunerProps> = ({
     },
     [setSelectedSource]
   );
+
+  const previousEmbedUrl = useMemo(() => {
+    return settings.sourceType === RetunableMediaSource.embed
+      ? settings.embedUrl
+      : "";
+  }, [settings]);
+
+  const embedUrlInputEl = useRef<HTMLInputElement>(null);
 
   return (
     <div className={styles.tuner}>
@@ -116,6 +132,20 @@ export const Tuner: React.FC<TunerProps> = ({
           />
           Custom embed URL
         </label>
+        {selectedSource === RetunableMediaSource.embed && (
+          <Input
+            type="url"
+            name="URL"
+            ref={embedUrlInputEl}
+            defaultValue={previousEmbedUrl}
+            onChange={(ev) => {
+              // Propagation must be stopped, otherwise, the radio box change
+              // is triggered
+              ev.stopPropagation();
+            }}
+            inputClassName={styles.embedUrlInput}
+          />
+        )}
         <label htmlFor="notTuned">
           <input
             type="radio"

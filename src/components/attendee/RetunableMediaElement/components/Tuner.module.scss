@@ -76,3 +76,16 @@ $radio-button-size: 9px;
   flex-direction: row-reverse;
   gap: space.gap(5);
 }
+
+.embedUrlInput {
+  display: flex;
+  align-items: center;
+  padding: 4px 5em 4px 12px;
+  height: 42px;
+  border-radius: 4px;
+  box-sizing: border-box;
+  width: 100%;
+  font-size: 14px;
+  line-height: 1.4;
+  margin-bottom: space.empty(1);
+}
