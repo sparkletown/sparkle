@@ -1,6 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useFirestore } from "reactfire";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  getFirestore,
+  query,
+  where,
+} from "firebase/firestore";
 import { chunk } from "lodash";
 
 import {
@@ -31,8 +36,6 @@ export const SpentTime: React.FC<SpentTimeProps> = ({ userId }) => {
   const [venues, setVenues] = useState<WithId<AnyVenue>[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const firestore = useFirestore();
-
   // @debt move firestore code from the component + check the logic if it can be updated
   const fetchAllVenues = useCallback(async () => {
     const visitsSnapshot = await getUserRef(userId).collection("visits").get();
@@ -52,7 +55,7 @@ export const SpentTime: React.FC<SpentTimeProps> = ({ userId }) => {
     ).map((visitChunk) =>
       getDocs(
         query(
-          collection(firestore, COLLECTION_SPACES),
+          collection(getFirestore(), COLLECTION_SPACES),
           where(
             "name",
             "in",
@@ -84,7 +87,7 @@ export const SpentTime: React.FC<SpentTimeProps> = ({ userId }) => {
 
     setVenues(venues);
     setVisits(visits);
-  }, [firestore, userId, setVenues, setVisits]);
+  }, [userId, setVenues, setVisits]);
 
   useEffect(() => {
     setIsLoading(true);
