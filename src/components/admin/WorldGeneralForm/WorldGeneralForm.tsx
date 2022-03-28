@@ -188,7 +188,7 @@ export const WorldGeneralForm: React.FC<WorldGeneralFormProps> = ({
             name="bannerImage"
             setValue={setValue}
             onChange={handleChange}
-            text="Upload highlight image"
+            buttonLabel="Upload highlight image"
           />
         </InputGroup>
 
@@ -204,7 +204,7 @@ export const WorldGeneralForm: React.FC<WorldGeneralFormProps> = ({
             error={errors.logoImageFile || errors.logoImageUrl}
             setValue={setValue}
             register={register}
-            text="Upload logo image"
+            buttonLabel="Upload logo image"
             onChange={handleChange}
             variant="round"
           />

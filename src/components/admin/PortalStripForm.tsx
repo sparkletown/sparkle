@@ -1,10 +1,10 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm, useFormState } from "react-hook-form";
 import { useAsync, useAsyncFn } from "react-use";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { DEFAULT_PORTAL_IS_ENABLED, PORTAL_INFO_ICON_MAPPING } from "settings";
+import { DEFAULT_PORTAL_IS_ENABLED } from "settings";
 
 import { upsertRoom } from "api/admin";
 import { fetchVenue } from "api/venue";
@@ -15,7 +15,6 @@ import {
   convertClickabilityToPortalType,
   convertPortalTypeToClickability,
 } from "utils/portal";
-import { isExternalPortal } from "utils/url";
 
 import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
@@ -55,9 +54,7 @@ export const PortalStripForm: React.FC<PortalStripFormProps> = ({
     show: showModal,
   } = useShowHide(false);
 
-  const portalIcon = isExternalPortal(portal)
-    ? PORTAL_INFO_ICON_MAPPING["external"]
-    : iconUrl;
+  const portalIcon = iconUrl;
 
   const { value: targetSpace } = useAsync(async () => {
     if (targetSpaceId) {
@@ -77,6 +74,13 @@ export const PortalStripForm: React.FC<PortalStripFormProps> = ({
   const { errors } = useFormState({ control });
 
   const values = getValues();
+
+  useEffect(() => {
+    reset({
+      isClickable: convertPortalTypeToClickability(portal?.type),
+      isEnabled: portal?.isEnabled ?? DEFAULT_PORTAL_IS_ENABLED,
+    });
+  }, [portal, reset]);
 
   const [{ loading, error: submitError }, submit] = useAsyncFn(
     async (field: typeof FIELD_ENABLED | typeof FIELD_CLICKABLE) => {
@@ -160,8 +164,8 @@ export const PortalStripForm: React.FC<PortalStripFormProps> = ({
         </div>
       </TablePanel.Cell>
       <TablePanel.ActionsCell>
-        <div className="flex items-center -mb-5 flex-row">
-          <div className="flex items-center mb-5">
+        <div className="flex items-center flex-row">
+          <div className="flex items-center">
             <Toggle
               name="isEnabled"
               label={renderedEnabledLabel}
@@ -170,8 +174,8 @@ export const PortalStripForm: React.FC<PortalStripFormProps> = ({
             />
           </div>
         </div>
-        <div className="flex items-center -mb-5 flex-row">
-          <div className="flex items-center mb-5">
+        <div className="flex items-center flex-row">
+          <div className="flex items-center">
             <Toggle
               name="isClickable"
               label={renderedClickableLabel}
@@ -180,7 +184,10 @@ export const PortalStripForm: React.FC<PortalStripFormProps> = ({
             />
           </div>
         </div>
-        <div className="flex items-center flex-row" onClick={showModal}>
+        <div
+          className="flex items-center flex-row cursor-pointer"
+          onClick={showModal}
+        >
           <FontAwesomeIcon
             icon={faPen}
             className="flex-shrink-0 mr-1.5 h-5 w-5 text-black"

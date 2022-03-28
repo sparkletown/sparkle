@@ -13,17 +13,8 @@ export const EXTERNAL_WEBGL_CHECK_URL = "https://webglreport.com/?v=2";
 
 // External Sparkle URLs
 export const EXTERNAL_SPARKLE_HOMEPAGE_URL = "https://sparklespaces.com/";
-export const EXTERNAL_SPARKLE_TOC_URL =
-  "https://sparklespaces.com/terms-of-use/";
-export const EXTERNAL_SPARKLE_PRIVACY_POLICY =
-  "https://sparklespaces.com/privacy-policy/";
 
 export const EXTERNAL_SPARKLEVERSE_HOMEPAGE_URL = "https://sparklever.se/";
-
-export const EXTERNAL_SPARKLEVERSITY_URL =
-  "https://sparklever.se/sparkleversity";
-export const EXTERNAL_SPARKLEVERSE_COMMUNITY_URL =
-  "https://www.facebook.com/groups/sparkleverse/";
 
 // NOTE: URLs ending with _PARAM_URL aren't meant for direct browser consumption but React router
 // NOTE: URLs ending with _ROOT_URL are the bases for sub-routers and URLs used inside them
@@ -35,7 +26,6 @@ export const ROOT_URL = "/";
 export const ACCOUNT_ROOT_URL = "/account";
 export const ADMIN_ROOT_URL = "/admin";
 export const SPARKLEVERSE_REDIRECT_URL = "/sparkleverse";
-export const VERSION_URL = "/version";
 
 // Attendee URLs
 const EMERGENCY_BASE_URL = "/m";

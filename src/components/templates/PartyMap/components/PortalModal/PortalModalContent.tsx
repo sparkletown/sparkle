@@ -123,7 +123,6 @@ export const PortalModalContent: React.FC<PortalModalContentProps> = ({
           )}
 
           <UserList
-            containerClassName="PortalModal__userlist"
             usersSample={portalSpace?.recentUsersSample ?? ALWAYS_EMPTY_ARRAY}
             userCount={portalSpace?.recentUserCount ?? 0}
             activity={`in this ${SPACE_TAXON.lower}`}

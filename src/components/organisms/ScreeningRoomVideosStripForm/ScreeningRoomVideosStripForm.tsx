@@ -1,6 +1,7 @@
 import React, { useCallback } from "react";
 import { faPencilAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ConfirmationModal } from "components/admin/ConfirmationModal/ConfirmationModal";
 
 import { deleteScreeningRoomVideo } from "api/admin";
 
@@ -11,8 +12,6 @@ import { WithId } from "utils/id";
 import { useShowHide } from "hooks/useShowHide";
 
 import { ScreeningRoomVideoAddEditModal } from "components/molecules/ScreeningRoomVideoAddEditModal";
-
-import { ConfirmationModal } from "components/atoms/ConfirmationModal/ConfirmationModal";
 
 import "./ScreeningRoomVideosStripForm.scss";
 

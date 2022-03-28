@@ -2,12 +2,15 @@ import React, { useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { AdminRestrictedLoading } from "components/admin/AdminRestrictedLoading";
+import { AdminRestrictedMessage } from "components/admin/AdminRestrictedMessage";
 import { Button } from "components/admin/Button";
 import { EventsPanel } from "components/admin/EventsPanel";
 import { Header } from "components/admin/Header";
 import { HeaderButton } from "components/admin/HeaderButton";
 import { Input } from "components/admin/Input";
 import { AdminLayout } from "components/layouts/AdminLayout";
+import { WithPermission } from "components/shared/WithPermission";
 
 import { updateWorldScheduleSettings } from "api/world";
 
@@ -25,8 +28,6 @@ import { useWorldSpaces } from "hooks/spaces/useWorldSpaces";
 import { useShowHide } from "hooks/useShowHide";
 
 import { TimingEventModal } from "components/organisms/TimingEventModal";
-
-import { AdminRestricted } from "components/atoms/AdminRestricted";
 
 import * as TW from "./WorldSchedule.tailwind";
 
@@ -98,7 +99,11 @@ export const WorldSchedule: React.FC<WorldScheduleProps> = ({ world }) => {
   const isSaveLoading = isSubmitting || isSaving;
 
   return (
-    <AdminRestricted>
+    <WithPermission
+      check="world"
+      loading={<AdminRestrictedLoading />}
+      fallback={<AdminRestrictedMessage />}
+    >
       <AdminLayout>
         <Header title="World Schedule">
           <HeaderButton
@@ -170,6 +175,6 @@ export const WorldSchedule: React.FC<WorldScheduleProps> = ({ world }) => {
           />
         )}
       </AdminLayout>
-    </AdminRestricted>
+    </WithPermission>
   );
 };

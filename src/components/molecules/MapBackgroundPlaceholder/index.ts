@@ -1,1 +1,0 @@
-export { MapBackgroundPlaceholder } from "./MapBackgroundPlaceholder";

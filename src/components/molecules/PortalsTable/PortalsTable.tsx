@@ -40,7 +40,7 @@ export const PortalsTable: React.FC<PortalsTableProps> = ({ space }) => {
         <TablePanel.Body>
           {portals?.map((portal, index) => (
             <PortalStripForm
-              key={index}
+              key={`${portal.title}-${index}`}
               portal={portal}
               index={index}
               spaceId={space?.id}

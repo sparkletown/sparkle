@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { InputField } from "components/attendee/InputField";
 
 import { ALWAYS_NOOP_FUNCTION } from "settings";
 
@@ -10,7 +11,6 @@ import { WithId } from "utils/id";
 import { ScreeningVideoPreview } from "components/templates/ScreeningRoom/components/ScreeningVideoPreview";
 import { useScreeningRoom } from "components/templates/ScreeningRoom/useScreeningRoom";
 
-import { InputField } from "components/atoms/InputField";
 import { PosterCategory } from "components/atoms/PosterCategory";
 
 import "./ScreeningRoomPreview.scss";

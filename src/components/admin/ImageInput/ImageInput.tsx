@@ -40,10 +40,11 @@ export interface ImageInputProps {
   setValue: UseFormSetValue<AnyForm>;
   register: UseFormRegister<AnyForm>;
   nameWithUnderscore?: boolean;
-  text?: string;
   subtext?: string;
   // isInputHidden?: boolean;
   variant?: ImageInputVariant;
+  inputLabel?: string;
+  buttonLabel?: string;
 }
 
 export const ImageInput: React.FC<ImageInputProps> = ({
@@ -55,9 +56,10 @@ export const ImageInput: React.FC<ImageInputProps> = ({
   setValue,
   nameWithUnderscore = false,
   // isInputHidden = false,
-  text = "Upload",
   subtext = "",
   variant = "wide",
+  inputLabel,
+  buttonLabel = "Upload",
 }) => {
   const inputFileRef = useRef<HTMLInputElement>(null);
 
@@ -105,7 +107,7 @@ export const ImageInput: React.FC<ImageInputProps> = ({
   });
 
   const backgroundImage =
-    imgUrl ||
+    imageUrl ||
     (variant === "wide"
       ? DEFAULT_IMAGE_INPUT_BACKGROUND
       : DEFAULT_IMAGE_INPUT_ROUND_BACKGOUND);
@@ -129,6 +131,11 @@ export const ImageInput: React.FC<ImageInputProps> = ({
 
   return (
     <>
+      {inputLabel && (
+        <div className="block text-sm font-medium text-gray-700 mb-1 mt-4">
+          {inputLabel}
+        </div>
+      )}
       <label className="ImageInput__container">
         <input
           accept={ACCEPTED_IMAGE_TYPES}
@@ -142,7 +149,7 @@ export const ImageInput: React.FC<ImageInputProps> = ({
       <input type="hidden" name={fileUrl} {...register} readOnly />
       <div className={wrapperClasses} style={wrapperStyles}>
         <Button onClick={onButtonClick} disabled={loading} borders="rounded">
-          {loading ? "processing..." : text}
+          {loading ? "processing..." : buttonLabel}
         </Button>
         <div className="ImageInput__subtext">{subtext}</div>
       </div>

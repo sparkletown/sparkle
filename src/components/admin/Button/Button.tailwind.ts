@@ -1,5 +1,5 @@
 export const general =
-  "w-full inline-flex justify-center items-center border shadow-sm px-4 py-2 mt-3 sm:ml-3 text-base font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 sm:w-auto sm:text-sm disabled:bg-gray-200 disabled:text-gray-50 disabled:shadow-none disabled:cursor-not-allowed hover:bg-sparkle-darker focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500";
+  "w-full inline-flex justify-center items-center border shadow-sm px-4 py-2 mt-3 mb-3 ml-2 mr-2 text-base font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 sm:w-auto sm:text-sm disabled:bg-gray-200 disabled:text-gray-50 disabled:shadow-none disabled:cursor-not-allowed hover:bg-sparkle-darker focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500";
 export const primary =
   "border-transparent bg-sparkle text-white hover:bg-sparkle-darker focus:ring-red-500 ";
 export const secondary =

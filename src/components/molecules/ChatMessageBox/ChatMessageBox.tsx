@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import { faSmile } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { InputField } from "components/attendee/InputField";
 import { EmojiData } from "emoji-mart";
 
 import { ChatTypes, SendChatMessage, SendThreadMessageProps } from "types/chat";
@@ -15,8 +16,6 @@ import {
   useSelectedReplyThread,
 } from "components/molecules/Chatbox/components/context/ChatboxContext";
 import { EmojiPicker } from "components/molecules/EmojiPicker";
-
-import { InputField } from "components/atoms/InputField";
 
 import styles from "./ChatMessageBox.module.scss";
 

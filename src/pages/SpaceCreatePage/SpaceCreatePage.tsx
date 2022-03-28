@@ -1,7 +1,10 @@
 import React from "react";
+import { AdminRestrictedLoading } from "components/admin/AdminRestrictedLoading";
+import { AdminRestrictedMessage } from "components/admin/AdminRestrictedMessage";
 import { Header } from "components/admin/Header";
 import { SpaceCreateForm } from "components/admin/SpaceCreateForm";
 import { AdminLayout } from "components/layouts/AdminLayout";
+import { WithPermission } from "components/shared/WithPermission";
 
 import { ADMIN_IA_WORLD_PARAM_URL } from "settings";
 
@@ -16,11 +19,7 @@ import { PortalShowcase } from "components/organisms/PortalShowcase";
 
 import { Loading } from "components/molecules/Loading";
 
-import { AdminRestricted } from "components/atoms/AdminRestricted";
-
 import * as TW from "./SpaceCreatePage.tailwind";
-
-import CN from "./SpaceCreatePage.module.scss";
 
 export const SpaceCreatePage: React.FC = () => {
   const { worldSlug } = useSpaceParams();
@@ -40,8 +39,12 @@ export const SpaceCreatePage: React.FC = () => {
 
   return (
     <AdminLayout>
-      <AdminRestricted>
-        <div className={CN.spaceCreatePage}>
+      <WithPermission
+        check="world"
+        loading={<AdminRestrictedLoading />}
+        fallback={<AdminRestrictedMessage />}
+      >
+        <div data-bem="SpaceCreatePage" className={TW.container}>
           <Header
             title="Create Space"
             subtitleItems={subtitle}
@@ -60,7 +63,7 @@ export const SpaceCreatePage: React.FC = () => {
             </div>
           </div>
         </div>
-      </AdminRestricted>
+      </WithPermission>
     </AdminLayout>
   );
 };

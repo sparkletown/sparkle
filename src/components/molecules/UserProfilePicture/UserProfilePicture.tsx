@@ -1,6 +1,7 @@
 import React, { useCallback } from "react";
 import classNames from "classnames";
 
+import { UserId } from "types/id";
 import { User } from "types/User";
 import { ContainerClassName } from "types/utility";
 
@@ -32,20 +33,20 @@ export interface UserProfilePictureProp extends ContainerClassName {
 export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   user,
   isAudioEffectDisabled = true,
-  containerClassName,
   reactionPosition = "right",
   showStatus = false,
   isVideoEnabled = true,
   size,
+  containerClassName,
 }) => {
   const userId = user?.id;
 
   const { openUserProfileModal } = useProfileModalControls();
 
-  const openProfileModal = useCallback(() => openUserProfileModal(user?.id), [
-    openUserProfileModal,
-    user?.id,
-  ]);
+  const openProfileModal = useCallback(
+    () => openUserProfileModal(user?.id as UserId),
+    [openUserProfileModal, user?.id]
+  );
 
   // @debt useImage tries to load the images twice, which is made worse by us not caching images retrieved from firebase,
   //  it's only used to handle the edgecase of showing a default when images are missing. Can we live without it?
@@ -59,20 +60,18 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   // const pictureUrl = getAvatarUrl({ user, miniAvatars });
   //
 
-  const containerClasses = classNames(
-    "UserProfilePicture",
-    { "UserProfilePicture--only-icon": !isVideoEnabled },
-    containerClassName
-  );
+  const containerClasses = classNames("UserProfilePicture", {
+    "UserProfilePicture--only-icon": !isVideoEnabled,
+    containerClassName,
+  });
 
   return (
-    <div className={containerClasses} onClick={openProfileModal}>
-      <UserAvatar
-        user={user}
-        containerClassName="UserProfilePicture__avatar"
-        showStatus={showStatus}
-        size={size}
-      />
+    <div
+      data-bem="UserProfilePicture"
+      className={containerClasses}
+      onClick={openProfileModal}
+    >
+      <UserAvatar user={user} showStatus={showStatus} size={size} />
 
       {userId && (
         <UserReactions

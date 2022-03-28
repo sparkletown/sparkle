@@ -1,7 +1,7 @@
 import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
 import { HttpsError } from "firebase-functions/v1/https";
-import { isEmpty, isNil } from "lodash";
+import { isEmpty, isNil, uniq } from "lodash";
 
 import { LandingPageConfig } from "./types/venue";
 import { assertValidAuth } from "./utils/assert";
@@ -147,15 +147,15 @@ export const deleteWorld = functions.https.onCall(async (data, context) => {
   admin.firestore().collection("worlds").doc(worldId).delete();
 });
 
-export const addWorldAdmin = functions.https.onCall(async (data, context) => {
+export const addWorldAdmins = functions.https.onCall(async (data, context) => {
   assertValidAuth(context);
 
   const worldId = data.worldId;
-  const userId = data.userId;
+  const userIds = data.userIds;
 
   await throwErrorIfNotWorldOwner({
     worldId,
-    userId,
+    userId: context.auth?.token.user_id,
   });
 
   const worldRef = await admin
@@ -172,13 +172,15 @@ export const addWorldAdmin = functions.https.onCall(async (data, context) => {
 
   const owners = worldData.owners as string[];
 
-  if (!Array.isArray(owners) || owners.includes(userId)) {
+  if (!Array.isArray(owners)) {
     return;
   }
 
-  const newOwners = [...owners, userId];
+  const newOwners = [...owners, ...userIds];
 
-  const newWorldData = { ...worldData, owners: newOwners };
+  const uniqueOwners = uniq(newOwners);
+
+  const newWorldData = { ...worldData, owners: uniqueOwners };
 
   admin.firestore().collection("worlds").doc(worldId).set(newWorldData);
 });

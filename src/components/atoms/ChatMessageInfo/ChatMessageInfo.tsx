@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
 import { BaseChatMessage } from "types/chat";
+import { UserId } from "types/id";
 
 import { WithId } from "utils/id";
 import { formatTimeLocalised } from "utils/time";
@@ -48,7 +49,7 @@ export const ChatMessageInfo: React.FC<ChatMessageInfoProps> = ({
 
   const openAuthorProfile = useCallback(
     (event) => {
-      openUserProfileModal(fromUser.id);
+      openUserProfileModal(fromUser.id as UserId);
     },
     [openUserProfileModal, fromUser.id]
   );
@@ -58,7 +59,11 @@ export const ChatMessageInfo: React.FC<ChatMessageInfoProps> = ({
   });
 
   return (
-    <div onClick={openAuthorProfile} className={containerClassnames}>
+    <div
+      data-bem="ChatMessageInfo"
+      onClick={openAuthorProfile}
+      className={containerClassnames}
+    >
       <span className={styles.authorName}>{fromUser.partyName}</span>
       &nbsp;
       <span className={styles.messageTime}>
