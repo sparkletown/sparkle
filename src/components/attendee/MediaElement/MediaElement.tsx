@@ -10,10 +10,14 @@ import { IFRAME_ALLOW } from "settings";
 
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 
+import { VideoTrack } from "../VideoComms/types";
+import { VideoTrackDisplay } from "../VideoComms/VideoTrackDisplay";
+
 import styles from "./MediaElement.module.scss";
 
 interface MediaElementProps {
-  url: string;
+  track?: VideoTrack;
+  url?: string;
   autoPlay: boolean;
   // Used in various templates to create a "full width" non-resizable media
   // element
@@ -23,6 +27,7 @@ interface MediaElementProps {
 export const MediaElement: React.FC<MediaElementProps> = ({
   url,
   autoPlay,
+  track,
   fullWidth = false,
 }) => {
   const embedIframeUrl = convertToEmbeddableUrl({
@@ -47,7 +52,7 @@ export const MediaElement: React.FC<MediaElementProps> = ({
   return (
     <div className={containerClassnames}>
       <div className={videoClassnames}>
-        {embedIframeUrl ? (
+        {embedIframeUrl && (
           <iframe
             title="main event"
             className={styles.iframe}
@@ -55,8 +60,11 @@ export const MediaElement: React.FC<MediaElementProps> = ({
             frameBorder="0"
             allow={IFRAME_ALLOW}
           />
-        ) : (
-          <div>Embedded Video URL not yet set up</div>
+        )}
+        {track && (
+          <div className={styles.iframe}>
+            <VideoTrackDisplay track={track} />
+          </div>
         )}
       </div>
       {!fullWidth && (

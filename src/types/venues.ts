@@ -34,6 +34,7 @@ export type GenericVenueTemplates = Exclude<
   | VenueTemplate.viewingwindow
   | VenueTemplate.experiment
   | VenueTemplate.artpiece
+  | VenueTemplate.meetingroom
 >;
 
 // We shouldn't include 'Venue' here, that is what 'GenericVenue' is for (which correctly narrows the types; these should remain alphabetically sorted, except with GenericVenue at the top)
@@ -47,7 +48,8 @@ export type AnyVenue =
   | PosterPageVenue
   | ViewingWindowVenue
   | ExperimentalVenue
-  | ArtPieceVenue;
+  | ArtPieceVenue
+  | MeetingRoomVenue;
 
 // --- VENUE V2
 export interface Venue_v2 extends Venue_v2_Base, VenueAdvancedConfig {}
@@ -212,6 +214,9 @@ export interface JazzbarVenue extends BaseVenue {
 export interface ArtPieceVenue extends BaseVenue {
   template: VenueTemplate.artpiece;
   iframeUrl: string;
+}
+export interface MeetingRoomVenue extends BaseVenue {
+  template: VenueTemplate.meetingroom;
 }
 
 export interface ExperimentalVenue extends BaseVenue {

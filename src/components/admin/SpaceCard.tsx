@@ -41,7 +41,7 @@ export const SpaceCard: React.FC<SpaceCardProps> = ({
     space.config?.landingPageConfig?.description ||
     "Description can be changed in space settings";
 
-  const spaceTemplate = SPACE_INFO_MAP[space.template].text;
+  const spaceTemplate = SPACE_INFO_MAP[space.template]?.text;
 
   const visitSpaceUrl = generateUrl({
     route: ATTENDEE_INSIDE_URL,

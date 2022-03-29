@@ -132,6 +132,27 @@ export const TwilioClient = (onStateUpdateCallback: StateUpdateCallback) => {
   let isTransmittingAudio = true;
   let isTransmittingVideo = true;
 
+  // @debt remove this. It is here to help with debugging until this has been
+  // battle tested
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  window.getTwilioInfo = () => {
+    const localParticipant = room && wrapLocalParticipant(room);
+    const remoteParticipants =
+      room && Array.from(room.participants.values()).map(wrapRemoteParticipant);
+    return {
+      room,
+      status,
+      isTransmittingAudio,
+      isTransmittingVideo,
+      // Data that has been transformed for use in React
+      toReact: {
+        localParticipant,
+        remoteParticipants,
+      },
+    };
+  };
+
   const subscribedEvents = [
     "trackSubscribed",
     "trackUnsubscribed",
