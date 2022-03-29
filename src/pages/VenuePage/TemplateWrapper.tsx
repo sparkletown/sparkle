@@ -20,7 +20,6 @@ import { ConversationSpace } from "components/templates/ConversationSpace";
 import { Embeddable } from "components/templates/Embeddable";
 import { ExperimentalSpace } from "components/templates/ExperimentalSpace";
 import { ExternalRoom } from "components/templates/ExternalRoom";
-import { FireBarrel } from "components/templates/FireBarrel";
 import { JazzBar } from "components/templates/Jazzbar/JazzBar";
 import { MeetingRoom } from "components/templates/MeetingRoom";
 import { PartyMap } from "components/templates/PartyMap";
@@ -91,10 +90,6 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
 
     case VenueTemplate.embeddable:
       template = <Embeddable venue={venue} />;
-      break;
-
-    case VenueTemplate.firebarrel:
-      template = <FireBarrel venue={venue} />;
       break;
 
     case VenueTemplate.posterhall:
