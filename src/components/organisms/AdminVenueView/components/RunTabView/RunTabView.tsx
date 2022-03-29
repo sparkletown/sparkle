@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 import { useForm, useFormState } from "react-hook-form";
 import { useAsyncFn } from "react-use";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { Button } from "components/admin/Button";
 import { Checkbox } from "components/admin/Checkbox";
 import { Input } from "components/admin/Input";
@@ -13,6 +14,8 @@ import { Toggle } from "components/admin/Toggle";
 import { updateBanner } from "api/bannerAdmin";
 
 import { SpaceWithId } from "types/id";
+
+import { announcementSchema } from "forms/announcementSchema";
 
 import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
 import { AdminSidebar } from "components/organisms/AdminVenueView/components/AdminSidebar";
@@ -28,11 +31,11 @@ export interface RunTabViewProps {
 export const RunTabView: React.FC<RunTabViewProps> = ({ space }) => {
   const defaultValues = useMemo(
     () => ({
-      announcement: space?.banner?.content ?? "",
-      buttonText: space?.banner?.buttonDisplayText ?? "",
+      content: space?.banner?.content ?? "",
+      buttonDisplayText: space?.banner?.buttonDisplayText ?? "",
       buttonUrl: space?.banner?.buttonUrl ?? "",
-      fullScreen: space?.banner?.isFullScreen ?? false,
-      forceFunnel: space?.banner?.isForceFunnel ?? false,
+      isFullScreen: space?.banner?.isFullScreen ?? false,
+      isForceFunnel: space?.banner?.isForceFunnel ?? false,
       isActionButton: space?.banner?.isActionButton ?? false,
     }),
     [
@@ -48,11 +51,10 @@ export const RunTabView: React.FC<RunTabViewProps> = ({ space }) => {
   const { register, control, watch } = useForm({
     reValidateMode: "onChange",
     defaultValues,
+    resolver: yupResolver(announcementSchema),
   });
 
-  const { errors } = useFormState({
-    control,
-  });
+  const { errors } = useFormState({ control });
 
   const values = watch();
 
@@ -62,16 +64,24 @@ export const RunTabView: React.FC<RunTabViewProps> = ({ space }) => {
     }
 
     const banner = {
-      content: values.announcement,
+      content: values.content,
       isActionButton: values.isActionButton,
       buttonUrl: values.buttonUrl,
-      buttonDisplayText: values.buttonText,
-      isFullScreen: values.fullScreen,
-      isForceFunnel: values.forceFunnel,
+      buttonDisplayText: values.buttonDisplayText,
+      isFullScreen: values.isFullScreen,
+      isForceFunnel: values.isForceFunnel,
     };
 
     await updateBanner({ venueId: space.id, banner: banner });
-  });
+  }, [
+    space,
+    values.buttonDisplayText,
+    values.buttonUrl,
+    values.content,
+    values.isActionButton,
+    values.isForceFunnel,
+    values.isFullScreen,
+  ]);
 
   if (!space) {
     return <LoadingPage />;
@@ -88,7 +98,7 @@ export const RunTabView: React.FC<RunTabViewProps> = ({ space }) => {
           <Textarea
             placeholder="Please type your announcement text here."
             register={register}
-            name="announcement"
+            name="content"
             errors={errors}
           />
         </InputGroup>
@@ -96,7 +106,7 @@ export const RunTabView: React.FC<RunTabViewProps> = ({ space }) => {
         <Checkbox
           label="Set full-screen announcement"
           register={register}
-          name="fullScreen"
+          name="isFullScreen"
         />
 
         <Toggle
@@ -111,7 +121,7 @@ export const RunTabView: React.FC<RunTabViewProps> = ({ space }) => {
             <Input
               placeholder="Button display text"
               register={register}
-              name="buttonText"
+              name="buttonDisplayText"
               errors={errors}
             />
           </InputGroup>
@@ -126,7 +136,11 @@ export const RunTabView: React.FC<RunTabViewProps> = ({ space }) => {
           </InputGroup>
         </div>
 
-        <Checkbox label="Force funnel" register={register} name="forceFunnel" />
+        <Checkbox
+          label="Force funnel"
+          register={register}
+          name="isForceFunnel"
+        />
 
         <div className="flex justify-end">
           <Button variant="secondary">Cancel</Button>
