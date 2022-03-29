@@ -29,22 +29,24 @@ export interface RunTabViewProps {
 }
 
 export const RunTabView: React.FC<RunTabViewProps> = ({ space }) => {
+  const banner = space?.banner;
+
   const defaultValues = useMemo(
     () => ({
-      content: space?.banner?.content ?? "",
-      buttonDisplayText: space?.banner?.buttonDisplayText ?? "",
-      buttonUrl: space?.banner?.buttonUrl ?? "",
-      isFullScreen: space?.banner?.isFullScreen ?? false,
-      isForceFunnel: space?.banner?.isForceFunnel ?? false,
-      isActionButton: space?.banner?.isActionButton ?? false,
+      content: banner?.content ?? "",
+      buttonDisplayText: banner?.buttonDisplayText ?? "",
+      buttonUrl: banner?.buttonUrl ?? "",
+      isFullScreen: banner?.isFullScreen ?? false,
+      isForceFunnel: banner?.isForceFunnel ?? false,
+      isActionButton: banner?.isActionButton ?? false,
     }),
     [
-      space?.banner?.buttonDisplayText,
-      space?.banner?.buttonUrl,
-      space?.banner?.content,
-      space?.banner?.isActionButton,
-      space?.banner?.isForceFunnel,
-      space?.banner?.isFullScreen,
+      banner?.buttonDisplayText,
+      banner?.buttonUrl,
+      banner?.content,
+      banner?.isActionButton,
+      banner?.isForceFunnel,
+      banner?.isFullScreen,
     ]
   );
 
@@ -143,7 +145,6 @@ export const RunTabView: React.FC<RunTabViewProps> = ({ space }) => {
         />
 
         <div className="flex justify-end">
-          <Button variant="secondary">Cancel</Button>
           <Button disabled={isUpdating} onClick={updateAnnouncement}>
             Save
           </Button>
@@ -151,12 +152,7 @@ export const RunTabView: React.FC<RunTabViewProps> = ({ space }) => {
       </AdminSidebar>
 
       <AdminShowcase>
-        <MapPreview
-          isEditing={false}
-          mapBackground={mapBackground}
-          rooms={[]}
-          setSelectedRoom={() => undefined}
-        />
+        <MapPreview isEditing={false} mapBackground={mapBackground} />
       </AdminShowcase>
     </ThreeColumnLayout>
   );
