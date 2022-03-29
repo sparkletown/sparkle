@@ -26,7 +26,6 @@ import { PartyMap } from "components/templates/PartyMap";
 import { PosterHall } from "components/templates/PosterHall";
 import { PosterPage } from "components/templates/PosterPage";
 import { ScreeningRoom } from "components/templates/ScreeningRoom";
-import { ViewingWindow } from "components/templates/ViewingWindow";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
@@ -74,10 +73,6 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
 
     case VenueTemplate.zoomroom:
       template = <ExternalRoom venue={venue} />;
-      break;
-
-    case VenueTemplate.viewingwindow:
-      template = <ViewingWindow venue={venue} />;
       break;
 
     case VenueTemplate.auditorium:
