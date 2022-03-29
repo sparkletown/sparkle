@@ -56,7 +56,7 @@ export interface VenueRoomsEditorProps {
   lockAspectRatio?: boolean;
   rooms: Room[];
   selectedRoom?: Room;
-  setSelectedRoom: Dispatch<SetStateAction<Room | undefined>>;
+  setSelectedRoom?: Dispatch<SetStateAction<Room | undefined>>;
 }
 
 export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
@@ -265,7 +265,7 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
               backgroundImage: `url(${room.image_url})`,
             }}
             key={`${room.title}-${index}`}
-            onClick={() => setSelectedRoom(room)}
+            onClick={() => setSelectedRoom?.(room)}
           >
             <div data-bem="VenueRoomsEditor__room-title">{room.title}</div>
           </div>

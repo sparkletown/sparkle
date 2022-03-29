@@ -2,6 +2,8 @@ import React, { Dispatch, SetStateAction, useMemo } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
+import { ALWAYS_EMPTY_ARRAY } from "settings";
+
 import { Room } from "types/rooms";
 import { Dimensions, Position } from "types/utility";
 
@@ -14,17 +16,17 @@ import "./MapPreview.scss";
 
 export interface MapPreviewProps {
   mapBackground?: string;
-  rooms: Room[];
+  rooms?: Room[];
   isEditing: boolean;
   selectedRoom?: Room;
-  setSelectedRoom: Dispatch<SetStateAction<Room | undefined>>;
+  setSelectedRoom?: Dispatch<SetStateAction<Room | undefined>>;
   onResizeRoom?: (size: Dimensions) => void;
   onMoveRoom?: (position: Position) => void;
 }
 
 export const MapPreview: React.FC<MapPreviewProps> = ({
   mapBackground,
-  rooms,
+  rooms = ALWAYS_EMPTY_ARRAY,
   onMoveRoom,
   onResizeRoom,
   selectedRoom,
@@ -47,9 +49,6 @@ export const MapPreview: React.FC<MapPreviewProps> = ({
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="MapPreview">
-        {hasMapBackground && (
-          <div className="MapPreview__header">{`Preview of your space’s map`}</div>
-        )}
         <VenueRoomsEditor
           interactive
           resizable
