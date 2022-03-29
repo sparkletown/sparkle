@@ -43,7 +43,6 @@ export const PLATFORM_BRAND_NAME = "Sparkle";
 
 export const SPARKLE_PHOTOBOOTH_URL = "outsnappedphotoboothcamp";
 
-export const SPARKLE_ICON = "/sparkle-icon.png";
 export const DEFAULT_MAP_BACKGROUND = "/maps/Sparkle_Field_Background.jpg";
 export const DEFAULT_LANDING_BANNER = "/assets/Default_Venue_Banner.png";
 export const DEFAULT_VENUE_BANNER_COLOR = "#000000";
@@ -296,133 +295,6 @@ export type RoomTemplate = {
   customInputs?: CustomInputsType[];
 };
 
-// @debt Refactor this constant into types/templates or similar?
-export const ROOM_TEMPLATES: RoomTemplate[] = [
-  {
-    template: VenueTemplate.artpiece,
-    name: "Art Piece",
-    description:
-      "Embed any 2-D or 3-D art experience on the Jam with this special template, which allows viewers to chat to each other as they experience your art.",
-    icon: "/venues/pickspace-thumbnail_art.png",
-    customInputs: [
-      {
-        name: "iframeUrl",
-        title: "Livestream URL",
-        type: "text",
-      },
-      {
-        name: "bannerMessage",
-        title: "Show an announcement in the venue (or leave blank for none)",
-        type: "text",
-      },
-    ],
-  },
-  {
-    template: VenueTemplate.auditorium,
-    name: "New Auditorium",
-    description: "Add an NEW auditorium with an embedded video and sections",
-    icon: "/venues/pickspace-thumbnail_auditorium.png",
-    customInputs: [
-      {
-        name: "iframeUrl",
-        title: "Livestream URL",
-        type: "text",
-      },
-    ],
-  },
-  {
-    template: VenueTemplate.zoomroom,
-    name: "Experience",
-    description: `Ideal for performances, debates, interactive sessions of all kinds: a ${ZOOM_ROOM_TAXON.capital} with its own spot on the Jam`,
-    icon: "/venues/pickspace-thumbnail_zoom.png",
-  },
-  {
-    template: VenueTemplate.firebarrel,
-    name: "Burn Barrel (Campfire?)",
-    description: "Huddle around a fire barrel with your close friends",
-    icon: "/rooms/room-icon-fire.png",
-  },
-  {
-    template: VenueTemplate.jazzbar,
-    name: "Music Bar",
-    description:
-      "Add a music venue with an embedded video and tables for people to join to have video chats and discuss life, the universe, and everything.",
-    icon: "/rooms/room-icon-musicbar.png",
-    customInputs: [
-      {
-        name: "iframeUrl",
-        title: "Livestream URL",
-        type: "text",
-      },
-    ],
-  },
-  {
-    template: VenueTemplate.partymap,
-    name: "Partymap",
-    description:
-      "Add your camp to the Jam in the form of a clickable map; then add tents, bars, domes and other spaces to your camp map.",
-    icon: "/venues/pickspace-thumbnail_camp.png",
-    customInputs: [
-      {
-        name: "bannerMessage",
-        title: "Show an announcement in the venue (or leave blank for none)",
-        type: "text",
-      },
-    ],
-  },
-  {
-    template: VenueTemplate.animatemap,
-    name: "AnimateMap",
-    description: "Add your Animate Map",
-    icon: "/venues/pickspace-thumbnail_camp.png",
-    customInputs: [
-      {
-        name: "bannerMessage",
-        title: "Show an announcement in the venue (or leave blank for none)",
-        type: "text",
-      },
-    ],
-  },
-  {
-    template: VenueTemplate.embeddable,
-    name: "Embeddable",
-    description:
-      "Insert almost anything into a styled iFrame. This space does not have video chatting.",
-    icon: "",
-    customInputs: [
-      {
-        name: "iframeUrl",
-        title: "Livestream URL",
-        type: "text",
-      },
-    ],
-  },
-  // {
-  //   template: VenueTemplate.viewingwindow,
-  //   name: "Viewing Window",
-  //   description:
-  //     "Embed any 2-D or 3-D art experience on the Jam with this special template, which allows viewers to chat to each other as they experience your art.",
-  //   icon: "/venues/pickspace-thumbnail_art.png",
-  //   customInputs: [
-  //     {
-  //       name: "iframeUrl",
-  //       title: "Livestream URL",
-  //       type: "text",
-  //     },
-  //     {
-  //       name: "bannerMessage",
-  //       title: "Show an announcement in the venue (or leave blank for none)",
-  //       type: "text",
-  //     },
-  //     {
-  //       name: "isWithParticipants",
-  //       title: "has participants?",
-  //       type: "switch",
-  //     },
-  //   ],
-  // },
-];
-
 // @debt Refactor this constant into types/templates + create an actual custom type grouping for it
 export const HAS_ROOMS_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.themecamp,
@@ -468,21 +340,6 @@ export const ALL_BURN_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.performancevenue,
   VenueTemplate.themecamp,
   VenueTemplate.viewingwindow,
-];
-
-export const RANDOM_AVATARS = [
-  "avatar-01.png",
-  "avatar-02.png",
-  "avatar-03.png",
-  "avatar-04.png",
-  "avatar-05.png",
-  "avatar-06.png",
-  "avatar-07.png",
-  "avatar-08.png",
-  "avatar-09.png",
-  "avatar-10.png",
-  "avatar-11.png",
-  "avatar-12.png",
 ];
 
 export const CHAT_MESSAGE_TIMEOUT = 500;
