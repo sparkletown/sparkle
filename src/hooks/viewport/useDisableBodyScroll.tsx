@@ -4,7 +4,7 @@ import { ATTENDEE_LAYOUT_CLASSNAME } from "settings";
 
 // @debt: we might need to find a solution that doesn't use body element/classname, but modifies
 // only the #root element
-export const useDisableBodyScroll = (isOpen: boolean) => {
+export const useDisableBodyScroll = (isOpen: boolean = true) => {
   useEffect(() => {
     const [layoutElement] = document.getElementsByClassName(
       ATTENDEE_LAYOUT_CLASSNAME
