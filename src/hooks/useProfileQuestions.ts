@@ -5,7 +5,7 @@ import { User } from "types/User";
 import { useWorldById } from "hooks/worlds/useWorldById";
 
 export const useProfileQuestions = (user?: User, worldId?: string) => {
-  const { world } = useWorldById(worldId);
+  const { world } = useWorldById({ worldId });
 
   const questions = world?.questions?.profile;
   const answers = useMemo(
