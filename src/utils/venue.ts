@@ -1,9 +1,4 @@
-import {
-  CONVERSATION_TABLES,
-  JAZZBAR_TABLES,
-  PLAYA_TEMPLATES,
-  SUBVENUE_TEMPLATES,
-} from "settings";
+import { CONVERSATION_TABLES, JAZZBAR_TABLES } from "settings";
 
 import { createSlug, VenueInput_v2 } from "api/admin";
 
@@ -11,23 +6,7 @@ import { SpaceSlug } from "types/id";
 import { AnyVenue } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
 
-import { assertUnreachable } from "./error";
 import { WithId } from "./id";
-
-export const canHaveSubvenues = (venue: AnyVenue): boolean =>
-  SUBVENUE_TEMPLATES.includes(venue.template);
-
-export const canBeDeleted = (venue: AnyVenue): boolean =>
-  !PLAYA_TEMPLATES.includes(venue.template);
-
-export const canHavePlacement = (venue: AnyVenue): boolean =>
-  PLAYA_TEMPLATES.includes(venue.template);
-
-export const checkIfValidVenueId = (venueId?: string): boolean => {
-  if (typeof venueId !== "string") return false;
-
-  return /[a-z0-9_]{1,250}/.test(venueId);
-};
 
 export const buildEmptySpace = (
   name: string,
@@ -77,30 +56,6 @@ export enum SortingOptions {
   newestFirst = "Newest First",
   oldestFirst = "Oldest First",
 }
-
-export const sortVenues = (
-  venueList: WithId<AnyVenue>[],
-  sortingOption: SortingOptions
-) => {
-  switch (sortingOption) {
-    case SortingOptions.az:
-      return [...venueList].sort((a, b) => a.id.localeCompare(b.id));
-    case SortingOptions.za:
-      return [...venueList].sort((a, b) => -1 * a.id.localeCompare(b.id));
-    case SortingOptions.oldestFirst:
-      return [...venueList].sort(
-        (a, b) =>
-          (a.createdAt ?? 0) - (b.createdAt ?? 0) || a.id.localeCompare(b.id)
-      );
-    case SortingOptions.newestFirst:
-      return [...venueList].sort(
-        (a, b) =>
-          (b.createdAt ?? 0) - (a.createdAt ?? 0) || a.id.localeCompare(b.id)
-      );
-    default:
-      assertUnreachable(sortingOption);
-  }
-};
 
 export interface FindSovereignVenueOptions {
   previouslyCheckedVenueIds?: readonly string[];
