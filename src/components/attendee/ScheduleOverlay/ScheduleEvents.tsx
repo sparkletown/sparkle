@@ -37,7 +37,7 @@ export const ScheduleEvents: React.FC<ScheduleEventsProps> = ({
   showPersonalisedSchedule,
   selectedDayIndex,
 }) => {
-  const { world } = useWorldAndSpaceByParams();
+  const { worldId } = useWorldAndSpaceByParams();
   const { userWithId } = useUser();
   const userEventIds =
     userWithId?.myPersonalizedSchedule ?? ALWAYS_EMPTY_OBJECT;
@@ -59,7 +59,7 @@ export const ScheduleEvents: React.FC<ScheduleEventsProps> = ({
 
   const schedule: ScheduleDay = useMemo(() => {
     const day = addDays(firstScheduleDate, selectedDayIndex);
-    console.log(liveAndFutureEvents);
+
     const daysEvents = liveAndFutureEvents.filter(
       isEventWithinDateAndNotFinished(day)
     );
@@ -69,12 +69,13 @@ export const ScheduleEvents: React.FC<ScheduleEventsProps> = ({
     );
 
     const currentVenueBookMarkEvents = eventsFilledWithPriority.filter(
-      ({ isSaved, worldId }) =>
-        isSaved && worldId?.toLowerCase() === world?.id.toLowerCase()
+      ({ isSaved, worldId: eventWorldId }) =>
+        isSaved && eventWorldId?.toLowerCase() === worldId?.toLowerCase()
     );
 
     const currentVenueEvents = eventsFilledWithPriority.filter(
-      ({ worldId }) => worldId?.toLowerCase() === world?.id.toLowerCase()
+      ({ worldId: eventWorldId }) =>
+        eventWorldId?.toLowerCase() === worldId?.toLowerCase()
     );
 
     return {
@@ -88,7 +89,7 @@ export const ScheduleEvents: React.FC<ScheduleEventsProps> = ({
     selectedDayIndex,
     liveAndFutureEvents,
     showPersonalisedSchedule,
-    world,
+    worldId,
   ]);
 
   const renderedEvents = useMemo(

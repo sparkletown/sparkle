@@ -27,8 +27,8 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
   bookmarkEvent,
 }) => {
   const isCurrentEventLive = isEventLive(event);
-  const { world } = useWorldById(event.worldId);
-  const { space } = useSpaceById(event.spaceId);
+  const { world } = useWorldById(event);
+  const { space } = useSpaceById(event);
 
   const showDate = Boolean(
     differenceInCalendarDays(eventEndTime({ event }), eventStartTime({ event }))

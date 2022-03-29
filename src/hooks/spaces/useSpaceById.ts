@@ -7,16 +7,16 @@ import { SpaceId, SpaceWithId, WorldId } from "types/id";
 
 import { useFireDocument } from "hooks/fire/useFireDocument";
 
-type UseSpaceById = (
-  options: string | undefined
-) => LoadStatus & {
+type UseSpaceById = (options: {
+  spaceId: string | undefined;
+}) => LoadStatus & {
   space?: SpaceWithId;
   spaceId?: SpaceId;
   worldId?: WorldId;
   error?: string;
 };
 
-export const useSpaceById: UseSpaceById = (spaceId) => {
+export const useSpaceById: UseSpaceById = ({ spaceId }) => {
   const { data: space, isLoading, isLoaded } = useFireDocument<SpaceWithId>(
     useMemo(() => (spaceId ? [COLLECTION_SPACES, spaceId] : DEFERRED), [
       spaceId,

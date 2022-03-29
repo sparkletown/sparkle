@@ -15,7 +15,7 @@ export const VenuePartygoers: React.FC<VenuePartygoersProps> = ({
   worldId,
 }) => {
   const { sovereignVenue } = useRelatedVenues();
-  const { world } = useWorldById(worldId);
+  const { world } = useWorldById({ worldId });
 
   // @debt recentUserCount should be moved to world
   const numberOfRecentWorldUsers = sovereignVenue?.recentUserCount ?? "";
