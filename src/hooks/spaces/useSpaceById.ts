@@ -1,14 +1,14 @@
-import { COLLECTION_SPACES } from "settings";
+import { useMemo } from "react";
+
+import { COLLECTION_SPACES, DEFERRED } from "settings";
 
 import { LoadStatus } from "types/fire";
 import { SpaceId, SpaceWithId, WorldId } from "types/id";
 
-import { convertToFirestoreKey } from "utils/id";
-
-import { useRefiDocument } from "hooks/fire/useRefiDocument";
+import { useFireDocument } from "hooks/fire/useFireDocument";
 
 type UseSpaceById = (options: {
-  spaceId?: SpaceId;
+  spaceId: string | undefined;
 }) => LoadStatus & {
   space?: SpaceWithId;
   spaceId?: SpaceId;
@@ -16,11 +16,12 @@ type UseSpaceById = (options: {
   error?: string;
 };
 
-export const useSpaceById: UseSpaceById = (options) => {
-  const { data: space, isLoading, isLoaded } = useRefiDocument<SpaceWithId>([
-    COLLECTION_SPACES,
-    convertToFirestoreKey(options?.spaceId),
-  ]);
+export const useSpaceById: UseSpaceById = ({ spaceId }) => {
+  const { data: space, isLoading, isLoaded } = useFireDocument<SpaceWithId>(
+    useMemo(() => (spaceId ? [COLLECTION_SPACES, spaceId] : DEFERRED), [
+      spaceId,
+    ])
+  );
 
   return {
     space,

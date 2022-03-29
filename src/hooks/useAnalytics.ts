@@ -104,7 +104,9 @@ export const useAnalytics = ({
   venue: space,
 }: UseAnalyticsOptions): UseAnalyticsResult => {
   const { user } = useLoginCheck();
-  const { world, isLoaded: isWorldLoaded } = useWorldById(space?.worldId);
+  const { world, isLoaded: isWorldLoaded } = useWorldById({
+    worldId: space?.worldId,
+  });
   const email = user?.email;
   const spaceId = space?.id;
   const worldId = world?.id;
