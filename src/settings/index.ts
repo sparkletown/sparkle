@@ -33,12 +33,6 @@ export * from "./useSettingsDefaults";
 export * from "./validationSettings";
 export * from "./worldDefaultSettings";
 
-export const ENABLE_POPUPS_URL =
-  "https://support.google.com/chrome/answer/95472?hl=en&co=GENIE.Platform%3DDesktop";
-
-// Sparkle facebook app id. More settings can be found at https://developers.facebook.com/apps/2633721400264126/dashboard/
-export const FACEBOOK_SPARKLE_APP_ID = "2633721400264126";
-
 export const PLATFORM_BRAND_NAME = "Sparkle";
 
 export const SPARKLE_PHOTOBOOTH_URL = "outsnappedphotoboothcamp";
