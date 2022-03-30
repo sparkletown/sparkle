@@ -32,3 +32,12 @@ $-z-index--header: layer.above(layer.$z-index--attendee);
 .narrow {
   @include sparkle.color--glass;
 }
+
+.headerTime {
+  margin-left: space.empty(1);
+}
+
+.headerTimeTransparent {
+  margin-left: space.empty(1);
+  opacity: 0.5;
+}

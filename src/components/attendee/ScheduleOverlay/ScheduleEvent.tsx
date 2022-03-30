@@ -62,7 +62,7 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
           </span>
           {STRING_SPACE}
           <span>{formatTimeLocalised(eventEndTime({ event }))}</span>
-          <span> in {event.spaceId}</span>
+          <span> in {space?.slug}</span>
         </div>
         <div>{event.description}</div>
       </div>
