@@ -1,6 +1,12 @@
+@use "scss/attendee/layer";
+@use "scss/attendee/theme";
+@use "scss/attendee/space";
+
+$-z-index--banner: layer.above(0);
+
 .banner {
   position: fixed;
-  z-index: 90;
+  z-index: $-z-index--banner;
   top: 0;
   left: 0;
   right: 0;
@@ -19,7 +25,7 @@
   justify-content: center;
   align-items: center;
 
-  color: white;
+  color: theme.$c-default-text;
 
   height: 100%;
   width: 100%;
@@ -32,5 +38,5 @@
 }
 
 .closeButton {
-  padding: 0 12px;
+  padding: 0 space.gap(6);
 }
