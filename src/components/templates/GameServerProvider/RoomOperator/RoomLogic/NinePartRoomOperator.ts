@@ -4,7 +4,7 @@ import {
   RoomInfoType,
   RoomItem,
   RoomsModel,
-} from "../../../../Structures/RoomsModel";
+} from '../../../GameStructures';
 
 import { RoomMath } from "./RoomMath";
 
@@ -85,7 +85,7 @@ export abstract class NinePartRoomOperator {
     this.onCreate.call(this, this._myMainRoom.id, true);
   }
 
-  private _dividePeripheralRoom(id: string) {}
+  private _dividePeripheralRoom(id: string) { }
 
   public getMyMainRoomNode(x = this.position.x, y = this.position.y) {
     // const mainRooms = this._roomsModel.list.filter(
@@ -127,7 +127,7 @@ export abstract class NinePartRoomOperator {
   //   return room;
   // }
 
-  getMyPeripheralRoom() {}
+  getMyPeripheralRoom() { }
 
   // "magic" methods for overloading
   abstract onCreate(id: string, isMain: boolean): void;

@@ -4,15 +4,16 @@ import { Point } from "types/utility";
 
 import { getRandomInt } from "utils/getRandomInt";
 
-import { PlayerIOInstance } from "../../../../../PlayerIO/PlayerIO";
-import { ProxyClient } from "../../../../../PlayerIO/PromissesWrappers/ProxyClient";
-import { ProxyMultiplayer } from "../../../../../PlayerIO/PromissesWrappers/ProxyMultiplayer";
-import { ProxyPlayerIO } from "../../../../../PlayerIO/PromissesWrappers/ProxyPlayerIO";
-import { PlaygroundMap } from "../../../../game/utils/PlaygroundMap";
-import EventProvider, { EventType } from "../../../EventProvider/EventProvider";
-import { CloudDataProvider } from "../../CloudDataProvider";
-import playerModel from "../../Structures/PlayerModel";
-import { RoomInfoType } from "../../Structures/RoomsModel";
+import { PlaygroundMap } from "../AnimateMap/game/utils/PlaygroundMap";
+import { DataProvider } from "../DataProvider";
+import { EventProvider, EventType } from "../EventProvider";
+import { GameServerProviderInterface } from "../GameServerProviderInterface";
+import { RoomInfoType } from "../GameStructures";
+import playerModel from "../GameStructures/PlayerModel";
+import { PlayerIOInstance } from "../PlayerIO/PlayerIO";
+import { ProxyClient } from "../PlayerIO/PromissesWrappers/ProxyClient";
+import { ProxyMultiplayer } from "../PlayerIO/PromissesWrappers/ProxyMultiplayer";
+import { ProxyPlayerIO } from "../PlayerIO/PromissesWrappers/ProxyPlayerIO";
 
 import { IPlayerIORoomOperator } from "./RoomOperator/IPlayerIORoomOperator";
 import { PlayerIORoomOperator } from "./RoomOperator/PlayerIORoomOperator";
@@ -25,7 +26,7 @@ import {
   RoomTypes,
 } from "./types";
 
-export class PlayerIODataProvider extends utils.EventEmitter {
+export class GameServerProvider extends utils.EventEmitter implements GameServerProviderInterface {
   private _PlayerIO = PlayerIOInstance;
   public PlayerIOWrapper = new ProxyPlayerIO(this._PlayerIO);
   public client?: ProxyClient;
@@ -35,7 +36,7 @@ export class PlayerIODataProvider extends utils.EventEmitter {
   private _playerObject?: PlayerObject;
 
   constructor(
-    readonly cloudDataProvider: CloudDataProvider,
+    readonly dataProvider: DataProvider,
     readonly playerioGameId: string,
     readonly playerId: string,
     readonly reInitOnError: boolean = true
@@ -65,7 +66,7 @@ export class PlayerIODataProvider extends utils.EventEmitter {
       return Promise.reject("Connection not ready.");
 
     return this.client.multiplayer.listRooms<RoomInfoType>(
-      this.cloudDataProvider.settings.playerioAdvancedMode
+      this.dataProvider.settings.playerioAdvancedMode
         ? RoomTypes.Zone
         : RoomTypes.SeparatedRoom,
       null,
@@ -141,25 +142,24 @@ export class PlayerIODataProvider extends utils.EventEmitter {
     if (this.playerIORoomOperator) return this.playerIORoomOperator;
 
     console.log(
-      `init ${
-        this.cloudDataProvider.settings.playerioAdvancedMode
-          ? "ADVANCED"
-          : "SEPARATED"
+      `init ${this.dataProvider.settings.playerioAdvancedMode
+        ? "ADVANCED"
+        : "SEPARATED"
       } room operator`
     );
     const initialParams: [
-      CloudDataProvider,
+      DataProvider,
       ProxyMultiplayer,
       Point,
       string
     ] = [
-      this.cloudDataProvider,
-      client.multiplayer,
-      { x: playerPosition.x, y: playerPosition.y },
-      this.playerId,
-    ];
+        this.dataProvider,
+        client.multiplayer,
+        { x: playerPosition.x, y: playerPosition.y },
+        this.playerId,
+      ];
 
-    if (this.cloudDataProvider.settings.playerioAdvancedMode)
+    if (this.dataProvider.settings.playerioAdvancedMode)
       return new PlayerIORoomOperator(...initialParams);
     else return new PlayerIOSeparatedRoomOperator(...initialParams);
   }

@@ -1,9 +1,9 @@
 // import { DocumentData, QuerySnapshot } from "@firebase/firestore-types";
 
+import { GameServerProviderInterface } from "../GameServerProviderInterface";
+
 // import { ReplicatedUser } from "../../../../../../store/reducers/AnimateMap";
 
-import { FirebaseDataProvider } from "./Firebase/FirebaseDataProvider";
-import { PlayerIODataProvider } from "./PlayerIO/PlayerIODataProvider";
 export interface User {
   id: string;
   name: string;
@@ -41,9 +41,9 @@ export interface CommonInterface {
  */
 export class CommonLinker implements CommonInterface {
   constructor(
-    private _playerIOProvider: PlayerIODataProvider,
-    private _firebaseProvider: FirebaseDataProvider
-  ) {}
+    private gameServerProvider: GameServerProviderInterface,
+    private _firebaseProvider: unknown
+  ) { }
 
   // loadUsersAsync(): Promise<User[]> {
   //   return Promise.resolve([]);
@@ -63,11 +63,11 @@ export class CommonLinker implements CommonInterface {
   // }
 
   sendPlayerPosition(x: number, y: number) {
-    this._playerIOProvider.sendPlayerPosition(x, y);
+    this.gameServerProvider.sendPlayerPosition(x, y);
   }
 
   sendShoutMessage(shout: string) {
-    this._playerIOProvider.sendShoutMessage(shout);
+    this.gameServerProvider.sendShoutMessage(shout);
   }
 
   // updateUsers(users: ReplicatedUser[]): void {

@@ -1,6 +1,6 @@
 import { Point } from "types/utility";
 
-import { RoomInfoType } from "../../../Structures/RoomsModel";
+import { RoomInfoType } from "../../GameStructures";
 
 import { ConnectionWrapper } from "./PlayerIORoomOperator";
 

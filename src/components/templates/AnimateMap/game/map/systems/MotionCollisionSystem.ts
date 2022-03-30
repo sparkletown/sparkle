@@ -1,8 +1,7 @@
 import { Engine, NodeList, System } from "@ash.ts/ash";
 
-import { ReplicatedVenue } from "store/reducers/AnimateMap";
-
-import { EventType } from "../../../bridges/EventProvider/EventProvider";
+import { EventType } from "../../../../EventProvider";
+import { ReplicatedVenue } from "../../../../GameInstanceCommonInterfaces";
 import { GameInstance } from "../../GameInstance";
 import { CollisionComponent } from "../components/CollisionComponent";
 import { MovementComponent } from "../components/MovementComponent";

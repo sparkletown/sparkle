@@ -3,15 +3,13 @@ import React, { useEffect, useState } from "react";
 import { DEFAULT_PORTAL_BOX } from "settings";
 
 import { setAnimateMapRoom } from "store/actions/AnimateMap";
-import { ReplicatedVenue } from "store/reducers/AnimateMap";
 
 import { Room } from "types/rooms";
 
 import { useDispatch } from "hooks/useDispatch";
 
-import EventProvider, {
-  EventType,
-} from "../../bridges/EventProvider/EventProvider";
+import {EventProvider,EventType} from "../../../EventProvider";
+import { ReplicatedVenue } from "../../../GameInstanceCommonInterfaces";
 import { ENTER } from "../../game/utils/Keyboard";
 import KeyPoll from "../../game/utils/KeyPollSingleton";
 

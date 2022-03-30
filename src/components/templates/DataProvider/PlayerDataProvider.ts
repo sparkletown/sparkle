@@ -2,9 +2,10 @@
 
 import { Point } from "types/utility";
 
-import { PlayerDataProviderInterface } from "../../../../DataProvider";
-import { CommonInterface } from "../Contructor/CommonInterface";
-import playerModel from "../Structures/PlayerModel";
+import { CommonInterface } from "../CommonInterface";
+import playerModel from "../GameStructures/PlayerModel";
+
+import { PlayerDataProviderInterface } from "./PlayerDataProviderInterface";
 
 export enum MessageType {
   move = "move",
@@ -32,7 +33,7 @@ export class PlayerDataProvider implements PlayerDataProviderInterface {
     return { x: this._position.x, y: this._position.y };
   }
 
-  constructor(readonly id: string, readonly commonInterface: CommonInterface) {}
+  constructor(readonly id: string, readonly commonInterface: CommonInterface) { }
 
   public updatePosition() {
     // AB = sqrt( (Ax-Bx)^2 + (Ay-By)^2 ) - distance between points

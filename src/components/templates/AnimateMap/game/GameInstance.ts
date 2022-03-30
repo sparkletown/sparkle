@@ -9,7 +9,8 @@ import {
 
 import { Point } from "types/utility";
 
-import { DataProvider } from "../../DataProvider";
+import { DataProvider, DataProviderEvent } from "../../DataProvider";
+import { EventProvider, EventType } from "../../EventProvider";
 import {
   AnimateMapActionTypes,
   ReplicatedFirebarrel,
@@ -20,10 +21,6 @@ import {
 } from "../../GameInstanceCommonInterfaces";
 import { GameInstanceInterface } from "../../GameInstanceInterface";
 import { GameInstanceProvider } from "../../GameInstanceProvider";
-import { DataProviderEvent } from "../bridges/DataProvider/Providers/DataProviderEvent";
-import EventProvider, {
-  EventType
-} from "../bridges/EventProvider/EventProvider";
 import { GameConfig } from "../configs/GameConfig";
 
 import { TimeoutCommand } from "./commands/TimeoutCommand";

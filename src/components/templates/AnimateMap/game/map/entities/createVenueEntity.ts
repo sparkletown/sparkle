@@ -4,8 +4,8 @@ import { Sprite } from "pixi.js";
 import { DEFAULT_PORTAL_BOX } from "settings";
 
 import { setAnimateMapRoom } from "store/actions/AnimateMap";
-import { ReplicatedVenue } from "store/reducers/AnimateMap";
 
+import { ReplicatedVenue } from "../../../../GameInstanceCommonInterfaces";
 import { GameConfig } from "../../../configs/GameConfig";
 import { CropVenue } from "../../commands/CropVenue";
 import { GameInstance } from "../../GameInstance";

@@ -1,5 +1,5 @@
-import { UInt, ULong } from "../../../../../PlayerIO/PlayerIO";
-import { ProxyDatabaseObject } from "../../../../../PlayerIO/PromissesWrappers/ProxyDatabaseObject";
+import { UInt, ULong } from "../PlayerIO/PlayerIO";
+import { ProxyDatabaseObject } from "../PlayerIO/PromissesWrappers/ProxyDatabaseObject";
 
 export const PLAYER_OBJECTS_TABLE = "PlayerObjects";
 
@@ -45,7 +45,7 @@ export type ProcessedShoutReserveMessageTuple = [string, string];
 
 export type FindMessageTuple<
   MessagesType
-> = MessagesType extends MessagesTypes.move
+  > = MessagesType extends MessagesTypes.move
   ? MoveMessageTuple
   : MessagesType extends MessagesTypes.moveReserve
   ? MoveReserveMessageTuple

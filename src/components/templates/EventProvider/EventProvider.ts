@@ -1,8 +1,7 @@
 import { utils } from "pixi.js";
 
-import { ReplicatedUser, ReplicatedVenue } from "store/reducers/AnimateMap";
-
-import { RoomPointNode } from "../DataProvider/Structures/RoomsModel";
+import { ReplicatedUser, ReplicatedVenue } from "../GameInstanceCommonInterfaces";
+import { RoomPointNode } from "../GameStructures";
 
 export enum EventType {
   ON_ROOMS_CHANGED = "EventProviderType.ON_ROOMS_CHANGED",
@@ -128,5 +127,4 @@ export class EventProviderSingleton extends utils.EventEmitter {
   }
 }
 
-const EventProvider = EventProviderSingleton.getInstance();
-export default EventProvider;
+export const EventProvider = EventProviderSingleton.getInstance();

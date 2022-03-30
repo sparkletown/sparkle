@@ -1,13 +1,9 @@
 import { Box, Point as QPoint, QuadTree } from "js-quadtree";
 import { intersection } from "lodash";
 
-import { RoomInfo } from "../../../../PlayerIO/PlayerIO";
-import EventProvider, { EventType } from "../../EventProvider/EventProvider";
-import {
-  RoomMath,
-  Tuple,
-} from "../Contructor/PlayerIO/RoomOperator/RoomLogic/RoomMath";
-import { RoomTypes } from "../Contructor/PlayerIO/types";
+import { EventProvider, EventType } from "../EventProvider";
+import { RoomMath, RoomTypes, Tuple } from "../GameServerProvider";
+import { RoomInfo } from "../PlayerIO/PlayerIO";
 
 export const ROOM_PREFIX = "Z_";
 export const MIRROR_ROOM_PREFIX = "mZ_"; //Note: don't make this prefix a substring ROOM_PREFIX (or rewrite getRoomNumberById)

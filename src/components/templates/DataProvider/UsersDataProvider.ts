@@ -1,12 +1,14 @@
 import { ReplicatedUser } from "store/reducers/AnimateMap";
 
-import { CommonInterface } from "../Contructor/CommonInterface";
-import { UsersMap } from "../Structures/UsersMap";
+import { UsersMap } from "../AnimateMap/bridges/DataProvider/Structures/UsersMap";
+import { CommonInterface } from "../CommonInterface";
 
-export class UsersDataProvider {
+import { UsersDataProviderInterface } from "./UsersDataProviderInterface";
+
+export class UsersDataProvider implements UsersDataProviderInterface {
   public users = new UsersMap();
 
-  constructor(readonly commonInterface: CommonInterface) {}
+  constructor(readonly commonInterface: CommonInterface) { }
 
   public join(sessionId: number, playerId: string) {
     this.users.add(sessionId, playerId);
@@ -16,7 +18,7 @@ export class UsersDataProvider {
     this.users.remove(sessionId);
   }
 
-  public update(sessionId: number, x: number, y: number, id: string) {
+  public update(sessionId: number, x: number, y: number, id: string): boolean {
     return this.users.add(sessionId, id);
   }
 

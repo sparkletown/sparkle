@@ -1,5 +1,4 @@
-import { ReplicatedFirebarrel } from "store/reducers/AnimateMap";
-
+import { ReplicatedFirebarrel } from "../../../../GameInstanceCommonInterfaces";
 import { FSMBase } from "../finalStateMachines/FSMBase";
 
 export class FirebarrelComponent {
@@ -13,5 +12,5 @@ export class FirebarrelComponent {
     return "haloAnimated";
   }
 
-  constructor(public model: ReplicatedFirebarrel, public fsm: FSMBase) {}
+  constructor(public model: ReplicatedFirebarrel, public fsm: FSMBase) { }
 }

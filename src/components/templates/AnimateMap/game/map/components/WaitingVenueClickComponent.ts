@@ -1,5 +1,5 @@
-import { ReplicatedVenue } from "store/reducers/AnimateMap";
+import { ReplicatedVenue } from "../../../../GameInstanceCommonInterfaces";
 
 export class WaitingVenueClickComponent {
-  constructor(public venue: ReplicatedVenue) {}
+  constructor(public venue: ReplicatedVenue) { }
 }

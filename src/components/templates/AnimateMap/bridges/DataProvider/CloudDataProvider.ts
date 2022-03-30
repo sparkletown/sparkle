@@ -1,13 +1,6 @@
-import { ExtendedFirebaseInstance } from "react-redux-firebase";
 import { utils } from "pixi.js";
 
 import { DEFAULT_BADGE_IMAGE } from "settings";
-
-import {
-  ReplicatedFirebarrel,
-  ReplicatedUser,
-  ReplicatedVenue,
-} from "store/reducers/AnimateMap";
 
 import { Firebarrel } from "types/animateMap";
 import { User } from "types/User";
@@ -15,42 +8,31 @@ import { User } from "types/User";
 import { WithId } from "utils/id";
 import { getFirebaseStorageResizedImage } from "utils/image";
 
-import { DataProvider } from "../../../DataProvider";
+import { CommonInterface, CommonLinker } from "../../../CommonInterface";
+import { DataProvider, DataProviderSettingInterface, PlayerDataProvider, UsersDataProvider } from "../../../DataProvider";
+import { DataProviderEvent } from "../../../DataProvider/DataProviderEvent";
+import { EventProvider, EventType } from "../../../EventProvider";
+import {
+  ReplicatedFirebarrel,
+  ReplicatedUser,
+  ReplicatedVenue,
+} from "../../../GameInstanceCommonInterfaces";
+import { GameServerBots, GameServerProvider } from "../../../GameServerProvider";
+import { getIntByHash } from "../../../GameServerProvider/utils/getIntByHash";
+import playerModel from "../../../GameStructures/PlayerModel";
 import { RoomWithFullData } from "../CloudDataProviderWrapper";
-import EventProvider, { EventType } from "../EventProvider/EventProvider";
 
-import { CommonInterface, CommonLinker } from "./Contructor/CommonInterface";
 import { FirebaseDataProvider } from "./Contructor/Firebase/FirebaseDataProvider";
-import { PlayerIOBots } from "./Contructor/PlayerIO/PlayerIOBots";
-import { PlayerIODataProvider } from "./Contructor/PlayerIO/PlayerIODataProvider";
-import { getIntByHash } from "./Contructor/PlayerIO/utils/getIntByHash";
-import { DataProviderEvent } from "./Providers/DataProviderEvent";
-import { PlayerDataProvider } from "./Providers/PlayerDataProvider";
-import { UsersDataProvider } from "./Providers/UsersDataProvider";
-import playerModel from "./Structures/PlayerModel";
 
 interface TEMPORARY_USERS_TYPE_REPLACEMENT {
   isRecentWorldUsersLoaded: boolean;
   recentWorldUsers: readonly WithId<User>[];
 }
 
-interface CloudDataProviderSetting {
-  playerId: string;
-  userAvatarUrl?: string;
-  firebase: ExtendedFirebaseInstance;
-  playerioGameId: string;
-  playerioMaxPlayerPerRoom: number;
-  playerioFrequencyUpdate: number;
-  playerioAdvancedMode?: boolean;
-  reInitOnError?: boolean;
-}
-
 /**
  * Dirty class, for initiating all general data bridge logic
  */
-export class CloudDataProvider
-  extends utils.EventEmitter
-  implements DataProvider {
+export class CloudDataProvider extends utils.EventEmitter implements DataProvider {
   private _updateCounter = 0;
   private _maxUpdateCounter = 1000 / this.settings.playerioFrequencyUpdate;
 
@@ -72,12 +54,12 @@ export class CloudDataProvider
 
   private _testBots;
 
-  constructor(readonly settings: CloudDataProviderSetting) {
+  constructor(readonly settings: DataProviderSettingInterface) {
     super();
 
     this.settings = { ...settings };
 
-    this._testBots = new PlayerIOBots(
+    this._testBots = new GameServerBots(
       this,
       this.settings.playerioGameId,
       this.settings.playerioAdvancedMode
@@ -89,7 +71,7 @@ export class CloudDataProvider
     playerModel.data.id = this.settings.playerId;
 
     this.commonInterface = new CommonLinker(
-      new PlayerIODataProvider(
+      new GameServerProvider(
         this,
         this.settings.playerioGameId,
         this.settings.playerId,
@@ -283,7 +265,7 @@ export class CloudDataProvider
           firebarrel.trackSrc === existFirebarrel.data.trackSrc &&
           firebarrel.isLocked === existFirebarrel.data.isLocked &&
           firebarrel.connectedUsers?.length ===
-            existFirebarrel.data.connectedUsers?.length &&
+          existFirebarrel.data.connectedUsers?.length &&
           firebarrel.maxUserCount === existFirebarrel.data.maxUserCount
         );
       })

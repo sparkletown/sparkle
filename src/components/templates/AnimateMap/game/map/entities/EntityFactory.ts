@@ -2,13 +2,13 @@ import { Engine, Entity, NodeList } from "@ash.ts/ash";
 import { Sprite } from "pixi.js";
 
 import { setAnimateMapFireBarrel } from "store/actions/AnimateMap";
+
 import {
   ReplicatedArtcar,
   ReplicatedFirebarrel,
   ReplicatedUser,
   ReplicatedVenue,
-} from "store/reducers/AnimateMap";
-
+} from "../../../../GameInstanceCommonInterfaces";
 import { GameConfig } from "../../../configs/GameConfig";
 import { ImageToCanvas } from "../../commands/ImageToCanvas";
 import { LoadImage } from "../../commands/LoadImage";
@@ -340,7 +340,7 @@ export default class EntityFactory {
             sprite.addChild(sprite.avatar);
           }
         })
-        .catch((error) => {})
+        .catch((error) => { })
         .finally(() => {
           const spriteComponent: SpriteComponent = new SpriteComponent();
           spriteComponent.view = sprite;
@@ -359,7 +359,7 @@ export default class EntityFactory {
 
           return Promise.resolve(comm);
         })
-        .catch(() => {})
+        .catch(() => { })
         .finally(() => {
           const spriteComponent: SpriteComponent = new SpriteComponent();
           spriteComponent.view = sprite;

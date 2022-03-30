@@ -18,7 +18,6 @@ import { WithId } from "utils/id";
 
 import { useDispatch } from "hooks/useDispatch";
 
-import { ReplicatedUser } from "../../../store/reducers/AnimateMap";
 import { AnimateMap } from "../AnimateMap";
 import { CloudDataProviderWrapper } from "../AnimateMap/bridges/CloudDataProviderWrapper";
 import { CloudDataProvider } from "../AnimateMap/bridges/DataProvider/CloudDataProvider";
@@ -26,6 +25,7 @@ import { configs } from "../AnimateMap/configs";
 import { GameConfig } from "../AnimateMap/configs/GameConfig";
 import { GameInstance } from "../AnimateMap/game/GameInstance";
 import { useRelatedPartymapRooms } from "../AnimateMap/hooks/useRelatedPartymapRooms";
+import { ReplicatedUser } from "../GameInstanceCommonInterfaces";
 
 
 export type AnimateMapWrapperProps = {

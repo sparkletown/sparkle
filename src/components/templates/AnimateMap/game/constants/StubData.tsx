@@ -7,7 +7,7 @@ import { determineAvatar } from "utils/image";
 
 import { Point } from "../../../../../types/utility";
 import { ReplicatedArtcar, ReplicatedUser } from "../../../GameInstanceCommonInterfaces";
-import { getIntByHash } from "../../bridges/DataProvider/Contructor/PlayerIO/utils/getIntByHash";
+import { getIntByHash } from "../../../GameServerProvider/utils/getIntByHash";
 import { GameConfig } from "../../configs/GameConfig";
 import { GameInstance } from "../GameInstance";
 

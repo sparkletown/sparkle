@@ -1,69 +1,56 @@
 import { Point } from "types/utility";
 
-import { ProxyMultiplayer } from "../../../../../../PlayerIO/PromissesWrappers/ProxyMultiplayer";
-import EventProvider, {
-  EventType,
-} from "../../../../EventProvider/EventProvider";
-import { CloudDataProvider } from "../../../CloudDataProvider";
-import { initialRoomData, RoomInfoType } from "../../../Structures/RoomsModel";
+import { DataProvider } from "../../DataProvider";
+import { EventProvider, EventType } from "../../EventProvider";
+import { initialRoomData } from "../../GameStructures";
+import { ProxyConnection } from "../../PlayerIO/PromissesWrappers/ProxyConnection";
+import { ProxyMultiplayer } from "../../PlayerIO/PromissesWrappers/ProxyMultiplayer";
 import { FindMessageTuple, MessagesTypes, RoomTypes } from "../types";
 
-import { IPlayerIORoomOperator } from "./IPlayerIORoomOperator";
-import { ConnectionWrapper } from "./PlayerIORoomOperator";
+import { NinePartRoomOperator } from "./RoomLogic/NinePartRoomOperator";
+import { IPlayerIORoomOperator } from "./IPlayerIORoomOperator";;
 
-enum IsConnectedStates {
-  false = 0,
-  true,
-  inProgress,
+export interface ConnectionWrapper {
+  id?: string;
+  instance?: ProxyConnection;
 }
 
-export class PlayerIOSeparatedRoomOperator implements IPlayerIORoomOperator {
-  mainConnection: ConnectionWrapper = {};
-  position: Point;
+/**
+ * Main logic class for working with rooms
+ */
+export class PlayerIORoomOperator
+  extends NinePartRoomOperator
+  implements IPlayerIORoomOperator {
+  public mainConnection: ConnectionWrapper = {};
+  public peripheralConnections: ConnectionWrapper[] = [];
 
   public constructor(
-    readonly cloudDataProvider: CloudDataProvider,
+    readonly dataProvider: DataProvider,
     public multiplayer: ProxyMultiplayer,
     playerPosition: Point,
     public playerId: string
   ) {
-    this.position = playerPosition;
+    super(playerPosition);
   }
 
-  private isConnected: IsConnectedStates = IsConnectedStates.false;
-
-  update(listRooms: RoomInfoType[], hardUpdate?: boolean): void {
-    if (this.position.x < 0 || this.position.y < 0) return; //todo: add checking with bounds ?
-    if (this.isConnected) return;
-
-    this.isConnected = IsConnectedStates.inProgress;
-    console.log("UPDATE ROOM...");
-    const id = listRooms
-      .filter(
-        (room) =>
-          room.onlineUsers <
-          this.cloudDataProvider.settings.playerioMaxPlayerPerRoom
-      )
-      .sort((a, b) => b.onlineUsers - a.onlineUsers)[0]?.id;
-    this.onCreate(id)
-      .then(() => {
-        console.log("SUCCESS CONNECT");
-        this.isConnected = IsConnectedStates.true;
+  public onCreate(id: string, isMain: boolean = false) {
+    console.log(this);
+    this.multiplayer
+      .createJoinRoom(id, RoomTypes.Zone, true, initialRoomData, {
+        isMain: isMain,
       })
-      .catch(() => {
-        console.warn("FAILURE");
-        this.isConnected = IsConnectedStates.false;
-        this.update(listRooms);
-      });
-  }
-
-  public async onCreate(id: string | undefined) {
-    return this.multiplayer
-      .createJoinRoom(id ?? "", RoomTypes.SeparatedRoom, true, initialRoomData)
       .then((connection) => {
-        console.log(`Connect to ${id} as main`);
-        this.mainConnection.id = id;
-        this.mainConnection.instance = connection;
+        if (isMain) {
+          console.log(`Connect to ${id} as main`);
+          this.mainConnection.id = id;
+          this.mainConnection.instance = connection;
+        } else {
+          console.log(`Connect to ${id} as peripheral`);
+          this.peripheralConnections.push({
+            id: id,
+            instance: connection,
+          });
+        }
 
         connection.addMessageCallback<
           FindMessageTuple<MessagesTypes.newUserJoined>
@@ -72,7 +59,7 @@ export class PlayerIOSeparatedRoomOperator implements IPlayerIORoomOperator {
           const x = m.getUInt(1);
           const y = m.getUInt(2);
           console.log(`User ${userId} joint to ${id} on position (${x},${y})`);
-          const user = this.cloudDataProvider.users.getUserByMessengerId(
+          const user = this.dataProvider.users.getUserByMessengerId(
             parseInt(userId)
           );
           if (!user || Array.isArray(user)) return console.error("Bad user");
@@ -88,7 +75,7 @@ export class PlayerIOSeparatedRoomOperator implements IPlayerIORoomOperator {
           const innerUserId = m.getULong(0);
           const x = m.getUInt(1);
           const y = m.getUInt(2);
-          const user = this.cloudDataProvider.users.getUserByMessengerId(
+          const user = this.dataProvider.users.getUserByMessengerId(
             innerUserId
           );
           if (!user || Array.isArray(user)) return console.error("Bad user");
@@ -104,7 +91,7 @@ export class PlayerIOSeparatedRoomOperator implements IPlayerIORoomOperator {
           const innerUserId = m.getString(0);
           const x = m.getUInt(1);
           const y = m.getUInt(2);
-          const user = this.cloudDataProvider.users.getUserByMessengerId(
+          const user = this.dataProvider.users.getUserByMessengerId(
             //todo: add getUserById
             parseInt(innerUserId)
           );
@@ -120,7 +107,7 @@ export class PlayerIOSeparatedRoomOperator implements IPlayerIORoomOperator {
         >(MessagesTypes.processedShout, (m) => {
           const innerUserId = m.getULong(0);
           const shout: string = m.getString(1);
-          const user = this.cloudDataProvider.users.getUserByMessengerId(
+          const user = this.dataProvider.users.getUserByMessengerId(
             innerUserId
           );
           if (!user || Array.isArray(user)) return console.error("Bad user");
@@ -132,7 +119,7 @@ export class PlayerIOSeparatedRoomOperator implements IPlayerIORoomOperator {
         >(MessagesTypes.processedShoutReserve, (m) => {
           const innerUserId = m.getString(0);
           const shout = m.getString(1);
-          const user = this.cloudDataProvider.users.getUserByMessengerId(
+          const user = this.dataProvider.users.getUserByMessengerId(
             //todo: add getUserById
             parseInt(innerUserId)
           );
@@ -145,7 +132,7 @@ export class PlayerIOSeparatedRoomOperator implements IPlayerIORoomOperator {
           (m) => {
             const innerUserId = m.getString(0);
             console.log(`User ${innerUserId} left from ${id}`);
-            const user = this.cloudDataProvider.users.getUserByMessengerId(
+            const user = this.dataProvider.users.getUserByMessengerId(
               parseInt(innerUserId)
             );
             if (!user || Array.isArray(user)) return console.error("Bad user");
@@ -159,10 +146,25 @@ export class PlayerIOSeparatedRoomOperator implements IPlayerIORoomOperator {
         >(MessagesTypes.divideSpeakers, (m) => {
           console.log("DIVIDE!");
           //TODO: check removeMessageCallback needed or not
-          // this._divideHandler(id);
+          this._divideHandler(id);
         });
       });
+  }
 
-    return Promise.resolve("All handlers added");
+  public async onJoin(id: string) {
+    return this.multiplayer
+      .createJoinRoom(id, RoomTypes.Zone, true, initialRoomData)
+      .then((connection) => {
+        console.log("sss Room created");
+        // this._connectionInitCallback(connection);
+        // this.connection = connection;
+      });
+  }
+
+  public async onLeave(id: string) {
+    if (this.mainConnection.id === id) {
+      this.mainConnection.instance?.disconnect();
+      this.mainConnection.instance = undefined;
+    }
   }
 }

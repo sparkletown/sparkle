@@ -10,9 +10,7 @@ import {
 
 import { useDispatch } from "hooks/useDispatch";
 
-import EventProvider, {
-  EventType,
-} from "../../bridges/EventProvider/EventProvider";
+import {EventProvider, EventType} from "../../../EventProvider";
 
 import AddIcon from "assets/images/AnimateMap/UI/BikeToggler/icon-add.svg";
 import BikeIcon from "assets/images/AnimateMap/UI/BikeToggler/icon-bike.svg";

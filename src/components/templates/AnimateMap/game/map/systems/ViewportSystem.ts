@@ -13,8 +13,7 @@ import {
   setAnimateMapZoomAction,
 } from "store/actions/AnimateMap";
 
-import { EventType } from "components/templates/AnimateMap/bridges/EventProvider/EventProvider";
-
+import { EventType } from "../../../../EventProvider";
 import { GameConfig } from "../../../configs/GameConfig";
 import { TimeoutCommand } from "../../commands/TimeoutCommand";
 import { GameInstance } from "../../GameInstance";
@@ -271,7 +270,7 @@ export class ViewportSystem extends System {
     }
   };
 
-  private _viewportMovedHandler(data: MovedEventData) {}
+  private _viewportMovedHandler(data: MovedEventData) { }
 
   private _viewportZoomedHandler(data: ZoomedEventData) {
     if (this.viewportList && this.viewportList.head) {
@@ -283,9 +282,9 @@ export class ViewportSystem extends System {
     }
   }
 
-  private handleZoomOut = () => {};
+  private handleZoomOut = () => { };
 
-  private handleZoomIn = () => {};
+  private handleZoomIn = () => { };
 
   private handleSetZoom(zoomLevel: number) {
     const viewWidth = this._viewport?.width;

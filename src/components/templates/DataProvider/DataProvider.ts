@@ -3,9 +3,15 @@
  */
 import { ReplicatedFirebarrel, ReplicatedVenue } from "store/reducers/AnimateMap";
 
+import { DataProviderSettingInterface } from "./DataProviderSetting";
 import { PlayerDataProviderInterface } from "./PlayerDataProviderInterface";
+import { UsersDataProvider } from "./UsersDataProvider";
 
 export interface DataProvider {
+
+  settings: DataProviderSettingInterface;
+
+  users: UsersDataProvider;
 
   on(eventName: string, callback: Function, context?: object): void;
 
