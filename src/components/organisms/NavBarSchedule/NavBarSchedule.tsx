@@ -12,6 +12,7 @@ import {
 
 import { ALWAYS_EMPTY_ARRAY, PLATFORM_BRAND_NAME } from "settings";
 
+import { SpaceId } from "types/id";
 import { ScheduledEvent } from "types/venues";
 
 import { createCalendar, downloadCalendar } from "utils/calendar";
@@ -45,7 +46,7 @@ interface ScheduleDay {
 const emptyPersonalizedSchedule = {};
 interface NavBarScheduleProps {
   isVisible?: boolean;
-  venueId: string;
+  venueId: SpaceId;
 }
 
 export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({

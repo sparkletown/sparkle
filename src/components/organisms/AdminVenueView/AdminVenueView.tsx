@@ -5,6 +5,7 @@ import { AdminRestrictedLoading } from "components/admin/AdminRestrictedLoading"
 import { AdminRestrictedMessage } from "components/admin/AdminRestrictedMessage";
 import { Header } from "components/admin/Header";
 import { HeaderButton } from "components/admin/HeaderButton";
+import { SpaceDeleteModal } from "components/admin/SpaceDeleteModal";
 import { TabBar } from "components/admin/TabBar";
 import { AdminLayout } from "components/layouts/AdminLayout";
 import { WithPermission } from "components/shared/WithPermission";
@@ -21,13 +22,12 @@ import {
 
 import {
   adminNGVenueUrl,
+  externalUrlAdditionalProps,
   generateAttendeeInsideUrl,
   generateUrl,
 } from "utils/url";
 
 import { useShowHide } from "hooks/useShowHide";
-
-import VenueDeleteModal from "pages/Admin/Venue/VenueDeleteModal";
 
 import { SpaceTimingPanel } from "components/organisms/AdminVenueView/components/SpaceTimingPanel";
 
@@ -159,6 +159,7 @@ export const AdminVenueView: React.FC<AdminVenueViewProps> = ({
               to={visitSpaceUrl}
               name="Visit space"
               variant="primary"
+              {...externalUrlAdditionalProps}
             />
           </Header>
 
@@ -172,9 +173,9 @@ export const AdminVenueView: React.FC<AdminVenueViewProps> = ({
           )}
           {selectedTab === AdminVenueTab.run && <RunTabView space={space} />}
 
-          <VenueDeleteModal
-            venueId={spaceId}
-            venueName={space?.name}
+          <SpaceDeleteModal
+            spaceId={spaceId}
+            spaceName={space?.name}
             show={isDeleteModalShown}
             onDelete={navigateToHome}
             onHide={closeDeleteModal}

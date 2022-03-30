@@ -97,30 +97,3 @@ $-title-height: 42px;
     filter: invert(1);
   }
 }
-
-.PortalPopupInfo {
-  @include sparkle.panel--glass;
-  @include rounded.normal;
-  border: 1px solid theme.$sparkle--border;
-  box-sizing: border-box;
-  z-index: 100;
-
-  h3 {
-    @include font.body;
-    text-align: center;
-    margin: space.empty(1);
-  }
-
-  p {
-    text-align: center;
-    margin: space.empty(1);
-  }
-}
-
-.PortalInfoButton {
-  @include atom.button;
-  @include rounded.bottom;
-  @include sparkle.color--normal;
-  justify-content: center;
-  cursor: pointer;
-}

@@ -7,7 +7,7 @@
 
 $-z-index--space: layer.above(0);
 $-z-index--ui: layer.above($-z-index--space);
-$-z-index--popover: layer.below($-z-index--ui);
+$-z-index--popover: layer.above($-z-index--ui);
 
 @font-face {
   font-family: "Sparkle";

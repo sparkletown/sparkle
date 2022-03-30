@@ -1,3 +1,4 @@
+import { AnchorHTMLAttributes } from "react";
 import { Link } from "react-router-dom";
 import cn from "classnames";
 
@@ -10,7 +11,8 @@ import * as TW from "./HeaderButton.tailwind";
 
 type HeaderButtonVariant = "primary" | "secondary" | "multicolor" | "danger";
 
-export interface HeaderButtonProps {
+export interface HeaderButtonProps
+  extends AnchorHTMLAttributes<HTMLAnchorElement> {
   name?: string;
   to?: string;
   icon?: (props: React.ComponentProps<"svg">) => JSX.Element;
@@ -24,8 +26,10 @@ export const HeaderButton: React.FC<HeaderButtonProps> = ({
   icon: Icon,
   variant = "primary",
   onClick,
+  ...rest
 }) => (
   <Link
+    {...rest}
     className={cn("HeaderButton", TW.general, TW[variant])}
     key={name}
     to={to}

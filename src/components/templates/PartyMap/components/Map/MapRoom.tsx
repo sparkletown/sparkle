@@ -1,9 +1,8 @@
 import React, { useCallback, useMemo, useState } from "react";
-import ReactDOM from "react-dom";
-import { usePopper } from "react-popper";
 import { useToggle } from "react-use";
+import { PortalModal } from "components/attendee/PortalModal";
 
-import { COVERT_ROOM_TYPES, POPOVER_CONTAINER_ID } from "settings";
+import { COVERT_ROOM_TYPES } from "settings";
 
 import { Room, RoomType } from "types/rooms";
 import { RoomVisibility } from "types/RoomVisibility";
@@ -79,15 +78,6 @@ export const MapRoom: React.FC<MapRoomProps> = ({
   const [referenceElement, setReferenceElement] = useState<HTMLElement | null>(
     null
   );
-  const [popperElement, setPopperElement] = useState<HTMLElement | null>(null);
-  const { styles: popperStyles, attributes: popperAttributes } = usePopper(
-    referenceElement,
-    popperElement
-  );
-
-  const popoverContainerElement = document.querySelector(
-    `#${POPOVER_CONTAINER_ID}`
-  );
 
   return (
     <div className={styles.MapRoom} style={roomInlineStyles}>
@@ -110,26 +100,13 @@ export const MapRoom: React.FC<MapRoomProps> = ({
               <span />
             </span>
           </div>
-          {infoVisible &&
-            popoverContainerElement &&
-            ReactDOM.createPortal(
-              <div
-                className={styles.PortalPopupInfo}
-                ref={setPopperElement}
-                style={popperStyles.popper}
-                {...popperAttributes.popper}
-              >
-                <h3>TODO Title</h3>
-                <p>TODO</p>
-                <span
-                  className={styles.PortalInfoButton}
-                  onClick={selectRoomWithSound}
-                >
-                  Enter
-                </span>
-              </div>,
-              popoverContainerElement
-            )}
+          {infoVisible && (
+            <PortalModal
+              referenceElement={referenceElement}
+              onEnter={selectRoomWithSound}
+              portal={room}
+            />
+          )}
         </div>
       </div>
     </div>

@@ -62,7 +62,7 @@ import { FormErrors } from "components/molecules/FormErrors";
 import { SubmitError } from "components/molecules/SubmitError";
 import { YourUrlDisplay } from "components/molecules/YourUrlDisplay";
 
-import { ButtonNG } from "components/atoms/ButtonNG";
+import { Button } from "./Button";
 
 const HANDLED_ERRORS = [
   "name",
@@ -105,7 +105,8 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
       columns: space.columns ?? 0,
       autoPlay: space.autoPlay ?? DEFAULT_VENUE_AUTOPLAY,
       isReactionsMuted: space.isReactionsMuted ?? DEFAULT_REACTIONS_MUTED,
-      parentId: space.parentId ?? "",
+      // @debt should use SpaceId type here, resolve error with form typing
+      parentId: (space.parentId as string) ?? "",
       numberOfSections: space.sectionsCount ?? DEFAULT_SECTIONS_AMOUNT,
       roomVisibility: space.roomVisibility,
       zoomUrl: space?.zoomUrl ?? "",
@@ -575,15 +576,14 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
         </div>
 
         <AdminSidebarButtons>
-          <ButtonNG
-            className="AdminSidebarButtons__button--larger"
+          <Button
             type="submit"
             variant="primary"
             loading={isUpdating}
             disabled={isUpdating}
           >
             Save changes
-          </ButtonNG>
+          </Button>
         </AdminSidebarButtons>
       </form>
     </div>
