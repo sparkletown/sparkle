@@ -194,6 +194,7 @@ export const SPACE_INFO_LIST: SpaceInfoItem[] = [
   SPACE_INFO_MAP[VenueTemplate.posterhall],
   SPACE_INFO_MAP[VenueTemplate.posterpage],
   SPACE_INFO_MAP[VenueTemplate.animatemap],
+  SPACE_INFO_MAP[VenueTemplate.meetingroom],
 ];
 
 export const PORTAL_INFO_LIST: PortalInfoItem[] = [
