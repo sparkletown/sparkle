@@ -5,6 +5,10 @@ import { VenueTemplate } from "types/VenueTemplate";
 import { generateTables } from "utils/table";
 import { FIVE_MINUTES_MS } from "utils/time";
 
+// This export is purposefully done before the rest as there are dependency
+// issues between them
+export * from "./taxonomy";
+
 // NOTE: please keep these exports sorted alphabetically for faster visual scan
 export * from "./adminDesignSettings";
 export * from "./apiSettings";
@@ -19,7 +23,6 @@ export * from "./playaSettings";
 export * from "./portalSettings";
 export * from "./sectionSettings";
 export * from "./spacePortalsSettings";
-export * from "./taxonomy";
 export * from "./urlSettings";
 export * from "./useSettingsDefaults";
 export * from "./validationSettings";
