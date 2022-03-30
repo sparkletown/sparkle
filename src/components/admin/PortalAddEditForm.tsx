@@ -74,7 +74,7 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
       visibility: portal?.visibility ?? venueVisibility,
       isClickable: portal?.type !== RoomType.unclickable,
       isEnabled: portal?.isEnabled ?? DEFAULT_PORTAL_IS_ENABLED,
-      // @debt we should use SpaceId type here; couldn't resolve error with form typing
+      // @debt should use SpaceId type here, resolve error with form typing
       spaceId: (portal?.spaceId as string) ?? undefined,
     }),
     [

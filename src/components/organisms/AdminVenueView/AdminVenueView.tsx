@@ -22,6 +22,7 @@ import {
 
 import {
   adminNGVenueUrl,
+  externalUrlAdditionalProps,
   generateAttendeeInsideUrl,
   generateUrl,
 } from "utils/url";
@@ -158,7 +159,7 @@ export const AdminVenueView: React.FC<AdminVenueViewProps> = ({
               to={visitSpaceUrl}
               name="Visit space"
               variant="primary"
-              target="_blank"
+              {...externalUrlAdditionalProps}
             />
           </Header>
 

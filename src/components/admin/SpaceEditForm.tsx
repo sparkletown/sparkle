@@ -105,7 +105,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
       columns: space.columns ?? 0,
       autoPlay: space.autoPlay ?? DEFAULT_VENUE_AUTOPLAY,
       isReactionsMuted: space.isReactionsMuted ?? DEFAULT_REACTIONS_MUTED,
-      // @debt we should use SpaceId here when we figure out how to deal with branded types in react forms
+      // @debt should use SpaceId type here, resolve error with form typing
       parentId: (space.parentId as string) ?? "",
       numberOfSections: space.sectionsCount ?? DEFAULT_SECTIONS_AMOUNT,
       roomVisibility: space.roomVisibility,

@@ -24,6 +24,8 @@ export const Popover: React.FC<PopoverProps> = ({
 
   return (
     popoverContainerElement &&
+    // using a #${POPOVER_CONTAINER_ID} element as a parent of the Popover component
+    // to prevent issues with layout and make Popover to always appear on the top of the content
     ReactDOM.createPortal(
       <div
         ref={setPopperElement}
