@@ -1,29 +1,30 @@
 import React from "react";
 import { useAsyncFn } from "react-use";
+import { Button } from "components/admin/Button";
 import { FIREBASE } from "core/firebase";
 import { httpsCallable } from "firebase/functions";
 
 import { SPACE_TAXON } from "settings";
 
-import { Modal } from "components/molecules/Modal";
+import { SpaceId } from "types/id";
 
-import { ButtonNG } from "components/atoms/ButtonNG";
+import { Modal } from "components/molecules/Modal";
+import { ModalTitle } from "components/molecules/Modal/ModalTitle";
+
 import { LoadingSpinner } from "components/atoms/LoadingSpinner";
 
-import "./VenueDeleteModal.scss";
-
-export interface VenueDeleteModalProps {
-  venueId?: string;
-  venueName?: string;
+export interface SpaceDeleteModalProps {
+  spaceId?: SpaceId;
+  spaceName?: string;
   show: boolean;
   onHide?: () => void;
   onDelete?: () => void;
   onCancel: () => void;
 }
 
-const VenueDeleteModal: React.FunctionComponent<VenueDeleteModalProps> = ({
-  venueId,
-  venueName,
+export const SpaceDeleteModal: React.FunctionComponent<SpaceDeleteModalProps> = ({
+  spaceId,
+  spaceName,
   show,
   onHide,
   onDelete,
@@ -34,38 +35,33 @@ const VenueDeleteModal: React.FunctionComponent<VenueDeleteModalProps> = ({
       FIREBASE.functions,
       "venue-deleteVenue"
     )({
-      id: venueId,
+      id: spaceId,
     });
     onDelete?.();
-  }, [onDelete, venueId]);
+  }, [onDelete, spaceId]);
 
   return (
     <Modal show={show} onHide={onHide} centered bgVariant="dark">
-      <div className="VenueDeleteModal">
-        <h2 className="centered">Delete {SPACE_TAXON.lower}</h2>
+      <div data-bem="SpaceDeleteModal">
+        <ModalTitle>Delete {SPACE_TAXON.lower}</ModalTitle>
+
         <div className="secondary-action">
           WARNING: This action cannot be undone and will permanently remove the
-          space <b>{venueName}</b>!
+          space <b>{spaceName}</b>!
         </div>
 
         {isDeleting && <LoadingSpinner />}
 
-        <div className="VenueDeleteModal__buttons">
-          <ButtonNG
-            disabled={isDeleting}
-            variant="danger"
-            onClick={deleteVenue}
-          >
+        <div>
+          <Button disabled={isDeleting} variant="danger" onClick={deleteVenue}>
             Yes, Delete
-          </ButtonNG>
-          <ButtonNG disabled={isDeleting} variant="primary" onClick={onCancel}>
+          </Button>
+          <Button disabled={isDeleting} variant="primary" onClick={onCancel}>
             No, Cancel
-          </ButtonNG>
+          </Button>
         </div>
         {error && <span className="input-error">{error}</span>}
       </div>
     </Modal>
   );
 };
-
-export default VenueDeleteModal;

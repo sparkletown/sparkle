@@ -22,6 +22,7 @@ import {
 
 import { createRoom, deleteRoom, upsertRoom } from "api/admin";
 
+import { SpaceId } from "types/id";
 import { PortalInput, Room, RoomType } from "types/rooms";
 import { RoomVisibility } from "types/RoomVisibility";
 
@@ -71,20 +72,21 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
       title: portal?.title ?? "",
       image_url: portal?.image_url ?? icon ?? spaceLogoImage,
       visibility: portal?.visibility ?? venueVisibility,
-      spaceId: portal?.spaceId ?? undefined,
       isClickable: portal?.type !== RoomType.unclickable,
       isEnabled: portal?.isEnabled ?? DEFAULT_PORTAL_IS_ENABLED,
+      // @debt we should use SpaceId type here; couldn't resolve error with form typing
+      spaceId: (portal?.spaceId as string) ?? undefined,
     }),
     [
       portal?.title,
       portal?.image_url,
       portal?.visibility,
-      portal?.spaceId,
       portal?.type,
       portal?.isEnabled,
+      portal?.spaceId,
       icon,
-      venueVisibility,
       spaceLogoImage,
+      venueVisibility,
     ]
   );
 
@@ -143,7 +145,7 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
       image_url,
       image_file,
       visibility,
-      spaceId,
+      spaceId: spaceId as SpaceId,
       type: !isClickable ? RoomType.unclickable : undefined,
       isEnabled,
     };

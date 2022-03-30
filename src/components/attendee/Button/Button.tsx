@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes, RefObject } from "react";
+import { ButtonHTMLAttributes, MouseEventHandler, RefObject } from "react";
 import classNames from "classnames";
 
 import CN from "./Button.module.scss";
@@ -9,7 +9,7 @@ type ButtonVariant = "primary" | "alternative" | "intensive" | "danger";
 type BorderVariant = ButtonVariant;
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  onClick?: () => void;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
   variant?: ButtonVariant;
   transparent?: boolean;
   border?: BorderVariant;

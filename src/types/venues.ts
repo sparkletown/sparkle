@@ -3,7 +3,7 @@ import { CSSProperties } from "react";
 import { HAS_ROOMS_TEMPLATES } from "settings";
 
 import { AuditoriumSectionPath } from "types/auditorium";
-import { SpaceSlug, UserWithId } from "types/id";
+import { SpaceId, SpaceSlug, UserWithId } from "types/id";
 import { RoomVisibility } from "types/RoomVisibility";
 import { VenueTemplate } from "types/VenueTemplate";
 
@@ -84,7 +84,7 @@ export interface VenueAdvancedConfig {
   roomVisibility?: RoomVisibility;
   showGrid?: boolean;
   showRadio?: boolean;
-  parentId?: string;
+  parentId?: SpaceId;
   showUserStatus?: boolean;
   userStatuses?: UserStatus[];
   enableJukebox?: boolean;
@@ -95,7 +95,7 @@ export interface VenueAdvancedConfig {
 //   termsAndConditions, width, height
 export interface BaseVenue {
   template: VenueTemplate;
-  parentId?: string;
+  parentId?: SpaceId;
   name: string;
   slug: SpaceSlug;
   access?: VenueAccessMode;
@@ -169,7 +169,7 @@ export interface GenericVenue extends BaseVenue {
 export interface AnimateMapVenue extends BaseVenue {
   id: string;
   gameOptions: GameOptions;
-  relatedPartymapId: string;
+  relatedPartymapId: SpaceId;
   template: VenueTemplate.animatemap;
 }
 
@@ -334,7 +334,7 @@ export interface WorldEvent {
   id: string;
   orderPriority?: number;
   liveAudience?: number;
-  spaceId: string;
+  spaceId: SpaceId;
   worldId: string;
 }
 
