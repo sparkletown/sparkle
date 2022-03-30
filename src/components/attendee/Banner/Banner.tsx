@@ -25,6 +25,8 @@ export const Banner: React.FC<BannerProps> = ({
 }) => {
   const { isShown: isBannerShown, hide: closeBanner } = useShowHide(true);
 
+  console.log("Banner", banner);
+
   const isBannerFullScreen = banner.isFullScreen;
   const isWithButton = banner?.buttonDisplayText && banner?.isActionButton;
   const isBannerCloaseable = !banner?.isForceFunnel;

@@ -8,8 +8,6 @@ import { useUser } from "hooks/user/useUser";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useShowHide } from "hooks/useShowHide";
 
-import { BannerAdmin } from "components/organisms/BannerAdmin";
-
 import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
 import { IframeAdmin } from "components/molecules/IframeAdmin";
 import { LoadingPage } from "components/molecules/LoadingPage";
@@ -30,12 +28,6 @@ export const VenueAdminPage: React.FC = () => {
     userId &&
     (parentVenue ? parentVenue.owners : currentVenue?.owners)?.includes(userId)
   );
-
-  const {
-    isShown: isBannerAdminVisibile,
-    show: showBannerAdmin,
-    hide: hideBannerAdmin,
-  } = useShowHide();
 
   const isLoggedIn = profile && user;
   const isVenueLoading = !isLoaded;
@@ -77,24 +69,7 @@ export const VenueAdminPage: React.FC = () => {
           <AnnouncementMessage />
         </div>
       </div>
-      <div className="VenueAdminPage__settings">
-        {isBannerAdminVisibile && (
-          <BannerAdmin
-            venueId={spaceId}
-            venue={space}
-            onClose={hideBannerAdmin}
-          />
-        )}
-
-        {!isBannerAdminVisibile && (
-          <>
-            <AnnouncementOptions
-              banner={space.banner}
-              onEdit={showBannerAdmin}
-            />
-          </>
-        )}
-      </div>
+      <div className="VenueAdminPage__settings"></div>
       {isIframeVenue && <IframeAdmin venueId={spaceId} venue={space} />}
     </>
   );

@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useForm } from "react-hook-form";
+import { useAsyncFn } from "react-use";
+import { Button } from "components/admin/Button";
 import { Checkbox } from "components/admin/Checkbox";
-import { HeaderButton } from "components/admin/HeaderButton";
 import { Input } from "components/admin/Input";
 import { InputGroup } from "components/admin/InputGroup";
 import { SidebarHeader } from "components/admin/SidebarHeader";
@@ -9,12 +10,10 @@ import { Textarea } from "components/admin/Textarea";
 import { ThreeColumnLayout } from "components/admin/ThreeColumnLayout";
 import { Toggle } from "components/admin/Toggle";
 
+import { updateBanner } from "api/bannerAdmin";
+
 import { SpaceWithId } from "types/id";
 
-// import { MapPreview } from "../MapPreview";
-import { MapPreview } from "pages/Admin/MapPreview";
-
-import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
 import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
 import { AdminSidebar } from "components/organisms/AdminVenueView/components/AdminSidebar";
 
@@ -24,24 +23,38 @@ export interface RunTabViewProps {
   space?: SpaceWithId;
 }
 
-const defaultValues = {
-  fullscreen: true,
-};
-
 export const RunTabView: React.FC<RunTabViewProps> = ({ space }) => {
-  const {
-    register,
-    handleSubmit,
-    getValues,
-    setValue,
-    watch,
-    control,
-    reset,
-  } = useForm({
+  const spaceBanner = space?.banner;
+  const spaceId = space?.id;
+
+  const defaultValues = useMemo(
+    () => ({
+      content: spaceBanner?.content,
+      isActionButton: spaceBanner?.isActionButton ?? false,
+      buttonUrl: spaceBanner?.buttonUrl,
+      buttonDisplayText: spaceBanner?.buttonDisplayText,
+      isFullScreen: spaceBanner?.isFullScreen ?? true,
+      isForceFunnel: spaceBanner?.isForceFunnel,
+    }),
+    [spaceBanner]
+  );
+
+  const { register, handleSubmit, watch, reset } = useForm({
     reValidateMode: "onChange",
-    // resolver: yupResolver(spaceEditSchema),
     defaultValues,
   });
+
+  const values = watch();
+
+  const [{ loading: isUpdating }, updateVenue] = useAsyncFn(
+    async (data) => {
+      if (!spaceId) return;
+
+      // FIXME: Remove auto-setting of isFullScreen once the non-fullscreen mode is implemented
+      return updateBanner({ banner: { ...data, isFullScreen: true }, spaceId });
+    },
+    [spaceId]
+  );
 
   if (!space) {
     return <LoadingPage />;
@@ -50,78 +63,68 @@ export const RunTabView: React.FC<RunTabViewProps> = ({ space }) => {
   return (
     <ThreeColumnLayout>
       <AdminSidebar>
-        <SidebarHeader>Announcements</SidebarHeader>
-        <InputGroup title="Announcement content" isRequired withLabel>
-          <Textarea
-            placeholder="Please type your announcement text here."
+        <form onSubmit={handleSubmit(updateVenue)}>
+          <SidebarHeader>Announcements</SidebarHeader>
+          <InputGroup title="Announcement content" isRequired withLabel>
+            <Textarea
+              placeholder="Please type your announcement text here."
+              register={register}
+              name="content"
+              required
+            />
+          </InputGroup>
+          <Checkbox
+            label="Set full-screen announcement"
             register={register}
-            name="name"
-            // errors={errors}
-            // max={COMMON_NAME_MAX_CHAR_COUNT}
-            required
+            name="isFullScreen"
+            disabled
+            checked={values.isFullScreen}
           />
-        </InputGroup>
-        <Checkbox
-          label="Set full-screen announcement"
-          register={register}
-          name="fullscreen"
-          disabled
-          checked
-        />
-        <Toggle
-          label="Call to action button"
-          register={register}
-          name="callToAction"
-        />
-        <InputGroup title="Button text" isRequired withLabel>
-          <Input
-            placeholder="Button display text"
+          <Toggle
+            label="Call to action button"
             register={register}
-            name="name"
-            required
+            name="isActionButton"
+            checked={values.isActionButton}
           />
-        </InputGroup>
-        <InputGroup title="Button URL" isRequired withLabel>
-          <Input
-            placeholder="Button URL"
-            register={register}
-            name="name"
-            required
-          />
-        </InputGroup>
+          {values.isActionButton && (
+            <>
+              <InputGroup title="Button text" isRequired withLabel>
+                <Input
+                  placeholder="Button display text"
+                  register={register}
+                  name="buttonDisplayText"
+                  required
+                />
+              </InputGroup>
+              <InputGroup title="Button URL" isRequired withLabel>
+                <Input
+                  placeholder="Button URL"
+                  register={register}
+                  name="buttonUrl"
+                  required
+                />
+              </InputGroup>
+            </>
+          )}
 
-        <Checkbox label="Force funnel" register={register} name="forceFunnel" />
-        <div className="flex justify-end">
-          <HeaderButton
-            containerClassname="mr-3"
-            name="Cancel"
-            variant="secondary"
+          <Checkbox
+            label="Force funnel"
+            register={register}
+            name="isForceFunnel"
           />
-          <HeaderButton name="Save" />
-        </div>
+          <div className="flex justify-end">
+            <Button variant="secondary" onClick={() => reset()}>
+              Cancel
+            </Button>
+            <Button loading={isUpdating} type="submit">
+              Save
+            </Button>
+          </div>
+        </form>
       </AdminSidebar>
 
       <AdminShowcase>
-        <div className="px-12 sm:px-12">
-          {
-            // @debt use a single structure of type
-            // Record<VenueTemplate,TemplateInfo> to compile all these .includes()
-            // arrays
-            // BACKGROUND_IMG_TEMPLATES.includes(
-            //   space.template as VenueTemplate
-            // ) && (
-            // <MapPreview
-            //   isEditing={false}
-            //   worldId={space.worldId}
-            //   venueId={space.id}
-            //   venueName={space.name}
-            //   mapBackground={space.mapBackgroundImageUrl}
-            //   rooms={space.rooms ?? ALWAYS_EMPTY_ARRAY}
-            //   safeZone={space.config?.safeZone || DEFAULT_SAFE_ZONE}
-            // />
-            // )
-          }
-        </div>
+        <div className="px-12 sm:px-12"></div>
       </AdminShowcase>
     </ThreeColumnLayout>
   );

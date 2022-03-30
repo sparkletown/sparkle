@@ -74,7 +74,7 @@ const _AttendeeLayout: React.FC<_AttendeeLayoutProps> = ({ userId, space }) => {
         <AttendeeFooter />
         {/* Used by popovers to ensure z-index is handled properly */}
         <div id={POPOVER_CONTAINER_ID} className={styles.popoverContainer} />
-        {space.banner && (
+        {space?.banner && (
           <Banner
             banner={space.banner}
             turnOnBlur={turnOnBlur}

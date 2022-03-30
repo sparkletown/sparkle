@@ -6,18 +6,18 @@ import { httpsCallable } from "firebase/functions";
 import { Banner } from "types/banner";
 
 export interface UpdateBannerProps {
-  venueId: string;
+  spaceId: string;
   banner?: Banner;
   onError?: (errorMsg: string) => void;
 }
 
 export const updateBanner = async ({
-  venueId,
+  spaceId,
   banner,
   onError = () => {},
 }: UpdateBannerProps): Promise<void> => {
   const params = {
-    venueId,
+    venueId: spaceId,
     banner: banner ?? firebase.firestore.FieldValue.delete(),
   };
 
@@ -28,7 +28,7 @@ export const updateBanner = async ({
     Bugsnag.notify(e, (event) => {
       event.addMetadata("context", {
         location: "api/bannerAdmin::updateBanner",
-        venueId,
+        venueId: spaceId,
         banner,
       });
     });
