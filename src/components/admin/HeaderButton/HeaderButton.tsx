@@ -16,6 +16,7 @@ export interface HeaderButtonProps {
   icon?: (props: React.ComponentProps<"svg">) => JSX.Element;
   variant?: HeaderButtonVariant;
   onClick?: () => void;
+  containerClassname?: string;
 }
 export const HeaderButton: React.FC<HeaderButtonProps> = ({
   to = DEFAULT_MISSING_PARAM_URL,
@@ -24,9 +25,10 @@ export const HeaderButton: React.FC<HeaderButtonProps> = ({
   icon: Icon,
   variant = "primary",
   onClick,
+  containerClassname,
 }) => (
   <Link
-    className={cn("HeaderButton", TW.general, TW[variant])}
+    className={cn("HeaderButton", TW.general, TW[variant], containerClassname)}
     key={name}
     to={to}
     onClick={onClick}
