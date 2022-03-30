@@ -205,6 +205,7 @@ export const externalUrlAdditionalProps = {
   target: "_blank",
   rel: "noopener noreferrer",
 };
+Object.freeze(externalUrlAdditionalProps);
 
 export const getExtraLinkProps = (isExternal: boolean) =>
   isExternal ? externalUrlAdditionalProps : {};

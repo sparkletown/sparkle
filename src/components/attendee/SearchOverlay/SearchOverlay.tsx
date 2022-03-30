@@ -105,7 +105,7 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ onClose }) => {
       <div className={CN.searchOverlaySearch}>
         <Input
           value={searchValue}
-          inputClassName={CN.searchOverlaySearchInput}
+          variant="overlay-search"
           onChange={onSearchInputChange}
           onLabelClick={initiateSearch}
           label="Search"

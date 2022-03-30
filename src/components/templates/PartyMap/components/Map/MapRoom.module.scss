@@ -11,7 +11,7 @@
 $-title-height: 42px;
 
 .MapRoom {
-  @media (max-width: calc(breakpoint.$md - 1px)) {
+  @media (max-width: calc(#{breakpoint.$md} - 1px)) {
     // Override inline styles. The code for this component calculates the width
     // and height for the element for when the element is displayed on a
     // non-mobile size screen. This needs to be ignored on mobile screens.
@@ -36,12 +36,14 @@ $-title-height: 42px;
 
 .PortalImage {
   cursor: pointer;
+
   img {
     display: block;
     max-width: 90vw;
     margin: 0 auto;
     max-height: 50vh;
   }
+
   @media (min-width: breakpoint.$md) {
     position: absolute;
     width: 100%;

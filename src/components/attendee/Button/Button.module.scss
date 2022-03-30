@@ -21,16 +21,25 @@
   }
 }
 
-.primary {
+.variant-primary {
   @include sparkle.color--glass;
 }
 
-.alternative {
+.variant-alternative {
   background: transparent;
 }
 
-.borderAlternative {
+.variant-login {
+  color: theme.$c-default-text;
+  background-color: theme.$c-panel-background;
+}
+
+.border-alternative {
   border: border.$width--slim solid theme.$c-button-fg;
+}
+
+.border-login {
+  border: border.$width--slim solid theme.$c-login-button--eg;
 }
 
 .transparent {

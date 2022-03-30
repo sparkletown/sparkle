@@ -1,6 +1,11 @@
 import React from "react";
 import { useForm, useFormState } from "react-hook-form";
+import { Button } from "components/attendee/Button";
+import { Input } from "components/attendee/Input";
+import { Spacer } from "components/attendee/Spacer";
 import firebase from "firebase/compat/app";
+
+import { STRING_SPACE } from "settings";
 
 import { SpaceWithId, WorldWithId } from "types/id";
 import { VenueAccessMode } from "types/VenueAcccess";
@@ -9,6 +14,8 @@ import { errorMessage, errorStatus } from "utils/error";
 
 import { useSocialSignIn } from "hooks/useSocialSignIn";
 
+import CN from "pages/auth/auth.module.scss";
+
 import { TicketCodeField } from "components/organisms/TicketCodeField";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
@@ -16,9 +23,7 @@ import { ButtonNG } from "components/atoms/ButtonNG";
 import fIcon from "assets/icons/facebook-social-icon.svg";
 import gIcon from "assets/icons/google-social-icon.svg";
 
-import FORMS from "scss/attendee/form.module.scss";
-
-export interface LoginFormProps {
+interface LoginFormProps {
   displayRegisterForm: () => void;
   displayPasswordResetForm: () => void;
   closeAuthenticationModal?: () => void;
@@ -131,105 +136,101 @@ export const LoginForm: React.FC<LoginFormProps> = ({
   };
 
   return (
-    <div className="form-container">
-      <div className="secondary-action">
-        {`Don't have an account yet?`}
-        <br />
-        <span className={FORMS.inlineLink} onClick={displayRegisterForm}>
-          Register instead!
-        </span>
-      </div>
-
-      <h3>Log in to your account</h3>
-      {errors.backend && (
-        <div className="auth-submit-error">
-          <span className="auth-submit-error__message">
-            Oops! Something went wrong. Please try again or use another method
-            to create an account
-          </span>
-        </div>
-      )}
+    <div data-bem="LoginForm" className={CN.container}>
       <form
+        data-bem="LoginForm__form"
+        className={CN.form}
         onSubmit={handleSubmit(onSubmit)}
         onChange={clearBackendErrors}
-        className="form"
       >
-        <div className="input-group">
-          <input
-            className={FORMS.input}
-            placeholder="Your email address"
-            {...register("email", { required: true })}
+        <Spacer marginSize="large">
+          <h1>Log in to Sparkle</h1>
+        </Spacer>
+        {errors.backend && (
+          <div className={CN.error}>
+            Oops! Something went wrong. Please try again or use another method
+            to create an account
+          </div>
+        )}
+        <Spacer>
+          {
+            // @debt Input label is skewed by applying it to ::after pseudo element, this is a workaround
+          }
+          <span>Email</span>
+          <Input
+            name="email"
+            variant="login"
+            border="border"
+            placeholder="Enter your email"
+            register={register}
+            rules={{ required: true }}
           />
           {errors.email && errors.email.type === "required" && (
-            <span className="input-error">Email is required</span>
+            <span className={CN.error}>Email is required</span>
           )}
           {errors.email &&
             ["firebase", "validation"].includes(errors.email.type) && (
-              <span className="input-error">{errors.email.message}</span>
+              <span className={CN.error}>{errors.email.message}</span>
             )}
-        </div>
-
-        <div className="input-group">
-          <input
-            className={FORMS.input}
+        </Spacer>
+        <Spacer>
+          {
+            // @debt Input label is skewed by applying it to ::after pseudo element, this is a workaround
+          }
+          <span>Password</span>
+          <Input
             type="password"
-            placeholder="Password"
-            {...register("password", {
-              required: true,
-            })}
+            name="password"
+            variant="login"
+            border="border"
+            placeholder="Enter your password"
+            register={register}
+            rules={{ required: true }}
           />
           {errors.password && errors.password.type === "required" && (
-            <span className="input-error">Password is required</span>
+            <div className={CN.error}>Password is required</div>
           )}
-        </div>
 
-        {space.access === VenueAccessMode.Codes && (
-          <TicketCodeField register={register} error={errors?.code} />
+          {space.access === VenueAccessMode.Codes && (
+            <TicketCodeField register={register} error={errors?.code} />
+          )}
+
+          <button className={CN.link} onClick={displayPasswordResetForm}>
+            Forgot your password?
+          </button>
+        </Spacer>
+        <Spacer />
+        <Spacer>
+          <Button variant="primary" type="submit" disabled={!formState.isValid}>
+            Log in
+          </Button>
+        </Spacer>
+        {world.hasSocialLoginEnabled && (
+          <div className="social-auth-container">
+            <span>or</span>
+            <ButtonNG type="submit" onClick={handleGoogleSignIn}>
+              <div className="social-icon">
+                <img src={gIcon} alt="icon" />
+              </div>
+              Log in with Google
+            </ButtonNG>
+            <ButtonNG type="submit" onClick={handleFacebookSignIn}>
+              <div className="social-icon">
+                <img src={fIcon} alt="icon" />
+              </div>
+              Log in with Facebook
+            </ButtonNG>
+          </div>
         )}
-
-        <ButtonNG
-          className="auth-input"
-          variant="primary"
-          type="submit"
-          disabled={!formState.isValid}
-        >
-          Log in
-        </ButtonNG>
+        <Spacer />
+        <Spacer>
+          <span className={CN.info}>Don&apos;t have an account yet?</span>
+          {STRING_SPACE}
+          <button className={CN.link} onClick={displayRegisterForm}>
+            Sign up
+          </button>
+        </Spacer>
       </form>
-
-      {world.hasSocialLoginEnabled && (
-        <div className="social-auth-container">
-          <span>or</span>
-          <ButtonNG
-            className="auth-input"
-            type="submit"
-            onClick={handleGoogleSignIn}
-          >
-            <div className="social-icon">
-              <img src={gIcon} alt="asd" />
-            </div>
-            Log in with Google
-          </ButtonNG>
-          <ButtonNG
-            className="auth-input"
-            type="submit"
-            onClick={handleFacebookSignIn}
-          >
-            <div className="social-icon">
-              <img src={fIcon} alt="asd" />
-            </div>
-            Log in with Facebook
-          </ButtonNG>
-        </div>
-      )}
-
-      <div className="secondary-action">
-        {`Forgot your password?`}
-        <br />
-        <span className={FORMS.inlineLink} onClick={displayPasswordResetForm}>
-          Reset your password
-        </span>
-      </div>
     </div>
   );
 };

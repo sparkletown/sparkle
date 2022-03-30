@@ -1,12 +1,13 @@
-import { ButtonHTMLAttributes, RefObject } from "react";
+import React, { ButtonHTMLAttributes, RefObject } from "react";
 import classNames from "classnames";
 
 import CN from "./Button.module.scss";
 
 // Button And Border variant types are the same to allow variant mixing.
 // But we might have different variants for either button or border in the future
-type ButtonVariant = "primary" | "alternative";
+type ButtonVariant = "primary" | "alternative" | "login";
 type BorderVariant = ButtonVariant;
+
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   onClick?: () => void;
   variant?: ButtonVariant;
@@ -19,19 +20,22 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 export const Button: React.FC<ButtonProps> = ({
   onClick,
   children,
-  variant,
+  variant = "",
   className,
   transparent,
   forwardRef,
   border,
   ...rest
 }) => {
-  const buttonClasses = classNames(`${CN.button} ${className}`, {
-    [CN.primary]: variant === "primary",
-    [CN.alternative]: variant === "alternative",
-    [CN.transparent]: transparent,
-    [CN.borderAlternative]: border === "alternative",
-  });
+  const buttonClasses = classNames(
+    CN.button,
+    className,
+    CN["variant-" + variant],
+    CN["border-" + border],
+    {
+      [CN.transparent]: transparent,
+    }
+  );
 
   return (
     <button

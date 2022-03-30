@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from "react";
 import { useAsync } from "react-use";
 import { Button } from "components/attendee/Button";
+import { Spacer } from "components/attendee/Spacer";
 
 import { fetchCustomAuthConfig } from "api/auth";
 
@@ -13,6 +14,7 @@ import { openUrl } from "utils/url";
 import { UseAnalyticsResult } from "hooks/useAnalytics";
 import { useSAMLSignIn } from "hooks/useSAMLSignIn";
 
+import CN from "pages/auth/auth.module.scss";
 import { InitialForm } from "pages/auth/InitialForm";
 import { LoginForm, LoginFormData } from "pages/auth/LoginForm";
 import { PasswordResetForm } from "pages/auth/PasswordResetForm";
@@ -22,8 +24,6 @@ import { LoadingPage } from "components/molecules/LoadingPage";
 
 import SAMLLoginIcon from "assets/icons/saml-login-icon.png";
 import sparkleHeaderImage from "assets/images/sparkle-header.png";
-
-import CN from "./Login.module.scss";
 
 export interface LoginProps {
   formType?: "initial" | "login" | "register" | "passwordReset";
@@ -87,61 +87,61 @@ export const Login: React.FC<LoginProps> = ({
   if (isCustomAuthConfigLoading) return <LoadingPage />;
 
   return (
-    <div data-bem="Login" className={CN.container}>
-      <div data-bem="Login__contents" className={CN.contents}>
-        <div data-bem="Login__logo" className={CN.logo}>
+    <div data-bem="Login" className={CN.login}>
+      <div data-bem="Login__logo" className={CN.logo}>
+        <Spacer marginSize="none">
           <img src={sparkleHeaderImage} alt="" width="100%" />
-        </div>
-        <div>
-          {hasAlternativeLogins && (
-            <div data-bem="Login__alternatives">
-              <span>Quick log in with</span>
+        </Spacer>
+      </div>
+      <div data-bem="Login__contents" className={CN.contents}>
+        {hasAlternativeLogins && (
+          <div data-bem="Login__alternatives">
+            <span>Quick log in with</span>
 
-              <Button>
-                {hasCustomAuthConnect && (
-                  <img
-                    className="Login__quick-login-icon"
-                    src={SAMLLoginIcon}
-                    onClick={signInWithCustomAuth}
-                    title={customAuthName}
-                    alt={customAuthName}
-                  />
-                )}
-                {hasSamlAuthProviderId && (
-                  <img
-                    className="Login__quick-login-icon"
-                    src={SAMLLoginIcon}
-                    onClick={signInWithSAML}
-                    title="SAML SSO login"
-                    alt="SAML SSO login"
-                  />
-                )}
-              </Button>
-            </div>
-          )}
-          {formToDisplay === "initial" && (
-            <InitialForm
-              displayLoginForm={displayLoginForm}
-              displayRegisterForm={displayRegisterForm}
-            />
-          )}
-          {formToDisplay === "register" && (
-            <RegisterForm
-              displayLoginForm={displayLoginForm}
-              displayPasswordResetForm={displayPasswordResetForm}
-            />
-          )}
-          {formToDisplay === "login" && (
-            <LoginForm
-              displayRegisterForm={displayRegisterForm}
-              displayPasswordResetForm={displayPasswordResetForm}
-              afterUserIsLoggedIn={afterUserIsLoggedIn}
-            />
-          )}
-          {formToDisplay === "passwordReset" && (
-            <PasswordResetForm displayLoginForm={displayLoginForm} />
-          )}
-        </div>
+            <Button>
+              {hasCustomAuthConnect && (
+                <img
+                  className="Login__quick-login-icon"
+                  src={SAMLLoginIcon}
+                  onClick={signInWithCustomAuth}
+                  title={customAuthName}
+                  alt={customAuthName}
+                />
+              )}
+              {hasSamlAuthProviderId && (
+                <img
+                  className="Login__quick-login-icon"
+                  src={SAMLLoginIcon}
+                  onClick={signInWithSAML}
+                  title="SAML SSO login"
+                  alt="SAML SSO login"
+                />
+              )}
+            </Button>
+          </div>
+        )}
+        {formToDisplay === "initial" && (
+          <InitialForm
+            displayLoginForm={displayLoginForm}
+            displayRegisterForm={displayRegisterForm}
+          />
+        )}
+        {formToDisplay === "register" && (
+          <RegisterForm
+            displayLoginForm={displayLoginForm}
+            displayPasswordResetForm={displayPasswordResetForm}
+          />
+        )}
+        {formToDisplay === "login" && (
+          <LoginForm
+            displayRegisterForm={displayRegisterForm}
+            displayPasswordResetForm={displayPasswordResetForm}
+            afterUserIsLoggedIn={afterUserIsLoggedIn}
+          />
+        )}
+        {formToDisplay === "passwordReset" && (
+          <PasswordResetForm displayLoginForm={displayLoginForm} />
+        )}
       </div>
     </div>
   );

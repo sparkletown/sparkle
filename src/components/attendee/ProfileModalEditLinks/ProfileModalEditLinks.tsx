@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { FieldErrors, UseFormRegister } from "react-hook-form";
 import classNames from "classnames";
-import { Button } from "components/attendee/Button/Button";
+import { Button } from "components/attendee/Button";
 import { ProfileModalEditLink } from "components/attendee/ProfileModalEditLinks/ProfileModalEditLink";
 
 import { UserProfileModalFormData } from "types/profileModal";

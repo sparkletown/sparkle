@@ -73,7 +73,7 @@ export const ProfileModalEditBasicInfo: React.FC<ProfileModalEditBasicInfoProps>
               },
             }}
             register={register}
-            inputClassName={styles.ProfileModalEditBasicInfo__input}
+            variant="overlay-profile"
           />
         )}
       </div>
