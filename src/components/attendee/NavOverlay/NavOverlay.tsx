@@ -49,7 +49,7 @@ export const NavOverlay: React.FC<NavOverlayProps> = ({ onClose, type }) => {
     return () => setNavMenu("");
   }, [type]);
 
-  useDisableBodyScroll();
+  useDisableBodyScroll({ isOpen: true });
 
   const handleMenuItemSelect = (key: string) => {
     setNavMenu(key);
