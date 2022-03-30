@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useFormState } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import { Button } from "components/admin/Button";
 import { Checkbox } from "components/admin/Checkbox";
@@ -30,7 +30,7 @@ export const RunTabView: React.FC<RunTabViewProps> = ({ space }) => {
   const defaultValues = useMemo(
     () => ({
       content: spaceBanner?.content,
-      isActionButton: spaceBanner?.isActionButton ?? false,
+      isActionButton: spaceBanner?.isActionButton,
       buttonUrl: spaceBanner?.buttonUrl,
       buttonDisplayText: spaceBanner?.buttonDisplayText,
       isFullScreen: spaceBanner?.isFullScreen ?? true,
@@ -39,10 +39,12 @@ export const RunTabView: React.FC<RunTabViewProps> = ({ space }) => {
     [spaceBanner]
   );
 
-  const { register, handleSubmit, watch, reset } = useForm({
+  const { register, handleSubmit, watch, reset, control } = useForm({
     reValidateMode: "onChange",
     defaultValues,
   });
+
+  const { isDirty } = useFormState({ control });
 
   const values = watch();
 
@@ -113,7 +115,11 @@ export const RunTabView: React.FC<RunTabViewProps> = ({ space }) => {
             name="isForceFunnel"
           />
           <div className="flex justify-end">
-            <Button variant="secondary" onClick={() => reset()}>
+            <Button
+              variant="secondary"
+              onClick={() => reset()}
+              disabled={!isDirty}
+            >
               Cancel
             </Button>
             <Button loading={isUpdating} type="submit">
