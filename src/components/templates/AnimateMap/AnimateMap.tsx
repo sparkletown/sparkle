@@ -3,17 +3,9 @@ import { useStore } from "react-redux";
 import { useAsyncFn } from "react-use";
 import Bugsnag from "@bugsnag/js";
 
-import {
-  enterAnimateMapFireBarrel,
-  exitAnimateMapFireBarrel,
-  updateAnimateMapFireBarrel,
-} from "store/actions/AnimateMap";
-
 import { AnimateMapVenue } from "types/venues";
 
 import { WithId } from "utils/id";
-
-import { useDispatch } from "hooks/useDispatch";
 
 import { AnimateMapErrorPrompt } from "components/templates/AnimateMap/components/AnimateMapErrorPrompt";
 
@@ -24,7 +16,7 @@ import { CloudDataProvider } from "./bridges/DataProvider/CloudDataProvider";
 import { GameConfig } from "./configs/GameConfig";
 import { GameInstance } from "./game/GameInstance";
 import { useRelatedPartymapRooms } from "./hooks/useRelatedPartymapRooms";
-import { FirebarrelProvider, UIOverlay, UIOverlayGrid } from "./components";
+import { UIOverlay, UIOverlayGrid } from "./components";
 import { configs } from "./configs";
 
 import "./AnimateMap.scss";
@@ -40,7 +32,6 @@ export const AnimateMap: React.FC<AnimateMapProps> = ({ space }) => {
   const [app, setApp] = useState<GameInstance | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const store = useStore();
-  const dispatch = useDispatch();
 
   const [
     { loading: isInitializing, error: errorInitializing },
@@ -69,8 +60,6 @@ export const AnimateMap: React.FC<AnimateMapProps> = ({ space }) => {
 
   useEffect(() => void initialize(), [initialize]);
   useEffect(() => () => void app?.release(), [app]);
-
-  const [showFirebarrelFlag, setShowFirebarrelFlag] = useState(false);
 
   const relatedRooms = useRelatedPartymapRooms({ venue: space });
 
@@ -103,28 +92,7 @@ export const AnimateMap: React.FC<AnimateMapProps> = ({ space }) => {
           <div className="UIOverlay__main">
             <UIOverlayGrid venue={space} />
           </div>
-          <div
-            className={
-              "UIOverlay__bottom-panel" +
-              (showFirebarrelFlag ? " UIOverlay__bottom-panel--show" : "")
-            }
-          >
-            <FirebarrelProvider
-              venue={space}
-              setUserList={(roomId, userList) => {
-                dispatch(updateAnimateMapFireBarrel(roomId, userList));
-              }}
-              onConnectChange={(roomId, userList, isConnected) => {
-                if (isConnected) {
-                  dispatch(enterAnimateMapFireBarrel(roomId, userList));
-                } else {
-                  dispatch(exitAnimateMapFireBarrel(roomId));
-                }
-
-                setShowFirebarrelFlag(isConnected);
-              }}
-            />
-          </div>
+          <div className={"UIOverlay__bottom-panel"} />
         </UIOverlay>
       </div>
       <div ref={containerRef} className="AnimateMap__app-wrapper" />

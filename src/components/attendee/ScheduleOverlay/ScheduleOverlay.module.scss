@@ -79,7 +79,7 @@
 }
 
 .scheduleButtonDisabled {
-  color: gray;
+  color: theme.$c-panel-background;
   opacity: 0.5;
   background: transparent;
 }
