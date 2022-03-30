@@ -6,6 +6,7 @@ import { AdminRestrictedMessage } from "components/admin/AdminRestrictedMessage"
 import { Header } from "components/admin/Header";
 import { HeaderButton } from "components/admin/HeaderButton";
 import { SpaceDeleteModal } from "components/admin/SpaceDeleteModal";
+import { SpaceSchedule } from "components/admin/SpaceSchedule";
 import { TabBar } from "components/admin/TabBar";
 import { AdminLayout } from "components/layouts/AdminLayout";
 import { WithPermission } from "components/shared/WithPermission";
@@ -29,8 +30,6 @@ import {
 
 import { useShowHide } from "hooks/useShowHide";
 
-import { SpaceTimingPanel } from "components/organisms/AdminVenueView/components/SpaceTimingPanel";
-
 import { NotFound } from "components/atoms/NotFound";
 
 import { RunTabView } from "./components/RunTabView";
@@ -40,7 +39,7 @@ import "./AdminVenueView.scss";
 
 export enum AdminVenueTab {
   spaces = "spaces",
-  timing = "timing",
+  schedule = "schedule",
   run = "run",
 }
 
@@ -52,7 +51,7 @@ interface AdminVenueViewRouteParams {
 
 const adminVenueTabLabelMap: Readonly<Record<AdminVenueTab, string>> = {
   [AdminVenueTab.spaces]: "Spaces",
-  [AdminVenueTab.timing]: "Timing",
+  [AdminVenueTab.schedule]: "Schedule",
   [AdminVenueTab.run]: "Run",
 };
 
@@ -168,8 +167,12 @@ export const AdminVenueView: React.FC<AdminVenueViewProps> = ({
           {selectedTab === AdminVenueTab.spaces && (
             <Spaces space={space} world={world} />
           )}
-          {selectedTab === AdminVenueTab.timing && (
-            <SpaceTimingPanel space={space} />
+          {selectedTab === AdminVenueTab.schedule && (
+            <SpaceSchedule
+              globalStartTime={world.startTimeUnix}
+              globalEndTime={world.endTimeUnix}
+              space={space}
+            />
           )}
           {selectedTab === AdminVenueTab.run && <RunTabView space={space} />}
 
