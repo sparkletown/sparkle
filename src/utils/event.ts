@@ -12,7 +12,7 @@ import { EVENT_STARTING_SOON_TIMEFRAME } from "settings";
 
 import { WorldEvent } from "types/venues";
 
-import { formatUtcSecondsRelativeToNow, getDayInterval } from "./time";
+import { getDayInterval } from "./time";
 
 type EventStartTimeOptions = {
   event: WorldEvent;
@@ -80,16 +80,6 @@ export const isEventWithinDate = (checkDate: Date | number) => (
 export const isEventWithinDateAndNotFinished = (checkDate: Date | number) => (
   event: WorldEvent
 ) => isEventWithinDate(checkDate)(event) && !hasEventFinished(event);
-
-export const getEventStatus = (event: WorldEvent) => {
-  if (isEventLive(event)) return `Happening now`;
-
-  if (hasEventFinished(event)) {
-    return `Ended`;
-  } else {
-    return `Starts ${formatUtcSecondsRelativeToNow(event.startUtcSeconds)}`;
-  }
-};
 
 export const eventsByStartUtcSecondsSorter = (a: WorldEvent, b: WorldEvent) =>
   a.startUtcSeconds - b.startUtcSeconds;

@@ -18,7 +18,7 @@ import {
 import { getUserRef } from "api/profile";
 import { findSpaceBySlug } from "api/space";
 
-import { SpaceSlug } from "types/id";
+import { SpaceId, SpaceSlug } from "types/id";
 import { PortalInput, Room, RoomInput } from "types/rooms";
 import { ScreeningRoomVideo } from "types/screeningRoom";
 import { SpaceType } from "types/spaces";
@@ -71,7 +71,7 @@ export interface VenueInput_v2 extends WithId<VenueAdvancedConfig> {
   template?: VenueTemplate;
   iframeUrl?: string;
   autoPlay?: boolean;
-  parentId?: string;
+  parentId?: SpaceId;
   start_utc_seconds?: number;
   end_utc_seconds?: number;
   showShoutouts?: boolean;
@@ -82,7 +82,7 @@ export interface VenueInput_v2 extends WithId<VenueAdvancedConfig> {
 type FirestoreVenueInput_v2 = Omit<VenueInput_v2, ImageFileKeys> &
   Partial<Record<ImageUrlKeys, string>> & {
     template: VenueTemplate;
-    parentId?: string;
+    parentId?: SpaceId;
   };
 
 type FirestoreRoomInput = Omit<RoomInput, RoomImageFileKeys> & RoomImageUrls;
@@ -179,7 +179,7 @@ const createFirestoreVenueInputWithoutId_v2 = async (
     ),
     ...imageInputData,
     template: input.template ?? VenueTemplate.partymap,
-    parentId: input.parentId ?? "",
+    parentId: input.parentId,
     // While name is used as URL slug and there is possibility cloud functions might miss this step, canonicalize before saving
     name: input.name,
     slug: input.slug,

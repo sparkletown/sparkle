@@ -11,7 +11,7 @@ import { DAYJS_INPUT_DATE_FORMAT, DAYJS_INPUT_TIME_FORMAT } from "settings";
 
 import { createEvent, EventInput, updateEvent } from "api/admin";
 
-import { WorldId } from "types/id";
+import { SpaceId, WorldId } from "types/id";
 import { SpaceType } from "types/spaces";
 import { AnyVenue, WorldEvent } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
@@ -50,7 +50,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
     name: "",
   });
 
-  const eventSpaceId = event?.spaceId || venue?.id;
+  const eventSpaceId = event?.spaceId || (venue?.id as SpaceId | undefined);
 
   const {
     register,
@@ -123,7 +123,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
         durationMinutes:
           data.duration_hours * 60 + (data.duration_minutes ?? 0),
         host: data.host,
-        spaceId: spaceId,
+        spaceId: spaceId as SpaceId,
         // @debt this needs figuring out. We shouldn't get to here without
         // an eventSpace
         worldId: eventSpace?.worldId ?? worldId,

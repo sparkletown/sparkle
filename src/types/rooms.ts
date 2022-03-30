@@ -5,6 +5,7 @@ import { DisplayUser } from "types/User";
 
 import { WithId } from "utils/id";
 
+import { SpaceId } from "./id";
 import { SoundConfigReference } from "./sounds";
 import { PortalTemplate } from "./venues";
 
@@ -33,7 +34,7 @@ export interface Room extends PortalBox {
   image_url: string;
   enterSound?: SoundConfigReference;
   template?: PortalTemplate;
-  spaceId?: string;
+  spaceId?: SpaceId;
 }
 
 export type ParticipantWithUser<T extends Participant = Participant> = {
