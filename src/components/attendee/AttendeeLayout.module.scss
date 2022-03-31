@@ -31,6 +31,7 @@ $-z-index--popover: layer.above($-z-index--ui);
   transition: padding-right 0.2s ease;
   padding-right: 0;
   z-index: $-z-index--space;
+  transition: filter 2s ease;
 }
 
 .LayerUi {
@@ -68,4 +69,8 @@ $-z-index--popover: layer.above($-z-index--ui);
   * {
     pointer-events: all;
   }
+}
+
+.blur {
+  filter: blur(100px) contrast(60%);
 }

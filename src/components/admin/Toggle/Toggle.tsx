@@ -56,7 +56,7 @@ export const Toggle: React.FC<ToggleProps> = ({
           <div className={trackClasses} />
           <div className={thumbClasses} />
         </div>
-        <div className="ml-3 text-gray-700 font-medium">{label}</div>
+        <div className="ml-3 text-gray-700 font-medium text-sm">{label}</div>
       </label>
     </div>
   );

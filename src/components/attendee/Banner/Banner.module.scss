@@ -1,0 +1,42 @@
+@use "scss/attendee/layer";
+@use "scss/attendee/theme";
+@use "scss/attendee/space";
+
+$-z-index--banner: layer.above(0);
+
+.banner {
+  position: fixed;
+  z-index: $-z-index--banner;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 1;
+
+  transition: opacity 1.5s ease;
+  transition-delay: 1s;
+  height: 100vh;
+  width: 100vw;
+}
+
+.bannerContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  color: theme.$c-default-text;
+
+  height: 100%;
+  width: 100%;
+}
+
+.actionButtons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.closeButton {
+  padding: 0 space.gap(6);
+}

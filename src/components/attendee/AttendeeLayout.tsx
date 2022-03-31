@@ -2,7 +2,9 @@ import React, { useEffect, useState } from "react";
 import { AttendeeFooter } from "components/attendee/AttendeeFooter";
 import { AttendeeHeader } from "components/attendee/AttendeeHeader";
 import { ChatContainer } from "components/attendee/ChatContainer";
+import { withSlugs } from "components/hocs/context/withSlugs";
 import { withAuth } from "components/hocs/db/withAuth";
+import { withSpacesBySlug } from "components/hocs/db/withSpacesBySlug";
 import { withFallback } from "components/hocs/gate/withFallback";
 import { withRequired } from "components/hocs/gate/withRequired";
 import { compose } from "lodash/fp";
@@ -11,12 +13,15 @@ import { ATTENDEE_LAYOUT_CLASSNAME, POPOVER_CONTAINER_ID } from "settings";
 
 import { SpaceWithId } from "types/id";
 
+import { useShowHide } from "hooks/useShowHide";
+
 import { VenuePage } from "pages/VenuePage";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { NotLoggedInFallback } from "components/atoms/NotLoggedInFallback";
 
+import { Banner } from "./Banner/Banner";
 import { VideoCommsProvider } from "./VideoComms/VideoCommsProvider";
 import { HuddleProvider } from "./VideoHuddle/HuddleProvider";
 import { VideoHuddle } from "./VideoHuddle/VideoHuddle";
@@ -26,10 +31,18 @@ import styles from "./AttendeeLayout.module.scss";
 
 interface _AttendeeLayoutProps {
   userId: string;
+  space: SpaceWithId;
 }
 
-const _AttendeeLayout: React.FC<_AttendeeLayoutProps> = ({ userId }) => {
+const _AttendeeLayout: React.FC<_AttendeeLayoutProps> = ({ space }) => {
   const [backButtonSpace, setBackButtonSpace] = useState<SpaceWithId>();
+  const {
+    isShown: isBlurTurnedOn,
+    show: turnOnBlur,
+    hide: turnOffBlur,
+  } = useShowHide();
+
+  const banner = space?.banner;
 
   useEffect(() => {
     document.documentElement.classList.add(
@@ -49,7 +62,11 @@ const _AttendeeLayout: React.FC<_AttendeeLayoutProps> = ({ userId }) => {
       <HuddleProvider>
         <AttendeeHeader backButtonSpace={backButtonSpace} />
         <main>
-          <section className={styles.Space}>
+          <section
+            className={`${styles.Space} ${
+              isBlurTurnedOn && banner && styles.blur
+            }`}
+          >
             <VenuePage setBackButtonSpace={setBackButtonSpace} />
           </section>
           <div className={styles.LayerUi}>
@@ -61,6 +78,13 @@ const _AttendeeLayout: React.FC<_AttendeeLayoutProps> = ({ userId }) => {
         <AttendeeFooter />
         {/* Used by popovers to ensure z-index is handled properly */}
         <div id={POPOVER_CONTAINER_ID} className={styles.popoverContainer} />
+        {banner && (
+          <Banner
+            banner={banner}
+            turnOnBlur={turnOnBlur}
+            turnOffBlur={turnOffBlur}
+          />
+        )}
       </HuddleProvider>
     </VideoCommsProvider>
   );
@@ -69,6 +93,8 @@ const _AttendeeLayout: React.FC<_AttendeeLayoutProps> = ({ userId }) => {
 export const AttendeeLayout = compose(
   withAuth,
   withFallback(["isAuthLoaded", "userId"], NotLoggedInFallback),
+  withSlugs,
+  withSpacesBySlug,
   withRequired({
     required: ["userId"],
     fallback: LoadingPage,
