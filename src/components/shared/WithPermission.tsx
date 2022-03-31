@@ -1,7 +1,7 @@
 import React, { ReactNode } from "react";
 
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
-import { usePermission } from "hooks/user/usePermission";
+import { useLivePermission } from "hooks/user/useLivePermission";
 import { useUserId } from "hooks/user/useUserId";
 
 type AdminRestrictedProps = {
@@ -27,7 +27,7 @@ export const WithPermission: React.FC<AdminRestrictedProps> = ({
     isWorldOwner,
     isSpaceOwner,
     isLoading: isLoadingRole,
-  } = usePermission({ userId, worldId, spaceId });
+  } = useLivePermission({ userId, worldId, spaceId });
 
   if (isLoadingUserId || isLoadingRole || isLoadingIds) {
     return <>{loading}</>;
