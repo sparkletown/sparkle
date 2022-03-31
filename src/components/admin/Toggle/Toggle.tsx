@@ -39,7 +39,7 @@ export const Toggle: React.FC<ToggleProps> = ({
   const trackClasses = TW[`${!!checked}Track`];
 
   return (
-    <div className="flex flex-col w-full mb-3">
+    <>
       {title && (
         <label className="block text-sm font-medium text-gray-700">
           {title}
@@ -58,6 +58,6 @@ export const Toggle: React.FC<ToggleProps> = ({
         </div>
         <div className="ml-3 text-gray-700 font-medium text-sm">{label}</div>
       </label>
-    </div>
+    </>
   );
 };
