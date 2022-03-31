@@ -20,7 +20,7 @@ export const TuneBanner: React.FC<TuneBannerProps> = ({
         Multimedia
       </span>
       <span className={styles.tuneHint}>Share content with the space</span>
-      <Button onClick={startTuning} disabled={isTuning}>
+      <Button variant="primary" onClick={startTuning} disabled={isTuning}>
         Tune
       </Button>
     </div>

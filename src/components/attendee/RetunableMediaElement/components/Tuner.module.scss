@@ -66,6 +66,7 @@ $radio-button-size: 9px;
   position: absolute;
   right: space.empty(2);
   color: theme.$c-tuner-text-color;
+
   svg {
     margin-left: space.gap(2);
   }
@@ -77,7 +78,7 @@ $radio-button-size: 9px;
   gap: space.gap(5);
 }
 
-.embedUrlInput {
+.embedUrlInput input {
   display: flex;
   align-items: center;
   padding: 4px 5em 4px 12px;

@@ -58,10 +58,10 @@ export const ProfileModalChangePassword: React.FC<ProfileModalChangePasswordProp
           Old Password
         </span>
         <Input
-          placeholder={"••••••••••"}
+          placeholder="••••••••••"
           name="oldPassword"
           register={register}
-          inputClassName={styles.ProfileModalChangePassword__field}
+          variant="overlay-profile"
           error={errors?.oldPassword}
           type="password"
           autoComplete="off"
@@ -73,7 +73,7 @@ export const ProfileModalChangePassword: React.FC<ProfileModalChangePasswordProp
         </span>
         <Input
           name="newPassword"
-          inputClassName={styles.ProfileModalChangePassword__field}
+          variant="overlay-profile"
           error={errors?.newPassword}
           type="password"
           register={register}
@@ -86,7 +86,7 @@ export const ProfileModalChangePassword: React.FC<ProfileModalChangePasswordProp
         </span>
         <Input
           name="confirmNewPassword"
-          inputClassName={styles.ProfileModalChangePassword__field}
+          variant="overlay-profile"
           error={errors?.confirmNewPassword}
           type="password"
           register={register}

@@ -18,9 +18,8 @@ $-z-index--popover: layer.above($-z-index--ui);
 
 .html {
   overflow-y: scroll;
-  font-family: Sparkle, serif;
-  font-variation-settings: "wght" 350, "ital" 0, "SRFF" 20;
   @include font.core;
+  @include font.sparkle;
 }
 
 .Space {
@@ -66,6 +65,7 @@ $-z-index--popover: layer.above($-z-index--ui);
   // Make the overlay ignore pointers, however, the things in the overlay must
   // receive pointer events
   pointer-events: none;
+
   * {
     pointer-events: all;
   }

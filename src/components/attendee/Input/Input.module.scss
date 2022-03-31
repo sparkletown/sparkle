@@ -29,11 +29,11 @@
   }
 }
 
-.borderless {
+.border-borderless {
   border: none;
 }
 
-.border {
+.border-border {
   border: border.$width--slim solid theme.$sparkle--border;
 }
 
@@ -62,4 +62,43 @@
 
 .inputField {
   outline: none;
+}
+
+.variant-overlay,
+.variant-overlay-profile,
+.variant-overlay-search {
+  display: flex;
+  align-items: center;
+  height: space.$l3;
+  border-radius: space.$xs;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+// @debt, there should be a single .overlay, variant, remove these exceptions
+.variant-overlay-profile {
+  padding: space.gap(2) 5em space.gap(2) space.empty(1); // different
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+// @debt, there should be a single .overlay, variant, remove these exceptions
+.variant-overlay-search {
+  padding: 0 5em 0 space.empty(1); // different
+}
+
+.variant-login {
+  //@include font.core;
+  padding: 0 space.empty(1);
+  height: space.$l3;
+  border-radius: border.$radius--xs;
+  box-sizing: border-box;
+  color: theme.$c-login-input--fg;
+  background-color: theme.$c-login-input--bg;
+  border-color: theme.$c-login-input--eg;
+
+  &::placeholder {
+    color: theme.$c-login-input--ph;
+    font-size: font.$size--md;
+  }
 }

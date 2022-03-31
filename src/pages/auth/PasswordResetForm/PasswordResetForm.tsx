@@ -1,8 +1,15 @@
 import React, { useState } from "react";
 import { useForm, useFormState } from "react-hook-form";
+import { Button } from "components/attendee/Button";
+import { Input } from "components/attendee/Input";
+import { Spacer } from "components/attendee/Spacer";
 import firebase from "firebase/compat/app";
 
+import { STRING_SPACE } from "settings";
+
 import { errorMessage } from "utils/error";
+
+import CN from "pages/auth/auth.module.scss";
 
 interface PropsType {
   displayLoginForm: () => void;
@@ -46,56 +53,57 @@ export const PasswordResetForm: React.FunctionComponent<PropsType> = ({
     }
   };
 
-  const onClose = () => {
-    closeAuthenticationModal?.();
-  };
-
   return (
-    <div className="form-container">
-      <h2>Reset Password</h2>
-      <div className="secondary-action">
-        {`Finished resetting your password?`}
-        <br />
-        <span className="link" onClick={displayLoginForm}>
-          Log in!
-        </span>
-      </div>
+    <div data-bem="PasswordResetForm" className={CN.container}>
+      <Spacer marginDirection="block" marginSize="large">
+        <h1>Reset Password</h1>
+      </Spacer>
+      <Spacer marginDirection="block" paddingDirection="block">
+        <span className={CN.info}> Finished resetting your password?</span>
+        {STRING_SPACE}
+        <button className={CN.link} onClick={displayLoginForm}>
+          Log in
+        </button>
+      </Spacer>
       {!emailSentTo && (
-        <form onSubmit={handleSubmit(onSubmit)} className="form">
-          <div className="input-group">
-            <input
-              className="input-block input-centered"
-              placeholder="Your email"
-              {...register("email", { required: true })}
+        <form
+          data-bem="PasswordResetForm__form"
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <Spacer marginDirection="block" paddingDirection="block">
+            <Input
+              name="email"
+              variant="login"
+              border="border"
+              placeholder="Enter your email"
+              register={register}
+              rules={{ required: true }}
             />
             {errors.email && errors.email.type === "required" && (
-              <span className="input-error">Email is required</span>
+              <span className={CN.error}>Email is required</span>
             )}
             {errors.email && errors.email.type === "firebase" && (
-              <span className="input-error">{errors.email.message}</span>
+              <span className={CN.error}>{errors.email.message}</span>
             )}
-          </div>
-          <input
-            className="btn btn-primary btn-block btn-centered"
+          </Spacer>
+          <Button
+            variant="login-primary"
             type="submit"
-            value="Send Email"
             disabled={!formState.isValid}
-          />
+          >
+            Send Email
+          </Button>
         </form>
       )}
       {emailSentTo && (
-        <form onSubmit={handleSubmit(onClose)} className="form">
-          <div className="input-group">
-            <span className="info">
-              Password reset email sent. Please check your {emailSentTo} inbox.
-            </span>
+        <Spacer>
+          <div>
+            Password reset email sent. Please check your {emailSentTo} inbox.
           </div>
-          <input
-            className="btn btn-primary btn-block btn-centered"
-            type="submit"
-            value="Close"
-          />
-        </form>
+          <Button variant="primary" onClick={displayLoginForm}>
+            Close
+          </Button>
+        </Spacer>
       )}
     </div>
   );

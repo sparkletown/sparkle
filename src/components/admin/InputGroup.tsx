@@ -5,6 +5,7 @@ import { InputGroupSubtitle } from "./InputGroupSubtitle";
 import { InputGroupTitle } from "./InputGroupTitle";
 
 type MarginVariant = "medium";
+
 export interface InputGroupProps {
   title?: ReactNode | string;
   subtitle?: ReactNode | string;
@@ -37,7 +38,7 @@ export const InputGroup: React.FC<InputGroupProps> = ({
   });
 
   return (
-    <section className={sectionClasses}>
+    <section data-bem="InputGroup" className={sectionClasses}>
       {withLabel ? <label>{contents}</label> : contents}
       {children}
     </section>

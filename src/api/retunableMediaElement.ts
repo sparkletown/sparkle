@@ -5,6 +5,8 @@ import { COLLECTION_RETUNABLE_MEDIA_ELEMENTS } from "settings";
 
 import { SpaceId } from "types/id";
 
+import { createErrorCapture } from "utils/error";
+
 type SetRetunableMediaSettings = (options: {
   spaceId: SpaceId;
   settings: RetunableMediaElementSettings;
@@ -18,5 +20,12 @@ export const setRetunableMediaSettings: SetRetunableMediaSettings = async ({
     .firestore()
     .collection(COLLECTION_RETUNABLE_MEDIA_ELEMENTS)
     .doc(spaceId)
-    .set(settings);
+    .set(settings)
+    .catch(
+      createErrorCapture({
+        message: `Unable to set re-tunable media settings for space ${spaceId}`,
+        where: "setRetunableMediaSettings",
+        args: { settings },
+      })
+    );
 };

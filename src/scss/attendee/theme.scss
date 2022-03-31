@@ -31,6 +31,9 @@
 
   --toggler-off-color: rgba(255, 255, 255, 0.3);
 
+  --login-input--eg: rgba(174, 174, 174, 1);
+  --login-input--ph: rgba(204, 204, 204, 1);
+
   --profile-links-icons: rgb(89, 89, 89);
   --badges-info: rgb(80, 80, 80);
 
@@ -87,6 +90,21 @@ $light--aux-text: rgba(128, 128, 128);
 $c-chat-input-background: var(--chat-input-background);
 
 $c-light-text-on-dark: rgb(230, 230, 230);
+
+// login colors
+$c-login-button--fg: var(--default-text);
+$c-login-button--bg: var(--panel-background);
+$c-login-button--eg: var(--default-text);
+$c-login-input--fg: var(--default-text); // foreground color
+$c-login-input--bg: var(--panel-background); // background color
+$c-login-input--eg: var(--login-input--eg); // edge (border) color
+$c-login-input--ph: var(--login-input--ph); // placeholder color
+$c-login-page--fg: var(--default-text);
+$c-login-page--bg: var(--panel-background);
+$c-login-link--fg: var(--default-text);
+$c-login-link--bg: var(--panel-background);
+$c-login-error-fg: var(--error-border);
+$c-login-error-eg: var(--error-border);
 
 $profile-links-icons: var(--profile-links-icons);
 $badges-info: var(--badges-info);

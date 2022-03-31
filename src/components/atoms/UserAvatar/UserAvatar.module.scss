@@ -1,11 +1,11 @@
 @use "scss/attendee/border";
 @use "scss/attendee/layout";
 
-@each $sizeName, $sizePixels in layout.$avatarSizes {
-  .avatarContainer__#{$sizeName} {
+@each $element, $size in layout.$avatar-sizes {
+  .avatarContainer__#{$element} {
     position: relative;
-    width: $sizePixels;
-    height: $sizePixels;
+    width: $size;
+    height: $size;
     flex-shrink: 0;
   }
 }

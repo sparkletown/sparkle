@@ -2,14 +2,11 @@ import React from "react";
 import { FieldError, RegisterOptions, UseFormRegister } from "react-hook-form";
 import classNames from "classnames";
 
-import { AnyForm, ContainerClassName } from "types/utility";
+import { AnyForm } from "types/utility";
 
 import CN from "./Input.module.scss";
 
-interface InputProps
-  extends React.HTMLProps<HTMLInputElement>,
-    ContainerClassName {
-  inputClassName?: string;
+type InputProps = React.HTMLProps<HTMLInputElement> & {
   error?: FieldError;
   onLabelClick?: () => void;
   label?: string;
@@ -17,14 +14,13 @@ interface InputProps
   register?: UseFormRegister<AnyForm> | (() => void);
   rules?: RegisterOptions;
   border?: "borderless" | "border";
-}
+  variant?: "login" | "overlay" | "overlay-profile" | "overlay-search"; // @debt: there should be a single "overlay" variant
+};
 
 export const Input: React.ForwardRefRenderFunction<
   HTMLInputElement,
   InputProps
 > = ({
-  containerClassName,
-  inputClassName,
   onLabelClick,
   error,
   label,
@@ -32,12 +28,13 @@ export const Input: React.ForwardRefRenderFunction<
   rules,
   name,
   border = "borderless",
+  variant = "",
   ...extraInputProps
 }) => {
   const inputClassNames = classNames(
     CN.inputField,
-    inputClassName,
-    CN[border],
+    CN[`border-${border}`],
+    CN[`variant-${variant}`],
     {
       [CN.invalid]: error,
     }
@@ -45,7 +42,7 @@ export const Input: React.ForwardRefRenderFunction<
   const registerProps = name && register ? register(name, rules) : {};
 
   return (
-    <div className={CN.input}>
+    <div data-bem="Input" className={CN.input}>
       {label ? (
         <div className={CN.inputWrapper}>
           <label data-label={label} onClick={onLabelClick}>
@@ -54,7 +51,7 @@ export const Input: React.ForwardRefRenderFunction<
               className={inputClassNames}
               {...extraInputProps}
             />
-            {error && <span className={CN.errorIcon}></span>}
+            {error && <span className={CN.errorIcon} />}
           </label>
         </div>
       ) : (
@@ -64,7 +61,7 @@ export const Input: React.ForwardRefRenderFunction<
             className={inputClassNames}
             {...extraInputProps}
           />
-          {error && <span className={CN.errorIcon}></span>}
+          {error && <span className={CN.errorIcon} />}
         </div>
       )}
       {error && <span className={CN.inputError}>{error.message}</span>}

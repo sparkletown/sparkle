@@ -29,7 +29,22 @@ $weight--l4: 900; // Black (Heavy)
   line-height: 1.4;
 }
 
+@mixin large {
+  font-size: $size--lg;
+  line-height: 1.4;
+}
+
+@mixin title {
+  font-size: $size--l2;
+  line-height: 1.4;
+}
+
 // previously named font-body
 @mixin body {
   font-size: $size--xl;
+}
+
+@mixin sparkle {
+  font-family: Sparkle, serif;
+  font-variation-settings: "wght" 350, "ital" 0, "SRFF" 20;
 }

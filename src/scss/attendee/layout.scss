@@ -11,11 +11,11 @@ $w-space-info: 420px;
 $h-chat-controls: 42px;
 
 // Button height plus padding
-$h-top-nav: 42px + 2 * space.empty(1);
+$h-top-nav: 42px + space.empty(2);
 
 // TODO Only medium has had its size set. The other sizes need configuring
 // which is why they're odd values.
-$avatarSizes: (
+$avatar-sizes: (
   small: 1px,
   medium: 42px,
   large: 504px,
@@ -24,6 +24,15 @@ $avatarSizes: (
 
 // TODO: at the moment we have only one usage of card.
 // There might be other card sizes in the future, the list can be extended when needed.
-$cardSizes: (
+$card-sizes: (
   small: 200px,
 );
+
+@mixin square-size($size: 1, $min: null, $max: null) {
+  height: $size;
+  width: $size;
+  min-height: $min;
+  min-width: $min;
+  max-height: $max;
+  max-width: $max;
+}

@@ -42,16 +42,6 @@
   margin: space.empty(1) 0;
 }
 
-.searchOverlaySearchInput {
-  display: flex;
-  align-items: center;
-  height: space.$l3;
-  border-radius: space.$xs;
-  box-sizing: border-box;
-  padding: 0 5em 0 space.empty(1);
-  width: 100%;
-}
-
 .searchOverlayBody {
   padding: 0 0 space.empty(3);
 }
