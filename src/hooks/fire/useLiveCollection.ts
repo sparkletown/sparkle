@@ -35,7 +35,7 @@ export const useLiveCollection = <T extends object, ID extends string = string>(
     hasDeferred,
     constraints,
     filteredConstraints,
-  } = parseCollectionQueryOptions(options);
+  } = useMemo(() => parseCollectionQueryOptions(options), [options]);
 
   // construction of the query is where the Firestore SDK may break if invalid values are given
   const memoizedQuery = useMemo(

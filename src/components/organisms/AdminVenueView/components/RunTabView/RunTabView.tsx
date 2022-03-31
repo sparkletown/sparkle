@@ -1,60 +1,139 @@
-import React from "react";
+import React, { useMemo } from "react";
+import { useForm, useFormState } from "react-hook-form";
+import { useAsyncFn } from "react-use";
+import { Button } from "components/admin/Button";
+import { Checkbox } from "components/admin/Checkbox";
+import { Input } from "components/admin/Input";
+import { InputGroup } from "components/admin/InputGroup";
+import { SidebarHeader } from "components/admin/SidebarHeader";
+import { Textarea } from "components/admin/Textarea";
+import { ThreeColumnLayout } from "components/admin/ThreeColumnLayout";
+import { Toggle } from "components/admin/Toggle";
 
-import { ALWAYS_EMPTY_ARRAY, SPACE_TAXON } from "settings";
+import { updateBanner } from "api/bannerAdmin";
 
 import { SpaceWithId } from "types/id";
 
-import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
 import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
 import { AdminSidebar } from "components/organisms/AdminVenueView/components/AdminSidebar";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
-import { UserList } from "components/molecules/UserList";
-
-import { AdminSidebarSectionTitle } from "../AdminSidebarSectionTitle";
-import { MapPreview } from "../MapPreview";
 
 export interface RunTabViewProps {
   space?: SpaceWithId;
 }
 
 export const RunTabView: React.FC<RunTabViewProps> = ({ space }) => {
+  const spaceBanner = space?.banner;
+  const spaceId = space?.id;
+
+  const defaultValues = useMemo(
+    () => ({
+      content: spaceBanner?.content,
+      isActionButton: spaceBanner?.isActionButton,
+      buttonUrl: spaceBanner?.buttonUrl,
+      buttonDisplayText: spaceBanner?.buttonDisplayText,
+      isFullScreen: spaceBanner?.isFullScreen ?? true,
+      isForceFunnel: spaceBanner?.isForceFunnel,
+    }),
+    [spaceBanner]
+  );
+
+  const { register, handleSubmit, watch, reset, control } = useForm({
+    reValidateMode: "onChange",
+    defaultValues,
+  });
+
+  const { isDirty } = useFormState({ control });
+
+  const values = watch();
+
+  const [{ loading: isUpdating }, updateVenue] = useAsyncFn(
+    async (data) => {
+      if (!spaceId) return;
+
+      // FIXME: Remove auto-setting of isFullScreen once the non-fullscreen mode is implemented
+      return updateBanner({ banner: { ...data, isFullScreen: true }, spaceId });
+    },
+    [spaceId]
+  );
+
   if (!space) {
     return <LoadingPage />;
   }
 
-  const mapBackground = space.mapBackgroundImageUrl;
-  const usersSample = space.recentUsersSample ?? ALWAYS_EMPTY_ARRAY;
-  const userCount = space.recentUserCount ?? 0;
-  const rooms = space.rooms || ALWAYS_EMPTY_ARRAY;
-
   return (
-    <AdminPanel variant="unbound" className="RunTabView">
+    <ThreeColumnLayout>
       <AdminSidebar>
-        <AdminSidebarSectionTitle>
-          Run your {SPACE_TAXON.lower}
-        </AdminSidebarSectionTitle>
-      </AdminSidebar>
-      <div className="RunTabView__body">
-        <div className="RunTabView__user-list">
-          <UserList
-            usersSample={usersSample}
-            userCount={userCount}
-            showTitle={false}
-            activity={`in ${SPACE_TAXON.lower}`}
-          />
-        </div>
-        <AdminShowcase>
-          <div className="RunTabView__map RunTabView--spacing">
-            <MapPreview
-              isEditing={false}
-              mapBackground={mapBackground}
-              rooms={rooms}
-              setSelectedRoom={() => undefined}
+        <form onSubmit={handleSubmit(updateVenue)}>
+          <SidebarHeader>Announcements</SidebarHeader>
+          <InputGroup title="Announcement content" isRequired withLabel>
+            <Textarea
+              placeholder="Please type your announcement text here."
+              register={register}
+              name="content"
+              required
             />
+          </InputGroup>
+          <Checkbox
+            label="Set full-screen announcement"
+            register={register}
+            name="isFullScreen"
+            disabled
+            checked={values.isFullScreen}
+          />
+          <Toggle
+            label="Call to action button"
+            register={register}
+            name="isActionButton"
+            checked={values.isActionButton}
+          />
+          {values.isActionButton && (
+            <>
+              <InputGroup title="Button text" isRequired withLabel>
+                <Input
+                  placeholder="Button display text"
+                  register={register}
+                  name="buttonDisplayText"
+                  required
+                />
+              </InputGroup>
+              <InputGroup title="Button URL" isRequired withLabel>
+                <Input
+                  placeholder="Button URL"
+                  register={register}
+                  name="buttonUrl"
+                  required
+                />
+              </InputGroup>
+            </>
+          )}
+
+          <Checkbox
+            label="Force funnel"
+            register={register}
+            name="isForceFunnel"
+          />
+          <div className="flex justify-end">
+            <Button
+              variant="secondary"
+              onClick={() => reset()}
+              disabled={!isDirty}
+            >
+              Cancel
+            </Button>
+            <Button loading={isUpdating} type="submit">
+              Save
+            </Button>
           </div>
-        </AdminShowcase>
-      </div>
-    </AdminPanel>
+        </form>
+      </AdminSidebar>
+
+      <AdminShowcase>
+        <div className="px-12 sm:px-12">
+          {/* A placeholder for a proper map preview. Once the non-fullscreen mode is designed */}
+        </div>
+      </AdminShowcase>
+    </ThreeColumnLayout>
   );
 };

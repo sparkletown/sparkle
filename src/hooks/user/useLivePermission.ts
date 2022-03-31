@@ -12,14 +12,12 @@ type AdminRole = {
   allowAll: boolean;
   users: string[];
 };
-
 type UsePermissionOptions = {
   userId: UserId;
   worldId?: WorldId;
   spaceId?: SpaceId;
 };
-
-export const usePermission = (options: UsePermissionOptions) => {
+export const useLivePermission = (options: UsePermissionOptions) => {
   const {
     data: role,
     error: roleError,

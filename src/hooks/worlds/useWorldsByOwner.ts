@@ -30,10 +30,17 @@ export const useWorldsByOwner: UseWorldsByOwner = ({ userId }) => {
     [userId]
   );
 
-  const { error, isLoading, isLoaded, data } = useLiveCollection<WorldWithId>({
-    path: PATH.worlds,
-    constraints,
-  });
+  const options = useMemo(
+    () => ({
+      path: PATH.worlds,
+      constraints,
+    }),
+    [constraints]
+  );
+
+  const { error, isLoading, isLoaded, data } = useLiveCollection<WorldWithId>(
+    options
+  );
 
   return useMemo(
     () => ({
