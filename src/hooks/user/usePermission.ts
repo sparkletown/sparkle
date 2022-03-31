@@ -5,20 +5,18 @@ import { ALWAYS_EMPTY_ARRAY, PATH } from "settings";
 import { SpaceId, UserId, WorldId } from "types/id";
 
 import { useLiveDocument } from "hooks/fire/useLiveDocument";
-import { useSpaceById } from "hooks/spaces/useSpaceById";
-import { useWorldById } from "hooks/worlds/useWorldById";
+import { useSpacesByOwner } from "hooks/spaces/useSpacesByOwner";
+import { useWorldsByOwner } from "hooks/worlds/useWorldsByOwner";
 
 type AdminRole = {
   allowAll: boolean;
   users: string[];
 };
-
 type UsePermissionOptions = {
   userId: UserId;
   worldId?: WorldId;
   spaceId?: SpaceId;
 };
-
 export const usePermission = (options: UsePermissionOptions) => {
   const {
     data: role,
@@ -26,53 +24,68 @@ export const usePermission = (options: UsePermissionOptions) => {
     isLoading: roleLoading,
   } = useLiveDocument<AdminRole>(PATH.rolesAdmin);
 
+  const {
+    ownWorlds,
+    error: worldsError,
+    isLoading: worldLoading,
+  } = useWorldsByOwner(options);
+
+  const {
+    ownSpaces,
+    error: spacesError,
+    isLoading: spacesLoading,
+  } = useSpacesByOwner(options);
+
   const { userId, worldId, spaceId } = options;
 
-  const { world, isLoading: isWorldLoading, error: worldError } = useWorldById({
-    worldId,
-  });
-
-  const { space, isLoading: isSpaceLoading, error: spaceError } = useSpaceById({
-    spaceId,
-  });
-
   return useMemo(() => {
-    const isWorldOwner = !isWorldLoading && world?.owners.includes(userId);
-    const isSpaceOwner = !isSpaceLoading && space?.owners?.includes(userId);
+    const isAnyWorldOwner = !worldLoading && ownWorlds?.length > 0;
+    const isAnySpaceOwner = !spacesLoading && ownSpaces?.length > 0;
+
+    const isWorldOwner =
+      !worldLoading && ownWorlds?.find(({ id }) => id === worldId);
+    const isSpaceOwner =
+      !spacesLoading && ownSpaces?.find(({ id }) => id === spaceId);
 
     const users = role?.users;
     const ids = !roleLoading && users ? role?.users : ALWAYS_EMPTY_ARRAY;
     const isSuperAdmin = userId && ids.includes(userId);
 
-    const isLoading = isWorldLoading || isSpaceLoading || roleLoading;
+    const isLoading = worldLoading || spacesLoading || roleLoading;
     const isLoaded = !isLoading;
 
-    const isAdmin = isSuperAdmin;
+    const isAdmin = isSuperAdmin || isAnyWorldOwner || isAnySpaceOwner;
     const isNotAdmin = !isAdmin;
 
-    const error = roleError ?? worldError ?? spaceError;
+    const error = roleError ?? worldsError ?? spacesError;
 
     return {
       error,
       isAdmin,
       isNotAdmin,
       isSuperAdmin,
+      isAnyWorldOwner,
+      isAnySpaceOwner,
       isWorldOwner,
       isSpaceOwner,
       isLoading,
       isLoaded,
       superAdminIds: ids,
+      ownWorlds,
+      ownSpaces,
     };
   }, [
-    isSpaceLoading,
-    isWorldLoading,
-    role?.users,
+    role,
     roleError,
+    worldsError,
+    spacesError,
     roleLoading,
-    space?.owners,
-    spaceError,
+    worldLoading,
+    spacesLoading,
+    ownSpaces,
+    ownWorlds,
     userId,
-    world?.owners,
-    worldError,
+    worldId,
+    spaceId,
   ]);
 };
