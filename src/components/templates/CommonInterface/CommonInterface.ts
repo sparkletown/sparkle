@@ -1,6 +1,7 @@
 // import { DocumentData, QuerySnapshot } from "@firebase/firestore-types";
 
 import { GameServerProviderInterface } from "../GameServerProviderInterface";
+import { StorageProvider } from "../StorageProvider";
 
 // import { ReplicatedUser } from "../../../../../../store/reducers/AnimateMap";
 
@@ -42,7 +43,7 @@ export interface CommonInterface {
 export class CommonLinker implements CommonInterface {
   constructor(
     private gameServerProvider: GameServerProviderInterface,
-    private _firebaseProvider: unknown
+    private storageProvider: StorageProvider
   ) { }
 
   // loadUsersAsync(): Promise<User[]> {
@@ -75,6 +76,6 @@ export class CommonLinker implements CommonInterface {
   // }
 
   // loadVenuesAsync() {
-  //   return this._firebaseProvider.loadVenue();
+  //   return this.storageProvider.loadVenue();
   // }
 }

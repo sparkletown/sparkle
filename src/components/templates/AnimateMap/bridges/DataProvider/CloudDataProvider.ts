@@ -20,9 +20,8 @@ import {
 import { GameServerBots, GameServerProvider } from "../../../GameServerProvider";
 import { getIntByHash } from "../../../GameServerProvider/utils/getIntByHash";
 import playerModel from "../../../GameStructures/PlayerModel";
+import { StorageProvider } from "../../../StorageProvider";
 import { RoomWithFullData } from "../CloudDataProviderWrapper";
-
-import { FirebaseDataProvider } from "./Contructor/Firebase/FirebaseDataProvider";
 
 interface TEMPORARY_USERS_TYPE_REPLACEMENT {
   isRecentWorldUsersLoaded: boolean;
@@ -77,7 +76,7 @@ export class CloudDataProvider extends utils.EventEmitter implements DataProvide
         this.settings.playerId,
         this.settings.reInitOnError
       ),
-      new FirebaseDataProvider(this.settings.firebase)
+      new StorageProvider(this.settings.firebase)
     );
     this.player = new PlayerDataProvider(
       this.settings.playerId,

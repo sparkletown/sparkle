@@ -4,13 +4,13 @@ import {
 } from "react-redux-firebase";
 import { utils } from "pixi.js";
 
-export class FirebaseDataProvider extends utils.EventEmitter {
-  protected _firestore: ExtendedFirestoreInstance;
+export class StorageProvider extends utils.EventEmitter {
+  protected storage: ExtendedFirestoreInstance;
 
   constructor(protected _firebase: ExtendedFirebaseInstance) {
     super();
 
-    this._firestore = _firebase.firestore();
+    this.storage = _firebase.firestore();
   }
 
   // loadVenue() {
