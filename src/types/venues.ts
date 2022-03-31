@@ -3,7 +3,7 @@ import { CSSProperties } from "react";
 import { HAS_ROOMS_TEMPLATES } from "settings";
 
 import { AuditoriumSectionPath } from "types/auditorium";
-import { SpaceSlug, UserWithId } from "types/id";
+import { SpaceId, SpaceSlug, UserWithId } from "types/id";
 import { RoomVisibility } from "types/RoomVisibility";
 import { VenueTemplate } from "types/VenueTemplate";
 
@@ -34,6 +34,7 @@ export type GenericVenueTemplates = Exclude<
   | VenueTemplate.viewingwindow
   | VenueTemplate.experiment
   | VenueTemplate.artpiece
+  | VenueTemplate.meetingroom
 >;
 
 // We shouldn't include 'Venue' here, that is what 'GenericVenue' is for (which correctly narrows the types; these should remain alphabetically sorted, except with GenericVenue at the top)
@@ -47,7 +48,8 @@ export type AnyVenue =
   | PosterPageVenue
   | ViewingWindowVenue
   | ExperimentalVenue
-  | ArtPieceVenue;
+  | ArtPieceVenue
+  | MeetingRoomVenue;
 
 // --- VENUE V2
 export interface Venue_v2 extends Venue_v2_Base, VenueAdvancedConfig {}
@@ -82,7 +84,7 @@ export interface VenueAdvancedConfig {
   roomVisibility?: RoomVisibility;
   showGrid?: boolean;
   showRadio?: boolean;
-  parentId?: string;
+  parentId?: SpaceId;
   showUserStatus?: boolean;
   userStatuses?: UserStatus[];
   enableJukebox?: boolean;
@@ -93,7 +95,7 @@ export interface VenueAdvancedConfig {
 //   termsAndConditions, width, height
 export interface BaseVenue {
   template: VenueTemplate;
-  parentId?: string;
+  parentId?: SpaceId;
   name: string;
   slug: SpaceSlug;
   access?: VenueAccessMode;
@@ -167,7 +169,7 @@ export interface GenericVenue extends BaseVenue {
 export interface AnimateMapVenue extends BaseVenue {
   id: string;
   gameOptions: GameOptions;
-  relatedPartymapId: string;
+  relatedPartymapId: SpaceId;
   template: VenueTemplate.animatemap;
 }
 
@@ -212,6 +214,9 @@ export interface JazzbarVenue extends BaseVenue {
 export interface ArtPieceVenue extends BaseVenue {
   template: VenueTemplate.artpiece;
   iframeUrl: string;
+}
+export interface MeetingRoomVenue extends BaseVenue {
+  template: VenueTemplate.meetingroom;
 }
 
 export interface ExperimentalVenue extends BaseVenue {
@@ -329,7 +334,7 @@ export interface WorldEvent {
   id: string;
   orderPriority?: number;
   liveAudience?: number;
-  spaceId: string;
+  spaceId: SpaceId;
   worldId: string;
 }
 

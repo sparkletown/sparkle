@@ -13,7 +13,7 @@ export const withWorldById = <T extends WorldIdLocation>(
   Component: React.FC<WithWorldByIdInProps<T>>
 ) => {
   const WithWorldById = (props: WithWorldByIdInProps<T>) => {
-    const { world, worldId, isLoaded } = useWorldById(props?.worldId);
+    const { world, worldId, isLoaded } = useWorldById(props);
 
     return React.createElement(Component, {
       ...props,

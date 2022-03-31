@@ -25,6 +25,14 @@
   @include sparkle.color--glass;
 }
 
+.variant-intensive {
+  background: theme.$c-button-bg;
+}
+
+.variant-danger {
+  background: theme.$c-danger-bg;
+}
+
 .variant-alternative {
   background: transparent;
 }
@@ -45,4 +53,18 @@
 .transparent {
   background: transparent;
   backdrop-filter: none;
+}
+
+.disabled {
+  background-color: theme.$c-button-disabled-background;
+  color: theme.$c-button-disabled-foreground;
+  cursor: default;
+}
+
+.borderRadiusNone {
+  border-radius: 0;
+}
+
+.buttonMarginNone {
+  margin: 0;
 }

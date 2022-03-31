@@ -40,7 +40,7 @@ export const setAnalyticsGroup = (groupKey: string, groupName: string) => {
 
 export const initAnalytics = (opts?: Object) => {
   if (!MIXPANEL_PROJECT_TOKEN) {
-    console.warn("Mixpanel is not set up correctly. The token is missing.");
+    console.info("Mixpanel is not set up correctly. The token is missing.");
     return;
   }
 
@@ -104,7 +104,9 @@ export const useAnalytics = ({
   venue: space,
 }: UseAnalyticsOptions): UseAnalyticsResult => {
   const { user } = useLoginCheck();
-  const { world, isLoaded: isWorldLoaded } = useWorldById(space?.worldId);
+  const { world, isLoaded: isWorldLoaded } = useWorldById({
+    worldId: space?.worldId,
+  });
   const email = user?.email;
   const spaceId = space?.id;
   const worldId = world?.id;

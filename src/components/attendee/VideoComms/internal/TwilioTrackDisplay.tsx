@@ -25,8 +25,13 @@ export const TwilioTrackDisplay: React.FC<TwilioTrackDisplayProps> = ({
   const videoRef = useRef<HTMLVideoElement>(null);
   useEffect(() => {
     if (videoRef.current) {
+      const elForCleanup = videoRef.current;
       track.attach(videoRef.current);
-      return () => void track.detach();
+      // The call to detach without any arguments will detach the Twilio video
+      // stream from all video elements. That's not what we want at all. The
+      // version with a single argument will detach just from the target
+      // element
+      return () => void track.detach(elForCleanup);
     }
   }, [track]);
   return <video className={classes} ref={videoRef} autoPlay />;

@@ -2,6 +2,7 @@ import React, { lazy, Suspense } from "react";
 import { useCss } from "react-use";
 import classNames from "classnames";
 
+import { SpaceWithId } from "types/id";
 import { AnyVenue } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
 
@@ -19,13 +20,12 @@ import { ConversationSpace } from "components/templates/ConversationSpace";
 import { Embeddable } from "components/templates/Embeddable";
 import { ExperimentalSpace } from "components/templates/ExperimentalSpace";
 import { ExternalRoom } from "components/templates/ExternalRoom";
-import { FireBarrel } from "components/templates/FireBarrel";
 import { JazzBar } from "components/templates/Jazzbar/JazzBar";
+import { MeetingRoom } from "components/templates/MeetingRoom";
 import { PartyMap } from "components/templates/PartyMap";
 import { PosterHall } from "components/templates/PosterHall";
 import { PosterPage } from "components/templates/PosterPage";
 import { ScreeningRoom } from "components/templates/ScreeningRoom";
-import { ViewingWindow } from "components/templates/ViewingWindow";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
@@ -75,10 +75,6 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       template = <ExternalRoom venue={venue} />;
       break;
 
-    case VenueTemplate.viewingwindow:
-      template = <ViewingWindow venue={venue} />;
-      break;
-
     case VenueTemplate.auditorium:
       template = <Auditorium venue={venue} />;
       break;
@@ -91,10 +87,6 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       template = <Embeddable venue={venue} />;
       break;
 
-    case VenueTemplate.firebarrel:
-      template = <FireBarrel venue={venue} />;
-      break;
-
     case VenueTemplate.posterhall:
       template = <PosterHall venue={venue} />;
       break;
@@ -105,6 +97,10 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
 
     case VenueTemplate.screeningroom:
       template = <ScreeningRoom venue={venue} />;
+      break;
+
+    case VenueTemplate.meetingroom:
+      template = <MeetingRoom space={venue as SpaceWithId} />;
       break;
 
     case VenueTemplate.experiment:

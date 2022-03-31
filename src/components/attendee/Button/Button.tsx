@@ -1,18 +1,29 @@
-import React, { ButtonHTMLAttributes, RefObject } from "react";
+import React, {
+  ButtonHTMLAttributes,
+  MouseEventHandler,
+  RefObject,
+} from "react";
 import classNames from "classnames";
 
 import CN from "./Button.module.scss";
 
 // Button And Border variant types are the same to allow variant mixing.
 // But we might have different variants for either button or border in the future
-type ButtonVariant = "primary" | "alternative" | "login";
+type ButtonVariant =
+  | "primary"
+  | "alternative"
+  | "login"
+  | "intensive"
+  | "danger";
 type BorderVariant = ButtonVariant;
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  onClick?: () => void;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
   variant?: ButtonVariant;
   transparent?: boolean;
   border?: BorderVariant;
+  unrounded?: boolean;
+  marginless?: boolean;
   className?: string;
   forwardRef?: RefObject<HTMLButtonElement> | null;
 }
@@ -24,7 +35,10 @@ export const Button: React.FC<ButtonProps> = ({
   className,
   transparent,
   forwardRef,
-  border,
+  border = "",
+  unrounded = false,
+  marginless = false,
+  disabled,
   ...rest
 }) => {
   const buttonClasses = classNames(
@@ -34,6 +48,9 @@ export const Button: React.FC<ButtonProps> = ({
     CN["border-" + border],
     {
       [CN.transparent]: transparent,
+      [CN.borderRadiusNone]: unrounded,
+      [CN.buttonMarginNone]: marginless,
+      [CN.disabled]: disabled,
     }
   );
 
@@ -42,6 +59,7 @@ export const Button: React.FC<ButtonProps> = ({
       className={buttonClasses}
       onClick={onClick}
       ref={forwardRef}
+      disabled={disabled}
       {...rest}
     >
       {children}

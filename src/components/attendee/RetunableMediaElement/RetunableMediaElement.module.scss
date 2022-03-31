@@ -1,0 +1,6 @@
+@use "scss/attendee/space.scss";
+
+.container {
+  margin: space.gap(10) auto;
+  position: relative;
+}

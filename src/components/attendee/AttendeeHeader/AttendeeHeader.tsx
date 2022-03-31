@@ -7,7 +7,7 @@ import { Attendance } from "components/attendee/Attendance";
 import { Button } from "components/attendee/Button";
 import { NavOverlay } from "components/attendee/NavOverlay";
 
-import { ATTENDEE_INSIDE_URL, SPACE_TAXON, STRING_SPACE } from "settings";
+import { ATTENDEE_INSIDE_URL, SPACE_TAXON } from "settings";
 
 import { BaseVenue } from "types/venues";
 
@@ -102,8 +102,10 @@ export const AttendeeHeader: React.FC<AttendeeHeaderProps> = ({
       <div className={containerClasses}>
         {backButtonSpace ? (
           <Button onClick={goBack} variant="primary" transparent={isNarrow}>
-            <FontAwesomeIcon icon={faArrowLeft} /> Leave{STRING_SPACE}
-            {getDateHoursAndMinutes(currentMilliseconds())}
+            <FontAwesomeIcon icon={faArrowLeft} /> Leave
+            <span className={CN.headerTimeTransparent}>
+              {getDateHoursAndMinutes(currentMilliseconds())}
+            </span>
           </Button>
         ) : (
           <Button
@@ -112,8 +114,9 @@ export const AttendeeHeader: React.FC<AttendeeHeaderProps> = ({
             onClick={() => handleOverlayOpen(space?.name || "")}
           >
             {space?.name ?? `This ${SPACE_TAXON.title}`}
-            {STRING_SPACE}
-            {getDateHoursAndMinutes(currentMilliseconds())}
+            <span className={CN.headerTime}>
+              {getDateHoursAndMinutes(currentMilliseconds())}
+            </span>
           </Button>
         )}
         {!isNarrow && (
