@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 
-type MediaType = "isMobile" | "isTablet" | "isLaptop";
+type MediaType = "isMobile" | "isTablet" | "isLaptop" | "isLaptopMin";
 
 const mediaBreakpoints: Record<MediaType, string> = {
   isMobile: "(max-width: 320px)",
   isTablet: "(max-width: 768px)",
+  isLaptopMin: "(max-width: 960px)",
   isLaptop: "(max-width: 1024px)",
 };
 
@@ -14,6 +15,7 @@ export const useMediaQuery = () => {
       isMobile: false,
       isTablet: false,
       isLaptop: false,
+      isLaptopMin: false,
     };
 
     Object.entries(mediaBreakpoints).map(

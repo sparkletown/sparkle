@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { useIntersection } from "react-use";
+import classNames from "classnames";
 import { AttendeeFooter } from "components/attendee/AttendeeFooter";
 import { AttendeeHeader } from "components/attendee/AttendeeHeader";
 import { ChatContainer } from "components/attendee/ChatContainer";
@@ -30,6 +32,14 @@ interface _AttendeeLayoutProps {
 
 const _AttendeeLayout: React.FC<_AttendeeLayoutProps> = ({ userId }) => {
   const [backButtonSpace, setBackButtonSpace] = useState<SpaceWithId>();
+  const footerRef = useRef<HTMLElement>(null);
+  const footerIntersect = useIntersection(footerRef, {
+    rootMargin: "0px",
+  });
+
+  const layerUIClasses = classNames(styles.LayerUi, {
+    [`${styles.LayerUi} ${styles.LayerUiAbsolute}`]: footerIntersect?.isIntersecting,
+  });
 
   useEffect(() => {
     document.documentElement.classList.add(
@@ -52,13 +62,13 @@ const _AttendeeLayout: React.FC<_AttendeeLayoutProps> = ({ userId }) => {
           <section className={styles.Space}>
             <VenuePage setBackButtonSpace={setBackButtonSpace} />
           </section>
-          <div className={styles.LayerUi}>
+          <div className={layerUIClasses}>
             <ChatContainer />
             <VideoHuddle />
           </div>
         </main>
 
-        <AttendeeFooter />
+        <AttendeeFooter forwardRef={footerRef} />
         {/* Used by popovers to ensure z-index is handled properly */}
         <div id={POPOVER_CONTAINER_ID} className={styles.popoverContainer} />
       </HuddleProvider>

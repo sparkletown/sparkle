@@ -1,7 +1,14 @@
+import { RefObject } from "react";
+
 import styles from "./AttendeeFooter.module.scss";
 
-export const AttendeeFooter = () => (
-  <footer className={styles.AttendeeFooter}>
+type AttendeeFooterProps = {
+  forwardRef: RefObject<HTMLElement>;
+};
+export const AttendeeFooter: React.FC<AttendeeFooterProps> = ({
+  forwardRef,
+}) => (
+  <footer className={styles.AttendeeFooter} ref={forwardRef}>
     <nav>
       <a href="#!">Contact us</a>
       <a href="#!">Terms of use</a>

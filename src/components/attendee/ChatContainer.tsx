@@ -1,3 +1,5 @@
+import classNames from "classnames";
+
 import { ChatTypes } from "types/chat";
 
 import { useChatSidebarControls } from "hooks/chats/util/useChatSidebarControls";
@@ -17,13 +19,15 @@ export const ChatContainer: React.FC = () => {
     chatSettings: { openedChatType },
   } = useChatSidebarControls();
 
+  const sidebarClasses = classNames(styles.chatSidebar, {
+    [styles.sidebarHidden]: !isExpanded,
+  });
+
   return (
     <>
-      {isExpanded && (
-        <div className={styles.chatSidebar}>
-          <ChatSidebar />
-        </div>
-      )}
+      <div className={sidebarClasses}>
+        <ChatSidebar />
+      </div>
       <div className={styles.ChatContainer}>
         <nav>
           <span

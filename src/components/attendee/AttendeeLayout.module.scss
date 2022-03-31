@@ -35,7 +35,7 @@ $-z-index--popover: layer.above($-z-index--ui);
 
 .LayerUi {
   position: fixed;
-  top: 0;
+  top: space.empty(-1);
   height: 100%;
   width: 100%;
   z-index: $-z-index--ui;
@@ -46,6 +46,11 @@ $-z-index--popover: layer.above($-z-index--ui);
   display: flex;
   flex-direction: column-reverse;
 
+  @media (max-width: breakpoint.$sm) {
+    border-radius: 0;
+    top: 0;
+  }
+
   &[open] {
     height: 45vh;
   }
@@ -53,6 +58,10 @@ $-z-index--popover: layer.above($-z-index--ui);
   > * {
     pointer-events: all;
   }
+}
+
+.LayerUiAbsolute {
+  position: absolute;
 }
 
 .popoverContainer {

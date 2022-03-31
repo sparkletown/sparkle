@@ -9,21 +9,23 @@
 @use "scss/attendee/effects/atom";
 
 .ChatContainer {
-  padding: 0 space.empty(1);
+  margin: 0 space.empty(1) 0 auto;
   height: layout.$h-chat-controls;
+  width: layout.$w-sidebar;
   display: flex;
   flex-direction: column;
   justify-content: center;
   order: 2;
   @include sparkle.panel--normal;
+  @include rounded.normal;
 
-  @media (min-width: breakpoint.$md) {
+  @media (max-width: breakpoint.$sm) {
+    border-radius: 0;
     padding: 0;
-    width: layout.$w-sidebar;
+    width: 100%;
     margin-left: auto;
     flex-shrink: 0;
-
-    @include rounded.topleft;
+    margin: 0;
   }
 
   nav {
@@ -57,15 +59,19 @@
 
 .chatSidebar {
   order: 3;
-  margin-left: auto;
   flex-grow: 1;
   flex-shrink: 1;
   max-width: layout.$w-sidebar;
-  margin-top: calc(layout.$h-top-nav);
+  width: 100%;
+  margin: calc(layout.$h-top-nav) space.empty(1) 0 auto;
 
   @media (min-width: breakpoint.$md) {
     margin-top: 0;
   }
 
   @include sparkle.panel--glass;
+}
+
+.sidebarHidden {
+  visibility: hidden;
 }

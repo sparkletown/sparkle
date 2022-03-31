@@ -26,6 +26,8 @@
   --overlay-fg: rgb(255, 255, 255);
   --overlay-bg: rgba(99, 42, 199, 0.7);
 
+  --mask-bg: rgb(0, 0, 0, 0.5);
+
   --error-background: #fae7e7;
   --error-border: #ed2326;
 
@@ -72,6 +74,8 @@ $c-danger-bg: var(--danger-bg);
 
 $c-overlay-fg: var(--overlay-fg);
 $c-overlay-bg: var(--overlay-bg);
+
+$c-mask-bg: var(--mask-bg);
 
 $sparkle-disabled: var(--disabled-color);
 
