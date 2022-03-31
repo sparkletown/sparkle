@@ -1179,3 +1179,68 @@ export const deleteScreeningRoomVideo = functions.https.onCall(
       .delete();
   }
 );
+
+export const upsertChannel = functions.https.onCall(async (data, context) => {
+  assertValidAuth(context);
+
+  const { spaceId, channelIndex, channel } = data;
+
+  const space = await getSpaceById(spaceId);
+
+  await throwErrorIfNeitherWorldNorSpaceOwner({
+    spaceId,
+    worldId: space.worldId,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    userId: context.auth.token.user_id,
+  });
+
+  const doc = await admin.firestore().collection("venues").doc(spaceId).get();
+
+  if (!doc || !doc.exists) {
+    throw new HttpsError("not-found", `Space ${spaceId} not found`);
+  }
+  const docData = doc.data();
+  if (!docData) {
+    throw new HttpsError("internal", `Data not found`);
+  }
+
+  let channels = docData.channels || [];
+
+  if (typeof channelIndex !== "number") {
+    channels = [...channels, channel];
+  } else {
+    channels[channelIndex] = channel;
+  }
+
+  admin.firestore().collection("venues").doc(spaceId).update({ channels });
+});
+
+export const deleteChannel = functions.https.onCall(async (data, context) => {
+  const { spaceId, channelIndex } = data;
+
+  const space = await getSpaceById(spaceId);
+
+  await throwErrorIfNeitherWorldNorSpaceOwner({
+    spaceId,
+    worldId: space.worldId,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    userId: context.auth.token.user_id,
+  });
+  const doc = await admin.firestore().collection("venues").doc(spaceId).get();
+
+  if (!doc || !doc.exists) {
+    throw new HttpsError("not-found", `Space ${spaceId} not found`);
+  }
+  const docData = doc.data();
+  if (!docData) {
+    throw new HttpsError("internal", `Data not found`);
+  }
+
+  const channels = docData.channels || [];
+
+  channels.splice(channelIndex, 1);
+
+  admin.firestore().collection("venues").doc(spaceId).update({ channels });
+});

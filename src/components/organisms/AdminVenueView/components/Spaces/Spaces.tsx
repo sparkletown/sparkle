@@ -1,4 +1,5 @@
 import React from "react";
+import { ChannelConfiguration } from "components/admin/ChannelConfiguration";
 import { SpaceEditForm } from "components/admin/SpaceEditForm";
 import { ThreeColumnLayout } from "components/admin/ThreeColumnLayout";
 
@@ -62,6 +63,11 @@ export const Spaces: React.FC<SpacesProps> = ({ space, world }) => (
           <>
             <ScreeningRoomPreview space={space} />
             <ScreeningRoomVideosTable space={space} />
+          </>
+        )}
+        {space.template === VenueTemplate.meetingroom && (
+          <>
+            <ChannelConfiguration space={space} />
           </>
         )}
       </div>
