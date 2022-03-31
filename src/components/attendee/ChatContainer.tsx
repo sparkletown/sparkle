@@ -23,12 +23,16 @@ export const ChatContainer: React.FC = () => {
     [styles.sidebarHidden]: !isExpanded,
   });
 
+  const containerlasses = classNames(styles.ChatContainer, {
+    [styles.chatContainerExpanded]: isExpanded,
+  });
+
   return (
     <>
       <div className={sidebarClasses}>
         <ChatSidebar />
       </div>
-      <div className={styles.ChatContainer}>
+      <div className={containerlasses}>
         <nav>
           <span
             onClick={

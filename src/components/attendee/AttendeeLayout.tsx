@@ -43,15 +43,16 @@ const _AttendeeLayout: React.FC<_AttendeeLayoutProps> = ({ space }) => {
     rootMargin: "0px",
   });
 
-  const layerUIClasses = classNames(styles.LayerUi, {
-    [`${styles.LayerUi} ${styles.LayerUiAbsolute}`]: footerIntersect?.isIntersecting,
-  });
-
   const {
     isShown: isBlurTurnedOn,
     show: turnOnBlur,
     hide: turnOffBlur,
   } = useShowHide();
+
+  const layerUIClasses = classNames(styles.LayerUi, {
+    [styles.LayerUiAbsolute]: footerIntersect?.isIntersecting,
+    [styles.blur]: isBlurTurnedOn,
+  });
 
   const banner = space?.banner;
 

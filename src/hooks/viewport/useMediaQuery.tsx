@@ -4,7 +4,7 @@ type MediaType = "isMobile" | "isTablet" | "isLaptop" | "isLaptopMin";
 
 const mediaBreakpoints: Record<MediaType, string> = {
   isMobile: "(max-width: 320px)",
-  isTablet: "(max-width: 768px)",
+  isTablet: "(max-width: 767px)",
   isLaptopMin: "(max-width: 960px)",
   isLaptop: "(max-width: 1024px)",
 };

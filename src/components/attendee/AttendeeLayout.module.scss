@@ -5,7 +5,7 @@
 @use "scss/attendee/layer";
 @use "scss/attendee/breakpoint";
 
-$-z-index--space: layer.above(0);
+$-z-index--space: layer.$z-index--chatbox;
 $-z-index--ui: layer.above($-z-index--space);
 $-z-index--popover: layer.above($-z-index--ui);
 
@@ -36,7 +36,7 @@ $-z-index--popover: layer.above($-z-index--ui);
 
 .LayerUi {
   position: fixed;
-  top: space.empty(-1);
+  top: 12px;
   height: 100%;
   width: 100%;
   z-index: $-z-index--ui;
@@ -46,10 +46,11 @@ $-z-index--popover: layer.above($-z-index--ui);
 
   display: flex;
   flex-direction: column-reverse;
+  transition: filter 2s ease;
 
-  @media (max-width: breakpoint.$sm) {
+  @media (min-width: breakpoint.$md) {
     border-radius: 0;
-    top: 0;
+    top: 12px;
   }
 
   &[open] {
@@ -63,6 +64,10 @@ $-z-index--popover: layer.above($-z-index--ui);
 
 .LayerUiAbsolute {
   position: absolute;
+
+  @media (min-width: breakpoint.$md) {
+    top: 12px;
+  }
 }
 
 .popoverContainer {

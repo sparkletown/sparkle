@@ -35,5 +35,7 @@
 // Minor ones constrained to their own component can be provided in separate files
 $-z-index--baseline: 1000;
 $-z-index--header: 50;
+$-z-index--chatbox: 100;
 $z-index--attendee: above($-z-index--baseline);
 $z-index--header: level($-z-index--header);
+$z-index--chatbox: level($-z-index--chatbox);
