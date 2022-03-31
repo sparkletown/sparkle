@@ -3,10 +3,10 @@ import { where } from "firebase/firestore";
 
 import {
   ALWAYS_EMPTY_ARRAY,
-  COLLECTION_SPACES,
   DEFERRED,
   FIELD_OWNERS,
   FIELD_WORLD_ID,
+  PATH,
 } from "settings";
 
 import { LoadStatus } from "types/fire";
@@ -22,8 +22,6 @@ type UseSpacesByOwner = (options: {
 };
 
 export const useSpacesByOwner: UseSpacesByOwner = ({ worldId, userId }) => {
-  const path = useMemo(() => [COLLECTION_SPACES], []);
-
   const constraints = useMemo(
     () =>
       worldId && userId
@@ -35,7 +33,11 @@ export const useSpacesByOwner: UseSpacesByOwner = ({ worldId, userId }) => {
     [worldId, userId]
   );
 
-  const result = useLiveCollection<SpaceWithId>({ path, constraints });
+  const options = useMemo(() => ({ path: PATH.spaces, constraints }), [
+    constraints,
+  ]);
+
+  const result = useLiveCollection<SpaceWithId>(options);
 
   return useMemo(
     () => ({
