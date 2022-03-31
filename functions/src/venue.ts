@@ -435,9 +435,7 @@ export const addSpaceOwnerBulk = functions.https.onCall(
 
     await throwErrorIfNotWorldOwner({
       worldId: worldId,
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      userId: context.auth.token.user_id,
+      userId: context.auth?.token.user_id,
     });
 
     const addRequests = addedSpacesIds.map(async (spaceId: string) => {
