@@ -56,8 +56,6 @@ export const ADMIN_IA_WORLD_EDIT_PARAM_URL = `${ADMIN_IA_WORLD_PARAM_URL}/settin
 export const ADMIN_IA_SPACE_BASE_PARAM_URL = `${ADMIN_IA_WORLD_PARAM_URL}/s`; // e.g. /admin/w/world123/s
 export const ADMIN_IA_SPACE_EDIT_PARAM_URL = `${ADMIN_IA_SPACE_BASE_PARAM_URL}/:spaceSlug?/:selectedTab?`; // e.g. /admin/w/world123/s/space456/timing
 export const ADMIN_IA_SPACE_CREATE_PARAM_URL = `${ADMIN_IA_WORLD_PARAM_URL}/create-space`; // e.g. /admin/w/world123/create-space
-// @debt this is in the wrong place completely
-export const ADMIN_IA_SPACE_ADMIN_PARAM_URL = `${ADMIN_IA_SPACE_BASE_PARAM_URL}/:spaceSlug/admin`; // e.g. /admin/w/world123/s/space456/admin
 
 export const ADMIN_IA_WORLD_SCHEDULE = `${ADMIN_IA_WORLD_PARAM_URL}/world-schedule`; // e.g. /admin/w/world123/world-schedule
 export const ADMIN_IA_WORLD_USERS = `${ADMIN_IA_WORLD_PARAM_URL}/users`; // e.g. /admin/w/world123/users

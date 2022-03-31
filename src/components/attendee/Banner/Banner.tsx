@@ -25,7 +25,6 @@ export const Banner: React.FC<BannerProps> = ({
 }) => {
   const { isShown: isBannerShown, hide: closeBanner } = useShowHide(true);
 
-
   const isBannerFullScreen = banner.isFullScreen;
   const isWithButton = banner?.buttonDisplayText && banner?.isActionButton;
   const isBannerCloaseable = !banner?.isForceFunnel;
@@ -45,7 +44,7 @@ export const Banner: React.FC<BannerProps> = ({
     closeBanner();
   }, [turnOffBlur, closeBanner]);
 
-  const goToButtonDestination = useCallback(() => {
+  const navigateToBannerDestination = useCallback(() => {
     if (!banner.buttonUrl) return;
 
     openUrl(banner.buttonUrl, { customOpenRelativeUrl: openUrlUsingRouter });
@@ -59,7 +58,7 @@ export const Banner: React.FC<BannerProps> = ({
         <RenderMarkdown text={banner.content} />
         <div className={CN.actionButtons}>
           {isWithButton && banner.buttonUrl && (
-            <Button onClick={goToButtonDestination}>
+            <Button onClick={navigateToBannerDestination}>
               {banner.buttonDisplayText}
             </Button>
           )}

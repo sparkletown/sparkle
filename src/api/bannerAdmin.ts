@@ -5,7 +5,7 @@ import { httpsCallable } from "firebase/functions";
 
 import { Banner } from "types/banner";
 
-export interface UpdateBannerProps {
+interface UpdateBannerProps {
   spaceId: string;
   banner?: Banner;
   onError?: (errorMsg: string) => void;
@@ -28,7 +28,7 @@ export const updateBanner = async ({
     Bugsnag.notify(e, (event) => {
       event.addMetadata("context", {
         location: "api/bannerAdmin::updateBanner",
-        venueId: spaceId,
+        spaceId,
         banner,
       });
     });

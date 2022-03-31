@@ -130,7 +130,9 @@ export const RunTabView: React.FC<RunTabViewProps> = ({ space }) => {
       </AdminSidebar>
 
       <AdminShowcase>
-        <div className="px-12 sm:px-12"></div>
+        <div className="px-12 sm:px-12">
+          {/* A placeholder for a proper map preview. Once the non-fullscreen mode is designed */}
+        </div>
       </AdminShowcase>
     </ThreeColumnLayout>
   );
