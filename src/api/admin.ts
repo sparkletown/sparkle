@@ -18,7 +18,7 @@ import {
 import { getUserRef } from "api/profile";
 import { findSpaceBySlug } from "api/space";
 
-import { SpaceId, SpaceSlug } from "types/id";
+import { SpaceId, SpaceSlug, UserId, WorldId } from "types/id";
 import { PortalInput, Room, RoomInput } from "types/rooms";
 import { ScreeningRoomVideo } from "types/screeningRoom";
 import { SpaceType } from "types/spaces";
@@ -519,10 +519,10 @@ export const removeVenueOwner = async (venueId: string, ownerId: string) =>
   });
 
 export const addSpaceOwnerBulk = async (
-  addedSpacesIds: string[],
-  removedSpacesIds: string[],
-  newOwnerId: string,
-  worldId: string
+  addedSpacesIds: SpaceId[],
+  removedSpacesIds: SpaceId[],
+  newOwnerId: UserId,
+  worldId: WorldId
 ) =>
   await httpsCallable(
     FIREBASE.functions,

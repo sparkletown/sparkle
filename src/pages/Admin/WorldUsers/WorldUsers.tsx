@@ -9,9 +9,9 @@ import { InviteAdminModal } from "components/admin/InviteAdminModal";
 import { WorldUserCard } from "components/admin/WorldUserCard";
 import { AdminLayout } from "components/layouts/AdminLayout";
 import { WithPermission } from "components/shared/WithPermission";
-import { includes } from "lodash";
+import { includes, sortBy } from "lodash";
 
-import { UserId, WorldId } from "types/id";
+import { UserId } from "types/id";
 
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useWorldSpaces } from "hooks/spaces/useWorldSpaces";
@@ -55,9 +55,7 @@ export const WorldUsers: React.FC = () => {
 
   const owners = world?.owners;
 
-  const { spaces: worldSpaces } = useWorldSpaces({
-    worldId: worldId ?? ("" as WorldId),
-  });
+  const { spaces: worldSpaces } = useWorldSpaces({ worldId });
 
   const users = useProfileByIds({ userIds: owners as UserId[] });
 
@@ -65,7 +63,10 @@ export const WorldUsers: React.FC = () => {
     user.partyName?.toLowerCase().includes(nameSearchQuery.toLowerCase())
   );
 
-  const userSpaces = filteredUsers?.map((user) => {
+  // Alphabetical sort by field (partyName), first uppercase then lowercase.
+  const sortedUsers = sortBy(filteredUsers, ["partyName"]);
+
+  const userSpaces = sortedUsers?.map((user) => {
     return {
       user: user,
       spaces: worldSpaces.filter((space) =>
@@ -130,7 +131,7 @@ export const WorldUsers: React.FC = () => {
                     key={userSpace.user.id}
                     userId={userId}
                     user={userSpace.user}
-                    spaces={userSpace.spaces}
+                    ownedSpaces={userSpace.spaces}
                     worldSpaces={worldSpaces}
                   />
                 ))}

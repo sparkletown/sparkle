@@ -11,21 +11,17 @@ import { EditAdminModal } from "../EditAdminModal";
 
 export interface WorldUserCardProps {
   user: UserWithId;
-  spaces: SpaceWithId[];
+  ownedSpaces: SpaceWithId[];
   worldSpaces: SpaceWithId[];
   userId?: UserId;
 }
 
 export const WorldUserCard: React.FC<WorldUserCardProps> = ({
   user,
-  spaces,
+  ownedSpaces,
   userId,
   worldSpaces,
 }) => {
-  const ownedSpaces = spaces.filter((space) =>
-    space.owners?.includes(user.id as string)
-  );
-
   const isMyUserCard = user.id === userId;
 
   const {

@@ -3,7 +3,7 @@ import { useAsyncFn } from "react-use";
 
 import { addSpaceOwnerBulk } from "api/admin";
 
-import { SpaceWithId, UserWithId } from "types/id";
+import { SpaceId, SpaceWithId, UserWithId } from "types/id";
 
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 
@@ -31,8 +31,8 @@ export const EditAdminModal: React.FC<EditAdminModalProps> = ({
   const [selectedSpaces, setSelectedSpaces] = useState<SpaceWithId[]>(
     ownedSpaces
   );
-  const [addedSpacesIds, setAddedSpacesIds] = useState<string[]>([]);
-  const [removedSpacesIds, setRemovedSpacesIds] = useState<string[]>([]);
+  const [addedSpacesIds, setAddedSpacesIds] = useState<SpaceId[]>([]);
+  const [removedSpacesIds, setRemovedSpacesIds] = useState<SpaceId[]>([]);
 
   const { worldId } = useWorldAndSpaceByParams();
 
