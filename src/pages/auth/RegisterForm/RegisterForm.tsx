@@ -36,13 +36,9 @@ import { useSocialSignIn } from "hooks/useSocialSignIn";
 import { updateUserPrivate } from "pages/Account/helpers";
 import CN from "pages/auth/auth.module.scss";
 import { LoginFormData } from "pages/auth/LoginForm";
+import { SocialLogin } from "pages/auth/SocialLogin";
 
 import { TicketCodeField } from "components/organisms/TicketCodeField";
-
-import { ButtonNG } from "components/atoms/ButtonNG";
-
-import fIcon from "assets/icons/facebook-social-icon.svg";
-import gIcon from "assets/icons/google-social-icon.svg";
 
 const validateDateOfBirth = (stringDate: string) => {
   const yearsDifference = differenceInYears(new Date(), parseISO(stringDate));
@@ -405,38 +401,33 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
         <Spacer />
 
         <Spacer>
-          <Button type="submit" variant="primary" disabled={!formState.isValid}>
+          <Button
+            variant="login-primary"
+            type="submit"
+            disabled={!formState.isValid}
+          >
             Create account
           </Button>
         </Spacer>
       </form>
 
       {world.hasSocialLoginEnabled && (
-        <div className="social-auth-container">
-          <span>or</span>
-          <ButtonNG type="submit" onClick={handleGoogleSignIn}>
-            <div className="social-icon">
-              <img src={gIcon} alt="icon" />
-            </div>
-            Sign up with Google
-          </ButtonNG>
-          <ButtonNG type="submit" onClick={handleFacebookSignIn}>
-            <div className="social-icon">
-              <img src={fIcon} alt="icon" />
-            </div>
-            Sign up with Facebook
-          </ButtonNG>
-        </div>
+        <SocialLogin
+          onGoogle={handleGoogleSignIn}
+          onFacebook={handleFacebookSignIn}
+        />
       )}
 
       <Spacer />
 
       <Spacer>
-        <span>Already have an account?</span>
-        {STRING_SPACE}
-        <button className={CN.link} onClick={displayLoginForm}>
-          Login
-        </button>
+        <div className={CN.center}>
+          <span>Already have an account?</span>
+          {STRING_SPACE}
+          <button className={CN.link} onClick={displayLoginForm}>
+            Login
+          </button>
+        </div>
       </Spacer>
     </div>
   );

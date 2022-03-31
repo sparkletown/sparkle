@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button } from "components/attendee/Button";
@@ -133,18 +133,19 @@ export const Tuner: React.FC<TunerProps> = ({
           Custom embed URL
         </label>
         {selectedSource === RetunableMediaSource.embed && (
-          <Input
-            type="url"
-            name="URL"
-            ref={embedUrlInputEl}
-            defaultValue={previousEmbedUrl}
-            onChange={(ev) => {
-              // Propagation must be stopped, otherwise, the radio box change
-              // is triggered
-              ev.stopPropagation();
-            }}
-            inputClassName={styles.embedUrlInput}
-          />
+          <span className={styles.embedUrlInput}>
+            <Input
+              type="url"
+              name="URL"
+              ref={embedUrlInputEl}
+              defaultValue={previousEmbedUrl}
+              onChange={(ev) => {
+                // Propagation must be stopped, otherwise, the radio box change
+                // is triggered
+                ev.stopPropagation();
+              }}
+            />
+          </span>
         )}
         <label htmlFor="notTuned">
           <input
@@ -158,7 +159,9 @@ export const Tuner: React.FC<TunerProps> = ({
       </div>
 
       <div className={styles.endControls}>
-        <Button onClick={onTune}>Share content</Button>
+        <Button variant="primary" onClick={onTune}>
+          Share content
+        </Button>
         <Button
           variant="alternative"
           border="alternative"

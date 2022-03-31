@@ -13,6 +13,15 @@ interface SpacerProps {
   element?: "div" | "section" | "span";
 }
 
+/**
+ * This is an experimental component used in the old login flow.
+ * It will eventually be removed along with it.
+ *
+ * Its interface, on the other hand, may be re-used
+ * for the more generic components
+ * such as Button, Input etc.
+ * to make layout easier and more uniform.
+ */
 export const Spacer: React.FC<SpacerProps> = ({
   children,
   marginSize = "medium",

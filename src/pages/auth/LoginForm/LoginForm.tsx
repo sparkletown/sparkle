@@ -15,13 +15,9 @@ import { errorMessage, errorStatus } from "utils/error";
 import { useSocialSignIn } from "hooks/useSocialSignIn";
 
 import CN from "pages/auth/auth.module.scss";
+import { SocialLogin } from "pages/auth/SocialLogin";
 
 import { TicketCodeField } from "components/organisms/TicketCodeField";
-
-import { ButtonNG } from "components/atoms/ButtonNG";
-
-import fIcon from "assets/icons/facebook-social-icon.svg";
-import gIcon from "assets/icons/google-social-icon.svg";
 
 interface LoginFormProps {
   displayRegisterForm: () => void;
@@ -201,34 +197,29 @@ export const LoginForm: React.FC<LoginFormProps> = ({
         </Spacer>
         <Spacer />
         <Spacer>
-          <Button variant="primary" type="submit" disabled={!formState.isValid}>
+          <Button
+            variant="login-primary"
+            type="submit"
+            disabled={!formState.isValid}
+          >
             Log in
           </Button>
         </Spacer>
         {world.hasSocialLoginEnabled && (
-          <div className="social-auth-container">
-            <span>or</span>
-            <ButtonNG type="submit" onClick={handleGoogleSignIn}>
-              <div className="social-icon">
-                <img src={gIcon} alt="icon" />
-              </div>
-              Log in with Google
-            </ButtonNG>
-            <ButtonNG type="submit" onClick={handleFacebookSignIn}>
-              <div className="social-icon">
-                <img src={fIcon} alt="icon" />
-              </div>
-              Log in with Facebook
-            </ButtonNG>
-          </div>
+          <SocialLogin
+            onGoogle={handleGoogleSignIn}
+            onFacebook={handleFacebookSignIn}
+          />
         )}
         <Spacer />
         <Spacer>
-          <span className={CN.info}>Don&apos;t have an account yet?</span>
-          {STRING_SPACE}
-          <button className={CN.link} onClick={displayRegisterForm}>
-            Sign up
-          </button>
+          <div className={CN.center}>
+            <span className={CN.info}>Don&apos;t have an account yet?</span>
+            {STRING_SPACE}
+            <button className={CN.link} onClick={displayRegisterForm}>
+              Sign up
+            </button>
+          </div>
         </Spacer>
       </form>
     </div>

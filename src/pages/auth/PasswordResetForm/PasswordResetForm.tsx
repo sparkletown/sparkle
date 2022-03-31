@@ -86,7 +86,11 @@ export const PasswordResetForm: React.FunctionComponent<PropsType> = ({
               <span className={CN.error}>{errors.email.message}</span>
             )}
           </Spacer>
-          <Button variant="primary" type="submit" disabled={!formState.isValid}>
+          <Button
+            variant="login-primary"
+            type="submit"
+            disabled={!formState.isValid}
+          >
             Send Email
           </Button>
         </form>

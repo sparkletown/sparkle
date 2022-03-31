@@ -38,8 +38,17 @@
 }
 
 .variant-login {
-  color: theme.$c-default-text;
-  background-color: theme.$c-panel-background;
+  color: theme.$c-login-button--fg;
+  background-color: theme.$c-login-button--bg;
+  border-color: theme.$c-login-button--eg;
+}
+
+// @debt remove this workaround after you make sure this attendee button doesn't inherit admin's initial.scss styles
+.variant-login-primary {
+  &,
+  &[type="submit"] {
+    @include sparkle.color--glass;
+  }
 }
 
 .border-alternative {

@@ -13,6 +13,7 @@ type ButtonVariant =
   | "primary"
   | "alternative"
   | "login"
+  | "login-primary"
   | "intensive"
   | "danger";
 type BorderVariant = ButtonVariant;
@@ -56,6 +57,7 @@ export const Button: React.FC<ButtonProps> = ({
 
   return (
     <button
+      data-bem="Button"
       className={buttonClasses}
       onClick={onClick}
       ref={forwardRef}

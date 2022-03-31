@@ -4,6 +4,8 @@
 @use "scss/attendee/space";
 @use "scss/attendee/theme";
 
+$-social-icon-size: 32px;
+
 .login {
   height: 100vh;
   width: 100vw;
@@ -14,11 +16,12 @@
 
   &,
   * {
-    font-size: font.$size--lg;
+    @include font.large;
+    @include font.sparkle;
   }
 
   h1 {
-    font-size: font.$size--l2;
+    @include font.title;
     text-align: center;
   }
 
@@ -63,7 +66,7 @@
 }
 
 .container,
-.container *:not(.link) {
+.container *:not(.link):not(img) {
   width: 100%;
 }
 
@@ -86,7 +89,7 @@ button.link {
   border: none;
   width: unset !important;
   padding: unset;
-  font-size: font.$size--md;
+  @include font.core;
 
   &:hover {
     cursor: pointer;
@@ -96,7 +99,7 @@ button.link {
 
 .error {
   color: theme.$c-login-error-fg;
-  font-size: font.$size--md;
+  @include font.core;
 }
 
 input.error {
@@ -104,5 +107,17 @@ input.error {
 }
 
 .info {
-  font-size: font.$size--md;
+  @include font.core;
+}
+
+.socialLogin {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  * {
+    padding: 0;
+    width: 100%;
+    max-width: 100%;
+  }
 }
