@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 
+import { SpaceId } from "types/id";
 import { Room } from "types/rooms";
 import { AnimateMapVenue } from "types/venues";
 
@@ -33,7 +34,7 @@ export const useRelatedPartymapRooms: (
       relatedPartymap?.rooms?.map((portal) => {
         const noTrailSlashPortalUrl = getUrlWithoutTrailingSlash(portal.url);
 
-        const [venueId] = getLastUrlParam(noTrailSlashPortalUrl);
+        const [venueId] = getLastUrlParam(noTrailSlashPortalUrl) as SpaceId[];
         const portalVenue = findVenueInRelatedVenues({ spaceId: venueId });
 
         return portalVenue ? withVenue(portal, portalVenue) : portal;

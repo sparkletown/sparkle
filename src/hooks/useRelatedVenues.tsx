@@ -8,6 +8,7 @@ import {
 } from "settings";
 
 import {
+  SpaceId,
   SpaceSlug,
   SpaceWithId,
   WorldAndSpaceIdLocation,
@@ -23,7 +24,7 @@ import { useRefiCollection } from "hooks/fire/useRefiCollection";
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 
 export type FindVenueInRelatedVenuesOptions = {
-  spaceId?: string;
+  spaceId?: SpaceId;
   spaceSlug?: SpaceSlug;
 };
 
@@ -268,13 +269,13 @@ export const useRelatedVenuesContext = (): RelatedVenuesContextState => {
 };
 
 export interface RelatedVenuesProps {
-  currentVenueId?: string;
+  currentVenueId?: SpaceId;
 }
 
 export interface RelatedVenuesData extends RelatedVenuesContextState {
   parentVenue?: SpaceWithId;
   currentVenue?: WithId<AnyVenue>;
-  parentVenueId?: string;
+  parentVenueId?: SpaceId;
 }
 
 export function useRelatedVenues(props: RelatedVenuesProps): RelatedVenuesData;

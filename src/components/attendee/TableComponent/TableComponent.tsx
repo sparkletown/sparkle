@@ -12,6 +12,7 @@ import { useAdminRole } from "hooks/user/useAdminRole";
 import { useShowHide } from "hooks/useShowHide";
 
 import { Modal } from "components/molecules/Modal";
+import { ModalTitle } from "components/molecules/Modal/ModalTitle";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { UserAvatar } from "components/atoms/UserAvatar";
@@ -104,7 +105,7 @@ export const TableComponent: React.FunctionComponent<TableComponentPropsType> = 
         )}
         <Modal show={isModalShown} onHide={hideModal} centered bgVariant="dark">
           <div>
-            <h2>Delete table</h2>
+            <ModalTitle>Delete table</ModalTitle>
             <p>
               WARNING: This action cannot be undone and will permanently remove
               {STRING_SPACE}
