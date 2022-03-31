@@ -21,32 +21,42 @@
   }
 }
 
-.primary {
+.variant-primary {
   @include sparkle.color--glass;
 }
 
-.intensive {
+.variant-intensive {
   background: theme.$c-button-bg;
 }
 
-.danger {
+.variant-danger {
   background: theme.$c-danger-bg;
 }
 
-.borderRadiusNone {
-  border-radius: 0;
-}
-
-.buttonMarginNone {
-  margin: 0;
-}
-
-.alternative {
+.variant-alternative {
   background: transparent;
 }
 
-.borderAlternative {
+.variant-login {
+  color: theme.$c-login-button--fg;
+  background-color: theme.$c-login-button--bg;
+  border-color: theme.$c-login-button--eg;
+}
+
+// @debt remove this workaround after you make sure this attendee button doesn't inherit admin's initial.scss styles
+.variant-login-primary {
+  &,
+  &[type="submit"] {
+    @include sparkle.color--glass;
+  }
+}
+
+.border-alternative {
   border: border.$width--slim solid theme.$c-button-fg;
+}
+
+.border-login {
+  border: border.$width--slim solid theme.$c-login-button--eg;
 }
 
 .transparent {
@@ -58,4 +68,12 @@
   background-color: theme.$c-button-disabled-background;
   color: theme.$c-button-disabled-foreground;
   cursor: default;
+}
+
+.borderRadiusNone {
+  border-radius: 0;
+}
+
+.buttonMarginNone {
+  margin: 0;
 }

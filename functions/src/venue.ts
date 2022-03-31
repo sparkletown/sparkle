@@ -5,7 +5,10 @@ import { HttpsError } from "firebase-functions/v1/https";
 import { addAdmin, removeAdmin } from "./api/roles";
 import { LandingPageConfig } from "./types/venue";
 import { assertValidAuth } from "./utils/assert";
-import { throwErrorIfNeitherWorldNorSpaceOwner } from "./utils/permissions";
+import {
+  throwErrorIfNeitherWorldNorSpaceOwner,
+  throwErrorIfNotWorldOwner,
+} from "./utils/permissions";
 import { checkIfValidVenueId, getSpaceById } from "./utils/venue";
 import { ROOM_TAXON } from "./taxonomy";
 
@@ -421,6 +424,41 @@ export const setAuditoriumSections = functions.https.onCall(
     }
 
     await batch.commit();
+  }
+);
+
+export const addSpaceOwnerBulk = functions.https.onCall(
+  async (data, context) => {
+    assertValidAuth(context);
+
+    const { addedSpacesIds, removedSpacesIds, newOwnerId, worldId } = data;
+
+    await throwErrorIfNotWorldOwner({
+      worldId: worldId,
+      userId: context.auth?.token.user_id,
+    });
+
+    const addRequests = addedSpacesIds.map(async (spaceId: string) => {
+      return await admin
+        .firestore()
+        .collection("venues")
+        .doc(spaceId)
+        .update({
+          owners: admin.firestore.FieldValue.arrayUnion(newOwnerId),
+        });
+    });
+
+    const removeRequests = removedSpacesIds.map(async (spaceId: string) => {
+      return await admin
+        .firestore()
+        .collection("venues")
+        .doc(spaceId)
+        .update({
+          owners: admin.firestore.FieldValue.arrayRemove(newOwnerId),
+        });
+    });
+
+    await Promise.all([...addRequests, ...removeRequests]);
   }
 );
 

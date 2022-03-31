@@ -30,6 +30,7 @@
   nav {
     display: flex;
     padding: 0 space.empty(0.5);
+
     span {
       padding: space.empty(0.5) space.empty(1);
       text-decoration: none;
@@ -64,10 +65,8 @@
 
 .chatSidebar {
   display: block;
-
   flex-grow: 1;
   flex-shrink: 1;
-
   margin-top: 0;
   max-width: 100%;
   max-height: 220px;

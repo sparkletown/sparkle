@@ -1,8 +1,8 @@
 import React, { FC } from "react";
+import { Button } from "components/attendee/Button";
+import { Spacer } from "components/attendee/Spacer";
 
-import { ButtonNG } from "components/atoms/ButtonNG";
-
-import CN from "./InitialForm.module.scss";
+import CN from "pages/auth/auth.module.scss";
 
 interface InitialFormProps {
   displayLoginForm: () => void;
@@ -15,13 +15,15 @@ export const InitialForm: FC<InitialFormProps> = ({
 }) => {
   return (
     <div data-bem="InitialForm" className={CN.container}>
-      <ButtonNG variant="primary" onClick={displayRegisterForm}>
+      <Button onClick={displayRegisterForm} variant="primary">
         Create your account
-      </ButtonNG>
-      <div className="InitialForm__separator">or</div>
-      <ButtonNG variant="secondary" onClick={displayLoginForm}>
+      </Button>
+      <Spacer>
+        <div className={CN.center}>or</div>
+      </Spacer>
+      <Button onClick={displayLoginForm} variant="login" border="login">
         Log In
-      </ButtonNG>
+      </Button>
     </div>
   );
 };

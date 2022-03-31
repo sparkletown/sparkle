@@ -73,7 +73,11 @@ export const AttendeeHeader: React.FC<AttendeeHeaderProps> = ({
     () =>
       !isNarrow ? (
         Object.entries(tabCaptions).map(([key, label]) => (
-          <Button onClick={() => handleOverlayOpen(key)} key={key}>
+          <Button
+            variant="primary"
+            onClick={() => handleOverlayOpen(key)}
+            key={key}
+          >
             {label}
           </Button>
         ))

@@ -1,13 +1,18 @@
 import React, { useState } from "react";
 import { useForm, useFormState } from "react-hook-form";
 import { useHistory } from "react-router-dom";
+import classNames from "classnames";
 import { ConfirmationModal } from "components/admin/ConfirmationModal/ConfirmationModal";
+import { Button } from "components/attendee/Button";
+import { Input } from "components/attendee/Input";
+import { Spacer } from "components/attendee/Spacer";
 import { differenceInYears, parseISO } from "date-fns";
 import firebase from "firebase/compat/app";
 
 import {
   ACCOUNT_PROFILE_VENUE_PARAM_URL,
   DEFAULT_REQUIRES_DOB,
+  STRING_SPACE,
 } from "settings";
 
 import { checkIsCodeValid, checkIsEmailWhitelisted } from "api/auth";
@@ -23,22 +28,17 @@ import { VenueAccessMode } from "types/VenueAcccess";
 
 import { errorCode, errorMessage, errorStatus } from "utils/error";
 import { isTruthy } from "utils/types";
-import { generateUrl } from "utils/url";
+import { externalUrlAdditionalProps, generateUrl } from "utils/url";
 
 import { useAnalytics } from "hooks/useAnalytics";
 import { useSocialSignIn } from "hooks/useSocialSignIn";
 
 import { updateUserPrivate } from "pages/Account/helpers";
+import CN from "pages/auth/auth.module.scss";
 import { LoginFormData } from "pages/auth/LoginForm";
+import { SocialLogin } from "pages/auth/SocialLogin";
 
 import { TicketCodeField } from "components/organisms/TicketCodeField";
-
-import { ButtonNG } from "components/atoms/ButtonNG";
-
-import fIcon from "assets/icons/facebook-social-icon.svg";
-import gIcon from "assets/icons/google-social-icon.svg";
-
-import FORMS from "scss/attendee/form.module.scss";
 
 const validateDateOfBirth = (stringDate: string) => {
   const yearsDifference = differenceInYears(new Date(), parseISO(stringDate));
@@ -249,18 +249,27 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
   const isDobRequired =
     isWorldLoaded && (world?.requiresDateOfBirth ?? DEFAULT_REQUIRES_DOB);
 
+  const passwordLabelClasses = classNames({
+    error: errors.password?.type === "pattern",
+    info: errors.password?.type !== "pattern",
+  });
+
   return (
-    <div className="form-container">
+    <div data-bem="RegisterForm">
+      <Spacer marginDirection="block" marginSize="large">
+        <h1>Sign up to Sparkle</h1>
+      </Spacer>
+
       {showLoginModal && (
-        <ConfirmationModal
-          header={"This account already exists."}
-          message="Would you like to login with the same credentials?"
-          onConfirm={signIn}
-        />
+        <Spacer>
+          <ConfirmationModal
+            header="This account already exists."
+            message="Would you like to login with the same credentials?"
+            onConfirm={signIn}
+          />
+        </Spacer>
       )}
-      <div>
-        <div className="register-form-title">Сreate your account</div>
-      </div>
+
       {errors.backend && (
         <div className="auth-submit-error">
           <span className="auth-submit-error__message">
@@ -274,46 +283,59 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
         onChange={clearBackendErrors}
         className="form"
       >
-        <div className="input-group">
-          <input
-            className={FORMS.input}
+        <Spacer>
+          {
+            // @debt Input label is skewed by applying it to ::after pseudo element, this is a workaround
+          }
+          <span>Email</span>
+          <Input
+            name="email"
+            variant="login"
+            border="border"
             placeholder="Your email address"
-            {...register("email", { required: true })}
+            register={register}
+            rules={{ required: true }}
           />
           {errors.email && errors.email.type === "required" && (
-            <span className="input-error">Email is required</span>
+            <span className={CN.error}>Email is required</span>
           )}
           {errors.email &&
             ["firebase", "validation"].includes(errors.email.type) && (
-              <span className="input-error">{errors.email.message}</span>
+              <span className={CN.error}>{errors.email.message}</span>
             )}
-        </div>
+        </Spacer>
 
-        <div className="input-group">
-          <input
-            className={FORMS.input}
+        <Spacer>
+          {
+            // @debt Input label is skewed by applying it to ::after pseudo element, this is a workaround
+          }
+          <span>Password</span>
+          <Input
+            name="password"
             type="password"
+            variant="login"
+            border="border"
             placeholder="Password"
-            {...register("password", {
+            register={register}
+            rules={{
               required: true,
               pattern: /^(?=.*[0-9])(?=.*[a-zA-Z]).{6,}$/,
-            })}
+            }}
           />
 
-          <span
-            className={`input-${
-              errors.password && errors.password.type === "pattern"
-                ? "error"
-                : "info"
-            }`}
+          <div
+            data-bem="RegisterForm__password-label"
+            className={passwordLabelClasses}
           >
             Password must contain letters and numbers
-          </span>
+          </div>
 
           {errors.password && errors.password.type === "required" && (
-            <span className="input-error">Password is required</span>
+            <div data-bem="RegisterForm__password-error">
+              Password is required
+            </div>
           )}
-        </div>
+        </Spacer>
 
         {space.access === VenueAccessMode.Codes && (
           <TicketCodeField register={register} error={errors?.code} />
@@ -322,7 +344,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
         {isDobRequired && (
           <div className="input-group">
             <input
-              className={FORMS.input}
+              className={CN.input}
               type="date"
               {...register("date_of_birth", {
                 required: true,
@@ -334,7 +356,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
               your age.
             </small>
             {errors?.date_of_birth && (
-              <span className="input-error">
+              <span className={CN.error}>
                 {errors?.date_of_birth?.type === "required" && (
                   <>Date of birth is required</>
                 )}
@@ -358,11 +380,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                   }`}
                 >
                   {term.link && (
-                    <a
-                      href={term.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
+                    <a href={term.link} {...externalUrlAdditionalProps}>
                       {term.text}
                     </a>
                   )}
@@ -375,53 +393,42 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                     required: true,
                   })}
                 />
-                {required && <span className="input-error">Required</span>}
+                {required && <span className={CN.error}>Required</span>}
               </div>
             );
           })}
-        <ButtonNG
-          className="auth-input register"
-          type="submit"
-          variant="primary"
-          disabled={!formState.isValid}
-        >
-          Create account
-        </ButtonNG>
+
+        <Spacer />
+
+        <Spacer>
+          <Button
+            variant="login-primary"
+            type="submit"
+            disabled={!formState.isValid}
+          >
+            Create account
+          </Button>
+        </Spacer>
       </form>
 
       {world.hasSocialLoginEnabled && (
-        <div className="social-auth-container">
-          <span>or</span>
-          <ButtonNG
-            className="auth-input"
-            type="submit"
-            onClick={handleGoogleSignIn}
-          >
-            <div className="social-icon">
-              <img src={gIcon} alt="asd" />
-            </div>
-            Sign up with Google
-          </ButtonNG>
-          <ButtonNG
-            className="auth-input"
-            type="submit"
-            onClick={handleFacebookSignIn}
-          >
-            <div className="social-icon">
-              <img src={fIcon} alt="asd" />
-            </div>
-            Sign up with Facebook
-          </ButtonNG>
-        </div>
+        <SocialLogin
+          onGoogle={handleGoogleSignIn}
+          onFacebook={handleFacebookSignIn}
+        />
       )}
 
-      <div className="secondary-action">
-        Already have an account?
-        <br />
-        <span className={FORMS.inlineLink} onClick={displayLoginForm}>
-          Login
-        </span>
-      </div>
+      <Spacer />
+
+      <Spacer>
+        <div className={CN.center}>
+          <span>Already have an account?</span>
+          {STRING_SPACE}
+          <button className={CN.link} onClick={displayLoginForm}>
+            Login
+          </button>
+        </div>
+      </Spacer>
     </div>
   );
 };

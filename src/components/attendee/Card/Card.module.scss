@@ -16,10 +16,10 @@
   flex: 1;
 }
 
-@each $sizeName, $sizePixels in layout.$cardSizes {
-  .#{$sizeName} {
-    width: $sizePixels;
-    height: $sizePixels;
+@each $class, $size in layout.$card-sizes {
+  .#{$class} {
+    width: $size;
+    height: $size;
     flex-shrink: 0;
   }
 }

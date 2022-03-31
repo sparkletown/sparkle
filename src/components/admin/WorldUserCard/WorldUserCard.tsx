@@ -1,30 +1,27 @@
 import { faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { DISABLED_DUE_TO_MISSING_DESIGN } from "settings";
-
 import { SpaceWithId, UserId, UserWithId } from "types/id";
 
 import { useShowHide } from "hooks/useShowHide";
 
 import { Button } from "../Button";
 import { DeleteAdminModal } from "../DeleteAdminModal";
+import { EditAdminModal } from "../EditAdminModal";
 
 export interface WorldUserCardProps {
   user: UserWithId;
-  spaces: SpaceWithId[];
+  ownedSpaces: SpaceWithId[];
+  worldSpaces: SpaceWithId[];
   userId?: UserId;
 }
 
 export const WorldUserCard: React.FC<WorldUserCardProps> = ({
   user,
-  spaces,
+  ownedSpaces,
   userId,
+  worldSpaces,
 }) => {
-  const ownedSpaces = spaces.filter((space) =>
-    space.owners?.includes(user.id as string)
-  );
-
   const isMyUserCard = user.id === userId;
 
   const {
@@ -33,7 +30,11 @@ export const WorldUserCard: React.FC<WorldUserCardProps> = ({
     hide: hideDeleteAdminModal,
   } = useShowHide();
 
-  const { show: showEditAdminModal } = useShowHide();
+  const {
+    isShown: isShownEditAdminModal,
+    show: showEditAdminModal,
+    hide: hideEditAdminModal,
+  } = useShowHide();
 
   const showDeleteModal = () => {
     if (isMyUserCard) {
@@ -72,18 +73,15 @@ export const WorldUserCard: React.FC<WorldUserCardProps> = ({
       </div>
       <div className="flex flex-row w-full justify-end">
         <div className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex justify-end items-center gap-x-5">
-          {!DISABLED_DUE_TO_MISSING_DESIGN && (
-            <Button
-              variant="secondary"
-              borders="none"
-              disabled={isMyUserCard}
-              onClick={showEditAdminModal}
-            >
-              <FontAwesomeIcon icon={faPen} className="px-1" size="lg" />
+          <Button
+            variant="secondary"
+            borders="none"
+            onClick={showEditAdminModal}
+          >
+            <FontAwesomeIcon icon={faPen} className="px-1" size="lg" />
 
-              <div>Edit</div>
-            </Button>
-          )}
+            <div>Edit</div>
+          </Button>
         </div>
         <div className="whitespace-nowrap text-right text-sm font-medium flex justify-end items-center gap-x-5">
           <Button
@@ -106,6 +104,14 @@ export const WorldUserCard: React.FC<WorldUserCardProps> = ({
           show={isShownDeleteAdminModal}
           user={user}
           onHide={hideDeleteAdminModal}
+        />
+      )}
+      {isShownEditAdminModal && (
+        <EditAdminModal
+          show={isShownEditAdminModal}
+          user={user}
+          worldSpaces={worldSpaces}
+          onHide={hideEditAdminModal}
         />
       )}
     </div>

@@ -12,10 +12,14 @@ type AttendanceOptions = {
 };
 
 export const Attendance: React.FC<AttendanceOptions> = ({
-  totalUsersCount = 0,
+  totalUsersCount,
   usersSample,
 }) => {
   const containerRef = useRef(null);
+
+  if (!totalUsersCount) {
+    return null;
+  }
 
   const renderedAvatars = usersSample?.map((user) => (
     <UserAvatar
@@ -25,11 +29,13 @@ export const Attendance: React.FC<AttendanceOptions> = ({
     />
   ));
 
+  const inflectedUser = totalUsersCount > 1 ? "users" : "user";
+
   return (
     <div className={CN.Attendance} ref={containerRef}>
       <div className={CN.Attendance__avatarsContainer}>{renderedAvatars}</div>
       <span className={CN.Attendance__totalUsersCountText}>
-        {totalUsersCount && `${totalUsersCount} users here`}
+        {`${totalUsersCount} ${inflectedUser} here`}
       </span>
     </div>
   );

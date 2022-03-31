@@ -11,6 +11,7 @@
 
   &__isMine {
     text-align: right;
+
     .avatarSpacer {
       order: 1;
     }
@@ -27,8 +28,8 @@
 
 .avatarSpacer {
   order: 3;
-  width: map.get(layout.$avatarSizes, "medium");
-  height: map.get(layout.$avatarSizes, "medium");
+  width: map.get(layout.$avatar-sizes, "medium");
+  height: map.get(layout.$avatar-sizes, "medium");
 }
 
 .avatarContainer {

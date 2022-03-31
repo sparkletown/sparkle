@@ -26,7 +26,9 @@ export const PortalModal: React.FC<PortalModalProps> = ({
       <div className={CN.PortalPopupInfo}>
         <h3>{space?.name}</h3>
         <p>{space?.config?.landingPageConfig.description}</p>
-        <Button onClick={onEnter}>Enter</Button>
+        <Button variant="primary" onClick={onEnter}>
+          Enter
+        </Button>
       </div>
     </Popover>
   );

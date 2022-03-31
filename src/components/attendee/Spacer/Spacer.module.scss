@@ -1,0 +1,29 @@
+@use "scss/attendee/space";
+
+$-sizes: (
+  "none": 0,
+  //
+  "min": space.gap(1),
+  "max": space.gap(10),
+  //
+  "small": space.gap(2.5),
+  "medium": space.gap(5),
+  "large": space.gap(10),
+);
+
+$-suffixes: (
+  "inline": "-inline",
+  "block": "-block",
+  "both": "",
+);
+
+@each $direction, $suffix in $-suffixes {
+  @each $key, $val in $-sizes {
+    .margin-#{$key}-#{$direction} {
+      margin#{$suffix}: $val;
+    }
+    .padding-#{$key}-#{$direction} {
+      padding#{$suffix}: $val;
+    }
+  }
+}
