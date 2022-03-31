@@ -1,5 +1,5 @@
-import { UsersMap } from "../AnimateMap/bridges/DataProvider/Structures/UsersMap";
 import { ReplicatedUser } from "../GameInstanceCommonInterfaces";
+import { UsersMap } from "../GameStructures";
 
 export type UsersDataProviderInterface = {
   users: UsersMap;

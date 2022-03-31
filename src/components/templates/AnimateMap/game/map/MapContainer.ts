@@ -8,7 +8,7 @@ import { Point } from "types/utility";
 
 import { EventProvider, EventType } from "../../../EventProvider";
 import { ReplicatedUser } from "../../../GameInstanceCommonInterfaces";
-import playerModel from "../../bridges/DataProvider/Structures/PlayerModel";
+import playerModel from "../../../GameStructures/PlayerModel";
 import { TimeoutCommand } from "../commands/TimeoutCommand";
 import { MAP_JSON, sounds } from "../constants/AssetConstants";
 import { stubArtcarsData } from "../constants/StubData";

@@ -1,7 +1,7 @@
 import { ReplicatedUser } from "store/reducers/AnimateMap";
 
-import { UsersMap } from "../AnimateMap/bridges/DataProvider/Structures/UsersMap";
 import { CommonInterface } from "../CommonInterface";
+import { UsersMap } from "../GameStructures";
 
 import { UsersDataProviderInterface } from "./UsersDataProviderInterface";
 
