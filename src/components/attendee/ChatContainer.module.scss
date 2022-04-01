@@ -9,21 +9,22 @@
 @use "scss/attendee/effects/atom";
 
 .ChatContainer {
-  padding: 0 space.empty(1);
-  height: layout.$h-chat-controls;
   display: flex;
   flex-direction: column;
   justify-content: center;
   order: 2;
+  border-radius: 0;
+  height: layout.$h-chat-controls;
+  padding: 0;
+  width: 100%;
+  flex-shrink: 0;
+  margin: 0;
   @include sparkle.panel--normal;
 
   @media (min-width: breakpoint.$md) {
-    padding: 0;
+    margin: 0 space.empty(1) space.empty(2) auto;
     width: layout.$w-sidebar;
-    margin-left: auto;
-    flex-shrink: 0;
-
-    @include rounded.topleft;
+    @include rounded.normal;
   }
 
   nav {
@@ -37,6 +38,12 @@
       cursor: pointer;
       position: relative;
     }
+  }
+}
+
+.chatContainerExpanded {
+  @media (min-width: breakpoint.$md) {
+    @include rounded.bottom;
   }
 }
 
@@ -57,16 +64,27 @@
 }
 
 .chatSidebar {
-  order: 3;
-  margin-left: auto;
+  display: block;
   flex-grow: 1;
   flex-shrink: 1;
-  max-width: layout.$w-sidebar;
-  margin-top: layout.$h-top-nav;
+  margin-top: 0;
+  max-width: 100%;
+  max-height: layout.$h-mobile-chat-bar;
+  order: 1;
+
+  @include sparkle.panel--normal;
 
   @media (min-width: breakpoint.$md) {
-    margin-top: 0;
+    max-width: layout.$w-sidebar;
+    width: 100%;
+    margin: 0 space.empty(1) 0 auto;
+    order: 3;
+    max-height: 100%;
+    @include rounded.top;
+    @include sparkle.panel--glass;
   }
+}
 
-  @include sparkle.panel--glass;
+.sidebarHidden {
+  display: none;
 }

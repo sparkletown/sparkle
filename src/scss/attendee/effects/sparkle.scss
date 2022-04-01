@@ -31,3 +31,13 @@ $blur: 5px;
   -webkit-backdrop-filter: blur($blur);
   backdrop-filter: blur($blur);
 }
+
+// gray mask blur
+@mixin background-mask {
+  mask-image: linear-gradient(
+    to top,
+    #000 75%,
+    rgba(0, 0, 0, 0.5) 95%,
+    transparent 100%
+  );
+}

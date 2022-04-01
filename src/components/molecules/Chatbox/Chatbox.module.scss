@@ -1,4 +1,5 @@
 @use "scss/attendee/space";
+@use "scss/attendee/effects/sparkle";
 
 .chatboxContainer {
   display: flex;
@@ -13,7 +14,8 @@
   // Start tiny and grow so that the send box is always visible
   flex-basis: 1px;
   overflow-y: scroll;
-  padding: space.empty(1.5);
+  padding: space.empty(2) space.empty(1) space.empty(1);
+  @include sparkle.background-mask;
 }
 
 .messageScroller {
