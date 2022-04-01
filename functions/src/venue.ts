@@ -1179,3 +1179,45 @@ export const deleteScreeningRoomVideo = functions.https.onCall(
       .delete();
   }
 );
+
+export const upsertChannel = functions.https.onCall(async (data, context) => {
+  assertValidAuth(context);
+
+  const { spaceId, channelIndex, channel } = data;
+
+  const space = await getSpaceById(spaceId);
+
+  await throwErrorIfNeitherWorldNorSpaceOwner({
+    spaceId,
+    worldId: space.worldId,
+    userId: context.auth?.token.user_id,
+  });
+
+  let channels = space.channels || [];
+
+  if (typeof channelIndex !== "number") {
+    channels = [...channels, channel];
+  } else {
+    channels[channelIndex] = channel;
+  }
+
+  admin.firestore().collection("venues").doc(spaceId).update({ channels });
+});
+
+export const deleteChannel = functions.https.onCall(async (data, context) => {
+  const { spaceId, channelIndex } = data;
+
+  const space = await getSpaceById(spaceId);
+
+  await throwErrorIfNeitherWorldNorSpaceOwner({
+    spaceId,
+    worldId: space.worldId,
+    userId: context.auth?.token.user_id,
+  });
+
+  const channels = space.channels || [];
+
+  channels.splice(channelIndex, 1);
+
+  admin.firestore().collection("venues").doc(spaceId).update({ channels });
+});

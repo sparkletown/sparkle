@@ -217,6 +217,7 @@ export interface ArtPieceVenue extends BaseVenue {
 }
 export interface MeetingRoomVenue extends BaseVenue {
   template: VenueTemplate.meetingroom;
+  channels?: Channel[];
 }
 
 export interface ExperimentalVenue extends BaseVenue {
@@ -386,4 +387,9 @@ export const urlFromImage = (
   return filesOrUrl && filesOrUrl.length > 0
     ? URL.createObjectURL(filesOrUrl[0])
     : defaultValue;
+};
+
+export type Channel = {
+  name: string;
+  iframeUrl: string;
 };

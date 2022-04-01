@@ -32,7 +32,7 @@ export const SpacesDashboard: React.FC<SpacesDashboardProps> = ({
   const isWorldAdmin = userId ? world?.owners.includes(userId) : undefined;
   const { spaces } = useWorldSpaces({ worldId: world.id });
 
-  const renderedMapCards = useMemo(
+  const renderedMapCards: JSX.Element[] | undefined = useMemo(
     () =>
       spaces?.filter(isPartyMapVenue).map((space) => {
         const isSpaceAdmin = userId
@@ -51,7 +51,7 @@ export const SpacesDashboard: React.FC<SpacesDashboardProps> = ({
     [spaces, userId, world, isWorldAdmin]
   );
 
-  const renderedOtherSpacesCards = useMemo(
+  const renderedOtherSpacesCards: JSX.Element[] | undefined = useMemo(
     () =>
       spaces?.filter(isNotPartyMapVenue).map((space) => {
         const isSpaceAdmin = userId
@@ -71,8 +71,8 @@ export const SpacesDashboard: React.FC<SpacesDashboardProps> = ({
   );
 
   const hasSpaces = spaces?.length > 0;
-  const hasMaps = renderedMapCards.length > 0;
-  const hasOtherSpaces = renderedOtherSpacesCards.length > 0;
+  const hasMaps = renderedMapCards?.length > 0;
+  const hasOtherSpaces = renderedOtherSpacesCards?.length > 0;
 
   const createNewSpaceUrl = generateUrl({
     route: ADMIN_IA_SPACE_CREATE_PARAM_URL,

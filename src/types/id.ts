@@ -1,7 +1,7 @@
 import { World } from "api/world";
 
 import { User } from "types/User";
-import { AnyVenue, WorldEvent } from "types/venues";
+import { AnyVenue, Channel, WorldEvent } from "types/venues";
 
 import { WithId } from "utils/id";
 import { Branded } from "utils/types";
@@ -49,3 +49,7 @@ export type UserWithId = WithId<User, UserId>;
 export type Users = WithId<User, UserId>[];
 
 export type WorldEventWithId = WithId<WorldEvent, WorldEventId>;
+
+export type HasOptionalChannels = {
+  channels?: Channel[];
+};

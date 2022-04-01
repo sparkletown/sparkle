@@ -7,7 +7,11 @@ export enum RetunableMediaSource {
 }
 
 type ChannelSettings = {
+  // Channel definitions are copied to the element when the element is "tuned"
+  // and this means that we don't have to worry about someone changing or
+  // deleting the channel from admin whilst the element is tuned to it.
   channelName: string;
+  channelUrl: string;
   sourceType: RetunableMediaSource.channel;
 };
 

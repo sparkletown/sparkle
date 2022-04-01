@@ -24,7 +24,12 @@ import { ScreeningRoomVideo } from "types/screeningRoom";
 import { SpaceType } from "types/spaces";
 import { Table } from "types/Table";
 import { User } from "types/User";
-import { VenueAdvancedConfig, VenuePlacement, WorldEvent } from "types/venues";
+import {
+  Channel,
+  VenueAdvancedConfig,
+  VenuePlacement,
+  WorldEvent,
+} from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
 
 import { WithId, withId, WithoutId, WithWorldId } from "utils/id";
@@ -588,3 +593,47 @@ export const getSpaceEditors = async (spaceEditorIds: string[]) =>
   Promise.all(
     spaceEditorIds.map((admin) => getUserRef(admin).get())
   ).then((docs) => docs.map((doc) => withId(doc.data() as User, doc.id)));
+
+export const upsertChannel = async (
+  channel: Channel,
+  spaceId: SpaceId,
+  channelIndex?: number
+) => {
+  return await httpsCallable(
+    FIREBASE.functions,
+    "venue-upsertChannel"
+  )({
+    spaceId,
+    channelIndex,
+    channel,
+  }).catch((e) => {
+    Bugsnag.notify(e, (event) => {
+      event.addMetadata("api/admin::upsertChannel", {
+        spaceId,
+        channelIndex,
+      });
+    });
+    throw e;
+  });
+};
+
+export const deleteChannel = async (
+  spaceId: SpaceId,
+  channelIndex?: number
+) => {
+  return await httpsCallable(
+    FIREBASE.functions,
+    "venue-deleteChannel"
+  )({
+    spaceId,
+    channelIndex,
+  }).catch((e) => {
+    Bugsnag.notify(e, (event) => {
+      event.addMetadata("api/admin::deleteChannel", {
+        spaceId,
+        channelIndex,
+      });
+    });
+    throw e;
+  });
+};
