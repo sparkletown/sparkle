@@ -34,8 +34,6 @@
 // Major application or page wide z-index values should follow here
 // Minor ones constrained to their own component can be provided in separate files
 $-z-index--baseline: 1000;
-$-z-index--header: above($-z-index--baseline + 50);
-$-z-index--chatbox: above($-z-index--baseline + 100);
-$z-index--attendee: above($-z-index--baseline + 200);
-$z-index--header: level($-z-index--header);
-$z-index--chatbox: level($-z-index--baseline + 70);
+$z-index--header: above($-z-index--baseline);
+$z-index--chatbox: above($z-index--header);
+$z-index--attendee: above($z-index--chatbox);

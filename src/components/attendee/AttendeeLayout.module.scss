@@ -6,8 +6,8 @@
 @use "scss/attendee/breakpoint";
 
 $-z-index--space: layer.$z-index--chatbox;
-$-z-index--ui: layer.above($-z-index--space);
-$-z-index--popover: layer.above($-z-index--ui);
+$-z-index--ui: layer.level($-z-index--space);
+$-z-index--popover: layer.level($-z-index--ui);
 
 @font-face {
   font-family: "Sparkle";
@@ -35,7 +35,7 @@ $-z-index--popover: layer.above($-z-index--ui);
 
 .LayerUi {
   position: fixed;
-  top: 12px;
+  top: space.empty(1);
   height: 100%;
   width: 100%;
   z-index: $-z-index--ui;
@@ -49,7 +49,7 @@ $-z-index--popover: layer.above($-z-index--ui);
 
   @media (min-width: breakpoint.$md) {
     border-radius: 0;
-    top: 12px;
+    top: space.empty(1);
   }
 
   &[open] {
@@ -66,7 +66,7 @@ $-z-index--popover: layer.above($-z-index--ui);
   top: 0px;
 
   @media (min-width: breakpoint.$md) {
-    top: 12px;
+    top: space.empty(1);
   }
 }
 
