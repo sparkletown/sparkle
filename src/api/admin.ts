@@ -63,7 +63,7 @@ type RoomImageUrls = Partial<Record<RoomImageUrlKeys, string>>;
 
 export interface VenueInput_v2 extends WithId<VenueAdvancedConfig> {
   name: string;
-  slug: string;
+  slug: SpaceSlug;
   description?: string;
   subtitle?: string;
   bannerImageFile?: FileList;
