@@ -39,7 +39,7 @@ export const AttendeeHeader: React.FC<AttendeeHeaderProps> = ({
 }) => {
   const { isShown, hide, show } = useShowHide(false);
   const [overlayLabel, setOverlayLabel] = useState("");
-  const { isTablet, isMobile, isLaptopMin } = useMediaQuery();
+  const { isTablet, isMobile, isLaptopSmall } = useMediaQuery();
   const { space, worldSlug } = useWorldAndSpaceByParams();
   const history = useHistory();
 
@@ -124,7 +124,7 @@ export const AttendeeHeader: React.FC<AttendeeHeaderProps> = ({
               </span>
             </Button>
           )}
-          {!isLaptopMin && (
+          {!isLaptopSmall && (
             <Attendance
               totalUsersCount={space?.recentUserCount}
               usersSample={space?.recentUsersSample}

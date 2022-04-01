@@ -63,6 +63,7 @@ $-z-index--popover: layer.above($-z-index--ui);
 
 .LayerUiAbsolute {
   position: absolute;
+  top: 0px;
 
   @media (min-width: breakpoint.$md) {
     top: 12px;
