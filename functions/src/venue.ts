@@ -256,6 +256,7 @@ interface Venue {
   parentId?: string;
   showReactions?: boolean;
   enableJukebox?: boolean;
+  showContent?: boolean;
   showUserStatus?: boolean;
   showShoutouts?: boolean;
   userStatuses?: string[];
@@ -865,6 +866,10 @@ export const updateVenueNG = functions.https.onCall(async (data, context) => {
 
   if (typeof data.showShoutouts === "boolean") {
     updated.showShoutouts = data.showShoutouts;
+  }
+
+  if (typeof data.showContent === "boolean") {
+    updated.showContent = data.showContent;
   }
 
   if (data.userStatuses) {

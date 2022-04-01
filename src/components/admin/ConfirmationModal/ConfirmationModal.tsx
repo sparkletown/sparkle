@@ -4,6 +4,7 @@ import { Button, ButtonVariant } from "components/admin/Button";
 import { isTruthy } from "utils/types";
 
 import { Modal } from "components/molecules/Modal";
+import { ModalTitle } from "components/molecules/Modal/ModalTitle";
 
 interface ConfirmationModalProps {
   show?: boolean;
@@ -48,7 +49,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   return (
     <Modal show={isShown} onHide={hide}>
       <div data-bem="ConfirmationModal" className="flex flex-col items-center">
-        {hasHeader && <h4>{header}</h4>}
+        {hasHeader && <ModalTitle>{header}</ModalTitle>}
         <div>{message}</div>
         <div className="mt-4">
           <Button onClick={cancel} variant="secondary">
