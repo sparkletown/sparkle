@@ -36,4 +36,5 @@
 $-z-index--baseline: 1000;
 $z-index--header: above($-z-index--baseline);
 $z-index--chatbox: above($z-index--header);
+$z-index--space: level($z-index--chatbox);
 $z-index--attendee: above($z-index--chatbox);

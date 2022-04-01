@@ -5,8 +5,7 @@
 @use "scss/attendee/layer";
 @use "scss/attendee/breakpoint";
 
-$-z-index--space: layer.$z-index--chatbox;
-$-z-index--ui: layer.level($-z-index--space);
+$-z-index--ui: layer.level(layer.$z-index--space);
 $-z-index--popover: layer.level($-z-index--ui);
 
 @font-face {
@@ -29,7 +28,7 @@ $-z-index--popover: layer.level($-z-index--ui);
   justify-content: center;
   transition: padding-right 0.2s ease;
   padding-right: 0;
-  z-index: $-z-index--space;
+  z-index: layer.$z-index--space;
   transition: filter 2s ease;
 }
 
