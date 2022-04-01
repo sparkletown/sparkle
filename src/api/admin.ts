@@ -596,7 +596,7 @@ export const getSpaceEditors = async (spaceEditorIds: string[]) =>
 
 export const upsertChannel = async (
   channel: Channel,
-  spaceId: string,
+  spaceId: SpaceId,
   channelIndex?: number
 ) => {
   return await httpsCallable(
@@ -617,7 +617,10 @@ export const upsertChannel = async (
   });
 };
 
-export const deleteChannel = async (spaceId: string, channelIndex?: number) => {
+export const deleteChannel = async (
+  spaceId: SpaceId,
+  channelIndex?: number
+) => {
   return await httpsCallable(
     FIREBASE.functions,
     "venue-deleteChannel"

@@ -1190,22 +1190,10 @@ export const upsertChannel = functions.https.onCall(async (data, context) => {
   await throwErrorIfNeitherWorldNorSpaceOwner({
     spaceId,
     worldId: space.worldId,
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    userId: context.auth.token.user_id,
+    userId: context.auth?.token.user_id,
   });
 
-  const doc = await admin.firestore().collection("venues").doc(spaceId).get();
-
-  if (!doc || !doc.exists) {
-    throw new HttpsError("not-found", `Space ${spaceId} not found`);
-  }
-  const docData = doc.data();
-  if (!docData) {
-    throw new HttpsError("internal", `Data not found`);
-  }
-
-  let channels = docData.channels || [];
+  let channels = space.channels || [];
 
   if (typeof channelIndex !== "number") {
     channels = [...channels, channel];
@@ -1224,21 +1212,10 @@ export const deleteChannel = functions.https.onCall(async (data, context) => {
   await throwErrorIfNeitherWorldNorSpaceOwner({
     spaceId,
     worldId: space.worldId,
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    userId: context.auth.token.user_id,
+    userId: context.auth?.token.user_id,
   });
-  const doc = await admin.firestore().collection("venues").doc(spaceId).get();
 
-  if (!doc || !doc.exists) {
-    throw new HttpsError("not-found", `Space ${spaceId} not found`);
-  }
-  const docData = doc.data();
-  if (!docData) {
-    throw new HttpsError("internal", `Data not found`);
-  }
-
-  const channels = docData.channels || [];
+  const channels = space.channels || [];
 
   channels.splice(channelIndex, 1);
 

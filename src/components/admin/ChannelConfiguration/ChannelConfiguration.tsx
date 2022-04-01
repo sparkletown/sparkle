@@ -8,6 +8,7 @@ import { TablePanel } from "components/admin/TablePanel";
 
 import * as adminApi from "api/admin";
 
+import { SpaceId } from "types/id";
 import { Channel, MeetingRoomVenue } from "types/venues";
 
 import { WithId } from "utils/id";
@@ -55,13 +56,17 @@ export const ChannelConfiguration: React.FC<ChannelConfigurationProps> = ({
   }, [space.channels?.length, isDeleting]);
 
   const saveChannel = async (channelData: Channel) => {
-    await adminApi.upsertChannel(channelData, space.id, editingIndex);
+    await adminApi.upsertChannel(
+      channelData,
+      space.id as SpaceId,
+      editingIndex
+    );
     setEditingIndex(undefined);
   };
 
   const deleteChannel = useAsyncFn(async () => {
     setIsDeleting(true);
-    await adminApi.deleteChannel(space.id, editingIndex);
+    await adminApi.deleteChannel(space.id as SpaceId, editingIndex);
     hideDeleteModal();
   }, [editingIndex, hideDeleteModal, space.id])[1];
 

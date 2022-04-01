@@ -66,9 +66,7 @@ export const Spaces: React.FC<SpacesProps> = ({ space, world }) => (
           </>
         )}
         {space.template === VenueTemplate.meetingroom && (
-          <>
-            <ChannelConfiguration space={space} />
-          </>
+          <ChannelConfiguration space={space} />
         )}
       </div>
     </AdminShowcase>
