@@ -2,7 +2,8 @@
 @use "scss/attendee/theme";
 @use "scss/attendee/space";
 
-$-z-index--banner: layer.above(0);
+$-z-index--base: layer.above(layer.$z-index--chatbox);
+$-z-index--banner: layer.above($-z-index--base);
 
 .banner {
   position: fixed;

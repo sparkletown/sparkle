@@ -7,15 +7,12 @@
 @use "scss/attendee/theme";
 @use "scss/attendee/effects/sparkle";
 
-// private, no need to bleed it out of this component
-$-z-index-base: 1;
-
 .navOverlay {
   background: theme.$c-overlay-bg;
   color: theme.$c-overlay-fg;
   backdrop-filter: blur(sparkle.$blur);
   position: fixed;
-  z-index: layer.level($-z-index-base);
+  z-index: layer.level(layer.$z-index--attendee);
   top: 0;
   left: 0;
   right: 0;
@@ -36,7 +33,7 @@ $-z-index-base: 1;
   top: space.empty(1);
   right: space.empty(1);
   cursor: pointer;
-  z-index: layer.level($-z-index-base);
+  z-index: layer.level(layer.$z-index--attendee);
 }
 
 .navOverlayContainer {
@@ -105,7 +102,7 @@ $-z-index-base: 1;
   align-items: center;
   height: space.item(1);
   border-radius: border.$radius--xs;
-  padding: 0;
+  padding: space.$sm 0;
   font-size: font.$size--xl;
   // removes blue highlighting on mobile tap
   -webkit-tap-highlight-color: transparent;
@@ -121,7 +118,7 @@ $-z-index-base: 1;
   top: space.empty(1);
   left: space.empty(1);
   cursor: pointer;
-  z-index: layer.level($-z-index-base);
+  z-index: layer.level(layer.$z-index--attendee);
 
   @media (max-width: breakpoint.$md) {
     display: flex;

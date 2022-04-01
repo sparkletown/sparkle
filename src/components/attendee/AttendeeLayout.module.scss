@@ -5,9 +5,8 @@
 @use "scss/attendee/layer";
 @use "scss/attendee/breakpoint";
 
-$-z-index--space: layer.above(0);
-$-z-index--ui: layer.above($-z-index--space);
-$-z-index--popover: layer.above($-z-index--ui);
+$-z-index--ui: layer.level(layer.$z-index--space);
+$-z-index--popover: layer.level($-z-index--ui);
 
 @font-face {
   font-family: "Sparkle";
@@ -29,13 +28,13 @@ $-z-index--popover: layer.above($-z-index--ui);
   justify-content: center;
   transition: padding-right 0.2s ease;
   padding-right: 0;
-  z-index: $-z-index--space;
+  z-index: layer.$z-index--space;
   transition: filter 2s ease;
 }
 
 .LayerUi {
   position: fixed;
-  top: 0;
+  top: space.empty(1);
   height: 100%;
   width: 100%;
   z-index: $-z-index--ui;
@@ -45,6 +44,12 @@ $-z-index--popover: layer.above($-z-index--ui);
 
   display: flex;
   flex-direction: column-reverse;
+  transition: filter 2s ease;
+
+  @media (min-width: breakpoint.$md) {
+    border-radius: 0;
+    top: space.empty(1);
+  }
 
   &[open] {
     height: 45vh;
@@ -52,6 +57,15 @@ $-z-index--popover: layer.above($-z-index--ui);
 
   > * {
     pointer-events: all;
+  }
+}
+
+.LayerUiAbsolute {
+  position: absolute;
+  top: 0px;
+
+  @media (min-width: breakpoint.$md) {
+    top: space.empty(1);
   }
 }
 
