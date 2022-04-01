@@ -111,8 +111,8 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
   useEffect(() => reset(defaultValues), [defaultValues, reset]);
 
   const changeRoomImageUrl = useCallback(
-    (val: string) => {
-      setValue("image_url", val, { shouldValidate: false });
+    ({ url }) => {
+      setValue("image_url", url, { shouldValidate: false });
     },
     [setValue]
   );

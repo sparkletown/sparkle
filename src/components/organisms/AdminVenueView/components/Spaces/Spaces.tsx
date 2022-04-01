@@ -1,5 +1,6 @@
 import React from "react";
 import { ChannelConfiguration } from "components/admin/ChannelConfiguration";
+import { ScreeningRoomVideosTable } from "components/admin/ScreeningRoomVideosTable";
 import { SpaceEditForm } from "components/admin/SpaceEditForm";
 import { ThreeColumnLayout } from "components/admin/ThreeColumnLayout";
 
@@ -22,7 +23,6 @@ import { ScreeningRoomPreview } from "pages/Admin/ScreeningRoomPreview";
 import { AdminSidebar } from "components/organisms/AdminVenueView/components/AdminSidebar";
 
 import { PortalsTable } from "components/molecules/PortalsTable";
-import { ScreeningRoomVideosTable } from "components/molecules/ScreeningRoomVideosTable";
 
 import { AdminShowcase } from "../AdminShowcase";
 

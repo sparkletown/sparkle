@@ -96,6 +96,11 @@ export const IFRAME_TEMPLATES = [
   VenueTemplate.viewingwindow,
 ];
 
+export const EMBEDDABLE_CONTENT_TEMPLATES = [
+  ...IFRAME_TEMPLATES,
+  ...ZOOM_URL_TEMPLATES,
+];
+
 // @debt Refactor this constant into types/venues + create an actual custom type grouping for it
 export const BACKGROUND_IMG_TEMPLATES = [
   VenueTemplate.themecamp,
@@ -152,6 +157,7 @@ export const SHOW_EMOJI_IN_REACTION_PAGE = true;
 export const DEFAULT_SHOW_SHOUTOUTS = true;
 export const DEFAULT_SHOW_REACTIONS = true;
 export const DEFAULT_REACTIONS_MUTED = false;
+export const DEFAULT_SHOW_CONTENT = true;
 
 export const DEFAULT_CAMERA_ENABLED = true;
 
