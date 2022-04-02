@@ -49,8 +49,9 @@ const _AttendeeLayout: React.FC<_AttendeeLayoutProps> = ({ space }) => {
     hide: turnOffBlur,
   } = useShowHide();
 
+  const isChatRelative = footerIntersect?.isIntersecting;
   const layerUIClasses = classNames(styles.LayerUi, {
-    [styles.LayerUiAbsolute]: footerIntersect?.isIntersecting,
+    [styles.LayerUiRelative]: isChatRelative,
     [styles.blur]: isBlurTurnedOn,
   });
 
@@ -82,7 +83,7 @@ const _AttendeeLayout: React.FC<_AttendeeLayoutProps> = ({ space }) => {
             <VenuePage setBackButtonSpace={setBackButtonSpace} />
           </section>
           <div className={layerUIClasses}>
-            <ChatContainer />
+            <ChatContainer isRelative={isChatRelative} />
             <VideoHuddle />
           </div>
         </main>

@@ -139,15 +139,20 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
     styles.templateContainer,
     backgroundCss,
     {
-      [styles.shrunk]: isChatExpanded && venueShrinksForChat,
       [styles.gradients]: !venue.backgroundImageUrl && !isPartyMap,
     }
   );
 
+  const wrapperClassnames = classNames({
+    [styles.shrunk]: isChatExpanded && venueShrinksForChat,
+  });
+
   return (
     <ReactionsProvider venueId={venue.id}>
       {/* TODO <AnnouncementMessage isAnnouncementUserView /> */}
-      <div className={containerClassnames}>{template}</div>
+      <div className={containerClassnames}>
+        <div className={wrapperClassnames}>{template}</div>
+      </div>
 
       {/* TODO {shouldShowChat && <ChatSidebar venue={venue} />} */}
     </ReactionsProvider>
