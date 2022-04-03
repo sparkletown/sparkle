@@ -17,7 +17,7 @@
     "node-fetch": "^2.6.1",
     "simple-oauth2": "^3.4.0",
     "twilio": "^3.63.0",
-    "uuidv4": "^6.2.6",
+    "uuidv4": "^6.2.13",
     "yup": "^0.32.9"
   },
   "devDependencies": {
