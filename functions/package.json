@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "agora-access-token": "^2.0.4",
-    "date-fns": "^2.24.0",
+    "date-fns": "^2.28.0",
     "firebase": "^8.8.0",
     "firebase-admin": "^9.4.2",
     "firebase-functions": "^3.13.1",
