@@ -1,8 +1,8 @@
+import { NotFound } from "components/shared/NotFound";
+
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
-
-import { NotFoundFallback } from "components/atoms/NotFoundFallback";
 
 import { Login } from "./Login";
 
@@ -14,7 +14,7 @@ export const LoginHoc = () => {
   }
 
   if (!space || !world || !spaceId) {
-    return <NotFoundFallback />;
+    return <NotFound />;
   }
 
   return <Login spaceId={spaceId} />;

@@ -5,8 +5,6 @@ import { ChatContainer } from "components/attendee/ChatContainer";
 import { withSlugs } from "components/hocs/context/withSlugs";
 import { withAuth } from "components/hocs/db/withAuth";
 import { withSpacesBySlug } from "components/hocs/db/withSpacesBySlug";
-import { withFallback } from "components/hocs/gate/withFallback";
-import { withRequired } from "components/hocs/gate/withRequired";
 import { compose } from "lodash/fp";
 
 import { ATTENDEE_LAYOUT_CLASSNAME, POPOVER_CONTAINER_ID } from "settings";
@@ -16,10 +14,6 @@ import { SpaceWithId } from "types/id";
 import { useShowHide } from "hooks/useShowHide";
 
 import { VenuePage } from "pages/VenuePage";
-
-import { LoadingPage } from "components/molecules/LoadingPage";
-
-import { NotLoggedInFallback } from "components/atoms/NotLoggedInFallback";
 
 import { Banner } from "./Banner/Banner";
 import { VideoCommsProvider } from "./VideoComms/VideoCommsProvider";
@@ -92,11 +86,6 @@ const _AttendeeLayout: React.FC<_AttendeeLayoutProps> = ({ space }) => {
 
 export const AttendeeLayout = compose(
   withAuth,
-  withFallback(["isAuthLoaded", "userId"], NotLoggedInFallback),
   withSlugs,
-  withSpacesBySlug,
-  withRequired({
-    required: ["userId"],
-    fallback: LoadingPage,
-  })
+  withSpacesBySlug
 )(_AttendeeLayout);

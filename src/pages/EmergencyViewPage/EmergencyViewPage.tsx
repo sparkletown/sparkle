@@ -1,5 +1,6 @@
 import React, { Suspense, useEffect, useMemo, useState } from "react";
 import classNames from "classnames";
+import { NotFound } from "components/shared/NotFound";
 import { addDays } from "date-fns";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
@@ -22,8 +23,6 @@ import { Login } from "pages/auth/Login";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 import { ScheduleEventSubList } from "components/molecules/ScheduleEventList/ScheduleEventSubList";
-
-import { NotFound } from "components/atoms/NotFound";
 
 import { EmergencyViewPagePortals } from "./EmergencyViewPagePortals";
 import EmergencyViewTabs from "./EmergencyViewTabs";

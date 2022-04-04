@@ -2,6 +2,7 @@ import React, { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn } from "react-use";
+import { NotFound } from "components/shared/NotFound";
 
 import { ACCOUNT_CODE_QUESTIONS_URL } from "settings";
 
@@ -16,7 +17,6 @@ import { Loading } from "components/molecules/Loading";
 import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
-import { NotFound } from "components/atoms/NotFound";
 
 import { updateUserProfile } from "./helpers";
 
@@ -27,6 +27,7 @@ export interface QuestionsFormData {
   islandCompanion: string;
   gratefulFor: string;
   likeAboutParties: string;
+
   [key: string]: string;
 }
 

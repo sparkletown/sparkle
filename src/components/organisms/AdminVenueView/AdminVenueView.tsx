@@ -9,6 +9,7 @@ import { SpaceDeleteModal } from "components/admin/SpaceDeleteModal";
 import { SpaceSchedule } from "components/admin/SpaceSchedule";
 import { TabBar } from "components/admin/TabBar";
 import { AdminLayout } from "components/layouts/AdminLayout";
+import { NotFound } from "components/shared/NotFound";
 import { WithPermission } from "components/shared/WithPermission";
 
 import { ADMIN_IA_WORLD_PARAM_URL } from "settings";
@@ -29,8 +30,6 @@ import {
 } from "utils/url";
 
 import { useShowHide } from "hooks/useShowHide";
-
-import { NotFound } from "components/atoms/NotFound";
 
 import { RunTabView } from "./components/RunTabView";
 import { Spaces } from "./components/Spaces";
