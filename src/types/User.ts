@@ -1,15 +1,7 @@
 // @debt rename this file to be user rather than User
 
-import * as Yup from "yup";
-
 import { SeatPosition } from "types/grid";
 import { VenueTablePath } from "types/venues";
-
-// Store all things related to video chat where they can't be tampered with by other users
-export type VideoState = {
-  inRoomOwnedBy?: string;
-  removedParticipantUids?: string[];
-};
 
 // the structure is { [key: venueId] : eventId[] }
 export type MyPersonalizedSchedule = Partial<Record<string, string[]>>;
@@ -35,10 +27,6 @@ export interface Profile {
   // @debt typing - user also has a dynamic set of attributes for the question answers
   //   currently not possible to type them properly
   // [question: string]: string;
-
-  // @debt these types are legacy and should be cleaned up across the codebase
-  room?: string; // @debt: is this valid/used anymore? Use in JazzBarTableComponent, ProfileModal
-  video?: VideoState; // @debt: is this valid/used anymore? Used in FireBarrel, Playa (Avatar, AvatarLayer, AvatarPartygoers, MyAvatar, Playa, VideoChatLayer
 }
 
 export interface User extends Profile {
@@ -77,10 +65,3 @@ export interface UserLocation {
 }
 
 export type UserWithLocation = Profile & UserLocation;
-
-export const VideoStateSchema: Yup.ObjectSchema<VideoState> = Yup.object()
-  .shape({
-    inRoomOwnedBy: Yup.string(),
-    removedParticipantUids: Yup.array().of(Yup.string().required()),
-  })
-  .required();
