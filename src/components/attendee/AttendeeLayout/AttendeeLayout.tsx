@@ -3,11 +3,11 @@ import { useIntersection } from "react-use";
 import classNames from "classnames";
 import { AttendeeFooter } from "components/attendee/AttendeeFooter";
 import { AttendeeHeader } from "components/attendee/AttendeeHeader";
+import { Banner } from "components/attendee/Banner/Banner";
 import { ChatContainer } from "components/attendee/ChatContainer";
-import { withSlugs } from "components/hocs/context/withSlugs";
-import { withAuth } from "components/hocs/db/withAuth";
-import { withSpacesBySlug } from "components/hocs/db/withSpacesBySlug";
-import { compose } from "lodash/fp";
+import { VideoCommsProvider } from "components/attendee/VideoComms/VideoCommsProvider";
+import { HuddleProvider } from "components/attendee/VideoHuddle/HuddleProvider";
+import { VideoHuddle } from "components/attendee/VideoHuddle/VideoHuddle";
 
 import { ATTENDEE_LAYOUT_CLASSNAME, POPOVER_CONTAINER_ID } from "settings";
 
@@ -17,20 +17,14 @@ import { useShowHide } from "hooks/useShowHide";
 
 import { VenuePage } from "pages/VenuePage";
 
-import { Banner } from "./Banner/Banner";
-import { VideoCommsProvider } from "./VideoComms/VideoCommsProvider";
-import { HuddleProvider } from "./VideoHuddle/HuddleProvider";
-import { VideoHuddle } from "./VideoHuddle/VideoHuddle";
-
 import "scss/attendee/initial.scss";
 import styles from "./AttendeeLayout.module.scss";
 
-interface _AttendeeLayoutProps {
-  userId: string;
+type AttendeeLayoutProps = {
   space: SpaceWithId;
-}
+};
 
-const _AttendeeLayout: React.FC<_AttendeeLayoutProps> = ({ space }) => {
+export const AttendeeLayout: React.FC<AttendeeLayoutProps> = ({ space }) => {
   const [backButtonSpace, setBackButtonSpace] = useState<SpaceWithId>();
   const footerRef = useRef<HTMLElement>(null);
   const footerIntersect = useIntersection(footerRef, {
@@ -95,9 +89,3 @@ const _AttendeeLayout: React.FC<_AttendeeLayoutProps> = ({ space }) => {
     </VideoCommsProvider>
   );
 };
-
-export const AttendeeLayout = compose(
-  withAuth,
-  withSlugs,
-  withSpacesBySlug
-)(_AttendeeLayout);
