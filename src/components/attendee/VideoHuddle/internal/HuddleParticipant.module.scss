@@ -3,6 +3,7 @@
 .huddleParticipant {
   display: flex;
   justify-content: center;
+  flex-shrink: 0;
 
   @include rounded.normal;
   overflow: hidden;

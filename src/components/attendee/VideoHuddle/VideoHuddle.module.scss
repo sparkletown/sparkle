@@ -57,6 +57,13 @@ $-control-size: 32px;
   overflow-x: scroll;
   overflow-y: hidden;
   display: flex;
-  justify-content: center;
   gap: space.gap(1);
+
+  // use pseudoelements instead of justify-content:center to avoid hiding of the first child elements on content overflow
+  // @see https://stackoverflow.com/a/46059525
+  &::before,
+  &::after {
+    content: "";
+    flex: 1;
+  }
 }
