@@ -27,7 +27,7 @@ import CN from "./UserAvatar.module.scss";
 export type UserAvatarSize = "small" | "medium" | "large" | "xlarge" | "full";
 
 export type UserAvatarUserFields = WithId<
-  Pick<Profile, "partyName" | "pictureUrl" | "anonMode" | "status">
+  Pick<Profile, "partyName" | "pictureUrl" | "status">
 >;
 
 export interface UserAvatarProps extends ContainerClassName {

@@ -17,7 +17,6 @@ import { Table } from "./Table";
 import { UpcomingEvent } from "./UpcomingEvent";
 import { UserStatus } from "./User";
 import { VenueAccessMode } from "./VenueAcccess";
-import { VideoAspectRatio } from "./VideoAspectRatio";
 
 export type PortalTemplate = VenueTemplate | "external";
 
@@ -145,7 +144,6 @@ export interface BaseVenue {
   auditoriumColumns?: number;
   auditoriumRows?: number;
   sectionsCount?: number;
-  videoAspect?: VideoAspectRatio;
   termsAndConditions: TermOfService[];
   userStatuses?: UserStatus[];
   showRadio?: boolean;
