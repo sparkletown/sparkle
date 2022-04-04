@@ -19,10 +19,6 @@ import { NotFound } from "components/atoms/NotFound";
 
 import { updateUserProfile } from "./helpers";
 
-// @debt refactor the questions related styles from Account.scss into CodeOfConduct.scss
-import "./Account.scss";
-import "./CodeOfConduct.scss";
-
 export interface CodeOfConductFormData {
   contributeToExperience: string;
   cheerBand: string;

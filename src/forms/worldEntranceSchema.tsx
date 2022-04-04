@@ -7,6 +7,5 @@ export const worldEntranceSchema = Yup.object().shape({
   adultContent: Yup.bool().notRequired(),
   requiresDateOfBirth: Yup.bool().notRequired(),
   code: questionSchema.notRequired(),
-  profile: questionSchema.notRequired(),
   entrance: entranceSchema.notRequired(),
 });
