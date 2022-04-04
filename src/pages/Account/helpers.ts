@@ -2,7 +2,6 @@ import firebase from "firebase/compat/app";
 
 import { ProfileLink, UserLocation } from "types/User";
 
-import { QuestionsFormData } from "pages/Account/ProfileQuestions";
 import { RegisterData } from "pages/auth/RegisterForm/RegisterForm";
 
 import { CodeOfConductFormData } from "./CodeOfConduct";
@@ -26,11 +25,10 @@ export const updateUserProfile = (
     | { profileLinks: ProfileLink[] }
     | CodeOfConductFormData
     | ProfileFormData
-    | QuestionsFormData
     | AnonModeUpdateData
     | KidsModeUpdateData
     | MirrorVideoUpdateData
-    | ((ProfileFormData & QuestionsFormData) | UserLocation)
+    | (ProfileFormData | UserLocation)
 ) => {
   const firestore = firebase.firestore();
   const doc = `users/${userId}`;
