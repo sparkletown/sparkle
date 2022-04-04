@@ -12,10 +12,8 @@ import { User } from "types/User";
 
 import { WithId } from "utils/id";
 
-import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useCheckOldPassword } from "hooks/useCheckOldPassword";
 import { useProfileModalFormDefaultValues } from "hooks/useProfileModalFormDefaultValues";
-import { useProfileQuestions } from "hooks/useProfileQuestions";
 import { useShowHide } from "hooks/useShowHide";
 
 import { updateUserProfile } from "pages/Account/helpers";
@@ -26,7 +24,6 @@ import { EditProfileModalButtons } from "./buttons/EditProfileModalButtons";
 import { ProfileModalEditBasicInfo } from "./header/ProfileModalEditBasicInfo";
 import { ProfileModalEditLinks } from "./links/ProfileModalEditLinks";
 import { ProfileModalChangePassword } from "./ProfileModalChangePassword";
-import { ProfileModalQuestions } from "./ProfileModalQuestions";
 
 const PASSWORD_FIELDS: (keyof UserProfileModalFormDataPasswords)[] = [
   "oldPassword",
@@ -44,15 +41,9 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
   user,
   onCancelEditing,
 }) => {
-  const { worldId } = useWorldAndSpaceByParams();
-  const { questions, answers } = useProfileQuestions(user, worldId);
   const firebaseUser = firebase.auth()?.currentUser;
 
-  const defaultValues = useProfileModalFormDefaultValues(
-    user,
-    questions,
-    answers
-  );
+  const defaultValues = useProfileModalFormDefaultValues(user);
 
   const checkOldPassword = useCheckOldPassword();
 
@@ -176,15 +167,9 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
           setValue={setValue}
           partyNameError={errors?.partyName}
         />
-        <ProfileModalQuestions
-          editMode
-          questions={questions}
-          answers={answers}
-          register={register}
-        />
         <ProfileModalEditLinks
           register={register}
-          initialLinks={defaultValues.profileLinks ?? []}
+          initialLinks={defaultValues?.profileLinks ?? []}
           links={links}
           errors={errors?.profileLinks}
           onDeleteLink={onDeleteLink}
