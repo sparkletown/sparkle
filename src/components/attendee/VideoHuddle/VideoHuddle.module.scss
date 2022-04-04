@@ -59,8 +59,10 @@ $-control-size: 32px;
   display: flex;
   gap: space.gap(1);
 
-  // use pseudoelements instead of justify-content:center to avoid hiding of the first child elements on content overflow
-  // @see https://stackoverflow.com/a/46059525
+  // Pseudoelements are quirky that if there is a standard flex/grid solution we should use it.
+  // Currently there is a solution that isn't fully supported in all browsers that we might try in the future.
+  // @see https://stackoverflow.com/a/33455342
+  // @see https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Basic_Concepts_of_Flexbox#Flex_item_considerations
   &::before,
   &::after {
     content: "";
