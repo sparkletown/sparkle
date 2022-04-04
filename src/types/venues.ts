@@ -325,16 +325,6 @@ export const isPartyMapVenue = (venue: AnyVenue): venue is PartyMapVenue =>
 export const isNotPartyMapVenue = (venue: AnyVenue) =>
   venue.template !== VenueTemplate.partymap;
 
-export const urlFromImage = (
-  defaultValue: string,
-  filesOrUrl?: FileList | string
-) => {
-  if (typeof filesOrUrl === "string") return filesOrUrl;
-  return filesOrUrl && filesOrUrl.length > 0
-    ? URL.createObjectURL(filesOrUrl[0])
-    : defaultValue;
-};
-
 export type Channel = {
   name: string;
   iframeUrl: string;
