@@ -1,8 +1,5 @@
 // @debt rename this file to be user rather than User
 
-import { SeatPosition } from "types/grid";
-import { VenueTablePath } from "types/venues";
-
 // the structure is { [key: venueId] : eventId[] }
 export type MyPersonalizedSchedule = Partial<Record<string, string[]>>;
 
@@ -36,14 +33,6 @@ export interface User extends Profile {
 }
 
 export type DisplayUser = Pick<User, "partyName" | "pictureUrl">;
-
-export type GridSeatedUser = DisplayUser & {
-  position: Partial<SeatPosition>;
-};
-
-export type TableSeatedUser = DisplayUser & {
-  path: VenueTablePath;
-};
 
 export type SeatedUser<T> = DisplayUser & {
   worldId: string;
