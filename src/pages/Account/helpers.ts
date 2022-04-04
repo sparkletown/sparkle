@@ -7,10 +7,6 @@ import { RegisterData } from "pages/auth/RegisterForm/RegisterForm";
 import { CodeOfConductFormData } from "./CodeOfConduct";
 import { ProfileFormData } from "./Profile";
 
-type KidsModeUpdateData = {
-  kidsMode: boolean;
-};
-
 type AnonModeUpdateData = {
   anonMode: boolean;
 };
@@ -26,7 +22,6 @@ export const updateUserProfile = (
     | CodeOfConductFormData
     | ProfileFormData
     | AnonModeUpdateData
-    | KidsModeUpdateData
     | MirrorVideoUpdateData
     | (ProfileFormData | UserLocation)
 ) => {
