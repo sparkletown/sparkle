@@ -15,7 +15,7 @@ import {
   convertUtcSecondsFromInputDateAndTime,
 } from "utils/time";
 
-import { useUser } from "hooks/useUser";
+import { useUserId } from "hooks/user/useUserId";
 
 import { AdminDateTime } from "components/molecules/AdminDateTime";
 import { AdminSection } from "components/molecules/AdminSection";
@@ -100,7 +100,7 @@ export interface SpaceTimingFormProps {
 }
 
 export const SpaceTimingForm: React.FC<SpaceTimingFormProps> = ({ venue }) => {
-  const { user } = useUser();
+  const { userId } = useUserId();
 
   const defaultValues = useMemo<SpaceTimingFormInput>(() => {
     const {
@@ -137,7 +137,7 @@ export const SpaceTimingForm: React.FC<SpaceTimingFormProps> = ({ venue }) => {
 
   const [{ error, loading: isSaving }, submit] = useAsyncFn(
     async (input: SpaceTimingFormInput) => {
-      if (!venue.name || !user) return;
+      if (!venue.name || !userId) return;
 
       await updateVenue_v2(
         {
@@ -154,12 +154,12 @@ export const SpaceTimingForm: React.FC<SpaceTimingFormProps> = ({ venue }) => {
             time: input.endTime,
           }),
         },
-        user
+        userId
       );
 
       reset(input);
     },
-    [venue, user, reset]
+    [venue, userId, reset]
   );
 
   const isSaveLoading = isSubmitting || isSaving;

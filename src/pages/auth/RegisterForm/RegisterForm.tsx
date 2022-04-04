@@ -38,8 +38,6 @@ import CN from "pages/auth/auth.module.scss";
 import { LoginFormData } from "pages/auth/LoginForm";
 import { SocialLogin } from "pages/auth/SocialLogin";
 
-import { TicketCodeField } from "components/organisms/TicketCodeField";
-
 const validateDateOfBirth = (stringDate: string) => {
   const yearsDifference = differenceInYears(new Date(), parseISO(stringDate));
   return yearsDifference >= 18 && yearsDifference <= 100;
@@ -336,10 +334,6 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
             </div>
           )}
         </Spacer>
-
-        {space.access === VenueAccessMode.Codes && (
-          <TicketCodeField register={register} error={errors?.code} />
-        )}
 
         {isDobRequired && (
           <div className="input-group">

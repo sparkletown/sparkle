@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useMemo } from "react";
 import { useFieldArray, useForm, useFormState } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -40,14 +40,12 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
   const defaultValues = useMemo<WorldEntranceFormInput>(
     () => ({
       code: world.questions?.code ?? [],
-      profile: world.questions?.profile ?? [],
       entrance: world.entrance,
       adultContent: world.adultContent ?? false,
       requiresDateOfBirth: world.requiresDateOfBirth ?? false,
     }),
     [
       world.questions?.code,
-      world.questions?.profile,
       world.entrance,
       world.adultContent,
       world.requiresDateOfBirth,
@@ -76,17 +74,6 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
     addCodeQuestion({ name: "", text: "", link: "" });
   const clearCodeQuestions = removeCodeQuestion;
 
-  const {
-    fields: profileQuestions,
-    append: addProfileQuestion,
-    remove: removeProfileQuestion,
-  } = useFieldArray({ control, shouldUnregister: true, name: "profile" });
-
-  const handleAddProfileQuestion = useCallback(
-    () => addProfileQuestion({ name: "", text: "", link: "" }),
-    [addProfileQuestion]
-  );
-  const clearProfileQuestions = removeProfileQuestion;
   const {
     fields: entranceSteps,
     append: addEntranceStep,
@@ -140,18 +127,6 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
             onAdd={handleAddCodeQuestion}
             onRemove={removeCodeQuestion}
             onClear={clearCodeQuestions}
-            register={register}
-          />
-        </InputGroup>
-
-        <InputGroup title="Profile questions">
-          <QuestionsBuilder
-            errors={errors.profile}
-            items={profileQuestions}
-            name="profile"
-            onAdd={handleAddProfileQuestion}
-            onRemove={removeProfileQuestion}
-            onClear={clearProfileQuestions}
             register={register}
           />
         </InputGroup>

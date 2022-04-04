@@ -24,7 +24,12 @@ import { ScreeningRoomVideo } from "types/screeningRoom";
 import { SpaceType } from "types/spaces";
 import { Table } from "types/Table";
 import { User } from "types/User";
-import { VenueAdvancedConfig, VenuePlacement, WorldEvent } from "types/venues";
+import {
+  Channel,
+  VenueAdvancedConfig,
+  VenuePlacement,
+  WorldEvent,
+} from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
 
 import { WithId, withId, WithoutId, WithWorldId } from "utils/id";
@@ -58,7 +63,7 @@ type RoomImageUrls = Partial<Record<RoomImageUrlKeys, string>>;
 
 export interface VenueInput_v2 extends WithId<VenueAdvancedConfig> {
   name: string;
-  slug: string;
+  slug: SpaceSlug;
   description?: string;
   subtitle?: string;
   bannerImageFile?: FileList;
@@ -121,7 +126,7 @@ export const getVenueOwners = async (venueId: string): Promise<string[]> => {
  */
 const createFirestoreVenueInputWithoutId_v2 = async (
   input: Omit<VenueInput_v2, "id">,
-  user: firebase.UserInfo
+  userId: UserId
 ) => {
   type ImageNaming = {
     fileKey: ImageFileKeys;
@@ -160,7 +165,7 @@ const createFirestoreVenueInputWithoutId_v2 = async (
     // @debt this may cause missing or wrong image issues if two venues exchange their slugs, should take multiple steps to reproduce
     const uploadFileRef = ref(
       FIREBASE.storage,
-      `users/${user.uid}/venues/${input.slug}/${urlKey}.${fileExtension}`
+      `users/${userId}/venues/${input.slug}/${urlKey}.${fileExtension}`
     );
 
     await uploadBytes(uploadFileRef, file);
@@ -189,13 +194,13 @@ const createFirestoreVenueInputWithoutId_v2 = async (
 
 const createFirestoreVenueInput_v2 = async (
   input: VenueInput_v2,
-  user: firebase.UserInfo
+  userId: UserId
 ) => {
   // We temporarily cast the result to unknown so that we can cast to the
   // same type with the ID added, then we add the missing property.
   const result = ((await createFirestoreVenueInputWithoutId_v2(
     input,
-    user
+    userId
   )) as unknown) as FirestoreVenueInput_v2;
   result.id = input.id;
   return result;
@@ -207,7 +212,7 @@ export const createVenue_v2 = async (
   // This is preferred over having to remember to add "needs a venue ID" in
   // many places.
   input: WithWorldId<Omit<VenueInput_v2, "id">>,
-  user: firebase.UserInfo
+  userId: UserId
 ) => {
   const firestoreVenueInput = await createFirestoreVenueInputWithoutId_v2(
     {
@@ -216,7 +221,7 @@ export const createVenue_v2 = async (
       showReactions: input.showReactions ?? DEFAULT_SHOW_REACTIONS,
       rooms: [],
     },
-    user
+    userId
   );
 
   const worldId = input.worldId;
@@ -250,9 +255,10 @@ export const createVenue_v2 = async (
 
 export const updateVenue_v2 = async (
   input: WithWorldId<VenueInput_v2>,
-  user: firebase.UserInfo
+  userId: UserId
 ) => {
-  const firestoreVenueInput = await createFirestoreVenueInput_v2(input, user);
+  const firestoreVenueInput = await createFirestoreVenueInput_v2(input, userId);
+
   return httpsCallable(
     FIREBASE.functions,
     "venue-updateVenue_v2"
@@ -273,9 +279,9 @@ export const updateVenue_v2 = async (
 
 export const updateMapBackground = async (
   input: WithWorldId<VenueInput_v2>,
-  user: firebase.UserInfo
+  userId: UserId
 ) => {
-  const firestoreVenueInput = await createFirestoreVenueInput_v2(input, user);
+  const firestoreVenueInput = await createFirestoreVenueInput_v2(input, userId);
 
   return httpsCallable(
     FIREBASE.functions,
@@ -588,3 +594,47 @@ export const getSpaceEditors = async (spaceEditorIds: string[]) =>
   Promise.all(
     spaceEditorIds.map((admin) => getUserRef(admin).get())
   ).then((docs) => docs.map((doc) => withId(doc.data() as User, doc.id)));
+
+export const upsertChannel = async (
+  channel: Channel,
+  spaceId: SpaceId,
+  channelIndex?: number
+) => {
+  return await httpsCallable(
+    FIREBASE.functions,
+    "venue-upsertChannel"
+  )({
+    spaceId,
+    channelIndex,
+    channel,
+  }).catch((e) => {
+    Bugsnag.notify(e, (event) => {
+      event.addMetadata("api/admin::upsertChannel", {
+        spaceId,
+        channelIndex,
+      });
+    });
+    throw e;
+  });
+};
+
+export const deleteChannel = async (
+  spaceId: SpaceId,
+  channelIndex?: number
+) => {
+  return await httpsCallable(
+    FIREBASE.functions,
+    "venue-deleteChannel"
+  )({
+    spaceId,
+    channelIndex,
+  }).catch((e) => {
+    Bugsnag.notify(e, (event) => {
+      event.addMetadata("api/admin::deleteChannel", {
+        spaceId,
+        channelIndex,
+      });
+    });
+    throw e;
+  });
+};

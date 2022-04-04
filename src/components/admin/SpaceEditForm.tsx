@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo } from "react";
 import { useForm, useFormState } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { BackgroundSelect } from "components/admin/BackgroundSelect";
 import { Checkbox } from "components/admin/Checkbox";
 import { ImageInput } from "components/admin/ImageInput";
 import { Input } from "components/admin/Input";
@@ -18,12 +19,15 @@ import {
   COMMON_NAME_MAX_CHAR_COUNT,
   DEFAULT_EMBED_URL,
   DEFAULT_REACTIONS_MUTED,
+  DEFAULT_SECTION_CAPACITY,
   DEFAULT_SECTIONS_AMOUNT,
+  DEFAULT_SHOW_CONTENT,
   DEFAULT_SHOW_REACTIONS,
   DEFAULT_SHOW_SHOUTOUTS,
   DEFAULT_VENUE_AUTOPLAY,
   DEFAULT_VENUE_LOGO,
   DISABLED_DUE_TO_1253,
+  EMBEDDABLE_CONTENT_TEMPLATES,
   HAS_GRID_TEMPLATES,
   HAS_REACTIONS_TEMPLATES,
   IFRAME_TEMPLATES,
@@ -40,6 +44,7 @@ import { createSlug } from "api/admin";
 import { updateVenueNG } from "api/venue";
 import { World } from "api/world";
 
+import { SpaceId, WorldId } from "types/id";
 import { AnyVenue } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
 
@@ -53,11 +58,8 @@ import { useFetchAssets } from "hooks/useFetchAssets";
 import { useUserId } from "hooks/user/useUserId";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 
-import { BackgroundSelect } from "pages/Admin/BackgroundSelect";
-
 import { AdminSidebarButtons } from "components/organisms/AdminVenueView/components/AdminSidebarButtons";
 
-import { AdminInput } from "components/molecules/AdminInput";
 import { FormErrors } from "components/molecules/FormErrors";
 import { SubmitError } from "components/molecules/SubmitError";
 import { YourUrlDisplay } from "components/molecules/YourUrlDisplay";
@@ -112,7 +114,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
       zoomUrl: space?.zoomUrl ?? "",
       logoImage: undefined,
       logoImageUrl: space?.host?.icon ?? spaceLogoImage,
-      showContent: space.showContent ?? false,
+      showContent: space.showContent ?? DEFAULT_SHOW_CONTENT,
       backgroundImage: undefined,
       backgroundImageUrl: space.backgroundImageUrl,
     }),
@@ -221,21 +223,27 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
   const slug = useMemo(() => createSlug(watchedName), [watchedName]);
 
   const changePortalImageUrl = useCallback(
-    (val: string) => {
-      setValue("logoImageUrl", val, { shouldValidate: false });
+    ({ url }) => {
+      setValue("logoImageUrl", url, { shouldValidate: false });
     },
     [setValue]
   );
 
   const changeBackgroundImageUrl = useCallback(
-    (val: string) => {
-      setValue("backgroundImageUrl", val, { shouldValidate: false });
+    ({ url }) => {
+      setValue("backgroundImageUrl", url, { shouldValidate: false });
     },
     [setValue]
   );
 
   // TODO-redesign
   // Probably want to use ${SPACE_INFO_MAP[space.template].icon} for the logo
+
+  const numberOfSectionsSubtext = `${
+    values.numberOfSections || 0
+  } Sections * ${DEFAULT_SECTION_CAPACITY} Seats = ${
+    DEFAULT_SECTION_CAPACITY * values.numberOfSections
+  } (Capacity)`;
 
   return (
     <div className="SpaceEditForm">
@@ -338,14 +346,18 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
             space.template as VenueTemplate
           ) && (
             <>
+              <div className="mb-10"></div>
+
               <SidebarHeader>Map background</SidebarHeader>
               <BackgroundSelect
                 isLoadingBackgrounds={isLoadingBackgrounds}
                 mapBackgrounds={mapBackgrounds}
-                venueName={space.name}
+                spaceName={space.name}
                 spaceSlug={space.slug}
-                worldId={space.worldId}
-                venueId={space.id}
+                worldId={space.worldId as WorldId}
+                spaceId={space.id as SpaceId}
+                register={register}
+                imageUrl={space.mapBackgroundImageUrl}
               />
               {errorFetchBackgrounds && (
                 <>
@@ -359,31 +371,45 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
             </>
           )}
 
-          <SidebarHeader>Embedable content</SidebarHeader>
+          {EMBEDDABLE_CONTENT_TEMPLATES.includes(
+            space.template as VenueTemplate
+          ) && <SidebarHeader>Embedable content</SidebarHeader>}
+
           {space.template &&
             // @debt use a single structure of type Record<VenueTemplate,TemplateInfo> to compile all these .includes() arrays' flags
             IFRAME_TEMPLATES.includes(space.template as VenueTemplate) && (
-              <InputGroup title="Livestream URL">
-                <AdminInput
-                  placeholder="Livestream URL"
+              <>
+                <Toggle
+                  label="Show content"
                   register={register}
-                  name="iframeUrl"
-                  errors={errors}
+                  name="showContent"
+                  checked={values.showContent}
                 />
-                <Checkbox
-                  label="Autoplay"
-                  variant="toggler"
-                  register={register}
-                  name="autoPlay"
-                />
-              </InputGroup>
+                {values.showContent && (
+                  <InputGroup title="Livestream URL" margin="no-bottom">
+                    <Input
+                      placeholder="Livestream or embed URL"
+                      register={register}
+                      name="iframeUrl"
+                      errors={errors}
+                      disabled={!values.showContent}
+                    />
+                    <Checkbox
+                      label="Autoplay"
+                      register={register}
+                      name="autoPlay"
+                      disabled={!values.showContent}
+                    />
+                  </InputGroup>
+                )}
+              </>
             )}
 
           {space.template &&
             // @debt use a single structure of type Record<VenueTemplate,TemplateInfo> to compile all these .includes() arrays' flags
             ZOOM_URL_TEMPLATES.includes(space.template as VenueTemplate) && (
               <InputGroup title="URL" withLabel>
-                <AdminInput
+                <Input
                   type="text"
                   placeholder="URL"
                   register={register}
@@ -411,25 +437,25 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
               space.template as VenueTemplate
             ) && (
               <>
-                <Checkbox
-                  label="Show shoutouts"
-                  variant="toggler"
-                  register={register}
-                  name="showShoutouts"
-                />
-                <Checkbox
+                <Toggle
                   label="Show reactions"
-                  variant="toggler"
                   register={register}
                   name="showReactions"
+                  checked={values.showReactions}
                 />
-                <Checkbox
-                  variant="flip-switch"
+                {values.showReactions && (
+                  <Checkbox
+                    register={register}
+                    label="Audible"
+                    name="isReactionsMuted"
+                    disabled={isReactionsMutedDisabled}
+                  />
+                )}
+                <Toggle
+                  label="Show shoutouts"
                   register={register}
-                  name="isReactionsMuted"
-                  disabled={isReactionsMutedDisabled}
-                  displayOn="Muted"
-                  displayOff="Audible"
+                  name="showShoutouts"
+                  checked={values.showShoutouts}
                 />
               </>
             )
@@ -465,109 +491,45 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
               </>
             )}
 
-          {space.template === VenueTemplate.conversationspace && (
-            <div>
-              <Toggle
-                label="Show content"
-                register={register}
-                name="showContent"
-                checked={values.showContent}
-              />
-              <InputGroup title="Livestream URL" margin="medium">
-                <Input
-                  placeholder="Livestream or embed URL"
-                  register={register}
-                  name="iframeUrl"
-                  errors={errors}
-                  disabled={!values.showContent}
-                />
-                <Checkbox
-                  label="Autoplay"
-                  register={register}
-                  name="autoPlay"
-                  disabled={!values.showContent}
-                />
-              </InputGroup>
-              <Toggle
-                label="Show reactions"
-                register={register}
-                name="showReactions"
-                checked={values.showReactions}
-              />
-              <InputGroup margin="medium">
-                <Checkbox
-                  register={register}
-                  label="Audible"
-                  name="isReactionsMuted"
-                  disabled={isReactionsMutedDisabled}
-                />
-              </InputGroup>
-              <Toggle
-                label="Show shoutouts"
-                register={register}
-                name="showShoutouts"
-                checked={values.showShoutouts}
-              />
-            </div>
-          )}
+          <div className="mb-10"></div>
+
           {space.template === VenueTemplate.auditorium && (
             <>
               <SidebarHeader>Extras</SidebarHeader>
-              <InputGroup>
-                <div className="input-container">
-                  <h4 className="italic input-header">
-                    Number of seats columns
-                  </h4>
-                  <input
-                    defaultValue={SECTION_DEFAULT_COLUMNS_COUNT}
-                    min={5}
-                    type="number"
-                    {...register("auditoriumColumns")}
-                    className="align-left"
-                    placeholder="Number of seats columns"
-                  />
-                  {errors?.auditoriumColumns ? (
-                    <span className="input-error">
-                      {errors?.auditoriumColumns.message}
-                    </span>
-                  ) : null}
-                </div>
-                <div className="input-container">
-                  <h4 className="italic input-header">Number of seats rows</h4>
-                  <input
-                    defaultValue={SECTION_DEFAULT_ROWS_COUNT}
-                    type="number"
-                    {...register("auditoriumRows")}
-                    className="align-left"
-                    placeholder="Number of seats rows"
-                    min={5}
-                  />
-                  {errors?.auditoriumRows ? (
-                    <span className="input-error">
-                      {errors?.auditoriumRows.message}
-                    </span>
-                  ) : null}
-                </div>
+              <InputGroup title=" Number of seats columns">
+                <Input
+                  defaultValue={SECTION_DEFAULT_COLUMNS_COUNT}
+                  min={5}
+                  type="number"
+                  name="auditoriumColumns"
+                  register={register}
+                  className="align-left"
+                  placeholder="Number of seats columns"
+                  errors={errors}
+                />
               </InputGroup>
 
-              <InputGroup title="Capacity (optional)">
-                <div className="SpaceEditForm__capacity">
-                  <div># Sections</div>
-                  <div># Seats</div>
-                  <div>Max seats</div>
+              <InputGroup title="Number of seats rows">
+                <Input
+                  name="auditoriumRows"
+                  type="number"
+                  className="align-left"
+                  placeholder="Number of seats rows"
+                  min={5}
+                  register={register}
+                />
+              </InputGroup>
 
-                  <Input
-                    register={register}
-                    name="numberOfSections"
-                    type="number"
-                    min={MIN_SECTIONS_AMOUNT}
-                    max={MAX_SECTIONS_AMOUNT}
-                    error={errors.numberOfSections}
-                  />
-
-                  <div>x 200</div>
-                  <div>= {200 * values.numberOfSections}</div>
-                </div>
+              <InputGroup title="Number of sections" isOptional>
+                <Input
+                  register={register}
+                  name="numberOfSections"
+                  type="number"
+                  min={MIN_SECTIONS_AMOUNT}
+                  max={MAX_SECTIONS_AMOUNT}
+                  error={errors.numberOfSections}
+                  subtext={numberOfSectionsSubtext}
+                />
               </InputGroup>
             </>
           )}

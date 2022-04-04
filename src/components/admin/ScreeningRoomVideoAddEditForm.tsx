@@ -2,7 +2,10 @@ import React, { useEffect, useMemo } from "react";
 import { useForm, useFormState } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { Button } from "components/admin/Button";
 import { ImageInput } from "components/admin/ImageInput";
+import { Input } from "components/admin/Input";
+import { InputGroup } from "components/admin/InputGroup";
 import omit from "lodash/omit";
 
 import { deleteScreeningRoomVideo, upsertScreeningRoomVideo } from "api/admin";
@@ -16,14 +19,10 @@ import { isTruthy } from "utils/types";
 import { screeningRoomVideoSchema } from "forms/screeningRoomVideoSchema";
 
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
-import { useUser } from "hooks/useUser";
+import { useUserId } from "hooks/user/useUserId";
 
-import { AdminInput } from "components/molecules/AdminInput";
+import { ModalTitle } from "components/molecules/Modal/ModalTitle";
 import { SubmitError } from "components/molecules/SubmitError";
-
-import { ButtonNG } from "components/atoms/ButtonNG";
-
-import "./ScreeningRoomVideoAddEditForm.scss";
 
 export interface ScreeningRoomVideoAddEditFormProps {
   onDone: () => void;
@@ -34,7 +33,7 @@ export const ScreeningRoomVideoAddEditForm: React.FC<ScreeningRoomVideoAddEditFo
   video,
   onDone,
 }) => {
-  const { user } = useUser();
+  const { userId } = useUserId();
   const { spaceId: currentSpaceId } = useWorldAndSpaceByParams();
 
   const isEditMode = isTruthy(video);
@@ -82,7 +81,7 @@ export const ScreeningRoomVideoAddEditForm: React.FC<ScreeningRoomVideoAddEditFo
     { loading: isLoading, error: submitError },
     addVideo,
   ] = useAsyncFn(async () => {
-    if (!user || !currentSpaceId) return;
+    if (!userId || !currentSpaceId) return;
 
     const {
       title,
@@ -98,7 +97,7 @@ export const ScreeningRoomVideoAddEditForm: React.FC<ScreeningRoomVideoAddEditFo
     } = getValues();
 
     const videoSource = video ? omit(video, ["id"]) : {};
-    const fileDirectory = `users/${user.uid}/venues/${currentSpaceId}`;
+    const fileDirectory = `users/${userId}/venues/${currentSpaceId}`;
     const thumbnailSrc = thumbnailSrcFile
       ? await uploadFile(fileDirectory, thumbnailSrcFile)
       : video?.thumbnailSrc;
@@ -121,7 +120,7 @@ export const ScreeningRoomVideoAddEditForm: React.FC<ScreeningRoomVideoAddEditFo
     }
 
     await onDone();
-  }, [currentSpaceId, getValues, onDone, video, user]);
+  }, [currentSpaceId, getValues, onDone, video, userId]);
 
   const [{ loading: isDeleting, error: deleteError }, deleteVideo] = useAsyncFn(
     async () => {
@@ -137,50 +136,55 @@ export const ScreeningRoomVideoAddEditForm: React.FC<ScreeningRoomVideoAddEditFo
       className="ScreeningRoomVideoAddEditModal ScreeningRoomVideoAddEditForm__form"
       onSubmit={handleSubmit(addVideo)}
     >
-      <div className="ScreeningRoomVideoAddEditForm__title">{title}</div>
-      <AdminInput
-        type="text"
-        autoComplete="off"
-        placeholder="Name your video"
-        label="Title (required)"
-        errors={errors}
-        name="title"
-        register={register}
-        disabled={isLoading}
-      />
+      <ModalTitle>{title}</ModalTitle>
 
-      <AdminInput
-        type="text"
-        autoComplete="off"
-        placeholder="Esmerelda Diamond"
-        label="Author of video (required)"
-        errors={errors}
-        name="authorName"
-        register={register}
-        disabled={isLoading}
-      />
+      <InputGroup title="Title" isRequired>
+        <Input
+          type="text"
+          autoComplete="off"
+          placeholder="Name your video"
+          errors={errors}
+          name="title"
+          register={register}
+          disabled={isLoading}
+        />
+      </InputGroup>
 
-      <AdminInput
-        type="text"
-        autoComplete="off"
-        placeholder="https://"
-        label="Embed URL (required)"
-        errors={errors}
-        name="videoSrc"
-        register={register}
-        disabled={isLoading}
-      />
+      <InputGroup title="Author of video" isRequired>
+        <Input
+          type="text"
+          autoComplete="off"
+          placeholder="Esmerelda Diamond"
+          errors={errors}
+          name="authorName"
+          register={register}
+          disabled={isLoading}
+        />
+      </InputGroup>
 
-      <AdminInput
-        type="text"
-        autoComplete="off"
-        placeholder="Add category"
-        label="Category (required)"
-        errors={errors}
-        name="category"
-        register={register}
-        disabled={isLoading}
-      />
+      <InputGroup title="Embed URL" isRequired>
+        <Input
+          type="text"
+          autoComplete="off"
+          placeholder="https://"
+          errors={errors}
+          name="videoSrc"
+          register={register}
+          disabled={isLoading}
+        />
+      </InputGroup>
+
+      <InputGroup title="Category" isRequired>
+        <Input
+          type="text"
+          autoComplete="off"
+          placeholder="Add category"
+          errors={errors}
+          name="category"
+          register={register}
+          disabled={isLoading}
+        />
+      </InputGroup>
 
       <ImageInput
         name="thumbnailSrc"
@@ -191,47 +195,53 @@ export const ScreeningRoomVideoAddEditForm: React.FC<ScreeningRoomVideoAddEditFo
         buttonLabel="Change thumbnail"
       />
 
-      <AdminInput
-        type="text"
-        autoComplete="off"
-        placeholder="Add subcategory"
-        label="Subcategory"
-        errors={errors}
-        name="subCategory"
-        register={register}
-        disabled={isLoading}
-      />
+      <InputGroup title="Subcategory">
+        <Input
+          type="text"
+          autoComplete="off"
+          placeholder="Add subcategory"
+          errors={errors}
+          name="subCategory"
+          register={register}
+          disabled={isLoading}
+        />
+      </InputGroup>
 
-      <AdminInput
-        type="text"
-        autoComplete="off"
-        placeholder="Add introduction"
-        label="Introduction"
-        errors={errors}
-        name="introduction"
-        register={register}
-        disabled={isLoading}
-      />
+      <InputGroup title="Introduction">
+        <Input
+          type="text"
+          autoComplete="off"
+          placeholder="Add introduction"
+          errors={errors}
+          name="introduction"
+          register={register}
+          disabled={isLoading}
+        />
+      </InputGroup>
 
       <SubmitError error={submitError || deleteError} />
-      <div className="ScreeningRoomVideoAddEditForm__buttons">
-        {isEditMode && (
-          <ButtonNG
-            variant="danger"
+
+      <div className="mt-5 sm:mt-4 sm:flex justify-end">
+        <div className="ScreeningRoomVideoAddEditForm__buttons">
+          {isEditMode && (
+            <Button
+              variant="danger"
+              disabled={isLoading || isDeleting}
+              onClick={deleteVideo}
+            >
+              Delete
+            </Button>
+          )}
+
+          <Button
+            variant="primary"
             disabled={isLoading || isDeleting}
-            onClick={deleteVideo}
+            title={title}
+            type="submit"
           >
-            Delete
-          </ButtonNG>
-        )}
-        <ButtonNG
-          variant="primary"
-          disabled={isLoading || isDeleting}
-          title={title}
-          type="submit"
-        >
-          Save
-        </ButtonNG>
+            Save
+          </Button>
+        </div>
       </div>
     </form>
   );

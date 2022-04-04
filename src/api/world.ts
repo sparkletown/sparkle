@@ -52,7 +52,6 @@ export interface World {
   owners: string[];
   questions?: {
     code?: Question[];
-    profile?: Question[];
   };
   radioStations?: string[];
   requiresDateOfBirth?: boolean;
@@ -131,7 +130,6 @@ export const createFirestoreWorldEntranceInput: (
     requiresDateOfBirth: input?.requiresDateOfBirth,
     questions: {
       code: input?.code ?? [],
-      profile: input?.profile ?? [],
     },
     entrance: isEmpty(input.entrance) ? [] : input.entrance,
   };

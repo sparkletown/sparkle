@@ -36,6 +36,8 @@ export const RetunableMediaElement: React.FC<RetunableMediaElementProps> = ({
     switch (settings.sourceType) {
       case RetunableMediaSource.embed:
         return <MediaElement url={settings.embedUrl} autoPlay={true} />;
+      case RetunableMediaSource.channel:
+        return <MediaElement url={settings.channelUrl} autoPlay={true} />;
       case RetunableMediaSource.notTuned:
         return <></>;
       case RetunableMediaSource.screenshare:
