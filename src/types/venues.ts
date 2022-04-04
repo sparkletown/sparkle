@@ -11,7 +11,6 @@ import { GameOptions } from "components/templates/AnimateMap/configs/GameConfig"
 
 import { Banner } from "./banner";
 import { Poster } from "./posters";
-import { Quotation } from "./Quotation";
 import { Room } from "./rooms";
 import { Table } from "./Table";
 import { UserStatus } from "./User";
@@ -248,7 +247,6 @@ export interface VenueLandingPageConfig {
   checkList: string[];
   iframeUrl?: string;
   joinButtonText?: string;
-  quotations?: Quotation[];
 }
 
 export interface VenuePlacement {

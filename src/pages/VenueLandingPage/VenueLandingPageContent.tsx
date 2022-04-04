@@ -165,13 +165,6 @@ export const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = (
             />
           )}
 
-          {landingPageConfig?.quotations?.map((quotation, index) => (
-            <div className="quotation-container" key={index}>
-              <div className="quotation">{quotation.text}</div>
-              <div className="quotation-author">- {quotation.author}</div>
-            </div>
-          ))}
-
           {landingPageConfig?.presentation?.map(
             (paragraph: string, index: number) => (
               <p
