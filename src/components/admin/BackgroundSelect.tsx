@@ -4,13 +4,12 @@ import { useAsyncFn } from "react-use";
 import { ImageInput } from "components/admin/ImageInput";
 import { ImageInputChangeProps } from "components/admin/ImageInput/ImageInput";
 import { InputGroup } from "components/admin/InputGroup";
-import { noop } from "lodash/fp";
 
-import { DEFAULT_BACKGROUNDS } from "settings";
+import { ALWAYS_NOOP_FUNCTION, DEFAULT_BACKGROUNDS } from "settings";
 
 import { updateMapBackground } from "api/admin";
 
-import { WorldId } from "types/id";
+import { SpaceId, SpaceSlug, WorldId } from "types/id";
 import { AnyForm } from "types/utility";
 
 import { useUserId } from "hooks/user/useUserId";
@@ -19,10 +18,10 @@ import { Loading } from "components/molecules/Loading";
 import { SubmitError } from "components/molecules/SubmitError";
 
 interface BackgroundSelectProps {
-  venueId: string;
-  venueName: string;
-  spaceSlug: string;
-  worldId: string;
+  spaceId: SpaceId;
+  spaceName: string;
+  spaceSlug: SpaceSlug;
+  worldId: WorldId;
   mapBackgrounds: string[];
   isLoadingBackgrounds: boolean;
   register: UseFormRegister<AnyForm>;
@@ -30,8 +29,8 @@ interface BackgroundSelectProps {
 }
 
 export const BackgroundSelect: React.FC<BackgroundSelectProps> = ({
-  venueId,
-  venueName,
+  spaceId,
+  spaceName,
   spaceSlug,
   mapBackgrounds,
   isLoadingBackgrounds,
@@ -50,9 +49,9 @@ export const BackgroundSelect: React.FC<BackgroundSelectProps> = ({
 
       return await updateMapBackground(
         {
-          id: venueId,
-          worldId: worldId as WorldId,
-          name: venueName,
+          id: spaceId,
+          worldId: worldId,
+          name: spaceName,
           slug: spaceSlug,
           mapBackgroundImageFile: file,
           mapBackgroundImageUrl: url,
@@ -60,7 +59,7 @@ export const BackgroundSelect: React.FC<BackgroundSelectProps> = ({
         userId
       );
     },
-    [userId, venueName, spaceSlug, worldId, venueId]
+    [userId, spaceName, spaceSlug, worldId, spaceId]
   );
 
   const hasBackgrounds = !!mapBackgrounds.length && !isLoadingBackgrounds;
@@ -103,32 +102,30 @@ export const BackgroundSelect: React.FC<BackgroundSelectProps> = ({
 
   return (
     <div data-bem="BackgroundSelect">
-      <>
-        <InputGroup
-          title="Import a map background"
-          subtitle="Recommended size: 2000px / 1200px"
-        >
-          <ImageInput
-            name="imageUrl"
-            // @debt use form for background map upload (not separately)
-            setValue={noop}
-            onChange={onImageChange}
-            register={register}
-            imgUrl={imageUrl}
-            disabled={isUploading}
-          />
-        </InputGroup>
+      <InputGroup
+        title="Import a map background"
+        subtitle="Recommended size: 2000px / 1200px"
+      >
+        <ImageInput
+          name="imageUrl"
+          // @debt use form for background map upload (not separately)
+          setValue={ALWAYS_NOOP_FUNCTION}
+          onChange={onImageChange}
+          register={register}
+          imgUrl={imageUrl}
+          disabled={isUploading}
+        />
+      </InputGroup>
 
-        <InputGroup title="Or select one of our map backgrounds">
-          <div className="flex flex-wrap">
-            {renderedDefaultBackgrounds}
-            {hasBackgrounds && renderedMapBackgrounds}
-          </div>
-        </InputGroup>
+      <InputGroup title="Or select one of our map backgrounds">
+        <div className="flex flex-wrap">
+          {renderedDefaultBackgrounds}
+          {hasBackgrounds && renderedMapBackgrounds}
+        </div>
+      </InputGroup>
 
-        {isLoadingBackgrounds && <Loading label="Loading maps..." />}
-        <SubmitError error={error} />
-      </>
+      {isLoadingBackgrounds && <Loading label="Loading maps..." />}
+      <SubmitError error={error} />
     </div>
   );
 };
