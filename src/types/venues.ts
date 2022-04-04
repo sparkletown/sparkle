@@ -14,7 +14,6 @@ import { Poster } from "./posters";
 import { Quotation } from "./Quotation";
 import { Room } from "./rooms";
 import { Table } from "./Table";
-import { UpcomingEvent } from "./UpcomingEvent";
 import { UserStatus } from "./User";
 import { VenueAccessMode } from "./VenueAcccess";
 
@@ -100,15 +99,10 @@ export interface BaseVenue {
   owners?: string[];
   iframeUrl?: string;
   autoPlay?: boolean;
-  events?: Array<UpcomingEvent>; //@debt typing is this optional? I have a feeling this no longer exists @chris confirm
-  placement?: VenuePlacement;
   zoomUrl?: string;
   mapBackgroundImageUrl?: string;
-  placementRequests?: string;
   radioStations?: string[];
   radioTitle?: string;
-  dustStorm?: boolean;
-  activity?: string;
   banner?: Banner;
   playaIcon?: PlayaIcon;
   playaIcon2?: PlayaIcon;
@@ -125,8 +119,6 @@ export interface BaseVenue {
   showContent?: boolean;
   isReactionsMuted?: boolean;
   showShoutouts?: boolean;
-  auditoriumColumns?: number;
-  auditoriumRows?: number;
   sectionsCount?: number;
   termsAndConditions: TermOfService[];
   userStatuses?: UserStatus[];

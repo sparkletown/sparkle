@@ -17,3 +17,5 @@ export const SECTION_PREVIEW_USER_DISPLAY_COUNT = 14;
 // for this so that it can be changed later and also so that it shares the
 // same code with auditoriums.
 export const STATIC_SECTION_ID = "1";
+
+export const SECTION_CAPACITY = 225;
