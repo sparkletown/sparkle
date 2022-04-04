@@ -2,19 +2,10 @@ import firebase from "firebase/compat/app";
 
 import { ProfileLink, UserLocation } from "types/User";
 
-import { QuestionsFormData } from "pages/Account/ProfileQuestions";
 import { RegisterData } from "pages/auth/RegisterForm/RegisterForm";
 
 import { CodeOfConductFormData } from "./CodeOfConduct";
 import { ProfileFormData } from "./Profile";
-
-type KidsModeUpdateData = {
-  kidsMode: boolean;
-};
-
-type AnonModeUpdateData = {
-  anonMode: boolean;
-};
 
 type MirrorVideoUpdateData = {
   mirrorVideo: boolean;
@@ -26,11 +17,8 @@ export const updateUserProfile = (
     | { profileLinks: ProfileLink[] }
     | CodeOfConductFormData
     | ProfileFormData
-    | QuestionsFormData
-    | AnonModeUpdateData
-    | KidsModeUpdateData
     | MirrorVideoUpdateData
-    | ((ProfileFormData & QuestionsFormData) | UserLocation)
+    | (ProfileFormData | UserLocation)
 ) => {
   const firestore = firebase.firestore();
   const doc = `users/${userId}`;

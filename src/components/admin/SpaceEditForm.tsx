@@ -19,6 +19,7 @@ import {
   COMMON_NAME_MAX_CHAR_COUNT,
   DEFAULT_EMBED_URL,
   DEFAULT_REACTIONS_MUTED,
+  DEFAULT_SECTION_CAPACITY,
   DEFAULT_SECTIONS_AMOUNT,
   DEFAULT_SHOW_CONTENT,
   DEFAULT_SHOW_REACTIONS,
@@ -43,6 +44,7 @@ import { createSlug } from "api/admin";
 import { updateVenueNG } from "api/venue";
 import { World } from "api/world";
 
+import { SpaceId, WorldId } from "types/id";
 import { AnyVenue } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
 
@@ -239,7 +241,9 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
 
   const numberOfSectionsSubtext = `${
     values.numberOfSections || 0
-  } Sections * 200 Seats = ${200 * values.numberOfSections} (Capacity)`;
+  } Sections * ${DEFAULT_SECTION_CAPACITY} Seats = ${
+    DEFAULT_SECTION_CAPACITY * values.numberOfSections
+  } (Capacity)`;
 
   return (
     <div className="SpaceEditForm">
@@ -348,10 +352,10 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
               <BackgroundSelect
                 isLoadingBackgrounds={isLoadingBackgrounds}
                 mapBackgrounds={mapBackgrounds}
-                venueName={space.name}
+                spaceName={space.name}
                 spaceSlug={space.slug}
-                worldId={space.worldId}
-                venueId={space.id}
+                worldId={space.worldId as WorldId}
+                spaceId={space.id as SpaceId}
                 register={register}
                 imageUrl={space.mapBackgroundImageUrl}
               />

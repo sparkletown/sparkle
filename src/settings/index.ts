@@ -76,15 +76,15 @@ export const IFRAME_ALLOW_ADVANCED = `${IFRAME_ALLOW} camera; microphone;`;
 // These templates use zoomUrl (they should remain alphabetically sorted)
 // @debt Refactor this constant into types/venues + create an actual custom type grouping for it
 // @debt unify this with ZOOM_URL_TEMPLATES in functions/venue.js + share the same code between frontend/backend
-export const ZOOM_URL_TEMPLATES = [
+export const ZOOM_URL_TEMPLATES = Object.freeze([
   VenueTemplate.artcar,
   VenueTemplate.zoomroom,
-];
+]);
 
 // These templates use iframeUrl (they should remain alphabetically sorted)
 // @debt Refactor this constant into types/venues + create an actual custom type grouping for it
 // @debt unify this with IFRAME_TEMPLATES in functions/venue.js + share the same code between frontend/backend
-export const IFRAME_TEMPLATES = [
+export const IFRAME_TEMPLATES = Object.freeze([
   VenueTemplate.artpiece,
   VenueTemplate.audience,
   VenueTemplate.auditorium,
@@ -94,12 +94,12 @@ export const IFRAME_TEMPLATES = [
   VenueTemplate.performancevenue,
   VenueTemplate.posterpage,
   VenueTemplate.viewingwindow,
-];
+]);
 
-export const EMBEDDABLE_CONTENT_TEMPLATES = [
+export const EMBEDDABLE_CONTENT_TEMPLATES = Object.freeze([
   ...IFRAME_TEMPLATES,
   ...ZOOM_URL_TEMPLATES,
-];
+]);
 
 // @debt Refactor this constant into types/venues + create an actual custom type grouping for it
 export const BACKGROUND_IMG_TEMPLATES = [

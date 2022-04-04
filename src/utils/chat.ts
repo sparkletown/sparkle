@@ -44,8 +44,7 @@ export const buildBaseMessage = <T extends BaseChatMessage>(
 
 export const pickDisplayUserFromUser = (
   user: WithId<User>
-): WithId<DisplayUser> =>
-  pick(user, "id", "partyName", "pictureUrl", "anonMode");
+): WithId<DisplayUser> => pick(user, "id", "partyName", "pictureUrl");
 
 export const isNewSchemaMessage = <T extends BaseChatMessage>(
   message: WithId<T>

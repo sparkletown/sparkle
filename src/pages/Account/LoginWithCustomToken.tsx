@@ -14,8 +14,6 @@ import { LoadingPage } from "components/molecules/LoadingPage";
 
 import sparkleHeaderImage from "assets/images/sparkle-header.png";
 
-import "./Account.scss";
-
 export interface LoginCustomCodeProps {}
 
 export const LoginWithCustomToken: React.FC<LoginCustomCodeProps> = () => {

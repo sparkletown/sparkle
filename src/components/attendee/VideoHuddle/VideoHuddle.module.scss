@@ -57,6 +57,15 @@ $-control-size: 32px;
   overflow-x: scroll;
   overflow-y: hidden;
   display: flex;
-  justify-content: center;
   gap: space.gap(1);
+
+  // Pseudoelements are quirky that if there is a standard flex/grid solution we should use it.
+  // Currently there is a solution that isn't fully supported in all browsers that we might try in the future.
+  // @see https://stackoverflow.com/a/33455342
+  // @see https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Basic_Concepts_of_Flexbox#Flex_item_considerations
+  &::before,
+  &::after {
+    content: "";
+    flex: 1;
+  }
 }
