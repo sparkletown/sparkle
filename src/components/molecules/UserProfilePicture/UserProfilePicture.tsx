@@ -22,10 +22,6 @@ export interface UserProfilePictureProp extends ContainerClassName {
   isAudioEffectDisabled?: boolean;
   reactionPosition?: "left" | "right";
   showStatus?: boolean;
-  /**
-   * @deprecated Note: This feature is currently disabled.
-   */
-  miniAvatars?: boolean;
   size?: UserAvatarSize;
   isVideoEnabled?: boolean;
 }
@@ -47,18 +43,6 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
     () => openUserProfileModal(user?.id as UserId),
     [openUserProfileModal, user?.id]
   );
-
-  // @debt useImage tries to load the images twice, which is made worse by us not caching images retrieved from firebase,
-  //  it's only used to handle the edgecase of showing a default when images are missing. Can we live without it?
-  // const { loadedImageUrl: pictureUrl } = useImage({
-  //   src: avatarUrl({ user, miniAvatars }),
-  //   fallbackSrc: () => randomAvatarUrl(user.id),
-  // });
-
-  // @debt For some reason when using this the image seems to be re-fetched every time the component is re-rendered
-  //   even though it seemed to be working fine earlier)
-  // const pictureUrl = getAvatarUrl({ user, miniAvatars });
-  //
 
   const containerClasses = classNames("UserProfilePicture", {
     "UserProfilePicture--only-icon": !isVideoEnabled,
