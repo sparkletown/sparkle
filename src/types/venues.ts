@@ -66,10 +66,6 @@ export interface Venue_v2_Base {
     icon: string;
   };
   owners?: string[];
-  theme?: {
-    primaryColor: string;
-    backgroundColor?: string;
-  };
   id: string;
   rooms?: Room[];
   mapBackgroundImageUrl?: string;
