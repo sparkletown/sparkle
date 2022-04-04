@@ -18,35 +18,6 @@ export enum VenueTemplate {
   meetingroom = "meetingroom",
   embeddable = "embeddable",
   /**
-   * @deprecated Legacy template removed, perhaps try VenueTemplate.auditorium instead?
-   */
-  audience = "audience",
-  /**
-   * @deprecated Legacy template removed
-   */
-  artcar = "artcar",
-  /**
-   * @deprecated Legacy template removed
-   */
-  friendship = "friendship",
-  /**
-   * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
-   */
-  themecamp = "themecamp",
-  /**
-   * @deprecated Legacy template removed
-   */
-  performancevenue = "performancevenue",
-  /**
-   * @deprecated Legacy template removed
-   */
-  avatargrid = "avatargrid",
-  /**
-   * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
-   */
-  preplaya = "preplaya",
-
-  /**
    * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
    */
   playa = "playa",

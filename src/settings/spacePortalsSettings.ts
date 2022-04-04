@@ -52,14 +52,7 @@ const LEGACY_SPACE_INFO_ITEM: SpaceInfoItem = {
 Object.freeze(LEGACY_SPACE_INFO_ITEM);
 
 export const SPACE_INFO_MAP: Record<VenueTemplate, SpaceInfoItem> = {
-  [VenueTemplate.friendship]: LEGACY_SPACE_INFO_ITEM,
-  [VenueTemplate.themecamp]: LEGACY_SPACE_INFO_ITEM,
-  [VenueTemplate.audience]: LEGACY_SPACE_INFO_ITEM,
-  [VenueTemplate.artcar]: LEGACY_SPACE_INFO_ITEM,
-  [VenueTemplate.performancevenue]: LEGACY_SPACE_INFO_ITEM,
-  [VenueTemplate.avatargrid]: LEGACY_SPACE_INFO_ITEM,
   [VenueTemplate.playa]: LEGACY_SPACE_INFO_ITEM,
-  [VenueTemplate.preplaya]: LEGACY_SPACE_INFO_ITEM,
   [VenueTemplate.posterhall]: {
     text: "Poster hall",
     poster: "",

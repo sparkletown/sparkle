@@ -28,7 +28,6 @@ export type GenericVenueTemplates = Exclude<
   | VenueTemplate.animatemap
   | VenueTemplate.partymap
   | VenueTemplate.posterpage
-  | VenueTemplate.themecamp
   | VenueTemplate.auditorium
   | VenueTemplate.viewingwindow
   | VenueTemplate.experiment
@@ -175,7 +174,7 @@ export interface AnimateMapVenue extends BaseVenue {
 // @debt we probably don't want to include id directly here.. that's what WithId is for
 export interface PartyMapVenue extends BaseVenue {
   id: string;
-  template: VenueTemplate.partymap | VenueTemplate.themecamp;
+  template: VenueTemplate.partymap;
 
   // @debt The following keys are marked as required on this type, but i'm not sure they should be:
   //   url, name (we seem to be using icon to hold the URL of the image)

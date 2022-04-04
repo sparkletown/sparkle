@@ -106,14 +106,7 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       template = <ExperimentalSpace venue={venue} />;
       break;
 
-    case VenueTemplate.friendship:
-    case VenueTemplate.themecamp:
-    case VenueTemplate.audience:
-    case VenueTemplate.artcar:
-    case VenueTemplate.performancevenue:
-    case VenueTemplate.avatargrid:
     case VenueTemplate.playa:
-    case VenueTemplate.preplaya:
       template = (
         <div>
           Legacy Template: ${venue.template} has been removed from the platform
