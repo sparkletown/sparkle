@@ -15,8 +15,6 @@ import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useSelector } from "hooks/useSelector";
 import { useWorldBySlug } from "hooks/worlds/useWorldBySlug";
 
-import { PortalShowcase } from "components/organisms/PortalShowcase";
-
 import { Loading } from "components/molecules/Loading";
 
 import * as TW from "./SpaceCreatePage.tailwind";
@@ -57,9 +55,6 @@ export const SpaceCreatePage: React.FC = () => {
               ) : (
                 <Loading />
               )}
-            </div>
-            <div className={TW.preview}>
-              <PortalShowcase />
             </div>
           </div>
         </div>
