@@ -113,24 +113,14 @@ export interface BaseVenue {
   playaIcon?: PlayaIcon;
   playaIcon2?: PlayaIcon;
   samlAuthProviderId?: string;
-  showAddress?: boolean;
-  showGiftATicket?: boolean;
   columns?: number;
   rows?: number;
-  nightCycle?: boolean;
-  hasPaidEvents?: boolean;
-  profileAvatars?: boolean;
   hideVideo?: boolean;
   showGrid?: boolean;
   roomVisibility?: RoomVisibility;
   rooms?: Room[];
-  width: number;
-  height: number;
-  subtitle?: string;
-  showLearnMoreLink?: boolean;
   start_utc_seconds?: number;
   end_utc_seconds?: number;
-  ticketUrl?: string;
   showReactions?: boolean;
   showContent?: boolean;
   isReactionsMuted?: boolean;
@@ -148,9 +138,6 @@ export interface BaseVenue {
   recentUsersSampleSize?: number;
   updatedAt?: number;
   worldId: string;
-  enableJukebox?: boolean;
-  requiresDateOfBirth?: boolean;
-  showBadges?: boolean;
   backgroundImageUrl?: string;
 }
 
@@ -200,7 +187,6 @@ export interface JazzbarVenue extends BaseVenue {
   host: {
     icon: string;
   };
-  enableJukebox?: boolean;
 }
 
 export interface ArtPieceVenue extends BaseVenue {
