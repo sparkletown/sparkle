@@ -7,10 +7,7 @@ export enum AlgoliaSearchIndex {
 }
 
 export type AlgoliaUsersSearchResult = SearchResponse<
-  Pick<
-    UserWithLocation,
-    "partyName" | "pictureUrl" | "anonMode" | "enteredVenueIds"
-  >
+  Pick<UserWithLocation, "partyName" | "pictureUrl" | "enteredVenueIds">
 >;
 
 export type AlgoliaSearchResult = Record<

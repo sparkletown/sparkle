@@ -14,7 +14,6 @@ export interface ProfileLink {
 export interface Profile {
   partyName?: string;
   pictureUrl?: string;
-  anonMode?: boolean;
   mirrorVideo?: boolean;
   status?: string;
   myPersonalizedSchedule?: MyPersonalizedSchedule;
@@ -36,7 +35,7 @@ export interface User extends Profile {
   enteredWorldIds?: never;
 }
 
-export type DisplayUser = Pick<User, "partyName" | "pictureUrl" | "anonMode">;
+export type DisplayUser = Pick<User, "partyName" | "pictureUrl">;
 
 export type GridSeatedUser = DisplayUser & {
   position: Partial<SeatPosition>;

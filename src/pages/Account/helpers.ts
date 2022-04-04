@@ -7,10 +7,6 @@ import { RegisterData } from "pages/auth/RegisterForm/RegisterForm";
 import { CodeOfConductFormData } from "./CodeOfConduct";
 import { ProfileFormData } from "./Profile";
 
-type AnonModeUpdateData = {
-  anonMode: boolean;
-};
-
 type MirrorVideoUpdateData = {
   mirrorVideo: boolean;
 };
@@ -21,7 +17,6 @@ export const updateUserProfile = (
     | { profileLinks: ProfileLink[] }
     | CodeOfConductFormData
     | ProfileFormData
-    | AnonModeUpdateData
     | MirrorVideoUpdateData
     | (ProfileFormData | UserLocation)
 ) => {

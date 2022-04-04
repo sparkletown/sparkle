@@ -83,10 +83,7 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ onClose }) => {
 
   const foundUsers = useMemo<
     Hit<
-      Pick<
-        UserWithLocation,
-        "partyName" | "pictureUrl" | "anonMode" | "enteredVenueIds"
-      >
+      Pick<UserWithLocation, "partyName" | "pictureUrl" | "enteredVenueIds">
     >[]
   >(() => {
     const usersResults = algoliaSearchState?.value?.[AlgoliaSearchIndex.USERS];
