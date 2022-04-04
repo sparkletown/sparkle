@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from "react";
+import React, { lazy } from "react";
 import { useCss } from "react-use";
 import classNames from "classnames";
 
@@ -26,8 +26,6 @@ import { PartyMap } from "components/templates/PartyMap";
 import { PosterHall } from "components/templates/PosterHall";
 import { PosterPage } from "components/templates/PosterPage";
 import { ScreeningRoom } from "components/templates/ScreeningRoom";
-
-import { LoadingPage } from "components/molecules/LoadingPage";
 
 import styles from "./TemplateWrapper.module.scss";
 
@@ -59,10 +57,10 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
     case VenueTemplate.animatemap:
       // NOTE: this is a must check for not spilling over global errors from animatemap onto other templates when it is unused
       template = isWebGl2Enabled() ? (
-        <Suspense fallback={LoadingPage}>
-          <AnimateMap space={venue} />
-        </Suspense>
+        // <Suspense fallback={LoadingPage}>
+        <AnimateMap space={venue} />
       ) : (
+        // </Suspense>
         <AnimateMapErrorPrompt variant="unsupported" />
       );
       break;
