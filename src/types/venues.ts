@@ -149,27 +149,6 @@ export interface AnimateMapVenue extends BaseVenue {
 export interface PartyMapVenue extends BaseVenue {
   id: string;
   template: VenueTemplate.partymap;
-
-  // @debt The following keys are marked as required on this type, but i'm not sure they should be:
-  //   url, name (we seem to be using icon to hold the URL of the image)
-  host?: {
-    url: string;
-    icon: string;
-    name: string;
-  };
-
-  description?: {
-    text: string;
-    program_url?: string;
-  };
-
-  start_utc_seconds?: number;
-  duration_hours?: number;
-  party_name?: string;
-  map_viewbox?: string;
-  password?: string;
-  admin_password?: string;
-  rooms?: Room[];
 }
 
 export interface JazzbarVenue extends BaseVenue {
