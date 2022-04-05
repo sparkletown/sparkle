@@ -426,18 +426,18 @@ export const upsertRoom = async (
   });
 };
 
-export const deleteRoom = async (venueId: string, room: Room) => {
+export const deletePortal = async (spaceId: string, portal: Room) => {
   return await httpsCallable(
     FIREBASE.functions,
-    "venue-deleteRoom"
+    "venue-deletePortal"
   )({
-    venueId,
-    room,
+    spaceId,
+    portal,
   }).catch((e) => {
     Bugsnag.notify(e, (event) => {
-      event.addMetadata("api/admin::deleteRoom", {
-        venueId,
-        room,
+      event.addMetadata("api/admin::deletePortal", {
+        spaceId,
+        portal,
       });
     });
     throw e;

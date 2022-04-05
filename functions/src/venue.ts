@@ -598,36 +598,36 @@ export const upsertRoom = functions.https.onCall(async (data, context) => {
   admin.firestore().collection("venues").doc(venueId).update({ rooms });
 });
 
-export const deleteRoom = functions.https.onCall(async (data, context) => {
+export const deletePortal = functions.https.onCall(async (data, context) => {
   assertValidAuth(context);
 
-  const { venueId, room } = data;
+  const { spaceId, portal } = data;
 
-  const space = await getSpaceById(venueId);
+  const space = await getSpaceById(spaceId);
 
   await throwErrorIfNeitherWorldNorSpaceOwner({
-    spaceId: venueId,
+    spaceId,
     worldId: space.worldId,
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     userId: context.auth.token.user_id,
   });
 
-  const doc = await admin.firestore().collection("venues").doc(venueId).get();
+  const doc = await admin.firestore().collection("venues").doc(spaceId).get();
 
   if (!doc || !doc.exists) {
-    throw new HttpsError("not-found", `Venue ${venueId} not found`);
+    throw new HttpsError("not-found", `Venue ${spaceId} not found`);
   }
   const docData = doc.data();
   if (!docData) {
     throw new HttpsError("internal", `Data not found`);
   }
 
-  const rooms = docData.rooms;
+  const portals = docData.rooms;
 
   //if the room exists under the same name, find it
-  const index = rooms.findIndex(
-    (val: { title: string }) => val.title === room.title
+  const index = portals.findIndex(
+    (val: { title: string }) => val.title === portal.title
   );
 
   if (index === -1) {
@@ -636,7 +636,7 @@ export const deleteRoom = functions.https.onCall(async (data, context) => {
     docData.rooms.splice(index, 1);
   }
 
-  admin.firestore().collection("venues").doc(venueId).update(docData);
+  admin.firestore().collection("venues").doc(spaceId).update(docData);
 });
 
 // @debt this is almost a line for line duplicate of exports.updateVenue, we should de-duplicate/DRY these up
