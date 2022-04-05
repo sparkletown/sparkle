@@ -9,9 +9,9 @@ import { Login } from "pages/auth/Login";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
-import { VenueEntrancePage as _VenueEntrancePage } from "./VenueEntrancePage";
+import { SpaceEntrancePage as _SpaceEntrancePage } from "./SpaceEntrancePage";
 
-export const VenueEntrancePage = compose(
+export const SpaceEntrancePage = compose(
   withAuth,
   withFallback(["auth"], Login),
   withProfile,
@@ -20,5 +20,5 @@ export const VenueEntrancePage = compose(
     ["isAuthLoaded", "isSpacesLoaded", "isWorldLoaded"],
     LoadingPage
   ),
-  withFallback(["spaceId", "space", "spaceSlug", "world"], NotFound)
-)(_VenueEntrancePage);
+  withFallback(["spaceId", "spaceSlug", "world"], NotFound)
+)(_SpaceEntrancePage);

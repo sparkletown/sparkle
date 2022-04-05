@@ -61,11 +61,13 @@ const VenueLandingPage = lazy(() =>
   )
 );
 
-const VenueEntrancePage = lazy(() =>
-  tracePromise("AppRouter::lazy-import::VenueEntrancePage", () =>
-    import("pages/VenueEntrancePage").then(({ VenueEntrancePage }) => ({
-      default: VenueEntrancePage,
-    }))
+const SpaceEntrancePage = lazy(() =>
+  tracePromise("AppRouter::lazy-import::SpaceEntrancePage", () =>
+    import("components/attendee/SpaceEntrancePage").then(
+      ({ SpaceEntrancePage }) => ({
+        default: SpaceEntrancePage,
+      })
+    )
   )
 );
 
@@ -187,7 +189,7 @@ export const AppRouter: React.FC = () => (
           <LoginRestricted>
             <RelatedVenuesProvider>
               <AnalyticsCheck>
-                <VenueEntrancePage />
+                <SpaceEntrancePage />
               </AnalyticsCheck>
             </RelatedVenuesProvider>
           </LoginRestricted>

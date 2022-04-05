@@ -10,7 +10,7 @@ import { differenceInYears, parseISO } from "date-fns";
 import firebase from "firebase/compat/app";
 
 import {
-  ACCOUNT_PROFILE_VENUE_PARAM_URL,
+  ACCOUNT_PROFILE_SPACE_PARAM_URL,
   DEFAULT_REQUIRES_DOB,
   STRING_SPACE,
 } from "settings";
@@ -173,7 +173,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
       postRegisterCheck(auth, data);
 
       const profileUrl = generateUrl({
-        route: ACCOUNT_PROFILE_VENUE_PARAM_URL,
+        route: ACCOUNT_PROFILE_SPACE_PARAM_URL,
         required: ["worldSlug", "spaceSlug"],
         params: { worldSlug, spaceSlug },
       });
