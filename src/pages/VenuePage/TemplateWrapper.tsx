@@ -19,7 +19,7 @@ import { ConversationSpace } from "components/templates/ConversationSpace";
 import { Embeddable } from "components/templates/Embeddable";
 import { ExperimentalSpace } from "components/templates/ExperimentalSpace";
 import { ExternalRoom } from "components/templates/ExternalRoom";
-import { JazzBar } from "components/templates/Jazzbar/JazzBar";
+import { JazzBar } from "components/templates/Jazzbar";
 import { MeetingRoom } from "components/templates/MeetingRoom";
 import { PartyMap } from "components/templates/PartyMap";
 import { PosterHall } from "components/templates/PosterHall";
@@ -106,14 +106,7 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       template = <ExperimentalSpace venue={venue} />;
       break;
 
-    case VenueTemplate.friendship:
-    case VenueTemplate.themecamp:
-    case VenueTemplate.audience:
-    case VenueTemplate.artcar:
-    case VenueTemplate.performancevenue:
-    case VenueTemplate.avatargrid:
     case VenueTemplate.playa:
-    case VenueTemplate.preplaya:
       template = (
         <div>
           Legacy Template: ${venue.template} has been removed from the platform

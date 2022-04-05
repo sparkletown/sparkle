@@ -83,12 +83,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
       const status = errorStatus(error);
       const message = errorMessage(error);
 
-      if (status === 404) {
-        setError("email", {
-          type: "validation",
-          message: `Email ${data.email} does not have a ticket; get your ticket at ${space.ticketUrl}`,
-        });
-      } else if (status >= 500) {
+      if (status >= 500) {
         setError("email", {
           type: "validation",
           message: `Error checking ticket: ${message}`,
