@@ -8,13 +8,6 @@
 $-z-index--ui: layer.level(layer.$z-index--space);
 $-z-index--popover: layer.level($-z-index--ui);
 
-@font-face {
-  font-family: "Sparkle";
-  font-style: normal;
-  font-weight: 400;
-  src: url("/assets/fonts/ABCArizonaPlusVariable-Trial.woff2") format("woff2");
-}
-
 .html {
   overflow-y: scroll;
   @include font.core;

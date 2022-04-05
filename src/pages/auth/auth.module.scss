@@ -11,7 +11,7 @@ $-social-icon-size: 32px;
   width: 100vw;
   display: grid;
   place-content: center;
-  color: theme.$c-default-text;
+  color: theme.$c-login-page--fg;
   background-color: theme.$c-login-page--bg;
 
   &,

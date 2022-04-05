@@ -1,3 +1,6 @@
+import React from "react";
+
+// @debt Any component that has styles in it should be moved outside of the shared components directory
 export const CenterContent: React.FC<React.HTMLProps<HTMLDivElement>> = ({
   children,
   className,

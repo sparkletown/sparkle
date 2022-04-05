@@ -30,6 +30,7 @@ interface SpentTimeProps {
   userId: UserId;
 }
 
+// @debt Any component that has styles in it should be moved outside of the shared components directory
 export const SpentTime: React.FC<SpentTimeProps> = ({ userId }) => {
   const { isLoaded: isWorldLoaded, spaceId } = useWorldAndSpaceByParams();
   const [visits, setVisits] = useState<WithId<UserVisit>[]>([]);
