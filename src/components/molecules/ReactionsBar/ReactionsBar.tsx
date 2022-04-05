@@ -23,6 +23,9 @@ import { Reaction } from "components/atoms/Reaction";
 
 import "./ReactionsBar.scss";
 
+// @see https://github.com/sparkletown/internal-sparkle-issues/issues/1627
+const MAX_SHOUTOUT_LENGTH = 30;
+
 interface ChatOutDataType {
   text: string;
 }
@@ -82,8 +85,8 @@ export const ReactionsBar: React.FC<ReactionsBarProps> = ({
     [reactions, sendReaction]
   );
 
-  const { register, handleSubmit, reset } = useForm<ChatOutDataType>({
-    mode: "onSubmit",
+  const { register, handleSubmit, reset, errors } = useForm<ChatOutDataType>({
+    mode: "onChange",
   });
 
   // @debt This should probably be all rolled up into a single canonical component.
@@ -112,6 +115,12 @@ export const ReactionsBar: React.FC<ReactionsBarProps> = ({
     }
   }, [isShoutSent]);
 
+  const isTextTooLong = errors?.text?.type === "maxLength";
+  const inputClasses = classNames({
+    text: true,
+    "input-error": isTextTooLong,
+  });
+
   return (
     <div className="ReactionsBar">
       <div className="ReactionsBar__reactions-container">
@@ -139,9 +148,12 @@ export const ReactionsBar: React.FC<ReactionsBarProps> = ({
           <form onSubmit={handleSubmit(onSubmit)} className="shout-form">
             <input
               name="text"
-              className="text"
+              className={inputClasses}
               placeholder="Shout out to the crowd"
-              ref={register({ required: true })}
+              ref={register({
+                required: true,
+                maxLength: MAX_SHOUTOUT_LENGTH,
+              })}
               disabled={isShoutSent}
               autoComplete="off"
             />
@@ -150,7 +162,7 @@ export const ReactionsBar: React.FC<ReactionsBarProps> = ({
               type="submit"
               id={`send-shout-out`}
               value={isShoutSent ? "Sent!" : "Send"}
-              disabled={isShoutSent}
+              disabled={isShoutSent || isTextTooLong}
             />
           </form>
         </div>
