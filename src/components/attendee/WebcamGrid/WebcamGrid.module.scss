@@ -50,6 +50,11 @@
   cursor: pointer;
 }
 
+.row {
+  display: flex;
+  flex-wrap: wrap;
+}
+
 .loadingMessage {
   display: flex;
   justify-content: center;

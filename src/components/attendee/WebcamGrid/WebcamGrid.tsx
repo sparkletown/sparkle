@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useAsyncFn, useInterval } from "react-use";
+import { useAsync, useAsyncFn, useInterval } from "react-use";
 import { faTimesCircle } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useVideoComms } from "components/attendee/VideoComms/hooks";
@@ -31,6 +31,7 @@ export const WebcamGrid: React.FC<TableGridProps> = ({ space }) => {
     remoteParticipants,
     disconnect,
   } = useVideoComms();
+  console.log("remderomg");
 
   const twilioRoomName = useMemo(() => `webcamgrid-${space.id}`, [space.id]);
 
@@ -78,6 +79,8 @@ export const WebcamGrid: React.FC<TableGridProps> = ({ space }) => {
     [twilioRoomName]
   );
 
+  useAsync(getRoomParticipants, [getRoomParticipants]);
+
   useInterval(async () => await getRoomParticipants(), 10000);
 
   const participantsIds = useMemo(() => value?.data, [value?.data]);
@@ -107,19 +110,17 @@ export const WebcamGrid: React.FC<TableGridProps> = ({ space }) => {
             Leave <FontAwesomeIcon icon={faTimesCircle} />
           </div>
         ) : (
-          <>
+          <div className={styles.row}>
             <div className={styles.joinButton} onClick={joinVideo}>
               Join
             </div>
-            <div>
-              {participantsIds?.map((participantId) => (
-                <WebcamGridAvatar
-                  key={participantId}
-                  userId={participantId as UserId}
-                />
-              ))}
-            </div>
-          </>
+            {participantsIds?.map((participantId) => (
+              <WebcamGridAvatar
+                key={participantId}
+                userId={participantId as UserId}
+              />
+            ))}
+          </div>
         )}
       </div>
     </div>
