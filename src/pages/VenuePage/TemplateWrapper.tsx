@@ -84,7 +84,7 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       break;
 
     case VenueTemplate.embeddable:
-      template = <Embeddable venue={venue} />;
+      template = <Embeddable space={venue as SpaceWithId} />;
       break;
 
     case VenueTemplate.posterhall:

@@ -1,34 +1,25 @@
 import React from "react";
+import { MediaElement } from "components/attendee/MediaElement";
 
-import { IFRAME_ALLOW_ADVANCED } from "settings";
+import { SpaceWithId } from "types/id";
 
-import { EmbeddableVenue } from "types/venues";
+import { SpaceInfoText } from "components/molecules/SpaceInfoText";
 
-import { convertToEmbeddableUrl } from "utils/embeddableUrl";
-
-import { VenueWithOverlay } from "components/atoms/VenueWithOverlay/VenueWithOverlay";
-
-import "./Embeddable.scss";
-
-export interface EmbeddableProps {
-  venue: EmbeddableVenue;
+interface EmbeddableProps {
+  space: SpaceWithId;
 }
-
-export const Embeddable: React.FC<EmbeddableProps> = ({ venue }) => {
-  const { iframeUrl, autoPlay, iframeOptions } = venue;
-
-  if (!iframeUrl) return <p>Error: iframeUrl is missing</p>;
-
+export const Embeddable: React.FC<EmbeddableProps> = ({ space }) => {
   return (
-    <VenueWithOverlay venue={venue} containerClassNames="embeddable">
-      <iframe
-        title="embeddable-iframe"
-        src={convertToEmbeddableUrl({ url: iframeUrl, autoPlay })}
-        className="embeddable__iframe"
-        allow={IFRAME_ALLOW_ADVANCED}
-        allowFullScreen
-        {...iframeOptions}
-      />
-    </VenueWithOverlay>
+    <>
+      {!space.hideVideo && (
+        <MediaElement
+          url={space.iframeUrl}
+          autoPlay={space.autoPlay || false}
+          fullWidth
+        />
+      )}
+
+      <SpaceInfoText space={space} />
+    </>
   );
 };
