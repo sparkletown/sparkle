@@ -49,3 +49,10 @@
   opacity: 0.5;
   cursor: pointer;
 }
+
+.loadingMessage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}

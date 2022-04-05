@@ -7,7 +7,7 @@ import {
   RtcRole,
 } from "./utils/agora";
 import { assertValidAuth } from "./utils/assert";
-import { twilioVideoToken } from "./utils/twilio";
+import { twilioRoomParticipants, twilioVideoToken } from "./utils/twilio";
 import { ROOM_TAXON } from "./taxonomy.js";
 
 // @debt either remove data.identity entirely, or validate that it matches the context.auth.uid
@@ -28,6 +28,27 @@ exports.getTwilioToken = functions.https.onCall((data, context) => {
     token: token.toJwt(),
   };
 });
+
+exports.getTwilioRoomParticipants = functions.https.onCall(
+  async (data, context) => {
+    assertValidAuth(context);
+
+    if (!data.room) {
+      throw new HttpsError(
+        "invalid-argument",
+        `identity or ${ROOM_TAXON.lower} data missing`
+      );
+    }
+
+    const participants = await twilioRoomParticipants(data.room);
+
+    const participantsIds = participants.map(
+      (participant) => participant.identity
+    );
+
+    return participantsIds;
+  }
+);
 
 exports.getAgoraToken = functions.https.onCall((data, context) => {
   assertValidAuth(context);

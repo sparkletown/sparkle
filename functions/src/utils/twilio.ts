@@ -23,3 +23,17 @@ export const twilioVideoToken = (identity: string, room: string) => {
 
   return token;
 };
+
+export const twilioRoomParticipants = async (room: string) => {
+  const client = new twilio.Twilio(
+    TWILIO_CONFIG.api_key,
+    TWILIO_CONFIG.api_secret,
+    { accountSid: TWILIO_CONFIG.account_sid }
+  );
+
+  const participants = await client.video
+    .rooms(room)
+    .participants.list({ status: "connected" });
+
+  return participants;
+};

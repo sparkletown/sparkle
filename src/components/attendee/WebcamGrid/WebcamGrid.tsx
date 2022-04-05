@@ -1,14 +1,20 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useAsyncFn, useInterval } from "react-use";
 import { faTimesCircle } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useVideoComms } from "components/attendee/VideoComms/hooks";
 import { VideoCommsParticipant } from "components/attendee/VideoComms/VideoCommsParticipant";
 
+import { getTwilioRoomParticipants } from "api/video";
+
+import { UserId } from "types/id";
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
 import { useUserId } from "hooks/user/useUserId";
+
+import { WebcamGridAvatar } from "./WebcamGridAvatar";
 
 import styles from "./WebcamGrid.module.scss";
 
@@ -25,6 +31,8 @@ export const WebcamGrid: React.FC<TableGridProps> = ({ space }) => {
     remoteParticipants,
     disconnect,
   } = useVideoComms();
+
+  const twilioRoomName = useMemo(() => `webcamgrid-${space.id}`, [space.id]);
 
   useEffect(() => {
     return () => {
@@ -65,15 +73,24 @@ export const WebcamGrid: React.FC<TableGridProps> = ({ space }) => {
     [remoteParticipants]
   );
 
+  const [{ value }, getRoomParticipants] = useAsyncFn(
+    async () => await getTwilioRoomParticipants(twilioRoomName),
+    [twilioRoomName]
+  );
+
+  useInterval(async () => await getRoomParticipants(), 10000);
+
+  const participantsIds = useMemo(() => value?.data, [value?.data]);
+
   const joinVideo = useCallback(() => {
     joinChannel({
       userId,
-      channelId: `webcamgrid-${space.id}`,
-      enableAudio: true,
-      enableVideo: true,
+      channelId: twilioRoomName,
+      enableAudio: false,
+      enableVideo: false,
     });
     setHasJoined(true);
-  }, [joinChannel, space.id, userId]);
+  }, [joinChannel, twilioRoomName, userId]);
 
   const leaveVideo = useCallback(() => {
     disconnect();
@@ -90,9 +107,19 @@ export const WebcamGrid: React.FC<TableGridProps> = ({ space }) => {
             Leave <FontAwesomeIcon icon={faTimesCircle} />
           </div>
         ) : (
-          <div className={styles.joinButton} onClick={joinVideo}>
-            Join
-          </div>
+          <>
+            <div className={styles.joinButton} onClick={joinVideo}>
+              Join
+            </div>
+            <div>
+              {participantsIds?.map((participantId) => (
+                <WebcamGridAvatar
+                  key={participantId}
+                  userId={participantId as UserId}
+                />
+              ))}
+            </div>
+          </>
         )}
       </div>
     </div>

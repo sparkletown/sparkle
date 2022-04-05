@@ -11,6 +11,11 @@ export interface TwilioRequestVideoTokenProps {
   room: string;
 }
 
+export interface GetTwilioRoomParticipantsProps {
+  room: string;
+}
+export type TwilioRoomParticipantsProps = string[];
+
 export type VideoToken = string;
 type TwilioResponseProps = {
   token: string;
@@ -34,6 +39,22 @@ export const getTwilioVideoToken = async ({
           location: "api/video::getTwilioVideoToken",
           userId,
           roomName,
+        });
+      });
+
+      throw err;
+    });
+
+export const getTwilioRoomParticipants = async (room: string) =>
+  httpsCallable<GetTwilioRoomParticipantsProps, TwilioRoomParticipantsProps>(
+    FIREBASE.functions,
+    "video-getTwilioRoomParticipants"
+  )({ room })
+    .then((res) => res)
+    .catch((err) => {
+      Bugsnag.notify(err, (event) => {
+        event.addMetadata("context", {
+          location: "api/video::getTwilioRoomParticipants",
         });
       });
 

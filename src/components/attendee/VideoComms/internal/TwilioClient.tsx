@@ -247,6 +247,7 @@ export const TwilioClient = (onStateUpdateCallback: StateUpdateCallback) => {
         status = VideoCommsStatus.Connected;
 
         recalculateStatus();
+        return token;
       })
       .catch((error) => {
         status = VideoCommsStatus.Errored;

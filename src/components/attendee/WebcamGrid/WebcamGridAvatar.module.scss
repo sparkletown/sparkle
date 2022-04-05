@@ -1,0 +1,41 @@
+@use "scss/attendee/font";
+@use "scss/attendee/layout";
+@use "scss/attendee/space";
+@use "scss/attendee/theme";
+@use "scss/attendee/effects/sparkle";
+
+.container {
+  position: relative;
+}
+
+.avatarContainer {
+  display: flex;
+  justify-content: center;
+  position: relative;
+
+  overflow: hidden;
+  height: layout.$h-video-chat;
+  margin: space.empty(0.5);
+  border: 1px solid theme.$sparkle--border;
+  min-width: 186px;
+
+  @include sparkle.panel--normal;
+
+  img {
+    max-width: 64px;
+    max-height: 64px;
+    margin: auto;
+  }
+}
+
+.userName {
+  position: absolute;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  color: theme.$c-light-text-on-dark;
+  padding: space.$s2 space.$xs space.$xs;
+  border-radius: 3px;
+  font-size: font.$size--sm;
+  display: block;
+  margin-left: space.empty(0.5);
+}
