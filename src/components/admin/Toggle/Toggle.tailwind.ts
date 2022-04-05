@@ -1,5 +1,5 @@
 // noinspection JSUnusedGlobalSymbols
-export const trueTrack = "block bg-indigo-600 w-12 h-6 rounded-full";
+export const trueTrack = "block bg-sparkle w-12 h-6 rounded-full";
 
 // noinspection JSUnusedGlobalSymbols
 export const falseTrack = "block bg-gray-200 w-12 h-6 rounded-full";
