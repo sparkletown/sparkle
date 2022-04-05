@@ -5,8 +5,6 @@ import { addDays } from "date-fns";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 
-import { DEFAULT_VENUE_BANNER_COLOR } from "settings";
-
 import {
   eventTimeAndOrderComparator,
   isEventWithinDateAndNotFinished,
@@ -15,7 +13,6 @@ import { range } from "utils/range";
 import { formatDateRelativeToNow } from "utils/time";
 
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
-import { useValidImage } from "hooks/useCheckImage";
 import { useUser } from "hooks/useUser";
 import useVenueScheduleEvents from "hooks/useVenueScheduleEvents";
 
@@ -92,13 +89,6 @@ export const EmergencyViewPage: React.FC = () => {
       })
       .filter((day) => !!day);
   }, [dayDifference, liveAndFutureEvents, firstScheduleDate]);
-
-  // TODO-redesign use it or delete it
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [validBannerImageUrl] = useValidImage(
-    space?.config?.landingPageConfig.bannerImageUrl,
-    DEFAULT_VENUE_BANNER_COLOR
-  );
 
   const containerClasses = classNames("EmergencyView");
 

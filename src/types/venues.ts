@@ -294,7 +294,6 @@ export interface VenueLandingPageConfig {
   subtitle?: string;
   description?: string;
   presentation: string[];
-  bannerImageUrl?: string;
   checkList: string[];
   iframeUrl?: string;
   joinButtonText?: string;
