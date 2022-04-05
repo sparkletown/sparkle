@@ -50,11 +50,14 @@ export interface EventInput {
 }
 
 type ImageFileKeys =
-  | "bannerImageFile"
+  | "backgroundImageFile"
   | "logoImageFile"
   | "mapBackgroundImageFile";
 
-type ImageUrlKeys = "bannerImageUrl" | "logoImageUrl" | "mapBackgroundImageUrl";
+type ImageUrlKeys =
+  | "backgroundImageUrl"
+  | "logoImageUrl"
+  | "mapBackgroundImageUrl";
 
 type RoomImageFileKeys = "image_file";
 type RoomImageUrlKeys = "image_url";
@@ -66,8 +69,8 @@ export interface VenueInput_v2 extends WithId<VenueAdvancedConfig> {
   slug: SpaceSlug;
   description?: string;
   subtitle?: string;
-  bannerImageFile?: FileList;
-  bannerImageUrl?: string;
+  backgroundImageFile?: FileList;
+  backgroundImageUrl?: string;
   logoImageFile?: FileList;
   logoImageUrl?: string;
   rooms?: Room[];
@@ -139,8 +142,8 @@ const createFirestoreVenueInputWithoutId_v2 = async (
       urlKey: "logoImageUrl",
     },
     {
-      fileKey: "bannerImageFile",
-      urlKey: "bannerImageUrl",
+      fileKey: "backgroundImageFile",
+      urlKey: "backgroundImageUrl",
     },
     {
       fileKey: "mapBackgroundImageFile",
