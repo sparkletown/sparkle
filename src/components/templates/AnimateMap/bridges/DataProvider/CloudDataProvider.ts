@@ -15,19 +15,22 @@ import { User } from "types/User";
 import { WithId } from "utils/id";
 import { getFirebaseStorageResizedImage } from "utils/image";
 
+import { CommonInterface, CommonLinker } from "../../../CommonInterface";
+import {
+  DataProvider,
+  DataProviderEvent,
+  PlayerDataProvider,
+  UsersDataProvider,
+} from "../../../DataProvider";
+import { EventProvider, EventType } from "../../../EventProvider";
+import {
+  GameServerBots,
+  GameServerProvider,
+  getIntByHash,
+} from "../../../GameServerProvider";
+import { playerModel } from "../../../GameStructures";
+import { StorageProvider } from "../../../StorageProvider";
 import { RoomWithFullData } from "../CloudDataProviderWrapper";
-import { DataProvider } from "../DataProvider";
-import EventProvider, { EventType } from "../EventProvider/EventProvider";
-
-import { CommonInterface, CommonLinker } from "./Contructor/CommonInterface";
-import { FirebaseDataProvider } from "./Contructor/Firebase/FirebaseDataProvider";
-import { PlayerIOBots } from "./Contructor/PlayerIO/PlayerIOBots";
-import { PlayerIODataProvider } from "./Contructor/PlayerIO/PlayerIODataProvider";
-import { getIntByHash } from "./Contructor/PlayerIO/utils/getIntByHash";
-import { DataProviderEvent } from "./Providers/DataProviderEvent";
-import { PlayerDataProvider } from "./Providers/PlayerDataProvider";
-import { UsersDataProvider } from "./Providers/UsersDataProvider";
-import playerModel from "./Structures/PlayerModel";
 
 interface TEMPORARY_USERS_TYPE_REPLACEMENT {
   isRecentWorldUsersLoaded: boolean;
@@ -66,7 +69,7 @@ export class CloudDataProvider
 
     this.settings = { ...settings };
 
-    this._testBots = new PlayerIOBots(
+    this._testBots = new GameServerBots(
       this,
       this.settings.playerioGameId,
       this.settings.playerioAdvancedMode
@@ -78,13 +81,13 @@ export class CloudDataProvider
     playerModel.data.id = this.settings.playerId;
 
     this.commonInterface = new CommonLinker(
-      new PlayerIODataProvider(
+      new GameServerProvider(
         this,
         this.settings.playerioGameId,
         this.settings.playerId,
         this.settings.reInitOnError
       ),
-      new FirebaseDataProvider(this.settings.firebase)
+      new StorageProvider(this.settings.firebase)
     );
     this.player = new PlayerDataProvider(
       this.settings.playerId,

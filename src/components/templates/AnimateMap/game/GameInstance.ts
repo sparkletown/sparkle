@@ -6,29 +6,21 @@ import {
   Renderer,
   settings,
 } from "pixi.js";
-import { Store } from "redux";
-import { subscribeActionAfter } from "redux-subscribe-action";
-
-import {
-  AnimateMapActionTypes,
-  setAnimateMapEnvironmentSoundAction,
-  setAnimateMapFirstEntrance,
-  setAnimateMapUsers,
-} from "store/actions/AnimateMap";
-import {
-  AnimateMapState,
-  ReplicatedFirebarrel,
-  ReplicatedUser,
-  ReplicatedVenue,
-} from "store/reducers/AnimateMap";
 
 import { Point } from "types/utility";
 
-import { CloudDataProvider } from "../bridges/DataProvider/CloudDataProvider";
-import { DataProviderEvent } from "../bridges/DataProvider/Providers/DataProviderEvent";
-import EventProvider, {
-  EventType,
-} from "../bridges/EventProvider/EventProvider";
+import { DataProvider, DataProviderEvent } from "../../DataProvider";
+import { EventProvider, EventType } from "../../EventProvider";
+import {
+  AnimateMapActionTypes,
+  ReplicatedFirebarrel,
+  ReplicatedUser,
+  ReplicatedVenue,
+  setAnimateMapEnvironmentSoundAction,
+  subscribeActionAfter,
+} from "../../GameInstanceCommonInterfaces";
+import { GameInstanceInterface } from "../../GameInstanceInterface";
+import { GameInstanceProvider } from "../../GameInstanceProvider";
 import { GameConfig } from "../configs/GameConfig";
 
 import { TimeoutCommand } from "./commands/TimeoutCommand";
@@ -41,7 +33,7 @@ import { StartPoint } from "./utils/Point";
 // @debt do not create objects on load time, but only in the constructor.
 // Globals (or module level) constants like mapLightningShader and mapStaticLightningShader
 // will cause an error on devices/browsers that don't support WebGL 2
-export class GameInstance {
+export class GameInstance implements GameInstanceInterface {
   public static DEBOUNCE_TIME: number = 25;
 
   public static instance: GameInstance;
@@ -52,18 +44,21 @@ export class GameInstance {
   private _stage?: Container;
   public _mapContainer?: MapContainer;
   private _eventProvider = EventProvider;
+
+  public gameInstanceProvider: GameInstanceProvider;
+
+  public dataProvider: DataProvider;
+
   get eventProvider() {
     return this._eventProvider;
   }
 
-  constructor(
-    private _config: GameConfig,
-    private _store: Store,
-    public dataProvider: CloudDataProvider,
-    private _containerElement: HTMLDivElement,
-    private _pictureUrl?: string
-  ) {
+  constructor(args: GameInstanceProvider) {
     if (GameInstance.instance) console.error("Multiply instancing!");
+
+    this.gameInstanceProvider = args;
+    this.dataProvider = args.dataProvider;
+
     GameInstance.instance = this;
   }
 
@@ -78,7 +73,7 @@ export class GameInstance {
     this._app = new Application({
       transparent: true,
       antialias: true,
-      resizeTo: this._containerElement,
+      resizeTo: this.gameInstanceProvider.containerElement,
       backgroundColor: 0xe7d4c3,
       resolution: 1,
     });
@@ -86,12 +81,12 @@ export class GameInstance {
     this._renderer = this._app.renderer;
     this._stage = this._app.stage;
 
-    this._containerElement.appendChild(this._app.view);
+    this.gameInstanceProvider.containerElement.appendChild(this._app.view);
   }
 
   private async initMap(): Promise<void> {
     if (!this._app) return console.error();
-    this._store.dispatch(setAnimateMapUsers(stubUsersData()));
+    this.gameInstanceProvider.handleSetAnimateMapUsers(stubUsersData());
 
     this._mapContainer = new MapContainer(this._app);
     this._stage?.addChild(this._mapContainer);
@@ -128,7 +123,7 @@ export class GameInstance {
 
     window.addEventListener("resize", this.resize);
 
-    if (this.getState().firstEntrance === "false") {
+    if (this.gameInstanceProvider.animatemap.firstEntrance === "false") {
       return await this._play();
     } else {
       this.getConfig().firstEntrance = true;
@@ -140,7 +135,7 @@ export class GameInstance {
           // })
           .then(async (command: WaitClickForHeroCreation) => {
             await this._play(command.clickPoint);
-            this.getStore().dispatch(setAnimateMapFirstEntrance("false"));
+            this.gameInstanceProvider.handleSetAnimateMapFirstEntrance("false");
           })
       );
     }
@@ -198,16 +193,8 @@ export class GameInstance {
     }
   }
 
-  public getStore(): Store {
-    return this._store;
-  }
-
-  public getState(): AnimateMapState {
-    return this._store.getState().animatemap;
-  }
-
   public getConfig(): GameConfig {
-    return this._config;
+    return this.gameInstanceProvider.config;
   }
 
   public getMapContainer() {
@@ -234,6 +221,7 @@ export class GameInstance {
     });
 
     EventProvider.on(EventType.USER_MOVED, (user: ReplicatedUser) => {
+      console.log("user", user);
       this._mapContainer?.entityFactory?.updateUserPositionById(user);
     });
 
@@ -241,6 +229,7 @@ export class GameInstance {
     this.dataProvider.on(
       DataProviderEvent.VENUE_ADDED,
       (venue: ReplicatedVenue) => {
+        console.log("venue", venue);
         this._mapContainer?.entityFactory?.createVenue(venue);
       }
     );
@@ -248,6 +237,7 @@ export class GameInstance {
     this.dataProvider.on(
       DataProviderEvent.VENUE_REMOVED,
       (venue: ReplicatedVenue) => {
+        console.log("venue", venue);
         this._mapContainer?.entityFactory?.removeVenue(venue);
       }
     );
@@ -255,6 +245,7 @@ export class GameInstance {
     this.dataProvider.on(
       DataProviderEvent.VENUE_UPDATED,
       (venue: ReplicatedVenue) => {
+        console.log("venue", venue);
         this._mapContainer?.entityFactory?.updateVenue(venue);
       }
     );
@@ -263,6 +254,7 @@ export class GameInstance {
     this.dataProvider.on(
       DataProviderEvent.FIREBARREL_ADDED,
       (firebarrel: ReplicatedFirebarrel) => {
+        console.log("firebarell", firebarrel);
         this._mapContainer?.entityFactory?.createFireBarrel(firebarrel);
       }
     );
@@ -270,6 +262,7 @@ export class GameInstance {
     this.dataProvider.on(
       DataProviderEvent.FIREBARREL_REMOVED,
       (firebarrel: ReplicatedFirebarrel) => {
+        console.log("firebarell", firebarrel);
         this._mapContainer?.entityFactory?.removeBarrel(firebarrel);
       }
     );
@@ -277,6 +270,7 @@ export class GameInstance {
     this.dataProvider.on(
       DataProviderEvent.FIREBARREL_UPDATED,
       (firebarrel: ReplicatedFirebarrel) => {
+        console.log("firebarell", firebarrel);
         this._mapContainer?.entityFactory?.updateBarrel(firebarrel);
       }
     );

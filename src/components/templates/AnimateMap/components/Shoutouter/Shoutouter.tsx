@@ -1,8 +1,6 @@
 import React, { useCallback, useEffect, useRef } from "react";
 
-import EventProvider, {
-  EventType,
-} from "../../bridges/EventProvider/EventProvider";
+import { EventProvider, EventType } from "../../../EventProvider";
 import { ENTER } from "../../game/utils/Keyboard";
 import KeyPoll from "../../game/utils/KeyPollSingleton";
 

@@ -8,13 +8,10 @@ import { subscribeActionAfter } from "redux-subscribe-action";
 import {
   AnimateMapActionTypes,
   setAnimateMapEnvironmentSoundAction,
-  setAnimateMapLastZoom,
-  setAnimateMapZoom,
   setAnimateMapZoomAction,
 } from "store/actions/AnimateMap";
 
-import { EventType } from "components/templates/AnimateMap/bridges/EventProvider/EventProvider";
-
+import { EventType } from "../../../../EventProvider";
 import { GameConfig } from "../../../configs/GameConfig";
 import { TimeoutCommand } from "../../commands/TimeoutCommand";
 import { GameInstance } from "../../GameInstance";
@@ -126,16 +123,19 @@ export class ViewportSystem extends System {
     );
 
     this._setAnimateMapZoomThrottle = throttle((value: number) => {
-      GameInstance.instance.getStore().dispatch(setAnimateMapZoom(value));
+      GameInstance.instance.gameInstanceProvider.handleSetAnimateMapZoom(value);
     }, GameInstance.DEBOUNCE_TIME);
 
-    Howler.mute(!GameInstance.instance.getState().environmentSound);
+    Howler.mute(
+      !GameInstance.instance.gameInstanceProvider.animatemap.environmentSound
+    );
 
     this.player = engine.getNodeList(ViewportFollowNode);
     this.player.nodeAdded.add(this.handlePlayerAdded);
     this.player.nodeRemoved.add(this.handlePlayerRemoved);
 
-    const zoomLevel = GameInstance.instance.getState().zoomLevel;
+    const zoomLevel =
+      GameInstance.instance.gameInstanceProvider.animatemap.zoomLevel;
     const zoomViewport = GameInstance.instance
       .getConfig()
       .zoomLevelToViewport(zoomLevel);
@@ -226,7 +226,7 @@ export class ViewportSystem extends System {
           .getConfig()
           .zoomLevelToViewport(GameConfig.ZOOM_LEVEL_WALKING);
       } else {
-        zoom = GameInstance.instance.getState().lastZoom;
+        zoom = GameInstance.instance.gameInstanceProvider.animatemap.lastZoom;
         if (zoom < 0.1) {
           zoom = 0.1;
         }
@@ -348,9 +348,9 @@ export class ViewportSystem extends System {
       );
     }
 
-    GameInstance.instance
-      .getStore()
-      .dispatch(setAnimateMapLastZoom(viewport.scale.y));
+    GameInstance.instance.gameInstanceProvider.handleSetAnimateMapLastZoom(
+      viewport.scale.y
+    );
   }
 
   private _viewportDragStartHandler(e: { world: Point }) {

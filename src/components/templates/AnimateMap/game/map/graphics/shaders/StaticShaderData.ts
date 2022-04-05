@@ -12,7 +12,6 @@ import { LightSize, mapStaticLightningShader } from "./mapLightning";
 
 const BATCH_SIZE = 10;
 const textureSize = 8128;
-
 export interface LightData {
   r: number;
   g: number;
@@ -31,7 +30,6 @@ export class ShaderDataProvider {
   public renderTexture;
   public readonly sprite: Sprite;
   private renderer;
-
   constructor(data: LightData[], private app: Application) {
     data.forEach((light) => {
       const r: number = Math.floor(light.r * 255) << 16;
@@ -70,17 +68,22 @@ export class ShaderDataProvider {
     this.sprite.filterArea = new Rectangle(0, 0, textureSize, textureSize);
     const render = () => {
       setTimeout(() => {
-        const uniforms = this.sprite?.filters?.[0]?.uniforms;
-
-        if (uniforms) {
-          uniforms.lightsCol = this.lightsCol.slice(0, BATCH_SIZE);
-          uniforms.lightsPos = this.lightsPos.slice(0, BATCH_SIZE << 1);
-          uniforms.koef = this.koef.slice(0, BATCH_SIZE << 1);
-          uniforms.lightQuantity =
-            this.lightsCol.length > BATCH_SIZE
-              ? BATCH_SIZE
-              : this.lightsCol.length;
-        }
+        this.sprite.filters[0].uniforms.lightsCol = this.lightsCol.slice(
+          0,
+          BATCH_SIZE
+        );
+        this.sprite.filters[0].uniforms.lightsPos = this.lightsPos.slice(
+          0,
+          BATCH_SIZE << 1
+        );
+        this.sprite.filters[0].uniforms.koef = this.koef.slice(
+          0,
+          BATCH_SIZE << 1
+        );
+        this.sprite.filters[0].uniforms.lightQuantity =
+          this.lightsCol.length > BATCH_SIZE
+            ? BATCH_SIZE
+            : this.lightsCol.length;
         this.app.renderer.render(this.sprite, this.renderTexture, false);
         if (this.lightsCol.length < BATCH_SIZE) {
           this.lightsCol = new Array<number>();

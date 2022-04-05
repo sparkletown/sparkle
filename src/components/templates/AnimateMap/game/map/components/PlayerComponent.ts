@@ -1,5 +1,4 @@
-import { ReplicatedUser } from "store/reducers/AnimateMap";
-
+import { ReplicatedUser } from "../../../../GameInstanceCommonInterfaces";
 import { FSMBase } from "../finalStateMachines/FSMBase";
 
 export class PlayerComponent {

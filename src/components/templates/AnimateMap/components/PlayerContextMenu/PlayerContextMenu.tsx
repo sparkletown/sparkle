@@ -1,14 +1,11 @@
 import React, { useCallback, useEffect } from "react";
 
-import { ReplicatedUser } from "store/reducers/AnimateMap";
-
 import { UserId } from "types/id";
 
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 
-import EventProvider, {
-  EventType,
-} from "../../bridges/EventProvider/EventProvider";
+import { EventProvider, EventType } from "../../../EventProvider";
+import { ReplicatedUser } from "../../../GameInstanceCommonInterfaces";
 
 import "./PlayerContextMenu.scss";
 export interface UIContextMenuProps {}

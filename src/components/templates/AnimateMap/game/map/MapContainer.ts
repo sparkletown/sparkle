@@ -2,15 +2,11 @@ import { Engine } from "@ash.ts/ash";
 import { Application, Container } from "pixi.js";
 import { Viewport } from "pixi-viewport";
 
-import { setAnimateMapPointer } from "store/actions/AnimateMap";
-import { ReplicatedUser } from "store/reducers/AnimateMap";
-
 import { Point } from "types/utility";
 
-import playerModel from "../../bridges/DataProvider/Structures/PlayerModel";
-import EventProvider, {
-  EventType,
-} from "../../bridges/EventProvider/EventProvider";
+import { EventProvider, EventType } from "../../../EventProvider";
+import { ReplicatedUser } from "../../../GameInstanceCommonInterfaces";
+import { playerModel } from "../../../GameStructures/PlayerModel";
 import { TimeoutCommand } from "../commands/TimeoutCommand";
 import { MAP_JSON, sounds } from "../constants/AssetConstants";
 import { stubArtcarsData } from "../constants/StubData";
@@ -99,12 +95,10 @@ export class MapContainer extends Container {
     this.initMap(MAP_JSON);
 
     this._viewport?.on("clicked", (e: { world: Point }) =>
-      GameInstance.instance.getStore().dispatch(
-        setAnimateMapPointer({
-          x: e.world.x,
-          y: e.world.y,
-        })
-      )
+      GameInstance.instance.gameInstanceProvider.handleSetAnimateMapPointer({
+        x: e.world.x,
+        y: e.world.y,
+      })
     );
   }
 
@@ -314,7 +308,8 @@ export class MapContainer extends Container {
           if (this.entityFactory) {
             const map: PlaygroundMap = GameInstance.instance.getConfig()
               .playgroundMap;
-            const bots = GameInstance.instance.getState().users;
+            const bots =
+              GameInstance.instance.gameInstanceProvider.animatemap.users;
             const itrb: IterableIterator<ReplicatedUser> = bots.values();
             const self: MapContainer = this;
             const loop = async () => {

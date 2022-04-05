@@ -1,10 +1,7 @@
 import { Engine, NodeList, System } from "@ash.ts/ash";
 import { Container, Graphics, Point, Sprite, Text, TextStyle } from "pixi.js";
 
-import EventProvider, {
-  EventType,
-} from "components/templates/AnimateMap/bridges/EventProvider/EventProvider";
-
+import { EventProvider, EventType } from "../../../../EventProvider";
 import EntityFactory from "../entities/EntityFactory";
 import { BubbleNode } from "../nodes/BubbleNode";
 import { ViewportNode } from "../nodes/ViewportNode";

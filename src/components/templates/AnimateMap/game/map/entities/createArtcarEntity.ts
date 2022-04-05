@@ -3,9 +3,8 @@ import { Sprite } from "pixi.js";
 
 import { DEFAULT_PORTAL_BOX } from "settings";
 
-import { setAnimateMapRoom } from "../../../../../../store/actions/AnimateMap";
-import { ReplicatedArtcar } from "../../../../../../store/reducers/AnimateMap";
 import { Point } from "../../../../../../types/utility";
+import { ReplicatedArtcar } from "../../../../GameInstanceCommonInterfaces";
 import { GameConfig } from "../../../configs/GameConfig";
 import { GameInstance } from "../../GameInstance";
 import { ArtcarComponent } from "../components/ArtcarComponent";
@@ -105,17 +104,15 @@ export const createArtcarEntity = (
     .add(
       new ClickableSpriteComponent(() => {
         const currentVenueArtcar = getCurrentArtcar(artcarComponent);
-        GameInstance.instance.getStore().dispatch(
-          setAnimateMapRoom({
-            ...DEFAULT_PORTAL_BOX,
-            title: currentVenueArtcar.data.title,
-            subtitle: "",
-            url: currentVenueArtcar.data.url,
-            about: currentVenueArtcar.data.about,
-            isEnabled: currentVenueArtcar.data.isEnabled,
-            image_url: currentVenueArtcar.data.image_url,
-          })
-        );
+        GameInstance.instance.gameInstanceProvider.handleSetAnimateMapRoom({
+          ...DEFAULT_PORTAL_BOX,
+          title: currentVenueArtcar.data.title,
+          subtitle: "",
+          url: currentVenueArtcar.data.url,
+          about: currentVenueArtcar.data.about,
+          isEnabled: currentVenueArtcar.data.isEnabled,
+          image_url: currentVenueArtcar.data.image_url,
+        });
       })
     );
 

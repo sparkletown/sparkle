@@ -2,13 +2,15 @@ import { v4 as uuid } from "uuid";
 
 import { DEFAULT_AVATAR_LIST } from "settings";
 
-import { ReplicatedArtcar, ReplicatedUser } from "store/reducers/AnimateMap";
-
 import { getRandomInt } from "utils/getRandomInt";
 import { determineAvatar } from "utils/image";
 
 import { Point } from "../../../../../types/utility";
-import { getIntByHash } from "../../bridges/DataProvider/Contructor/PlayerIO/utils/getIntByHash";
+import {
+  ReplicatedArtcar,
+  ReplicatedUser,
+} from "../../../GameInstanceCommonInterfaces";
+import { getIntByHash } from "../../../GameServerProvider";
 import { GameConfig } from "../../configs/GameConfig";
 import { GameInstance } from "../GameInstance";
 

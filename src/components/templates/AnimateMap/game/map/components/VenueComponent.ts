@@ -1,5 +1,4 @@
-import { ReplicatedVenue } from "store/reducers/AnimateMap";
-
+import { ReplicatedVenue } from "../../../../GameInstanceCommonInterfaces";
 import { FSMBase } from "../finalStateMachines/FSMBase";
 
 export class VenueComponent {

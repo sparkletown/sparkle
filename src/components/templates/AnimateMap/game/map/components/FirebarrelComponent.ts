@@ -1,5 +1,4 @@
-import { ReplicatedFirebarrel } from "store/reducers/AnimateMap";
-
+import { ReplicatedFirebarrel } from "../../../../GameInstanceCommonInterfaces";
 import { FSMBase } from "../finalStateMachines/FSMBase";
 
 export class FirebarrelComponent {

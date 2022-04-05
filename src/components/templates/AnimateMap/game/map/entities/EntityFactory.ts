@@ -1,14 +1,12 @@
 import { Engine, Entity, NodeList } from "@ash.ts/ash";
 import { Sprite } from "pixi.js";
 
-import { setAnimateMapFireBarrel } from "store/actions/AnimateMap";
 import {
   ReplicatedArtcar,
   ReplicatedFirebarrel,
   ReplicatedUser,
   ReplicatedVenue,
-} from "store/reducers/AnimateMap";
-
+} from "../../../../GameInstanceCommonInterfaces";
 import { GameConfig } from "../../../configs/GameConfig";
 import { ImageToCanvas } from "../../commands/ImageToCanvas";
 import { LoadImage } from "../../commands/LoadImage";
@@ -146,7 +144,7 @@ export default class EntityFactory {
   }
 
   public getRandomBot(): ReplicatedUser | undefined {
-    const bots = GameInstance.instance.getState().users;
+    const bots = GameInstance.instance.gameInstanceProvider.animatemap.users;
     const botIndex = Math.floor(Math.random() * bots.size);
     if (botIndex > 0) {
       const itr = bots.values();
@@ -481,9 +479,9 @@ export default class EntityFactory {
       firebarrelNode &&
       playerNode.player.fsm.currentStateName !== playerNode.player.IMMOBILIZED
     ) {
-      GameInstance.instance
-        .getStore()
-        .dispatch(setAnimateMapFireBarrel(firebarrelId));
+      GameInstance.instance.gameInstanceProvider.handleSetAnimateMapFireBarrel(
+        firebarrelId
+      );
 
       playerNode.entity.add(firebarrelNode.firebarrel);
       playerNode.player.fsm.changeState(playerNode.player.IMMOBILIZED);

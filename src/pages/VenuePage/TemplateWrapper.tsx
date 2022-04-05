@@ -31,9 +31,11 @@ import styles from "./TemplateWrapper.module.scss";
 
 const AnimateMap = lazy(() =>
   tracePromise("TemplateWrapper::lazy-import::AnimateMapWrapper", () =>
-    import("components/templates/AnimateMapWrapper").then(({ AnimateMapWrapper }) => ({
-      default: AnimateMapWrapper,
-    }))
+    import("components/templates/AnimateMapWrapper").then(
+      ({ AnimateMapWrapper }) => ({
+        default: AnimateMapWrapper,
+      })
+    )
   )
 );
 

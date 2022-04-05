@@ -3,9 +3,7 @@ import { Sprite } from "pixi.js";
 
 import { DEFAULT_PORTAL_BOX } from "settings";
 
-import { setAnimateMapRoom } from "store/actions/AnimateMap";
-import { ReplicatedVenue } from "store/reducers/AnimateMap";
-
+import { ReplicatedVenue } from "../../../../GameInstanceCommonInterfaces";
 import { GameConfig } from "../../../configs/GameConfig";
 import { CropVenue } from "../../commands/CropVenue";
 import { GameInstance } from "../../GameInstance";
@@ -220,17 +218,15 @@ export const createVenueEntity = (
     .add(
       new ClickableSpriteComponent(() => {
         const currentVenue = getCurrentReplicatedVenue(venueComponent);
-        GameInstance.instance.getStore().dispatch(
-          setAnimateMapRoom({
-            ...DEFAULT_PORTAL_BOX,
-            title: currentVenue.data.title,
-            subtitle: currentVenue.data.subtitle,
-            url: currentVenue.data.url,
-            about: currentVenue.data.about,
-            isEnabled: currentVenue.data.isEnabled,
-            image_url: currentVenue.data.image_url,
-          })
-        );
+        GameInstance.instance.gameInstanceProvider.handleSetAnimateMapRoom({
+          ...DEFAULT_PORTAL_BOX,
+          title: currentVenue.data.title,
+          subtitle: currentVenue.data.subtitle,
+          url: currentVenue.data.url,
+          about: currentVenue.data.about,
+          isEnabled: currentVenue.data.isEnabled,
+          image_url: currentVenue.data.image_url,
+        });
       })
     );
 
