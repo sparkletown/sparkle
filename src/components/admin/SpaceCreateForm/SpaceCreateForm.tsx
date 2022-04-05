@@ -27,7 +27,7 @@ import { createSpaceSchema } from "forms/createSpaceSchema";
 
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useDispatch } from "hooks/useDispatch";
-import { useUser } from "hooks/useUser";
+import { useUserId } from "hooks/user/useUserId";
 
 import { FormCover } from "components/molecules/FormCover";
 import { FormErrors } from "components/molecules/FormErrors";
@@ -52,7 +52,7 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({
   const { worldSlug } = useSpaceParams();
   const history = useHistory();
   const dispatch = useDispatch();
-  const { user } = useUser();
+  const { userId } = useUserId();
   const [selectedItem, setSelectedItem] = useState<
     PortalInfoItem | undefined
   >();
@@ -76,7 +76,7 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({
     { loading: isLoading, error: submitError },
     createSpace,
   ] = useAsyncFn(async () => {
-    if (!worldId || !user || !template || template === "external") return;
+    if (!worldId || !userId || !template || template === "external") return;
 
     const data = {
       ...buildEmptySpace(venueName, template),
@@ -84,10 +84,10 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({
       logoImageUrl,
     };
 
-    await createVenue_v2(data, user);
+    await createVenue_v2(data, userId);
 
     history.push(adminNGVenueUrl(worldSlug, data.slug as SpaceSlug));
-  }, [worldId, logoImageUrl, user, template, venueName, worldSlug, history]);
+  }, [worldId, logoImageUrl, userId, template, venueName, worldSlug, history]);
 
   const { venueName: watchedName } = watch();
   const slug = useMemo(() => createSlug(watchedName), [watchedName]);

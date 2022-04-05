@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom";
 import { useAsyncFn } from "react-use";
 
 import {
-  ACCOUNT_PROFILE_QUESTIONS_URL,
+  ACCOUNT_CODE_QUESTIONS_URL,
   DEFAULT_SPACE_SLUG,
   DISPLAY_NAME_MAX_CHAR_COUNT,
 } from "settings";
@@ -24,8 +24,6 @@ import "firebase/storage";
 import { updateUserProfile } from "./helpers";
 
 // @debt refactor the Profile related styles from Account.scss into Profile.scss
-import "./Account.scss";
-import "./Profile.scss";
 import CN from "./Profile.module.scss";
 
 export interface ProfileFormData {
@@ -64,7 +62,7 @@ export const Profile: React.FC = () => {
 
       // @debt Should we throw an error here rather than defaulting to empty string?
       const nextUrl = generateUrl({
-        route: ACCOUNT_PROFILE_QUESTIONS_URL,
+        route: ACCOUNT_CODE_QUESTIONS_URL,
         required: ["worldSlug"],
         params: { worldSlug, spaceSlug },
       });

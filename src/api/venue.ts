@@ -95,26 +95,26 @@ export const updateIframeUrl = async (iframeUrl: string, venueId?: string) => {
 };
 
 type VenueInputForm = Partial<WithId<AnyVenue>> & {
-  bannerImageUrl?: string;
-  bannerImageFile?: FileList;
+  backgroundImageUrl?: string;
+  backgroundImageFile?: FileList;
   logoImageUrl?: string;
   logoImageFile?: FileList;
   numberOfSections?: number;
 };
 
 export const updateVenueNG = async (venue: VenueInputForm, userId: UserId) => {
-  const bannerFile = venue.bannerImageFile?.[0];
+  const backgroundFile = venue.backgroundImageFile?.[0];
   const logoFile = venue.logoImageFile?.[0];
 
-  if (bannerFile) {
-    const fileExtension = bannerFile.name.split(".").pop();
+  if (backgroundFile) {
+    const fileExtension = backgroundFile.name.split(".").pop();
     const uploadFileRef = ref(
       FIREBASE.storage,
-      `users/${userId}/venues/${venue.id}/bannerImage.${fileExtension}`
+      `users/${userId}/venues/${venue.id}/backgroundImage.${fileExtension}`
     );
-    await uploadBytes(uploadFileRef, bannerFile);
+    await uploadBytes(uploadFileRef, backgroundFile);
     const downloadUrl = await getDownloadURL(uploadFileRef);
-    venue.bannerImageUrl = downloadUrl;
+    venue.backgroundImageUrl = downloadUrl;
   }
 
   if (logoFile) {

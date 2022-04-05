@@ -10,7 +10,6 @@ import { Settings } from "./settings";
 
 import { World } from "api/world";
 
-import { AuditoriumSeatedUser } from "types/auditorium";
 import {
   JukeboxMessage,
   PrivateChatMessage,
@@ -20,7 +19,7 @@ import { Reaction } from "types/reactions";
 import { Role } from "types/Role";
 import { ScreeningRoomVideo } from "types/screeningRoom";
 import { Table } from "types/Table";
-import { TableSeatedUser, User } from "types/User";
+import { User } from "types/User";
 import { AnyVenue, PosterPageVenue, WorldEvent } from "types/venues";
 
 import { WithId } from "utils/id";
@@ -91,10 +90,6 @@ export interface FirestoreData {
   currentVenue?: AnyVenue;
   currentVenueEventsNG?: Record<string, WorldEvent>;
   currentVenueNG?: AnyVenue;
-  currentAuditoriumSeatedSectionUsers?: Partial<
-    Record<string, AuditoriumSeatedUser>
-  >;
-  currentSeatedTableUsers?: Record<string, TableSeatedUser>;
   currentModalUser?: User;
   currentEvent?: Record<string, WorldEvent>;
   experience?: Experience;
@@ -117,8 +112,6 @@ export interface FirestoreOrdered {
   currentVenue?: WithId<AnyVenue>[];
   currentVenueEventsNG?: WorldEvent[];
   currentVenueNG?: WithId<AnyVenue>[];
-  currentAuditoriumSeatedSectionUsers?: WithId<AuditoriumSeatedUser>[];
-  currentSeatedTableUsers?: WithId<TableSeatedUser>[];
   currentModalUser?: WithId<User>[];
   currentEvent?: WorldEvent[];
   events?: WorldEvent[];

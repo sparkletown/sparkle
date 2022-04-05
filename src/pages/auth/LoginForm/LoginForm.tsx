@@ -8,7 +8,6 @@ import firebase from "firebase/compat/app";
 import { STRING_SPACE } from "settings";
 
 import { SpaceWithId, WorldWithId } from "types/id";
-import { VenueAccessMode } from "types/VenueAcccess";
 
 import { errorMessage, errorStatus } from "utils/error";
 
@@ -16,8 +15,6 @@ import { useSocialSignIn } from "hooks/useSocialSignIn";
 
 import CN from "pages/auth/auth.module.scss";
 import { SocialLogin } from "pages/auth/SocialLogin";
-
-import { TicketCodeField } from "components/organisms/TicketCodeField";
 
 interface LoginFormProps {
   displayRegisterForm: () => void;
@@ -185,10 +182,6 @@ export const LoginForm: React.FC<LoginFormProps> = ({
           />
           {errors.password && errors.password.type === "required" && (
             <div className={CN.error}>Password is required</div>
-          )}
-
-          {space.access === VenueAccessMode.Codes && (
-            <TicketCodeField register={register} error={errors?.code} />
           )}
 
           <button className={CN.link} onClick={displayPasswordResetForm}>

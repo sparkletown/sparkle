@@ -34,9 +34,8 @@ export const ReactionList: React.FC<ReactionListProps> = ({
     ].sort((a, b) => b.created_at - a.created_at);
 
     return allReactionsSorted.map((message) => {
-      const messageSenderName = message.created_by?.anonMode
-        ? DEFAULT_PARTY_NAME
-        : message.created_by?.partyName ?? DEFAULT_PARTY_NAME;
+      const messageSenderName =
+        message.created_by?.partyName ?? DEFAULT_PARTY_NAME;
 
       return (
         <div

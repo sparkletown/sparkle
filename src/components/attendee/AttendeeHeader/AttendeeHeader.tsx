@@ -39,7 +39,7 @@ export const AttendeeHeader: React.FC<AttendeeHeaderProps> = ({
 }) => {
   const { isShown, hide, show } = useShowHide(false);
   const [overlayLabel, setOverlayLabel] = useState("");
-  const { isTablet, isMobile } = useMediaQuery();
+  const { isTablet, isMobile, isLaptopSmall } = useMediaQuery();
   const { space, worldSlug } = useWorldAndSpaceByParams();
   const history = useHistory();
 
@@ -65,12 +65,6 @@ export const AttendeeHeader: React.FC<AttendeeHeaderProps> = ({
     [show]
   );
 
-  const { isExpanded: isChatExpanded } = useChatSidebarControls();
-
-  const headerClassnames = classNames(CN.attendeeHeader, {
-    [CN.chatExpanded]: isChatExpanded,
-  });
-
   const { userWithId } = useUser();
 
   const isNarrow = isTablet || isMobile;
@@ -95,6 +89,12 @@ export const AttendeeHeader: React.FC<AttendeeHeaderProps> = ({
     [handleOverlayOpen, show, isNarrow]
   );
 
+  const { isExpanded: isChatExpanded } = useChatSidebarControls();
+
+  const headerClassnames = classNames(CN.attendeeHeader, {
+    [CN.headerNarrow]: isChatExpanded,
+  });
+
   if (!userWithId) return null;
 
   const containerClasses = classNames(CN.container, {
@@ -102,36 +102,38 @@ export const AttendeeHeader: React.FC<AttendeeHeaderProps> = ({
   });
 
   return (
-    <header className={headerClassnames}>
-      <div className={containerClasses}>
-        {backButtonSpace ? (
-          <Button onClick={goBack} variant="primary" transparent={isNarrow}>
-            <FontAwesomeIcon icon={faArrowLeft} /> Leave
-            <span className={CN.headerTimeTransparent}>
-              {getDateHoursAndMinutes(currentMilliseconds())}
-            </span>
-          </Button>
-        ) : (
-          <Button
-            variant="primary"
-            transparent={isNarrow}
-            onClick={() => handleOverlayOpen(space?.name || "")}
-          >
-            {space?.name ?? `This ${SPACE_TAXON.title}`}
-            <span className={CN.headerTime}>
-              {getDateHoursAndMinutes(currentMilliseconds())}
-            </span>
-          </Button>
-        )}
-        {!isNarrow && (
-          <Attendance
-            totalUsersCount={space?.recentUserCount}
-            usersSample={space?.recentUsersSample}
-          />
-        )}
-        <div>{renderedCaptions}</div>
-      </div>
+    <>
+      <header className={headerClassnames}>
+        <div className={containerClasses}>
+          {backButtonSpace ? (
+            <Button onClick={goBack} variant="primary" transparent={isNarrow}>
+              <FontAwesomeIcon icon={faArrowLeft} /> Leave
+              <span className={CN.headerTimeTransparent}>
+                {getDateHoursAndMinutes(currentMilliseconds())}
+              </span>
+            </Button>
+          ) : (
+            <Button
+              variant="primary"
+              transparent={isNarrow}
+              onClick={() => handleOverlayOpen(space?.name || "")}
+            >
+              {space?.name ?? `This ${SPACE_TAXON.title}`}
+              <span className={CN.headerTime}>
+                {getDateHoursAndMinutes(currentMilliseconds())}
+              </span>
+            </Button>
+          )}
+          {!isLaptopSmall && (
+            <Attendance
+              totalUsersCount={space?.recentUserCount}
+              usersSample={space?.recentUsersSample}
+            />
+          )}
+          <div>{renderedCaptions}</div>
+        </div>
+      </header>
       {isShown && <NavOverlay onClose={hide} type={overlayLabel} />}
-    </header>
+    </>
   );
 };

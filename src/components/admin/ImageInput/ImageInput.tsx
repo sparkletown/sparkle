@@ -24,16 +24,19 @@ import * as TW from "./ImageInput.tailwind";
 
 type ImageInputVariant = "wide" | "round";
 
+export interface ImageInputChangeProps {
+  url: string;
+  extra: {
+    nameUrl: string;
+    valueUrl: string;
+    nameFile: string;
+    valueFile: File;
+    files?: FileList;
+  };
+}
+
 export interface ImageInputProps {
-  onChange?: (
-    url: string,
-    extra: {
-      nameUrl: string;
-      valueUrl: string;
-      nameFile: string;
-      valueFile: File;
-    }
-  ) => void;
+  onChange?: (props: ImageInputChangeProps) => void;
   name: string;
   imgUrl?: string;
   error?: FieldError;
@@ -45,6 +48,7 @@ export interface ImageInputProps {
   variant?: ImageInputVariant;
   inputLabel?: string;
   buttonLabel?: string;
+  disabled?: boolean;
 }
 
 export const ImageInput: React.FC<ImageInputProps> = ({
@@ -60,6 +64,7 @@ export const ImageInput: React.FC<ImageInputProps> = ({
   variant = "wide",
   inputLabel,
   buttonLabel = "Upload",
+  disabled,
 }) => {
   const inputFileRef = useRef<HTMLInputElement>(null);
 
@@ -89,11 +94,15 @@ export const ImageInput: React.FC<ImageInputProps> = ({
       setValue(fileName, [compressedFile], { shouldValidate: false });
       setValue(fileUrl, url, { shouldValidate: false });
 
-      onChange?.(url, {
-        nameUrl: fileUrl,
-        valueUrl: url,
-        nameFile: fileName,
-        valueFile: compressedFile,
+      onChange?.({
+        url,
+        extra: {
+          nameUrl: fileUrl,
+          valueUrl: url,
+          nameFile: fileName,
+          valueFile: compressedFile,
+          files: event.target.files ?? undefined,
+        },
       });
     },
     [handleFileInputChange, fileUrl, onChange, setValue, fileName]
@@ -148,7 +157,11 @@ export const ImageInput: React.FC<ImageInputProps> = ({
       </label>
       <input type="hidden" name={fileUrl} {...register} readOnly />
       <div className={wrapperClasses} style={wrapperStyles}>
-        <Button onClick={onButtonClick} disabled={loading} borders="rounded">
+        <Button
+          onClick={onButtonClick}
+          disabled={loading || disabled}
+          borders="rounded"
+        >
           {loading ? "processing..." : buttonLabel}
         </Button>
         <div className="ImageInput__subtext">{subtext}</div>

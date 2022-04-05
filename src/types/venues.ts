@@ -17,7 +17,6 @@ import { Table } from "./Table";
 import { UpcomingEvent } from "./UpcomingEvent";
 import { UserStatus } from "./User";
 import { VenueAccessMode } from "./VenueAcccess";
-import { VideoAspectRatio } from "./VideoAspectRatio";
 
 export type PortalTemplate = VenueTemplate | "external";
 
@@ -145,7 +144,6 @@ export interface BaseVenue {
   auditoriumColumns?: number;
   auditoriumRows?: number;
   sectionsCount?: number;
-  videoAspect?: VideoAspectRatio;
   termsAndConditions: TermOfService[];
   userStatuses?: UserStatus[];
   showRadio?: boolean;
@@ -217,6 +215,7 @@ export interface ArtPieceVenue extends BaseVenue {
 }
 export interface MeetingRoomVenue extends BaseVenue {
   template: VenueTemplate.meetingroom;
+  channels?: Channel[];
 }
 
 export interface ExperimentalVenue extends BaseVenue {
@@ -295,7 +294,6 @@ export interface VenueLandingPageConfig {
   subtitle?: string;
   description?: string;
   presentation: string[];
-  bannerImageUrl?: string;
   checkList: string[];
   iframeUrl?: string;
   joinButtonText?: string;
@@ -386,4 +384,9 @@ export const urlFromImage = (
   return filesOrUrl && filesOrUrl.length > 0
     ? URL.createObjectURL(filesOrUrl[0])
     : defaultValue;
+};
+
+export type Channel = {
+  name: string;
+  iframeUrl: string;
 };

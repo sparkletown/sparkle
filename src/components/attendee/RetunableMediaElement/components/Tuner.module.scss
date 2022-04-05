@@ -54,6 +54,16 @@ $radio-button-size: 9px;
   }
 }
 
+.channelSelect {
+  padding: 4px 5em 4px 12px;
+  height: 42px;
+  border-radius: 4px;
+  width: 100%;
+  font-size: 14px;
+  line-height: 1.4;
+  margin-bottom: space.empty(1);
+}
+
 .divider {
   background: theme.$c-tuner-divider-color;
   height: 1px;

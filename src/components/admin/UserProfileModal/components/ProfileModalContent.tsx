@@ -3,13 +3,9 @@ import { SpentTime } from "components/shared/SpentTime";
 
 import { UserWithId } from "types/id";
 
-import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
-import { useProfileQuestions } from "hooks/useProfileQuestions";
-
 import { ProfileModalButtons } from "./buttons/ProfileModalButtons";
 import { ProfileModalBasicInfo } from "./header/ProfileModalBasicInfo";
 import { ProfileModalLinks } from "./links/ProfileModalLinks";
-import { ProfileModalQuestions } from "./ProfileModalQuestions";
 
 export interface ProfileModalContentProps {
   user: UserWithId;
@@ -24,15 +20,11 @@ export const ProfileModalContent: React.FC<ProfileModalContentProps> = ({
   onEditMode,
   onModalClose,
 }) => {
-  const { worldId } = useWorldAndSpaceByParams();
-  const { questions, answers } = useProfileQuestions(user, worldId);
-
   return (
     <div data-bem="ProfileModalContent">
       <div className="sm:flex sm:items-start">
         <div>
           <ProfileModalBasicInfo user={user} />
-          <ProfileModalQuestions questions={questions} answers={answers} />
           <ProfileModalLinks user={user} />
           <SpentTime userId={user.id} />
         </div>

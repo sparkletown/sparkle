@@ -15,7 +15,7 @@ export const Loading: React.FC<LoadingProps> = ({
 }) => {
   const containerClasses = classNames("Loading", containerClassName);
   return (
-    <span className={containerClasses}>
+    <span data-bem="Loading" className={containerClasses}>
       <LoadingIcon />
       <span className="Loading__message">{label}</span>
     </span>
