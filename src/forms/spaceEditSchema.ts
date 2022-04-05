@@ -20,7 +20,7 @@ export interface RoomSchemaShape {
 
 export const spaceEditSchema = Yup.object().shape({
   logoImageUrl: Yup.string().notRequired(),
-  bannerImageUrl: Yup.string().notRequired(),
+  backgroundImageUrl: Yup.string().notRequired(),
   autoplay: Yup.boolean().notRequired(),
   numberOfSections: Yup.number().when(
     "$template",

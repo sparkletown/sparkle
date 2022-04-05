@@ -1,8 +1,8 @@
+import { NotFound } from "components/shared/NotFound";
+
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
-
-import { NotFoundFallback } from "components/atoms/NotFoundFallback";
 
 import { LoginForm, LoginFormData } from "./LoginForm";
 
@@ -20,9 +20,9 @@ export const LoginFormHoc = (props: LoginFormHocProps) => {
     return <LoadingPage />;
   }
 
-  if (!space || !world) {
-    return <NotFoundFallback />;
-  }
-
-  return <LoginForm {...props} space={space} world={world} />;
+  return space && world ? (
+    <LoginForm {...props} space={space} world={world} />
+  ) : (
+    <NotFound />
+  );
 };

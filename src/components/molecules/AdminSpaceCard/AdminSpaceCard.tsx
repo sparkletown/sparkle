@@ -5,7 +5,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import {
   ATTENDEE_INSIDE_URL,
-  DEFAULT_VENUE_BANNER_COLOR,
   PORTAL_INFO_ICON_MAPPING,
   SPACE_TAXON,
 } from "settings";
@@ -15,8 +14,6 @@ import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 import { adminNGVenueUrl, generateUrl } from "utils/url";
-
-import { useValidImage } from "hooks/useCheckImage";
 
 import { AdminCardTitle } from "components/organisms/AdminVenueView/components/AdminCardTitle";
 
@@ -35,17 +32,6 @@ export const AdminSpaceCard: React.FC<AdminSpaceCardProps> = ({
   worldSlug,
   isEditable,
 }) => {
-  // TODO-redesign either use this variable or delete it
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [validBannerImageUrl] = useValidImage(
-    venue?.config?.landingPageConfig.coverImageUrl ||
-      venue?.config?.landingPageConfig.bannerImageUrl,
-    DEFAULT_VENUE_BANNER_COLOR
-  );
-
-  // TODO-redesign these images will likely need embedding:
-  //  - validBannerImageUrl
-  //  - venue.host?.icon || DEFAULT_VENUE_LOGO
   const spaceIcon = PORTAL_INFO_ICON_MAPPING[venue.template];
 
   const spaceDescriptionText =
