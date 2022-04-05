@@ -6,7 +6,6 @@ import { SpaceWithId } from "types/id";
 import { AnyVenue } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
 
-import { WithId } from "utils/id";
 import { tracePromise } from "utils/performance";
 import { isWebGl2Enabled } from "utils/webgl";
 
@@ -40,7 +39,7 @@ const AnimateMap = lazy(() =>
 );
 
 interface TemplateWrapperProps {
-  venue: WithId<AnyVenue>;
+  venue: SpaceWithId;
 }
 
 export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
@@ -84,7 +83,7 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       break;
 
     case VenueTemplate.embeddable:
-      template = <Embeddable venue={venue} />;
+      template = <Embeddable space={venue} />;
       break;
 
     case VenueTemplate.posterhall:
@@ -100,7 +99,7 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       break;
 
     case VenueTemplate.meetingroom:
-      template = <MeetingRoom space={venue as SpaceWithId} />;
+      template = <MeetingRoom space={venue} />;
       break;
 
     case VenueTemplate.experiment:

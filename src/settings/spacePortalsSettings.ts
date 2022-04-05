@@ -152,9 +152,9 @@ export const SPACE_INFO_MAP: Record<VenueTemplate, SpaceInfoItem> = {
     text: "Embeddable",
     icon: IconEmbeddable,
     poster: PosterEmbeddable,
-    description: "",
+    description:
+      "Focus on a central piece of content without any video chatting.",
     template: VenueTemplate.embeddable,
-    hidden: true,
   },
   [VenueTemplate.screeningroom]: {
     text: "Screening Room",
