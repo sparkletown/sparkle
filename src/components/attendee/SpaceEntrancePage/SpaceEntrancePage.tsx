@@ -1,19 +1,20 @@
 import React, { useCallback } from "react";
 import { Redirect, useHistory, useParams } from "react-router-dom";
 import { WelcomeVideo } from "components/attendee/WelcomeVideo";
-import { WithAuthProps } from "components/hocs/db/withAuth";
-import { WithProfileProps } from "components/hocs/db/withProfile";
-import { WithWorldOrSpaceProps } from "components/hocs/db/withWorldOrSpace";
 
 import {
   ACCOUNT_PROFILE_SPACE_PARAM_URL,
   ATTENDEE_STEPPING_PARAM_URL,
 } from "settings";
 
+import { World } from "api/world";
+
 import {
   EntranceStepTemplate,
   EntranceStepTemplateProps,
 } from "types/EntranceStep";
+import { SpaceSlug, WorldSlug } from "types/id";
+import { Profile } from "types/User";
 
 import { isCompleteProfile } from "utils/profile";
 import { generateAttendeeInsideUrl, generateUrl } from "utils/url";
@@ -25,9 +26,12 @@ const ENTRANCE_STEP_TEMPLATE: Record<
   [EntranceStepTemplate.WelcomeVideo]: WelcomeVideo,
 };
 
-type SpaceEntrancePageProps = WithAuthProps &
-  WithProfileProps &
-  WithWorldOrSpaceProps;
+type SpaceEntrancePageProps = {
+  profile: Profile;
+  spaceSlug: SpaceSlug;
+  world: World;
+  worldSlug: WorldSlug;
+};
 
 export const SpaceEntrancePage: React.FC<SpaceEntrancePageProps> = ({
   profile,

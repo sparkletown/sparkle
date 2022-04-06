@@ -24,10 +24,10 @@ export const WelcomeVideo: React.FC<EntranceStepTemplateProps> = ({
   const { autoplay: autoPlay, buttons, videoUrl: url } = config;
   const hasProceedButton = !!buttons?.find(({ isProceed }) => isProceed);
 
+  const backgroundImage = world?.config.landingPageConfig.coverImageUrl;
+
   const backgroundCss = useCss({
-    backgroundImage:
-      world?.config.landingPageConfig.coverImageUrl &&
-      `url(${world?.config.landingPageConfig.coverImageUrl})`,
+    backgroundImage: backgroundImage && `url(${backgroundImage})`,
   });
 
   const renderedButtons = useMemo(
