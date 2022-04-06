@@ -12,6 +12,26 @@ import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams"
 
 import { useUser } from "./useUser";
 
+/*
+ * Presence is tracked in a dedicated collection. This allows for subscribing
+ * to *just* the minimal information required for knowing roughly who is in
+ * what space. The data is structured in a way that allows someone to have
+ * multiple tabs open without breaking presence (e.g. they can be present in
+ * multiple spaces at once).
+ *
+ * Presence records are kept fresh using an interval and then a scheduled job
+ * runs to clean up stale records. This captures the situation where a user
+ * closes their browser and normal clean up doesn't happen.
+ *
+ * When a user moves between spaces their presence record is updated instantly.
+ *
+ * Counts of presence records are also cached on a per space basis (recalculated
+ * by a scheduled job). This can be used as a fallback when there are lots of
+ * users in a space and we don't want to fetch *all* the records.
+ *
+ * Updates are debounced to avoid render thrash.
+ */
+
 interface usePresenceDataOptions {
   spaceId: SpaceId;
   limit?: number;
@@ -77,8 +97,6 @@ export const useTrackPresence = () => {
       return;
     }
 
-    // TODO Use firstSeenAt for ordering and lastSeenAt for limitation
-    // No limit. Use a scheduled job to do cleanup instead
     performCheckIn();
 
     return () => {
