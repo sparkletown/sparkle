@@ -11,10 +11,8 @@ import { GameOptions } from "components/templates/AnimateMap/configs/GameConfig"
 
 import { Banner } from "./banner";
 import { Poster } from "./posters";
-import { Quotation } from "./Quotation";
 import { Room } from "./rooms";
 import { Table } from "./Table";
-import { UpcomingEvent } from "./UpcomingEvent";
 import { UserStatus } from "./User";
 import { VenueAccessMode } from "./VenueAcccess";
 
@@ -28,7 +26,6 @@ export type GenericVenueTemplates = Exclude<
   | VenueTemplate.animatemap
   | VenueTemplate.partymap
   | VenueTemplate.posterpage
-  | VenueTemplate.themecamp
   | VenueTemplate.auditorium
   | VenueTemplate.viewingwindow
   | VenueTemplate.experiment
@@ -67,10 +64,6 @@ export interface Venue_v2_Base {
     icon: string;
   };
   owners?: string[];
-  theme?: {
-    primaryColor: string;
-    backgroundColor?: string;
-  };
   id: string;
   rooms?: Room[];
   mapBackgroundImageUrl?: string;
@@ -105,44 +98,26 @@ export interface BaseVenue {
   owners?: string[];
   iframeUrl?: string;
   autoPlay?: boolean;
-  events?: Array<UpcomingEvent>; //@debt typing is this optional? I have a feeling this no longer exists @chris confirm
-  placement?: VenuePlacement;
   zoomUrl?: string;
   mapBackgroundImageUrl?: string;
-  placementRequests?: string;
   radioStations?: string[];
   radioTitle?: string;
-  dustStorm?: boolean;
-  activity?: string;
   banner?: Banner;
   playaIcon?: PlayaIcon;
   playaIcon2?: PlayaIcon;
-  miniAvatars?: boolean;
   samlAuthProviderId?: string;
-  showAddress?: boolean;
-  showGiftATicket?: boolean;
   columns?: number;
   rows?: number;
-  nightCycle?: boolean;
-  hasPaidEvents?: boolean;
-  profileAvatars?: boolean;
   hideVideo?: boolean;
   showGrid?: boolean;
   roomVisibility?: RoomVisibility;
   rooms?: Room[];
-  width: number;
-  height: number;
-  subtitle?: string;
-  showLearnMoreLink?: boolean;
   start_utc_seconds?: number;
   end_utc_seconds?: number;
-  ticketUrl?: string;
   showReactions?: boolean;
   showContent?: boolean;
   isReactionsMuted?: boolean;
   showShoutouts?: boolean;
-  auditoriumColumns?: number;
-  auditoriumRows?: number;
   sectionsCount?: number;
   termsAndConditions: TermOfService[];
   userStatuses?: UserStatus[];
@@ -154,9 +129,6 @@ export interface BaseVenue {
   recentUsersSampleSize?: number;
   updatedAt?: number;
   worldId: string;
-  enableJukebox?: boolean;
-  requiresDateOfBirth?: boolean;
-  showBadges?: boolean;
   backgroundImageUrl?: string;
 }
 
@@ -175,28 +147,7 @@ export interface AnimateMapVenue extends BaseVenue {
 // @debt we probably don't want to include id directly here.. that's what WithId is for
 export interface PartyMapVenue extends BaseVenue {
   id: string;
-  template: VenueTemplate.partymap | VenueTemplate.themecamp;
-
-  // @debt The following keys are marked as required on this type, but i'm not sure they should be:
-  //   url, name (we seem to be using icon to hold the URL of the image)
-  host?: {
-    url: string;
-    icon: string;
-    name: string;
-  };
-
-  description?: {
-    text: string;
-    program_url?: string;
-  };
-
-  start_utc_seconds?: number;
-  duration_hours?: number;
-  party_name?: string;
-  map_viewbox?: string;
-  password?: string;
-  admin_password?: string;
-  rooms?: Room[];
+  template: VenueTemplate.partymap;
 }
 
 export interface JazzbarVenue extends BaseVenue {
@@ -206,7 +157,6 @@ export interface JazzbarVenue extends BaseVenue {
   host: {
     icon: string;
   };
-  enableJukebox?: boolean;
 }
 
 export interface ArtPieceVenue extends BaseVenue {
@@ -297,7 +247,6 @@ export interface VenueLandingPageConfig {
   checkList: string[];
   iframeUrl?: string;
   joinButtonText?: string;
-  quotations?: Quotation[];
 }
 
 export interface VenuePlacement {
@@ -375,16 +324,6 @@ export const isPartyMapVenue = (venue: AnyVenue): venue is PartyMapVenue =>
 
 export const isNotPartyMapVenue = (venue: AnyVenue) =>
   venue.template !== VenueTemplate.partymap;
-
-export const urlFromImage = (
-  defaultValue: string,
-  filesOrUrl?: FileList | string
-) => {
-  if (typeof filesOrUrl === "string") return filesOrUrl;
-  return filesOrUrl && filesOrUrl.length > 0
-    ? URL.createObjectURL(filesOrUrl[0])
-    : defaultValue;
-};
 
 export type Channel = {
   name: string;

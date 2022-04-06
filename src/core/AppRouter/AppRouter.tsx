@@ -18,7 +18,6 @@ import {
   ATTENDEE_STEPPING_PARAM_URL,
   EXTERNAL_SPARKLE_HOMEPAGE_URL,
   EXTERNAL_SPARKLEVERSE_HOMEPAGE_URL,
-  LOGIN_CUSTOM_TOKEN_PARAM_URL,
   ROOT_URL,
   SPARKLEVERSE_REDIRECT_URL,
 } from "settings";
@@ -32,8 +31,6 @@ import {
 } from "utils/url";
 
 import { RelatedVenuesProvider } from "hooks/useRelatedVenues";
-
-import { LoginWithCustomToken } from "pages/Account/LoginWithCustomToken";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
@@ -173,11 +170,6 @@ export const AppRouter: React.FC = () => (
           // Subs END
         }
 
-        <Route path={LOGIN_CUSTOM_TOKEN_PARAM_URL}>
-          <AnalyticsCheck>
-            <LoginWithCustomToken />
-          </AnalyticsCheck>
-        </Route>
         <Route path={ATTENDEE_LANDING_URL}>
           <RelatedVenuesProvider>
             <AnalyticsCheck>

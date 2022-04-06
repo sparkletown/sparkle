@@ -1,1 +1,1 @@
-export { JazzBarPage } from "components/templates/Jazzbar/JazzBarPage";
+export { JazzBar } from "./JazzBar";
