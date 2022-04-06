@@ -1,0 +1,18 @@
+@use "scss/attendee/font";
+
+.container {
+  text-align: center;
+  padding: 0 12px;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 420px;
+}
+
+.title {
+  font-size: font.$size--xl;
+  font-weight: normal;
+}
+
+.subtitle {
+  font-size: font.$size--md;
+}

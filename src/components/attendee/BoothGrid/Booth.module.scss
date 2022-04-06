@@ -1,0 +1,32 @@
+@use "scss/attendee/border";
+@use "scss/attendee/space";
+@use "scss/attendee/effects/sparkle";
+@use "scss/attendee/effects/rounded";
+@use "scss/attendee/effects/atom";
+@use "scss/attendee/theme";
+@use "scss/attendee/breakpoint";
+
+$booth-width: 255px;
+$booth-height: 202px;
+
+.container {
+  @include sparkle.panel--glass;
+  @include rounded.normal;
+  width: $booth-width;
+  height: $booth-height;
+  overflow: hidden;
+}
+
+.contents {
+  padding: space.gap(6) space.gap(12);
+}
+
+.title {
+  display: block;
+  margin-bottom: space.gap(12);
+}
+
+.presenceCount {
+  display: block;
+  margin-bottom: space.gap(7);
+}

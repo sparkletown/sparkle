@@ -41,7 +41,7 @@ export interface UserAvatarProps extends ContainerClassName {
 
 // @debt The avatar sizes are a duplicate of $avatar-sizes-map inside UserAvatar.module.scss
 const AVATAR_SIZE_MAP: { [key in UserAvatarSize]: number | null } = {
-  small: 25,
+  small: 30,
   medium: 42,
   large: 54,
   xlarge: 100,
