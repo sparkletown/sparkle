@@ -3,7 +3,7 @@ import { RefObject } from "react";
 import styles from "./AttendeeFooter.module.scss";
 
 type AttendeeFooterProps = {
-  forwardRef: RefObject<HTMLElement>;
+  forwardRef?: RefObject<HTMLElement>;
 };
 export const AttendeeFooter: React.FC<AttendeeFooterProps> = ({
   forwardRef,

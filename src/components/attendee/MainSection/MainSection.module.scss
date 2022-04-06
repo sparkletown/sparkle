@@ -1,0 +1,16 @@
+@use "scss/attendee/layer";
+
+.general {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  transition: padding-right 0.2s ease;
+  padding-right: 0;
+  z-index: layer.$z-index--space;
+  transition: filter 2s ease;
+}
+
+.blur {
+  filter: blur(100px) contrast(60%);
+}
