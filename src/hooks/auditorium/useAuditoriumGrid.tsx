@@ -2,6 +2,8 @@ import React, { useCallback, useMemo } from "react";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+import { SECTION_CAPACITY } from "settings";
+
 import { SeatPosition } from "types/grid";
 
 import { UserProfilePicture } from "components/molecules/UserProfilePicture";
@@ -39,9 +41,8 @@ export const useAuditoriumGrid = ({
   getUserBySeat,
   takeSeat,
 }: UseAuditoriumGridProps) => {
-  const seatCount = 225;
   return useMemo(() => {
-    return Array.from(Array(seatCount)).map((_, seatIndex) => {
+    return Array.from(Array(SECTION_CAPACITY)).map((_, seatIndex) => {
       const user = getUserBySeat({
         seatIndex,
       });

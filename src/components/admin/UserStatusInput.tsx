@@ -1,6 +1,6 @@
-import React, { useCallback } from "react";
+import React, { ReactNode, useCallback } from "react";
 import { CirclePicker, ColorResult } from "react-color";
-import { UseFormRegister } from "react-hook-form";
+import { FieldErrors, FieldValues, UseFormRegister } from "react-hook-form";
 import { Button } from "components/admin/Button";
 import { Input } from "components/admin/Input";
 import { InputGroup } from "components/admin/InputGroup";
@@ -10,10 +10,13 @@ import { WorldAdvancedFormInput } from "types/world";
 
 import { useShowHide } from "hooks/useShowHide";
 
-import { AdminInputProps } from "components/molecules/AdminInput";
-
 export interface UserStatusInputProps
-  extends Omit<AdminInputProps, "onChange" | "name"> {
+  extends Omit<React.HTMLProps<HTMLInputElement>, "label" | "onChange"> {
+  label?: ReactNode | string;
+  subtext?: ReactNode | string;
+  errors?: FieldErrors<FieldValues>;
+  hidden?: boolean;
+
   item?: UserStatus;
   index: number;
   onChange?: (item: UserStatus) => void;

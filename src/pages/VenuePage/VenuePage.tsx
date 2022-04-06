@@ -3,7 +3,7 @@ import { Redirect } from "react-router-dom";
 import { useTitle } from "react-use";
 
 import {
-  ACCOUNT_PROFILE_VENUE_PARAM_URL,
+  ACCOUNT_PROFILE_SPACE_PARAM_URL,
   ATTENDEE_STEPPING_PARAM_URL,
   DEFAULT_ENTER_STEP,
   LOC_UPDATE_FREQ_MS,
@@ -227,7 +227,7 @@ export const VenuePage: React.FC<VenuePageProps> = ({
     return (
       <Redirect
         to={generateUrl({
-          route: ACCOUNT_PROFILE_VENUE_PARAM_URL,
+          route: ACCOUNT_PROFILE_SPACE_PARAM_URL,
           required: ["worldSlug"],
           params: { worldSlug, spaceSlug },
         })}

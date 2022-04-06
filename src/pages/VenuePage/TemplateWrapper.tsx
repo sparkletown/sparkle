@@ -6,7 +6,6 @@ import { SpaceWithId } from "types/id";
 import { AnyVenue } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
 
-import { WithId } from "utils/id";
 import { tracePromise } from "utils/performance";
 import { isWebGl2Enabled } from "utils/webgl";
 
@@ -20,7 +19,7 @@ import { ConversationSpace } from "components/templates/ConversationSpace";
 import { Embeddable } from "components/templates/Embeddable";
 import { ExperimentalSpace } from "components/templates/ExperimentalSpace";
 import { ExternalRoom } from "components/templates/ExternalRoom";
-import { JazzBar } from "components/templates/Jazzbar/JazzBar";
+import { JazzBar } from "components/templates/Jazzbar";
 import { MeetingRoom } from "components/templates/MeetingRoom";
 import { PartyMap } from "components/templates/PartyMap";
 import { PosterHall } from "components/templates/PosterHall";
@@ -40,7 +39,7 @@ const AnimateMap = lazy(() =>
 );
 
 interface TemplateWrapperProps {
-  venue: WithId<AnyVenue>;
+  venue: SpaceWithId;
 }
 
 export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
@@ -84,7 +83,7 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       break;
 
     case VenueTemplate.embeddable:
-      template = <Embeddable venue={venue} />;
+      template = <Embeddable space={venue} />;
       break;
 
     case VenueTemplate.posterhall:
@@ -100,21 +99,14 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       break;
 
     case VenueTemplate.meetingroom:
-      template = <MeetingRoom space={venue as SpaceWithId} />;
+      template = <MeetingRoom space={venue} />;
       break;
 
     case VenueTemplate.experiment:
       template = <ExperimentalSpace venue={venue} />;
       break;
 
-    case VenueTemplate.friendship:
-    case VenueTemplate.themecamp:
-    case VenueTemplate.audience:
-    case VenueTemplate.artcar:
-    case VenueTemplate.performancevenue:
-    case VenueTemplate.avatargrid:
     case VenueTemplate.playa:
-    case VenueTemplate.preplaya:
       template = (
         <div>
           Legacy Template: ${venue.template} has been removed from the platform

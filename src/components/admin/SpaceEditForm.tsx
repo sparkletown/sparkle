@@ -34,8 +34,6 @@ import {
   MAX_SECTIONS_AMOUNT,
   MIN_SECTIONS_AMOUNT,
   PORTAL_INFO_ICON_MAPPING,
-  SECTION_DEFAULT_COLUMNS_COUNT,
-  SECTION_DEFAULT_ROWS_COUNT,
   SUBVENUE_TEMPLATES,
   ZOOM_URL_TEMPLATES,
 } from "settings";
@@ -101,9 +99,6 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
       showGrid: space.showGrid ?? false,
       showReactions: space.showReactions ?? DEFAULT_SHOW_REACTIONS,
       showShoutouts: space.showShoutouts ?? DEFAULT_SHOW_SHOUTOUTS,
-      auditoriumColumns:
-        space.auditoriumColumns ?? SECTION_DEFAULT_COLUMNS_COUNT,
-      auditoriumRows: space.auditoriumRows ?? SECTION_DEFAULT_ROWS_COUNT,
       columns: space.columns ?? 0,
       autoPlay: space.autoPlay ?? DEFAULT_VENUE_AUTOPLAY,
       isReactionsMuted: space.isReactionsMuted ?? DEFAULT_REACTIONS_MUTED,
@@ -127,8 +122,6 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
       space.showGrid,
       space.showReactions,
       space.showShoutouts,
-      space.auditoriumColumns,
-      space.auditoriumRows,
       space.columns,
       space.autoPlay,
       space.isReactionsMuted,
@@ -496,29 +489,6 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
           {space.template === VenueTemplate.auditorium && (
             <>
               <SidebarHeader>Extras</SidebarHeader>
-              <InputGroup title=" Number of seats columns">
-                <Input
-                  defaultValue={SECTION_DEFAULT_COLUMNS_COUNT}
-                  min={5}
-                  type="number"
-                  name="auditoriumColumns"
-                  register={register}
-                  className="align-left"
-                  placeholder="Number of seats columns"
-                  errors={errors}
-                />
-              </InputGroup>
-
-              <InputGroup title="Number of seats rows">
-                <Input
-                  name="auditoriumRows"
-                  type="number"
-                  className="align-left"
-                  placeholder="Number of seats rows"
-                  min={5}
-                  register={register}
-                />
-              </InputGroup>
 
               <InputGroup title="Number of sections" isOptional>
                 <Input

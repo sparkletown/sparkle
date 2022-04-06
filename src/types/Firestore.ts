@@ -16,7 +16,6 @@ import {
   VenueChatMessage,
 } from "types/chat";
 import { Reaction } from "types/reactions";
-import { Role } from "types/Role";
 import { ScreeningRoomVideo } from "types/screeningRoom";
 import { Table } from "types/Table";
 import { User } from "types/User";
@@ -86,7 +85,6 @@ export interface FirestoreStatus {
 // note: these entries should be sorted alphabetically
 export interface FirestoreData {
   adminRole?: AdminRole;
-  allowAllRoles?: Record<string, Role>;
   currentVenue?: AnyVenue;
   currentVenueEventsNG?: Record<string, WorldEvent>;
   currentVenueNG?: AnyVenue;
@@ -99,7 +97,6 @@ export interface FirestoreData {
   screeningRoomVideos: Record<string, ScreeningRoomVideo>;
   animatemapFirebarrels: Partial<Record<string, Firebarrel>>;
   animatemapArtcars: Partial<Record<string, ArtCar>>;
-  userRoles?: Record<string, Role>;
   venueChatMessages?: Record<string, VenueChatMessage>;
   venueJukeboxMessages?: Record<string, JukeboxMessage>;
   venueEvents?: Record<string, WorldEvent>;

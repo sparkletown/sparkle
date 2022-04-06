@@ -1,10 +1,10 @@
+import { NotFound } from "components/shared/NotFound";
+
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 
 import { LoginFormData } from "pages/auth/LoginForm";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
-
-import { NotFoundFallback } from "components/atoms/NotFoundFallback";
 
 import { RegisterForm } from "./RegisterForm";
 
@@ -41,6 +41,6 @@ export const RegisterFormHoc = (props: RegisterFormHocProps) => {
       isWorldLoaded={isLoaded}
     />
   ) : (
-    <NotFoundFallback />
+    <NotFound />
   );
 };

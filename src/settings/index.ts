@@ -76,22 +76,17 @@ export const IFRAME_ALLOW_ADVANCED = `${IFRAME_ALLOW} camera; microphone;`;
 // These templates use zoomUrl (they should remain alphabetically sorted)
 // @debt Refactor this constant into types/venues + create an actual custom type grouping for it
 // @debt unify this with ZOOM_URL_TEMPLATES in functions/venue.js + share the same code between frontend/backend
-export const ZOOM_URL_TEMPLATES = Object.freeze([
-  VenueTemplate.artcar,
-  VenueTemplate.zoomroom,
-]);
+export const ZOOM_URL_TEMPLATES = Object.freeze([VenueTemplate.zoomroom]);
 
 // These templates use iframeUrl (they should remain alphabetically sorted)
 // @debt Refactor this constant into types/venues + create an actual custom type grouping for it
 // @debt unify this with IFRAME_TEMPLATES in functions/venue.js + share the same code between frontend/backend
 export const IFRAME_TEMPLATES = Object.freeze([
   VenueTemplate.artpiece,
-  VenueTemplate.audience,
   VenueTemplate.auditorium,
   VenueTemplate.embeddable,
   VenueTemplate.firebarrel,
   VenueTemplate.jazzbar,
-  VenueTemplate.performancevenue,
   VenueTemplate.posterpage,
   VenueTemplate.viewingwindow,
 ]);
@@ -103,14 +98,12 @@ export const EMBEDDABLE_CONTENT_TEMPLATES = Object.freeze([
 
 // @debt Refactor this constant into types/venues + create an actual custom type grouping for it
 export const BACKGROUND_IMG_TEMPLATES = [
-  VenueTemplate.themecamp,
   VenueTemplate.partymap,
   VenueTemplate.animatemap,
 ];
 
 // @debt Refactor this constant into types/venues + create an actual custom type grouping for it
 export const SUBVENUE_TEMPLATES = [
-  VenueTemplate.themecamp,
   VenueTemplate.partymap,
   VenueTemplate.animatemap,
 ];
@@ -129,7 +122,6 @@ export interface Template {
 
 // @debt Refactor this constant into types/templates + create an actual custom type grouping for it
 export const HAS_ROOMS_TEMPLATES: Array<VenueTemplate> = [
-  VenueTemplate.themecamp,
   VenueTemplate.partymap,
   VenueTemplate.animatemap,
   VenueTemplate.playa,
@@ -137,7 +129,6 @@ export const HAS_ROOMS_TEMPLATES: Array<VenueTemplate> = [
 
 // @debt Refactor this constant into types/templates + create an actual custom type grouping for it
 export const HAS_GRID_TEMPLATES: Array<VenueTemplate> = [
-  VenueTemplate.themecamp,
   VenueTemplate.partymap,
   VenueTemplate.animatemap,
 ];
@@ -145,7 +136,6 @@ export const HAS_GRID_TEMPLATES: Array<VenueTemplate> = [
 // @debt Refactor this constant into types/templates + create an actual custom type grouping for it
 // @debt unify this with HAS_REACTIONS_TEMPLATES in functions/venue.js + share the same code between frontend/backend
 export const HAS_REACTIONS_TEMPLATES: Array<VenueTemplate> = [
-  VenueTemplate.audience,
   VenueTemplate.auditorium,
   VenueTemplate.jazzbar,
 ];

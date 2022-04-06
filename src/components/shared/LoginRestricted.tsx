@@ -1,13 +1,15 @@
 import React, { lazy, ReactNode } from "react";
+import { Unauthorized } from "components/shared/Unauthorized";
 
 import { tracePromise } from "utils/performance";
 
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
-import { useAdminContextCheck } from "hooks/useAdminContextCheck";
 import { useUserId } from "hooks/user/useUserId";
 
 import { Loading } from "components/molecules/Loading";
 import { LoadingPage } from "components/molecules/LoadingPage";
+
+// NOTE: lazy() is used for code splitting since admin and attendee sides load different style libraries
 
 const LoginWithWorldAndSpace = lazy(() =>
   tracePromise("AppRouter::lazy-import::Login", () =>
@@ -30,7 +32,6 @@ export const LoginRestricted: React.FC<LoginRestrictedProps> = ({
 }) => {
   const { spaceSlug, worldSlug } = useSpaceParams();
   const { userId, isLoading } = useUserId();
-  const isAdmin = useAdminContextCheck();
 
   if (isLoading) {
     if ("spinner" === loading) return <Loading />;
@@ -46,21 +47,6 @@ export const LoginRestricted: React.FC<LoginRestrictedProps> = ({
     return <LoginWithWorldAndSpace />;
   }
 
-  if (isAdmin) {
-    // @debt this component should only redirect to login components, replace the following text
-    return (
-      <>
-        You are not logged in. Please navigate to an admin URL that contains
-        world and space slugs.
-      </>
-    );
-  }
-
-  return (
-    // @debt this component should only redirect to login components, replace the following text
-    <>
-      Sorry, you are not logged in. The login requires world and space slugs in
-      the URL. We are working on a better login experience.
-    </>
-  );
+  // @debt this component should only redirect to login components, replace the following
+  return <Unauthorized />;
 };

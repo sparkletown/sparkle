@@ -2,6 +2,7 @@ import React, { useCallback, useEffect } from "react";
 import { useForm, useFormState } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn } from "react-use";
+import { NotFound } from "components/shared/NotFound";
 
 import {
   externalUrlAdditionalProps,
@@ -15,7 +16,6 @@ import { Loading } from "components/molecules/Loading";
 import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
-import { NotFound } from "components/atoms/NotFound";
 
 import { updateUserProfile } from "./helpers";
 
