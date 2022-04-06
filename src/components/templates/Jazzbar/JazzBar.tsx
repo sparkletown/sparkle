@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
+import { BoothGrid } from "components/attendee/BoothGrid";
 import { MediaElement } from "components/attendee/MediaElement";
+import { StaticInfoBlock } from "components/attendee/StaticInfoBlock";
 import { TableGrid } from "components/attendee/TableGrid";
 
 import { JAZZBAR_TABLES } from "settings";
@@ -48,6 +50,12 @@ export const JazzBar: React.FC<JazzProps> = ({ space }) => {
         defaultTables={JAZZBAR_TABLES}
         user={userWithId}
       />
+
+      <StaticInfoBlock
+        title="Booths"
+        subtitle="Have meetings with screen-sharing in booths"
+      />
+      <BoothGrid space={space} user={userWithId} />
     </>
   );
 };

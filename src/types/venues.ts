@@ -91,6 +91,9 @@ export interface BaseVenue {
   worldId: string;
   backgroundImageUrl?: string;
   presentUserCachedCount: number;
+  // Optional: The space that manages this one. This is used for system managed
+  // spaces such as poster pages and meeting room booths.
+  managedBy?: SpaceId;
 }
 
 export interface GenericVenue extends BaseVenue {
