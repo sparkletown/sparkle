@@ -105,11 +105,13 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ onClose }) => {
           variant="overlay-search"
           onChange={onSearchInputChange}
           onLabelClick={initiateSearch}
+          onEnter={initiateSearch}
           label="Search"
           autoComplete="off"
         />
       </div>
-      {!!totalResultNumber && (
+
+      {searchQuery && (
         <div className={CN.searchOverlayCount}>
           {totalResultNumber} results for {`"${searchQuery}"`}
         </div>

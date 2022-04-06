@@ -2,13 +2,20 @@ import React from "react";
 import { FieldError, RegisterOptions, UseFormRegister } from "react-hook-form";
 import classNames from "classnames";
 
+import { ALWAYS_NOOP_FUNCTION } from "settings";
+
 import { AnyForm } from "types/utility";
 
+import { useKeyPress } from "hooks/useKeyPress";
+
 import CN from "./Input.module.scss";
+
+const HANDLED_KEY_PRESSES = ["Enter"];
 
 type InputProps = React.HTMLProps<HTMLInputElement> & {
   error?: FieldError;
   onLabelClick?: () => void;
+  onEnter?: () => void;
   label?: string;
   name?: string;
   register?: UseFormRegister<AnyForm> | (() => void);
@@ -22,6 +29,7 @@ export const Input: React.ForwardRefRenderFunction<
   InputProps
 > = ({
   onLabelClick,
+  onEnter = ALWAYS_NOOP_FUNCTION,
   error,
   label,
   register,
@@ -41,29 +49,30 @@ export const Input: React.ForwardRefRenderFunction<
   );
   const registerProps = name && register ? register(name, rules) : {};
 
+  const handleKeyPress = useKeyPress({
+    keys: HANDLED_KEY_PRESSES,
+    onPress: onEnter,
+  });
+
   return (
     <div data-bem="Input" className={CN.input}>
-      {label ? (
-        <div className={CN.inputWrapper}>
-          <label data-label={label} onClick={onLabelClick}>
-            <input
-              {...registerProps}
-              className={inputClassNames}
-              {...extraInputProps}
-            />
-            {error && <span className={CN.errorIcon} />}
+      <div className={CN.inputWrapper}>
+        <input
+          {...registerProps}
+          className={inputClassNames}
+          {...extraInputProps}
+          onKeyDown={handleKeyPress}
+        />
+
+        {label && (
+          <label className={CN.label} onClick={onLabelClick}>
+            {label}
           </label>
-        </div>
-      ) : (
-        <div className={CN.inputWrapper}>
-          <input
-            {...registerProps}
-            className={inputClassNames}
-            {...extraInputProps}
-          />
-          {error && <span className={CN.errorIcon} />}
-        </div>
-      )}
+        )}
+
+        {error && <span className={CN.errorIcon} />}
+      </div>
+
       {error && <span className={CN.inputError}>{error.message}</span>}
     </div>
   );
