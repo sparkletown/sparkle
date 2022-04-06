@@ -1,10 +1,5 @@
 import React, { lazy, Suspense } from "react";
-import {
-  BrowserRouter as Router,
-  Redirect,
-  Route,
-  Switch,
-} from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { LoginRestricted } from "components/shared/LoginRestricted";
 import { NotFound } from "components/shared/NotFound";
 import { AnalyticsCheck } from "core/AnalyticsCheck";
@@ -22,13 +17,7 @@ import {
   SPARKLEVERSE_REDIRECT_URL,
 } from "settings";
 
-import { SpaceSlug, WorldSlug } from "types/id";
-
 import { tracePromise } from "utils/performance";
-import {
-  generateAttendeeInsideUrl,
-  generateAttendeeSpaceLandingUrl,
-} from "utils/url";
 
 import { RelatedVenuesProvider } from "hooks/useRelatedVenues";
 
@@ -84,79 +73,13 @@ const EmergencyViewPage = lazy(() =>
   )
 );
 
-/////////////////////////////////////////////////////////////////////////////////////
-// NOTE: do keep this monkeypatch localized in this file, not spread in others
-// @debt custom urls with AppRouter redirects that are to be removed in the future
-// @see: https://github.com/sparkletown/internal-sparkle-issues/issues/1547
-
-// GOOGLE
-const TEMP_GOOG_WEST_SLUG = "googlecloudwest";
-const TEMP_GOOG_WEST_LANDING = `/v/${TEMP_GOOG_WEST_SLUG}`;
-const TEMP_GOOG_WEST_INSIDE = `/in/${TEMP_GOOG_WEST_SLUG}`;
-// ITERABLE
-const TEMP_ITER_SLUG = "iterable";
-const TEMP_ITER_ROUTE = `/v/${TEMP_ITER_SLUG}`;
-// HONEYCOMB
-const TEMP_HONEYCOMB_SLUG = "honeycomb";
-const TEMP_HONEYCOMB_LANDING = `/v/${TEMP_HONEYCOMB_SLUG}`;
-const TEMP_HONEYCOMB_INSIDE = `/in/${TEMP_HONEYCOMB_SLUG}`;
-/////////////////////////////////////////////////////////////////////////////////////
-
 export const AppRouter: React.FC = () => (
   <Router basename="/">
     <Suspense fallback={<LoadingPage />}>
       <Switch>
         {
-          /////////////////////////////////////////////////////////////////////////
-          // @debt the following temp re-routes should be removed after events' end
-        }
-        <Route path={TEMP_ITER_ROUTE}>
-          <Redirect
-            to={generateAttendeeSpaceLandingUrl(
-              TEMP_ITER_SLUG as WorldSlug,
-              TEMP_ITER_SLUG as SpaceSlug
-            )}
-          />
-        </Route>
-        <Route path={TEMP_GOOG_WEST_LANDING}>
-          <Redirect
-            to={generateAttendeeSpaceLandingUrl(
-              TEMP_GOOG_WEST_SLUG as WorldSlug,
-              TEMP_GOOG_WEST_SLUG as SpaceSlug
-            )}
-          />
-        </Route>
-        <Route path={TEMP_GOOG_WEST_INSIDE}>
-          <Redirect
-            to={generateAttendeeInsideUrl({
-              worldSlug: TEMP_GOOG_WEST_SLUG as WorldSlug,
-              spaceSlug: TEMP_GOOG_WEST_SLUG as SpaceSlug,
-            })}
-          />
-        </Route>
-        <Route path={TEMP_HONEYCOMB_LANDING}>
-          <Redirect
-            to={generateAttendeeSpaceLandingUrl(
-              TEMP_HONEYCOMB_SLUG as WorldSlug,
-              TEMP_HONEYCOMB_SLUG as SpaceSlug
-            )}
-          />
-        </Route>
-        <Route path={TEMP_HONEYCOMB_INSIDE}>
-          <Redirect
-            to={generateAttendeeInsideUrl({
-              worldSlug: TEMP_HONEYCOMB_SLUG as WorldSlug,
-              spaceSlug: TEMP_HONEYCOMB_SLUG as SpaceSlug,
-            })}
-          />
-        </Route>
-        {
-          /////////////////////////////////////////////////////////////////////////
-        }
-
-        {
           // Subs BEGIN
-          // Subs get their analytics treatment inside them
+          // Sub-routes get their analytics treatment inside them
         }
         <Route path={ACCOUNT_ROOT_URL}>
           <RelatedVenuesProvider>
@@ -212,7 +135,7 @@ export const AppRouter: React.FC = () => (
           }}
         />
         <Route
-          // NOTE: must have exact here so it doesn't override the default that folloes
+          // NOTE: must have exact here so that route doesn't override the default that follows
           exact
           path={ROOT_URL}
           render={() => {
