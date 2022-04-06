@@ -2,6 +2,8 @@
 @use "scss/attendee/space";
 @use "scss/attendee/theme";
 
+$button-height: 42px;
+
 .card {
   display: absolute;
   background: theme.$c-panel-background;
@@ -19,7 +21,11 @@
 @each $class, $size in layout.$card-sizes {
   .#{$class} {
     width: $size;
-    height: $size;
+    min-height: $size;
     flex-shrink: 0;
+  }
+
+  .#{$class}.withoutButton {
+    min-height: calc($size - 42px);
   }
 }
