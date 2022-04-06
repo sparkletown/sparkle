@@ -572,9 +572,7 @@ export const upsertRoom = functions.https.onCall(async (data, context) => {
   await throwErrorIfNeitherWorldNorSpaceOwner({
     spaceId: venueId,
     worldId: space.worldId,
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    userId: context.auth.token.user_id,
+    userId: context.auth?.token.user_id,
   });
 
   const doc = await admin.firestore().collection("venues").doc(venueId).get();
@@ -608,9 +606,7 @@ export const deletePortal = functions.https.onCall(async (data, context) => {
   await throwErrorIfNeitherWorldNorSpaceOwner({
     spaceId,
     worldId: space.worldId,
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    userId: context.auth.token.user_id,
+    userId: context.auth?.token.user_id,
   });
 
   const doc = await admin.firestore().collection("venues").doc(spaceId).get();
@@ -636,7 +632,7 @@ export const deletePortal = functions.https.onCall(async (data, context) => {
     docData.rooms.splice(index, 1);
   }
 
-  admin.firestore().collection("venues").doc(spaceId).update(docData);
+  doc.ref.update(docData);
 });
 
 // @debt this is almost a line for line duplicate of exports.updateVenue, we should de-duplicate/DRY these up
