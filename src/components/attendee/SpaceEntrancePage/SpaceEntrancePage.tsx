@@ -1,23 +1,23 @@
 import React, { useCallback } from "react";
 import { Redirect, useHistory, useParams } from "react-router-dom";
-import { WithAuthProps } from "components/hocs/db/withAuth";
-import { WithProfileProps } from "components/hocs/db/withProfile";
-import { WithWorldOrSpaceProps } from "components/hocs/db/withWorldOrSpace";
+import { WelcomeVideo } from "components/attendee/WelcomeVideo";
 
 import {
-  ACCOUNT_PROFILE_VENUE_PARAM_URL,
+  ACCOUNT_PROFILE_SPACE_PARAM_URL,
   ATTENDEE_STEPPING_PARAM_URL,
 } from "settings";
+
+import { World } from "api/world";
 
 import {
   EntranceStepTemplate,
   EntranceStepTemplateProps,
 } from "types/EntranceStep";
+import { SpaceSlug, WorldSlug } from "types/id";
+import { Profile } from "types/User";
 
 import { isCompleteProfile } from "utils/profile";
 import { generateAttendeeInsideUrl, generateUrl } from "utils/url";
-
-import { WelcomeVideo } from "pages/entrance/WelcomeVideo";
 
 const ENTRANCE_STEP_TEMPLATE: Record<
   EntranceStepTemplate,
@@ -26,13 +26,15 @@ const ENTRANCE_STEP_TEMPLATE: Record<
   [EntranceStepTemplate.WelcomeVideo]: WelcomeVideo,
 };
 
-type VenueEntrancePageProps = WithAuthProps &
-  WithProfileProps &
-  WithWorldOrSpaceProps;
+type SpaceEntrancePageProps = {
+  profile: Profile;
+  spaceSlug: SpaceSlug;
+  world: World;
+  worldSlug: WorldSlug;
+};
 
-export const VenueEntrancePage: React.FC<VenueEntrancePageProps> = ({
+export const SpaceEntrancePage: React.FC<SpaceEntrancePageProps> = ({
   profile,
-  space,
   spaceSlug,
   world,
   worldSlug,
@@ -65,7 +67,7 @@ export const VenueEntrancePage: React.FC<VenueEntrancePageProps> = ({
     return (
       <Redirect
         to={generateUrl({
-          route: ACCOUNT_PROFILE_VENUE_PARAM_URL,
+          route: ACCOUNT_PROFILE_SPACE_PARAM_URL,
           required: ["worldSlug"],
           params: { worldSlug, spaceSlug },
         })}
@@ -80,11 +82,5 @@ export const VenueEntrancePage: React.FC<VenueEntrancePageProps> = ({
     return null;
   }
 
-  return (
-    <EntranceStepTemplate
-      venueName={space.name}
-      config={stepConfig}
-      proceed={proceed}
-    />
-  );
+  return <EntranceStepTemplate config={stepConfig} proceed={proceed} />;
 };

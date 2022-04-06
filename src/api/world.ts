@@ -121,9 +121,8 @@ export const createFirestoreWorldStartInput: (
 };
 
 export const createFirestoreWorldEntranceInput: (
-  input: WithId<WorldEntranceFormInput>,
-  user: firebase.UserInfo
-) => Promise<Partial<World>> = async (input, user) => {
+  input: WithId<WorldEntranceFormInput>
+) => Promise<Partial<World>> = async (input) => {
   const worldUpdateData: Partial<WithId<World>> = {
     id: input.id,
     adultContent: input?.adultContent,
@@ -236,13 +235,12 @@ export const updateWorldStartSettings = async (
 };
 
 export const updateWorldEntranceSettings = async (
-  world: WithId<WorldEntranceFormInput>,
-  user: firebase.UserInfo
+  world: WithId<WorldEntranceFormInput>
 ) => {
   return await httpsCallable(
     FIREBASE.functions,
     "world-updateWorld"
-  )(await createFirestoreWorldEntranceInput(world, user));
+  )(await createFirestoreWorldEntranceInput(world));
 };
 
 export const updateWorldAdvancedSettings = async (
