@@ -30,9 +30,10 @@ export const BoothGrid: React.FC<BoothGridProps> = ({ space, user }) => {
   );
 
   const renderedBooths = useMemo(() => {
-    const sortedSpaces = [
-      ...managedSpaces,
-    ].sort(({ name: nameA }, { name: nameB }) => nameA.localeCompare(nameB));
+    const sortedSpaces = [...managedSpaces].sort(
+      ({ createdAt: createdAtA }, { createdAt: createdAtB }) =>
+        (createdAtA || 0) - (createdAtB || 0)
+    );
     return sortedSpaces.map((boothSpace) => (
       <Booth key={boothSpace.id} space={boothSpace} />
     ));

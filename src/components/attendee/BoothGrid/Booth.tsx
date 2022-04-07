@@ -8,6 +8,7 @@ import { SpaceWithId } from "types/id";
 
 import { generateUrl } from "utils/url";
 
+import { usePresenceData } from "hooks/user/usePresence";
 import { useWorldParams } from "hooks/worlds/useWorldParams";
 
 import { UserAvatar } from "components/atoms/UserAvatar";
@@ -33,15 +34,17 @@ export const Booth: React.FC<BoothProps> = ({ space }) => {
     history.push(url);
   }, [history, space.slug, worldSlug]);
 
+  const { presentUsers, isLoading: presentUsersLoading } = usePresenceData({
+    spaceId: space.id,
+  });
+
   // @debt these numbers/samples aren't live. There's a bigger piece of work
   // needed to build up a more live stream of where users are that is beyond
   // the scope of this component. These constants are used here so that when
   // that work is done the data should be able to be put into the constants with
   // minimal rework.
-  const usersInBoothCount = space.recentUserCount;
-  const usersInBooth = useMemo(() => space.recentUsersSample || [], [
-    space.recentUsersSample,
-  ]);
+  const usersInBoothCount = presentUsers.length;
+  const usersInBooth = presentUsers;
 
   const presenceUsers = useMemo(() => {
     return usersInBooth.map((user, idx) => {
@@ -63,10 +66,12 @@ export const Booth: React.FC<BoothProps> = ({ space }) => {
     <div className={styles.container}>
       <div className={styles.contents}>
         <span className={styles.title}>{space.name}</span>
-        <div className={styles.presenceContainer}>
-          <span className={styles.presenceCount}>{countText}</span>
-          <span className={styles.presenceUsers}>{presenceUsers}</span>
-        </div>
+        {!presentUsersLoading && (
+          <div className={styles.presenceContainer}>
+            <span className={styles.presenceCount}>{countText}</span>
+            <span className={styles.presenceUsers}>{presenceUsers}</span>
+          </div>
+        )}
       </div>
       <Button variant="panel-primary" onClick={goToSpace}>
         Join
