@@ -3,6 +3,7 @@ import { useForm, useFormState } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button } from "components/admin/Button";
 import { Dropdown } from "components/admin/Dropdown";
+import { Option } from "components/admin/Dropdown/Dropdown";
 import { Input } from "components/admin/Input";
 import { Textarea } from "components/admin/Textarea";
 import dayjs from "dayjs";
@@ -103,13 +104,19 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
     () =>
       spacesMap.map((space) => {
         return (
-          <div key={space.id} onClick={() => setSelectedSpace(space)}>
+          <div key={space.id} data-dropdown-value={space}>
             {space.name}
           </div>
         );
       }) ?? [],
     [spacesMap]
   );
+
+  const selectSpace = (option: Option) => {
+    if (option.value) {
+      setSelectedSpace(option.value as SpaceType);
+    }
+  };
 
   const onUpdateEvent = useCallback(
     async (data: EventInput) => {
@@ -165,7 +172,9 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
           {!eventSpace?.name && (
             <>
               <div className="mb-6">
-                <Dropdown title={"None"}>{renderedSpaceIds}</Dropdown>
+                <Dropdown onSelect={selectSpace} title={"None"}>
+                  {renderedSpaceIds}
+                </Dropdown>
               </div>
               {errors.space && (
                 <span className="text-red-500">
