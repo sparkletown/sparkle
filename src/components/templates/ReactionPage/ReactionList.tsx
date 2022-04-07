@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 import classNames from "classnames";
+import { UserProfilePicture } from "components/attendee/UserProfilePicture";
 
 import { DEFAULT_PARTY_NAME } from "settings";
 
@@ -10,8 +11,6 @@ import {
   isEmojiReaction,
   Reaction,
 } from "types/reactions";
-
-import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
 export interface ReactionListProps {
   reactions: Reaction[];

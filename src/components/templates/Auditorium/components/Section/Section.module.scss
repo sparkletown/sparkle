@@ -24,6 +24,7 @@
   > *:nth-child(1) {
     grid-column-start: 2;
   }
+
   > *:nth-last-child(1) {
     margin-left: auto;
   }
@@ -37,6 +38,7 @@
 
 .leaveButton {
   color: theme.$c-subdued-text;
+
   svg {
     margin-left: space.empty(0.5);
   }
@@ -44,10 +46,18 @@
 
 .gridContainer {
   display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
   max-width: 100vw;
+
+  gap: space.empty(1);
+
+  > * {
+    margin: 0;
+    padding: 0;
+  }
+
   @media (min-width: breakpoint.$md) {
     max-width: 50vw;
   }
-  flex-wrap: wrap;
-  justify-content: center;
 }

@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { UserWithId } from "types/id";
 import { AuditoriumVenue } from "types/venues";
 
+import { createErrorCapture } from "utils/error";
 import { WithId } from "utils/id";
 
 import { useAuditoriumGrid, useAuditoriumSection } from "hooks/auditorium";
@@ -43,7 +44,12 @@ export const Section: React.FC<SectionProps> = ({ user, venue, sectionId }) => {
   // Ensure the user leaves their seat when they leave the section
   useEffect(() => {
     return () => {
-      leaveSeat();
+      leaveSeat().catch(
+        createErrorCapture({
+          message: "Problem leaving seat",
+          where: "Section",
+        })
+      );
     };
   }, [leaveSeat]);
 
@@ -68,7 +74,7 @@ export const Section: React.FC<SectionProps> = ({ user, venue, sectionId }) => {
   if (!auditoriumSection) return <p>The section id is invalid</p>;
 
   return (
-    <div className={styles.section}>
+    <div data-bem="Section" className={styles.section}>
       <div className={styles.sectionHeader}>
         <h2>Auditorium</h2>
         {isUserSeated && (
