@@ -154,7 +154,6 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({
         <InputGroup withLabel title="Select a template">
           <PortalList
             name="template"
-            variant="input"
             items={SPACE_INFO_LIST}
             selectedItem={selectedItem}
             onClick={handlePortalClick}

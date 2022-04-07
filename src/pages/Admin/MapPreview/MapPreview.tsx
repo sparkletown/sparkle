@@ -67,14 +67,25 @@ export const MapPreview: React.FC<MapPreviewProps> = ({
 
   // Updates the map rooms state when the room has been enabled/disabled and the prop has changed
   // We can't set the whole object because it's will update with the old position
+  // Unless the image URL has changed in which case it is fine to set new
+  // width and height
   useEffect(() => {
-    const newMapRooms = mapRooms?.map((mapRoom, index) => ({
-      ...rooms?.[index],
-      x_percent: mapRoom.x_percent,
-      y_percent: mapRoom.y_percent,
-      width_percent: mapRoom.width_percent,
-      height_percent: mapRoom.height_percent,
-    }));
+    const newMapRooms = mapRooms?.map((mapRoom, index) => {
+      if (mapRoom.image_url !== rooms?.[index]?.image_url) {
+        return {
+          ...rooms?.[index],
+          x_percent: mapRoom.x_percent,
+          y_percent: mapRoom.y_percent,
+        };
+      }
+      return {
+        ...rooms?.[index],
+        x_percent: mapRoom.x_percent,
+        y_percent: mapRoom.y_percent,
+        width_percent: mapRoom.width_percent,
+        height_percent: mapRoom.height_percent,
+      };
+    });
 
     if (
       mapRooms.length &&
