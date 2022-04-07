@@ -54,7 +54,7 @@ $-z-index--popover: layer.level($-z-index--ui);
   }
 }
 
-.LayerUiRelative {
+.relative {
   position: relative;
   top: space.empty(3);
   height: 0px;

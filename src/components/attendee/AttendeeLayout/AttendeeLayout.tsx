@@ -42,7 +42,7 @@ export const AttendeeLayout: React.FC<AttendeeLayoutProps> = ({ space }) => {
 
   const isChatRelative = footerIntersect?.isIntersecting;
   const layerUIClasses = classNames(styles.LayerUi, {
-    [styles.LayerUiRelative]: isChatRelative,
+    [styles.relative]: isChatRelative,
     [styles.blur]: isBlurTurnedOn,
   });
 
