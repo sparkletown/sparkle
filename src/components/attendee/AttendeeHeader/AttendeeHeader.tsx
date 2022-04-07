@@ -124,12 +124,7 @@ export const AttendeeHeader: React.FC<AttendeeHeaderProps> = ({
               </span>
             </Button>
           )}
-          {!isLaptopSmall && (
-            <Attendance
-              totalUsersCount={space?.recentUserCount}
-              usersSample={space?.recentUsersSample}
-            />
-          )}
+          {!isLaptopSmall && space && <Attendance space={space} />}
           <div>{renderedCaptions}</div>
         </div>
       </header>

@@ -14,6 +14,7 @@ import {
 const DEFAULT_RECENT_USERS_IN_VENUE_CHUNK_SIZE = 6;
 const SECTION_PREVIEW_USER_DISPLAY_COUNT = 14;
 const USER_INACTIVE_THRESHOLD = minutesToMilliseconds(1);
+const USER_PRESENCE_STALE_THRESHOLD = minutesToMilliseconds(2);
 export const BATCH_MAX_OPS = 500;
 
 const removeDanglingSeatedUsers = async () => {
@@ -308,4 +309,61 @@ export const updateVenuesChatCounters = functions.pubsub
           .update({ value: counter });
       })
     );
+  });
+
+/*
+ * Removes stale presence records and then updates the cache of counts for each
+ * space
+ */
+export const updatePresenceRecords = functions.pubsub
+  .schedule("every 1 minutes")
+  .onRun(async () => {
+    const firestore = admin.firestore();
+
+    const expiredSittingTimeMs = Date.now() - USER_PRESENCE_STALE_THRESHOLD;
+
+    const { docs } = await firestore
+      .collection("userPresence")
+      .where("lastSeenAt", "<", expiredSittingTimeMs)
+      .get();
+
+    let removedCount = 0;
+    await Promise.all(
+      chunk(docs, BATCH_MAX_OPS / 2).map(async (docsBatch) => {
+        try {
+          const batch = firestore.batch();
+          docsBatch.forEach((userDoc) => {
+            batch.delete(userDoc.ref);
+            removedCount += 1;
+          });
+          return batch.commit();
+        } catch (e) {
+          console.error(e);
+          return null;
+        }
+      })
+    ).then(() =>
+      console.log(`Removed ${removedCount} dangling presence records`)
+    );
+
+    const spaceRefs = await admin
+      .firestore()
+      .collection("venues")
+      .get()
+      .then(({ docs }) => docs.map((d) => d.ref));
+
+    return Promise.all(
+      spaceRefs.map(async (space) => {
+        const presenceDocs = await admin
+          .firestore()
+          .collection("userPresence")
+          .where("spaceId", "==", space.id)
+          .get();
+
+        // If there aren't any subcounters then skip this space
+        await space.update({
+          presentUserCachedCount: presenceDocs.docs.length,
+        });
+      })
+    ).then(() => console.log(`Recached ${spaceRefs.length} presence counts`));
   });
