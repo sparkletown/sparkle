@@ -5,6 +5,14 @@
 @use "scss/attendee/effects/sparkle";
 @use "scss/attendee/theme";
 
+.popupWrapper {
+  position: absolute;
+  top: calc(100% + space.empty(1));
+  left: space.empty(-4);
+  min-width: 200px;
+  cursor: default;
+}
+
 .PortalPopupInfo {
   @include sparkle.panel--glass;
   @include rounded.normal;
@@ -14,6 +22,7 @@
   max-width: 200px;
   display: flex;
   flex-direction: column;
+  cursor: text;
 
   h3 {
     @include font.body;

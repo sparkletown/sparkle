@@ -64,6 +64,7 @@ interface DropdownProps {
   placement?: MenuPlacement;
   noArrow?: boolean;
   onSelect?: (option: Option) => void;
+  titleElement?: JSX.Element;
 }
 
 export type Option = {
@@ -75,10 +76,13 @@ export const Dropdown: React.FC<DropdownProps> = ({
   title,
   children,
   onSelect,
+  titleElement,
 }) => {
   const [isOpened, setOpened] = useState<boolean>(false);
   const [selectedOption, setSelectedOption] = useState<Option>();
-
+  const titleName = !selectedOption
+    ? titleElement?.props?.["data-dropdown-value"]
+    : null;
   const options = React.Children.map(children, remap) ?? ALWAYS_EMPTY_ARRAY;
 
   const selectOption = (option: Option) => {
@@ -96,7 +100,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
       >
         {selectedOption?.label ?? title}
         <svg
-          className="ml-2 w-4 h-4"
+          className="ml-2 w-4 h-4 self-center"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -115,7 +119,8 @@ export const Dropdown: React.FC<DropdownProps> = ({
           {options.map((option, index) => {
             const isSelected =
               option.value === selectedOption?.value ||
-              (!selectedOption && !option.value);
+              option.value === titleName ||
+              (!selectedOption && !option.value && !titleName);
             const textContainerClasses = isSelected
               ? "font-semibold select-none relative py-2 pl-3 pr-9"
               : "select-none relative py-2 pl-3 pr-9";

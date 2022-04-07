@@ -119,7 +119,7 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
     const spaceIcon = PORTAL_INFO_ICON_MAPPING[space?.template ?? ""];
 
     return (
-      <span data-dropdown-value={selected.name}>
+      <div className="flex items-center" data-dropdown-value={selected.name}>
         {selected.name !== spaceNoneOption.name ? (
           <img
             alt={`space-icon-${spaceIcon}`}
@@ -128,7 +128,7 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
           />
         ) : null}
         {selected.name || noneOptionName}
-      </span>
+      </div>
     );
   }, [spaces, selected, parentSpace]);
 
@@ -138,7 +138,9 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
         <label className="block text-sm font-medium text-gray-700 mb-1">
           Link portal to a space
         </label>
-        <Dropdown title={renderedTitle}>{renderedOptions}</Dropdown>
+        <Dropdown title={renderedTitle} titleElement={renderedTitle}>
+          {renderedOptions}
+        </Dropdown>
         <input type="hidden" {...register} name={fieldName} />
       </div>
       {error && <span className="input-error">{error.message}</span>}

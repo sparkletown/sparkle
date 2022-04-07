@@ -1,19 +1,21 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useToggle } from "react-use";
 import { PortalModal } from "components/attendee/PortalModal";
 
-import { COVERT_ROOM_TYPES } from "settings";
+import { ALWAYS_EMPTY_OBJECT, COVERT_ROOM_TYPES } from "settings";
 
 import { Room, RoomType } from "types/rooms";
 import { RoomVisibility } from "types/RoomVisibility";
 import { Dimensions, Position } from "types/utility";
 import { PartyMapVenue } from "types/venues";
 
+import { eventTimeAndOrderComparator } from "utils/event";
 import { isExternalPortal, openUrl } from "utils/url";
 
 import { useCustomSound } from "hooks/sounds";
 import { useAnalytics } from "hooks/useAnalytics";
 import { usePortal } from "hooks/usePortal";
+import useVenueScheduleEvents from "hooks/useVenueScheduleEvents";
 
 import { RoomAttendance } from "components/templates/PartyMap/components/RoomAttendance";
 
@@ -33,6 +35,14 @@ export const MapRoom: React.FC<MapRoomProps> = ({
 }) => {
   const { enterPortal } = usePortal({ portal: room });
   const analytics = useAnalytics({ venue });
+  const { liveAndFutureEvents } = useVenueScheduleEvents({
+    userEventIds: ALWAYS_EMPTY_OBJECT,
+  });
+
+  const eventsFilledWithPriority = liveAndFutureEvents.sort(
+    eventTimeAndOrderComparator
+  );
+  const [firstEvent] = eventsFilledWithPriority;
   const [infoVisible, toggleInfoVisible] = useToggle(false);
 
   const isUnclickable =
@@ -75,10 +85,6 @@ export const MapRoom: React.FC<MapRoomProps> = ({
     [analytics, enterWithSound, room, shouldBeClickable]
   );
 
-  const [referenceElement, setReferenceElement] = useState<HTMLElement | null>(
-    null
-  );
-
   return (
     <div className={styles.MapRoom} style={roomInlineStyles}>
       <div className={styles.PortalOnMap}>
@@ -87,24 +93,19 @@ export const MapRoom: React.FC<MapRoomProps> = ({
         </div>
         <div className={styles.portalInfo}>
           <div className={styles.PortalTitle}>
-            {room.title}
-            <span>
-              <span></span>
-              <RoomAttendance room={room} />
-            </span>
-            <span
-              className={styles.InfoButton}
-              ref={setReferenceElement}
-              onClick={toggleInfoVisible}
-            >
-              <span />
-            </span>
+            <span className={styles.portalName}>{room.title}</span>
+            <RoomAttendance room={room} />
+            {room.spaceId && (
+              <span className={styles.InfoButton} onClick={toggleInfoVisible}>
+                <span />
+              </span>
+            )}
           </div>
           {infoVisible && (
             <PortalModal
-              referenceElement={referenceElement}
               onEnter={selectRoomWithSound}
               portal={room}
+              event={firstEvent}
             />
           )}
         </div>
