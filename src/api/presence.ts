@@ -10,15 +10,26 @@ import {
 import { SpaceId } from "types/id";
 import { UserPresenceDocument } from "types/userPresence";
 
-import { withIdConverter } from "utils/converters";
-import { dataWithId } from "utils/query";
+/*
+ * This converter copies the userId field on to the ID field of the object
+ * returned from the database so that it can be used like a User object.
+ */
+const userPresenceConverter = {
+  toFirestore: (value: UserPresenceDocument): fs.DocumentData => value,
+  fromFirestore: (
+    snapshot: fs.QueryDocumentSnapshot,
+    options?: fs.SnapshotOptions
+  ) => {
+    const data = snapshot.data();
+    return { ...data, id: data.userId } as UserPresenceDocument;
+  },
+};
 
 export const getPresenceCollectionRef = () => {
-  const converter = withIdConverter<UserPresenceDocument>();
   const firestore = fs.getFirestore();
   return fs
     .collection(firestore, COLLECTION_USER_PRESENCE)
-    .withConverter(converter);
+    .withConverter(userPresenceConverter);
 };
 
 type UserPresenceUpdatePayload = Omit<
@@ -97,7 +108,7 @@ export const subscribeToCheckIns: (
   );
 
   const onNext = debounce((snap: fs.QuerySnapshot<UserPresenceDocument>) => {
-    const users = snap.docs.map(dataWithId);
+    const users = snap.docs.map((doc) => doc.data());
     const dedupedUsers = uniqBy(users, ({ userId }) => userId);
     callback(dedupedUsers);
   }, debounceInterval);
