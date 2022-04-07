@@ -14,6 +14,8 @@ import { ProfileModalEditLinks } from "components/attendee/ProfileModalEditLinks
 import firebase from "firebase/compat/app";
 import { omit, pick, uniq } from "lodash";
 
+import { ATTENDEE_LANDING_URL } from "settings";
+
 import { UserWithId } from "types/id";
 import {
   UserProfileModalFormData,
@@ -22,9 +24,9 @@ import {
 import { ProfileLink } from "types/User";
 
 import { isShallowEqual } from "utils/object";
-import { generateAttendeeSpaceLandingUrl } from "utils/url";
+import { generateUrl } from "utils/url";
 
-import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useCheckOldPassword } from "hooks/useCheckOldPassword";
 import { useProfileModalFormDefaultValues } from "hooks/useProfileModalFormDefaultValues";
 
@@ -170,13 +172,19 @@ export const ProfileOverlay: React.FC<ProfileOverlayProps> = ({
   );
 
   const history = useHistory();
-  const { worldSlug, spaceSlug } = useWorldAndSpaceByParams();
+  const { worldSlug, spaceSlug } = useSpaceParams();
 
   const [{ loading: isLoggingOut }, logout] = useAsyncFn(async () => {
     await firebase.auth().signOut();
     onOverlayClose();
 
-    history.push(generateAttendeeSpaceLandingUrl(worldSlug, spaceSlug));
+    history.push(
+      generateUrl({
+        route: ATTENDEE_LANDING_URL,
+        required: ["worldSlug", "spaceSlug"],
+        params: { worldSlug, spaceSlug },
+      })
+    );
   }, [onOverlayClose, history, worldSlug, spaceSlug]);
 
   return (
@@ -227,7 +235,7 @@ export const ProfileOverlay: React.FC<ProfileOverlayProps> = ({
             {isSuccess ? <span>✓ Saved</span> : ""}
           </div>
 
-          <Button variant="alternative" onClick={logout} large>
+          <Button large variant="alternative" onClick={logout}>
             {isLoggingOut ? "Logging Out..." : "Log Out"}
           </Button>
         </div>

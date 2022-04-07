@@ -2,7 +2,7 @@
 @use "scss/attendee/space";
 @use "scss/attendee/theme";
 
-$button-height: 42px;
+$-button-height: 42px;
 
 .card {
   display: absolute;
@@ -26,6 +26,6 @@ $button-height: 42px;
   }
 
   .#{$class}.withoutButton {
-    min-height: calc($size - 42px);
+    min-height: calc($size - $-button-height);
   }
 }
