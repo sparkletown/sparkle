@@ -119,7 +119,7 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
     const spaceIcon = PORTAL_INFO_ICON_MAPPING[space?.template ?? ""];
 
     return (
-      <div className="flex items-center" data-dropdown-value={selected.name}>
+      <span className="flex items-center" data-dropdown-value={selected.name}>
         {selected.name !== spaceNoneOption.name ? (
           <img
             alt={`space-icon-${spaceIcon}`}
@@ -128,7 +128,7 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
           />
         ) : null}
         {selected.name || noneOptionName}
-      </div>
+      </span>
     );
   }, [spaces, selected, parentSpace]);
 
