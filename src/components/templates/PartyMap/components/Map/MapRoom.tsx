@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo } from "react";
 import { useToggle } from "react-use";
+import classNames from "classnames";
 import { PortalModal } from "components/attendee/PortalModal";
 
 import { ALWAYS_EMPTY_OBJECT, COVERT_ROOM_TYPES } from "settings";
@@ -9,7 +10,7 @@ import { RoomVisibility } from "types/RoomVisibility";
 import { Dimensions, Position } from "types/utility";
 import { PartyMapVenue } from "types/venues";
 
-import { eventTimeAndOrderComparator } from "utils/event";
+import { eventTimeAndOrderComparator, isEventLive } from "utils/event";
 import { isExternalPortal, openUrl } from "utils/url";
 
 import { useCustomSound } from "hooks/sounds";
@@ -85,10 +86,14 @@ export const MapRoom: React.FC<MapRoomProps> = ({
     [analytics, enterWithSound, room, shouldBeClickable]
   );
 
+  const portalImageClasses = classNames(styles.PortalImage, {
+    [styles.livePortalEvent]: isEventLive(firstEvent),
+  });
+
   return (
     <div className={styles.MapRoom} style={roomInlineStyles}>
       <div className={styles.PortalOnMap}>
-        <div className={styles.PortalImage} onClick={selectRoomWithSound}>
+        <div className={portalImageClasses} onClick={selectRoomWithSound}>
           <img src={room.image_url} alt={room.title} />
         </div>
         <div className={styles.portalInfo}>

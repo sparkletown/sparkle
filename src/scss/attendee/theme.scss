@@ -17,6 +17,7 @@
 
   --sparkle--bg: rgb(99, 42, 199);
   --sparkle--border: rgba(130, 130, 130, 0.3);
+  --sparkle--bg-shadow: rgb(99, 42, 199 / 50%);
 
   --button-fg: rgb(255, 255, 255);
   --button-bg: rgb(99, 42, 199);
@@ -60,6 +61,7 @@ $c-subdued-text: var(--subdued-text);
 $c-inverted-text: var(--inverted-text);
 
 $sparkle--bg: var(--sparkle--bg); // previously named $sparkle-theme
+$sparkle--bg-shadow: var(--sparkle--bg-shadow);
 $sparkle--border: var(--sparkle--border); // previously named $sparkle-border
 
 $c-panel-background: var(--panel-background);

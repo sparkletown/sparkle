@@ -5,6 +5,7 @@
 @use "scss/attendee/effects/sparkle";
 @use "scss/attendee/effects/atom";
 @use "scss/attendee/effects/rounded";
+@use "scss/attendee/effects/animations";
 @use "scss/attendee/layout";
 @use "scss/attendee/breakpoint";
 
@@ -56,6 +57,34 @@ $-title-height: 42px;
       max-width: unset;
       max-height: unset;
     }
+  }
+
+  &:hover {
+    transform: scale(1);
+  }
+}
+
+.livePortalEvent {
+  animation: live-portal-bounce animations.$live-bouncerate alternate infinite;
+
+  &:hover {
+    animation: live-portal-bounce animations.$live-bouncerate alternate infinite,
+      live-portal-wiggle 0.15s alternate infinite;
+  }
+
+  &:after {
+    content: "Now";
+    color: theme.$c-button-fg;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: font.$size--l2;
+    text-shadow: 0 0 space.empty(1) theme.$sparkle--bg-shadow;
   }
 }
 
