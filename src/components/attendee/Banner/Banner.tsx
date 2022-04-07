@@ -1,11 +1,13 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Button } from "components/attendee/Button";
 
 import { Banner as TBanner } from "types/banner";
+import { SpaceId } from "types/id";
 
 import { openUrl } from "utils/url";
 
+import { useLiveBanner } from "hooks/spaces/useLiveBanner";
 import { useShowHide } from "hooks/useShowHide";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
@@ -13,21 +15,41 @@ import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 import CN from "./Banner.module.scss";
 
 export type BannerProps = {
-  banner: TBanner;
+  spaceId: SpaceId;
   turnOnBlur: () => void;
   turnOffBlur: () => void;
 };
 
 export const Banner: React.FC<BannerProps> = ({
-  banner,
+  spaceId,
   turnOnBlur,
   turnOffBlur,
 }) => {
-  const { isShown: isBannerShown, hide: closeBanner } = useShowHide(true);
+  const {
+    isShown: isBannerShown,
+    hide: closeBanner,
+    show: showBanner,
+  } = useShowHide(true);
 
-  const isBannerFullScreen = banner.isFullScreen;
+  const [bannerState, setBannerState] = useState<TBanner>();
+
+  const space = useLiveBanner(spaceId);
+
+  const banner = space?.banner;
+
+  const isBannerFullScreen = banner?.isFullScreen;
   const isWithButton = banner?.buttonDisplayText && banner?.isActionButton;
   const isBannerCloaseable = !banner?.isForceFunnel;
+
+  useEffect(() => {
+    setBannerState(banner);
+  }, [banner]);
+
+  useEffect(() => {
+    if (bannerState !== banner) {
+      showBanner();
+    }
+  }, [banner, bannerState, showBanner]);
 
   useEffect(() => {
     if (!isBannerFullScreen) return;
@@ -45,10 +67,10 @@ export const Banner: React.FC<BannerProps> = ({
   }, [turnOffBlur, closeBanner]);
 
   const navigateToBannerDestination = useCallback(() => {
-    if (!banner.buttonUrl) return;
+    if (!banner?.buttonUrl) return;
 
-    openUrl(banner.buttonUrl, { customOpenRelativeUrl: openUrlUsingRouter });
-  }, [openUrlUsingRouter, banner.buttonUrl]);
+    openUrl(banner?.buttonUrl, { customOpenRelativeUrl: openUrlUsingRouter });
+  }, [openUrlUsingRouter, banner?.buttonUrl]);
 
   if (!isBannerFullScreen || !isBannerShown) return null;
 
