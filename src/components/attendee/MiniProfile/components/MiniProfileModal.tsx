@@ -1,16 +1,10 @@
 import { useCallback } from "react";
-import { useHistory } from "react-router-dom";
-import { useAsyncFn } from "react-use";
 import { Card } from "components/attendee/Card";
 import { SpentTime } from "components/shared/SpentTime";
-import firebase from "firebase/compat/app";
 
 import { UserId, UserWithId } from "types/id";
 
-import { generateAttendeeSpaceLandingUrl } from "utils/url";
-
 import { useChatSidebarControls } from "hooks/chats/util/useChatSidebarControls";
-import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useIsCurrentUser } from "hooks/useIsCurrentUser";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 
@@ -28,10 +22,6 @@ export interface MiniProfileModalProps {
 export const MiniProfileModal: React.FC<MiniProfileModalProps> = ({
   profile,
 }) => {
-  const { worldSlug, spaceSlug } = useSpaceParams();
-
-  const history = useHistory();
-
   const { selectRecipientChat } = useChatSidebarControls();
 
   const { closeUserProfileModal } = useProfileModalControls();
@@ -41,18 +31,11 @@ export const MiniProfileModal: React.FC<MiniProfileModalProps> = ({
     closeUserProfileModal();
   }, [selectRecipientChat, profile, closeUserProfileModal]);
 
-  const [{ loading: isLoggingOut }, logout] = useAsyncFn(async () => {
-    await firebase.auth().signOut();
-    closeUserProfileModal();
-
-    history.push(generateAttendeeSpaceLandingUrl(worldSlug, spaceSlug));
-  }, [closeUserProfileModal, history, worldSlug, spaceSlug]);
-
   const isCurrentUser = useIsCurrentUser(profile.id);
 
   return (
     <div data-bem="MiniProfileModal">
-      <Card>
+      <Card withoutButton={isCurrentUser}>
         <Card.Body>
           <div className={CN.mainInfo}>
             <UserAvatar user={profile} clickable={false} size="medium" />
@@ -66,11 +49,7 @@ export const MiniProfileModal: React.FC<MiniProfileModalProps> = ({
           <SpentTime userId={profile.id} />
         </Card.Body>
 
-        {isCurrentUser ? (
-          <Card.Button variant="danger" onClick={logout}>
-            {isLoggingOut ? "Logging Out..." : "Log Out"}
-          </Card.Button>
-        ) : (
+        {!isCurrentUser && (
           <Card.Button variant="intensive" onClick={openChat}>
             Send message
           </Card.Button>
