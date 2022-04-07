@@ -9,7 +9,11 @@ import { ChatSidebar } from "components/organisms/ChatSidebar";
 
 import styles from "./ChatContainer.module.scss";
 
-export const ChatContainer: React.FC = () => {
+type ChatContainerProps = {
+  isRelative?: boolean;
+};
+
+export const ChatContainer: React.FC<ChatContainerProps> = ({ isRelative }) => {
   const numberOfUnreadMessages = useNumberOfUnreadChats();
   const {
     selectPrivateChat,
@@ -21,6 +25,7 @@ export const ChatContainer: React.FC = () => {
 
   const sidebarClasses = classNames(styles.chatSidebar, {
     [styles.sidebarHidden]: !isExpanded,
+    [styles.relativeSideBar]: isRelative,
   });
 
   const containerlasses = classNames(styles.ChatContainer, {

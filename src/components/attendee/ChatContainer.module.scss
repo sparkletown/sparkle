@@ -77,11 +77,23 @@
   @media (min-width: breakpoint.$md) {
     max-width: layout.$w-sidebar;
     width: 100%;
+    height: layout.$h-mobile-chat-bar;
     margin: 0 space.empty(1) 0 auto;
     order: 3;
     max-height: 100%;
     @include rounded.top;
     @include sparkle.panel--glass;
+  }
+}
+
+.relativeSideBar {
+  min-height: layout.$h-mobile-chat-bar;
+
+  @media (min-width: breakpoint.$md) {
+    min-height: 500px;
+    position: absolute;
+    right: 0;
+    bottom: 66px;
   }
 }
 

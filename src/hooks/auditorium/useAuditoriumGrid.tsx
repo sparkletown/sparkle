@@ -1,12 +1,11 @@
 import React, { useCallback, useMemo } from "react";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { UserProfilePicture } from "components/attendee/UserProfilePicture";
 
 import { SECTION_CAPACITY } from "settings";
 
 import { SeatPosition } from "types/grid";
-
-import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
 import { GetUserByPosition } from "../useGetUserByPosition";
 
@@ -52,7 +51,6 @@ export const useAuditoriumGrid = ({
           <UserProfilePicture
             key={seatIndex}
             user={user}
-            containerClassName={styles.takenSeat}
             isAudioEffectDisabled={isUserAudioMuted}
             size="medium"
           />

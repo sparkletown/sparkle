@@ -11,6 +11,7 @@ import { isWebGl2Enabled } from "utils/webgl";
 
 import { useChatSidebarControls } from "hooks/chats/util/useChatSidebarControls";
 import { ReactionsProvider } from "hooks/reactions";
+import { useTrackPresence } from "hooks/user/usePresence";
 
 import { AnimateMapErrorPrompt } from "components/templates/AnimateMap/components/AnimateMapErrorPrompt";
 import { ArtPiece } from "components/templates/ArtPiece";
@@ -44,6 +45,8 @@ interface TemplateWrapperProps {
 
 export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   const { isExpanded: isChatExpanded } = useChatSidebarControls();
+
+  useTrackPresence();
 
   let template;
   switch (venue.template) {
@@ -131,15 +134,20 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
     styles.templateContainer,
     backgroundCss,
     {
-      [styles.shrunk]: isChatExpanded && venueShrinksForChat,
       [styles.gradients]: !venue.backgroundImageUrl && !isPartyMap,
     }
   );
 
+  const wrapperClassnames = classNames({
+    [styles.shrunk]: isChatExpanded && venueShrinksForChat,
+  });
+
   return (
     <ReactionsProvider venueId={venue.id}>
       {/* TODO <AnnouncementMessage isAnnouncementUserView /> */}
-      <div className={containerClassnames}>{template}</div>
+      <div className={containerClassnames}>
+        <div className={wrapperClassnames}>{template}</div>
+      </div>
 
       {/* TODO {shouldShowChat && <ChatSidebar venue={venue} />} */}
     </ReactionsProvider>

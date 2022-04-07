@@ -25,6 +25,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   border?: BorderVariant;
   unrounded?: boolean;
   marginless?: boolean;
+  large?: boolean;
   className?: string;
   forwardRef?: RefObject<HTMLButtonElement> | null;
 }
@@ -39,6 +40,7 @@ export const Button: React.FC<ButtonProps> = ({
   border = "",
   unrounded = false,
   marginless = false,
+  large = false,
   disabled,
   ...rest
 }) => {
@@ -52,6 +54,7 @@ export const Button: React.FC<ButtonProps> = ({
       [CN.borderRadiusNone]: unrounded,
       [CN.buttonMarginNone]: marginless,
       [CN.disabled]: disabled,
+      [CN.large]: large,
     }
   );
 

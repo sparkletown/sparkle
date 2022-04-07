@@ -2,11 +2,11 @@ import React, { useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import firebase from "firebase/compat/app";
 
-import { STRING_NEWLINE } from "settings";
+import { ATTENDEE_LANDING_URL, STRING_NEWLINE } from "settings";
 
 import { UserId, UserWithId } from "types/id";
 
-import { generateAttendeeSpaceLandingUrl } from "utils/url";
+import { generateUrl } from "utils/url";
 
 import { useChatSidebarControls } from "hooks/chats/util/useChatSidebarControls";
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
@@ -41,7 +41,13 @@ export const UserProfileModalBody: React.FC<UserProfileModalBodyProps> = ({
     await firebase.auth().signOut();
     closeUserProfileModal();
 
-    history.push(generateAttendeeSpaceLandingUrl(worldSlug, spaceSlug));
+    history.push(
+      generateUrl({
+        route: ATTENDEE_LANDING_URL,
+        required: ["worldSlug", "spaceSlug"],
+        params: { worldSlug, spaceSlug },
+      })
+    );
   }, [closeUserProfileModal, history, worldSlug, spaceSlug]);
 
   const { selectRecipientChat } = useChatSidebarControls();
