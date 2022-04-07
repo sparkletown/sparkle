@@ -85,7 +85,7 @@ export const useTrackPresence = () => {
         spaceId: space.id,
         userId,
         partyName: profile?.partyName,
-        userPictureUrl: profile?.pictureUrl,
+        pictureUrl: profile?.pictureUrl,
       }).then((newCheckInId) => {
         setCheckInId(newCheckInId);
       });

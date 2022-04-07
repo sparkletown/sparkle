@@ -6,7 +6,7 @@ export type UserPresenceDocument = {
   // Cached copies of various user attributes so that they can be used in
   // minimally displaying a user without additional fetches
   partyName?: string;
-  userPictureUrl?: string;
+  pictureUrl?: string;
   // The first time we saw this user, used for ordering so we can limit to most
   // recent users first if desired
   firstSeenAt: number;
