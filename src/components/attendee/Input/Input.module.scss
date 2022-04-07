@@ -11,11 +11,10 @@
 }
 
 label {
-  position: absolute;
   display: flex;
   align-items: center;
   padding-left: space.empty(0.75);
-  right: space.empty(0.8);
+  padding-right: space.empty(0.8);
   border-left: border.$width--slim solid theme.$sparkle--border;
   color: theme.$c-default-text;
   cursor: pointer;
@@ -56,27 +55,13 @@ label {
   outline: none;
 }
 
-.variant-overlay,
-.variant-overlay-profile,
-.variant-overlay-search {
-  display: flex;
-  align-items: center;
+.variant-overlay {
+  @include font.core;
   height: space.$l3;
   border-radius: space.$xs;
   box-sizing: border-box;
   width: 100%;
-}
-
-// @debt, there should be a single .overlay, variant, remove these exceptions
-.variant-overlay-profile {
-  padding: space.gap(2) 5em space.gap(2) space.empty(1); // different
-  font-size: 14px;
-  line-height: 1.4;
-}
-
-// @debt, there should be a single .overlay, variant, remove these exceptions
-.variant-overlay-search {
-  padding: 0 5em 0 space.empty(1); // different
+  padding: space.gap(2) space.empty(1) space.gap(2);
 }
 
 .variant-login {

@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { FieldError, RegisterOptions, UseFormRegister } from "react-hook-form";
 import classNames from "classnames";
 
 import { ALWAYS_NOOP_FUNCTION } from "settings";
 
 import { AnyForm } from "types/utility";
+
+import { generateId } from "utils/string";
 
 import { useKeyPress } from "hooks/useKeyPress";
 
@@ -21,7 +23,7 @@ type InputProps = React.HTMLProps<HTMLInputElement> & {
   register?: UseFormRegister<AnyForm> | (() => void);
   rules?: RegisterOptions;
   border?: "borderless" | "border";
-  variant?: "login" | "overlay" | "overlay-profile" | "overlay-search"; // @debt: there should be a single "overlay" variant
+  variant?: "login" | "overlay";
 };
 
 export const Input: React.ForwardRefRenderFunction<
@@ -39,6 +41,8 @@ export const Input: React.ForwardRefRenderFunction<
   variant = "",
   ...extraInputProps
 }) => {
+  const inputId = useMemo(() => generateId("Input"), []);
+
   const inputClassNames = classNames(
     CN.inputField,
     CN[`border-${border}`],
@@ -58,6 +62,7 @@ export const Input: React.ForwardRefRenderFunction<
     <div data-bem="Input" className={CN.input}>
       <div className={CN.inputWrapper}>
         <input
+          id={inputId}
           {...registerProps}
           className={inputClassNames}
           {...extraInputProps}
@@ -65,7 +70,7 @@ export const Input: React.ForwardRefRenderFunction<
         />
 
         {label && (
-          <label className={CN.label} onClick={onLabelClick}>
+          <label htmlFor={inputId} className={CN.label} onClick={onLabelClick}>
             {label}
           </label>
         )}
