@@ -130,6 +130,7 @@ export interface BaseVenue {
   updatedAt?: number;
   worldId: string;
   backgroundImageUrl?: string;
+  presentUserCachedCount: number;
 }
 
 export interface GenericVenue extends BaseVenue {

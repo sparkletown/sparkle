@@ -13,12 +13,10 @@ export type EntranceStepConfig = {
   template: EntranceStepTemplate;
   videoUrl?: string;
   autoplay?: boolean;
-  welcomeText?: string;
   buttons?: EntranceStepButtonConfig[];
 };
 
 export interface EntranceStepTemplateProps {
-  venueName: string;
   config: EntranceStepConfig;
   proceed: () => void;
 }

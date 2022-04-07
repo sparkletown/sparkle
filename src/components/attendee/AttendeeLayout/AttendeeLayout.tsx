@@ -5,6 +5,7 @@ import { AttendeeFooter } from "components/attendee/AttendeeFooter";
 import { AttendeeHeader } from "components/attendee/AttendeeHeader";
 import { Banner } from "components/attendee/Banner/Banner";
 import { ChatContainer } from "components/attendee/ChatContainer";
+import { MainSection } from "components/attendee/MainSection";
 import { VideoCommsProvider } from "components/attendee/VideoComms/VideoCommsProvider";
 import { HuddleProvider } from "components/attendee/VideoHuddle/HuddleProvider";
 import { VideoHuddle } from "components/attendee/VideoHuddle/VideoHuddle";
@@ -12,6 +13,8 @@ import { VideoHuddle } from "components/attendee/VideoHuddle/VideoHuddle";
 import { ATTENDEE_LAYOUT_CLASSNAME, POPOVER_CONTAINER_ID } from "settings";
 
 import { SpaceWithId } from "types/id";
+
+import { isTruthy } from "utils/types";
 
 import { useShowHide } from "hooks/useShowHide";
 
@@ -62,13 +65,9 @@ export const AttendeeLayout: React.FC<AttendeeLayoutProps> = ({ space }) => {
       <HuddleProvider>
         <AttendeeHeader backButtonSpace={backButtonSpace} />
         <main>
-          <section
-            className={`${styles.Space} ${
-              isBlurTurnedOn && banner && styles.blur
-            }`}
-          >
+          <MainSection isBlurred={isTruthy(isBlurTurnedOn && banner)}>
             <VenuePage setBackButtonSpace={setBackButtonSpace} />
-          </section>
+          </MainSection>
           <div className={layerUIClasses}>
             <ChatContainer />
             <VideoHuddle />
