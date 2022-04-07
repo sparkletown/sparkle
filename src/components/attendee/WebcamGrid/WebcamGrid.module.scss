@@ -25,9 +25,11 @@
   margin: 0 auto;
   padding: space.gap(10);
   width: fit-content;
+  flex-wrap: wrap;
 
   @media (min-width: breakpoint.$md) {
     display: flex;
+    flex-wrap: wrap;
   }
 }
 

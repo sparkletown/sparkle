@@ -159,5 +159,10 @@ service cloud.firestore {
       allow create: if request.auth.uid in worldFromRequest().owners;
       allow read: if true
     }
+    match /userPresence/{userPresence} {
+      allow update, delete: if resource.data.userId == request.auth.uid;
+      allow create: if true;
+      allow read: if true;
+    }
   }
 }
