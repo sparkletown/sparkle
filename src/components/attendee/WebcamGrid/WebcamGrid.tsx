@@ -83,18 +83,16 @@ export const WebcamGrid: React.FC<TableGridProps> = ({ space }) => {
   return (
     <div className={styles.container}>
       <div className={styles.WebcamGrid}>
-        {Array(10).map(() => meComponent)}
+        {meComponent}
         {othersComponents}
         {hasJoined ? (
           <div className={styles.leaveButton} onClick={leaveVideo}>
             Leave <FontAwesomeIcon icon={faTimesCircle} />
           </div>
         ) : (
-          [1, 2, 3, 4, 5, 6, 7, 8].map((_, index) => (
-            <div key={index} className={styles.joinButton} onClick={joinVideo}>
-              Join
-            </div>
-          ))
+          <div className={styles.joinButton} onClick={joinVideo}>
+            Join
+          </div>
         )}
       </div>
     </div>

@@ -1,9 +1,7 @@
 import React, { useCallback } from "react";
-import classNames from "classnames";
 
 import { UserId } from "types/id";
 import { User } from "types/User";
-import { ContainerClassName } from "types/utility";
 
 import { WithId } from "utils/id";
 
@@ -17,7 +15,7 @@ import { UserAvatarSize } from "../../atoms/UserAvatar/UserAvatar";
 
 import "./UserProfilePicture.scss";
 
-export interface UserProfilePictureProp extends ContainerClassName {
+interface UserProfilePictureProp {
   user?: WithId<User>;
   isAudioEffectDisabled?: boolean;
   reactionPosition?: "left" | "right";
@@ -33,7 +31,6 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   showStatus = false,
   isVideoEnabled = true,
   size,
-  containerClassName,
 }) => {
   const userId = user?.id;
 
@@ -44,15 +41,10 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
     [openUserProfileModal, user?.id]
   );
 
-  const containerClasses = classNames("UserProfilePicture", {
-    "UserProfilePicture--only-icon": !isVideoEnabled,
-    containerClassName,
-  });
-
   return (
     <div
       data-bem="UserProfilePicture"
-      className={containerClasses}
+      className="UserProfilePicture"
       onClick={openProfileModal}
     >
       <UserAvatar user={user} showStatus={showStatus} size={size} />
