@@ -33,7 +33,11 @@ export const Button: React.FC<ButtonProps> = ({
     })}
     ref={forwardRef}
   >
-    {loading && <Loading containerClassName="pr-4" />}
+    {loading && (
+      <div className="pr-4">
+        <Loading />
+      </div>
+    )}
     {children}
   </button>
 );
