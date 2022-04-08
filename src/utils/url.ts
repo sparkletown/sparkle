@@ -4,7 +4,6 @@ import Bugsnag from "@bugsnag/js";
 import {
   ADMIN_IA_SPACE_EDIT_PARAM_URL,
   ATTENDEE_INSIDE_URL,
-  ATTENDEE_LANDING_URL,
   DEFAULT_MISSING_PARAM_URL,
   VALID_URL_PROTOCOLS,
 } from "settings";
@@ -95,14 +94,6 @@ export const generateAttendeeInsideUrl = ({
     return relativePath;
   }
 };
-
-// @debt These being optional is a problem waiting to happen. We need a better
-// way of making world / space slug mandatory
-/** @deprecated use generateUrl instead */
-export const generateAttendeeSpaceLandingUrl = (
-  worldSlug?: WorldSlug,
-  spaceSlug?: SpaceSlug
-) => generatePath(ATTENDEE_LANDING_URL, { worldSlug, spaceSlug });
 
 export const isExternalUrl = (url: string) => {
   try {

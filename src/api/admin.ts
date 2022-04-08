@@ -32,6 +32,7 @@ import {
 } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
 
+import { createErrorRethrow } from "utils/error";
 import { WithId, withId, WithoutId, WithWorldId } from "utils/id";
 import { generateAttendeeInsideUrl } from "utils/url";
 
@@ -217,26 +218,40 @@ export const createVenue_v2 = async (
   input: WithWorldId<Omit<VenueInput_v2, "id">>,
   userId: UserId
 ) => {
+  const inputOptions = {
+    ...input,
+    showShoutouts: input.showShoutouts ?? DEFAULT_SHOW_SHOUTOUTS,
+    showReactions: input.showReactions ?? DEFAULT_SHOW_REACTIONS,
+    rooms: [],
+  };
   const firestoreVenueInput = await createFirestoreVenueInputWithoutId_v2(
-    {
-      ...input,
-      showShoutouts: input.showShoutouts ?? DEFAULT_SHOW_SHOUTOUTS,
-      showReactions: input.showReactions ?? DEFAULT_SHOW_REACTIONS,
-      rooms: [],
-    },
+    inputOptions,
     userId
+  ).catch(
+    createErrorRethrow({
+      where: "createVenue_v2",
+      message: "Unable to create the proper input",
+      args: inputOptions,
+    })
   );
 
   const worldId = input.worldId;
   const spaceSlug = firestoreVenueInput.slug;
 
+  const venueOptions = {
+    ...firestoreVenueInput,
+    worldId,
+  };
   const venueResponse = httpsCallable(
     FIREBASE.functions,
     "venue-createVenue_v2"
-  )({
-    ...firestoreVenueInput,
-    worldId,
-  });
+  )(venueOptions).catch(
+    createErrorRethrow({
+      where: "createVenue_v2",
+      message: "Unable to create the space",
+      args: venueOptions,
+    })
+  );
 
   const space = await findSpaceBySlug({
     spaceSlug,
@@ -244,13 +259,20 @@ export const createVenue_v2 = async (
   });
 
   if (input.template === VenueTemplate.auditorium) {
+    const auditoriumOptions = {
+      venueId: space?.id,
+      numberOfSections: DEFAULT_SECTIONS_AMOUNT,
+    };
     await httpsCallable(
       FIREBASE.functions,
       "venue-setAuditoriumSections"
-    )({
-      venueId: space?.id,
-      numberOfSections: DEFAULT_SECTIONS_AMOUNT,
-    });
+    )(auditoriumOptions).catch(
+      createErrorRethrow({
+        where: "createVenue_v2",
+        message: "Problem updating the auditorium sections",
+        args: auditoriumOptions,
+      })
+    );
   }
 
   return venueResponse;

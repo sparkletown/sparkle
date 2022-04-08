@@ -1,41 +1,54 @@
-import React, { useRef } from "react";
+import React, { useMemo, useRef } from "react";
 
-import { UserWithId } from "types/id";
+import { ATTENDEE_HEADER_AVATAR_LIMIT } from "settings";
+
+import { SpaceWithId } from "types/id";
+
+import { usePresenceData } from "hooks/user/usePresence";
 
 import { UserAvatar } from "components/atoms/UserAvatar";
 
 import CN from "./Attendance.module.scss";
 
 type AttendanceOptions = {
-  totalUsersCount?: number;
-  usersSample?: UserWithId[];
+  space: SpaceWithId;
 };
 
-export const Attendance: React.FC<AttendanceOptions> = ({
-  totalUsersCount,
-  usersSample,
-}) => {
+export const Attendance: React.FC<AttendanceOptions> = ({ space }) => {
   const containerRef = useRef(null);
 
-  if (!totalUsersCount) {
+  const { isLoading, presentUsers } = usePresenceData({
+    spaceId: space.id,
+    limit: ATTENDEE_HEADER_AVATAR_LIMIT,
+  });
+
+  const renderedAvatars = useMemo(
+    () =>
+      presentUsers.map((user) => (
+        <UserAvatar
+          key={user.id}
+          containerClassName={CN.Attendance__userAvatar}
+          user={user}
+        />
+      )),
+    [presentUsers]
+  );
+
+  if (isLoading) {
     return null;
   }
 
-  const renderedAvatars = usersSample?.map((user) => (
-    <UserAvatar
-      key={user.id}
-      containerClassName={CN.Attendance__userAvatar}
-      user={user}
-    />
-  ));
-
-  const inflectedUser = totalUsersCount > 1 ? "users" : "user";
+  const numberUsersPresent =
+    presentUsers.length === ATTENDEE_HEADER_AVATAR_LIMIT
+      ? space.presentUserCachedCount
+      : presentUsers.length;
+  const inflectedUser = numberUsersPresent > 1 ? "users" : "user";
 
   return (
     <div className={CN.Attendance} ref={containerRef}>
       <div className={CN.Attendance__avatarsContainer}>{renderedAvatars}</div>
       <span className={CN.Attendance__totalUsersCountText}>
-        {`${totalUsersCount} ${inflectedUser} here`}
+        {`${numberUsersPresent} ${inflectedUser} here`}
       </span>
     </div>
   );
