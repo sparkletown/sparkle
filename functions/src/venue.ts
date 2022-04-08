@@ -616,7 +616,7 @@ export const deletePortal = functions.https.onCall(async (data, context) => {
   }
   const docData = doc.data();
   if (!docData) {
-    throw new HttpsError("internal", `Data not found`);
+    throw new HttpsError("not-found", "Data not found");
   }
 
   const portals = docData.rooms;
