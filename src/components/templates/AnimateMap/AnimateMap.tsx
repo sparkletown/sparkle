@@ -9,7 +9,7 @@ import { BugsnagNotify } from "../Bugsnag";
 
 import { AnimateMapErrorPrompt } from "./components/AnimateMapErrorPrompt";
 import { GameInstance } from "./game/GameInstance";
-import { UIOverlay, UIOverlayGrid } from "./components";
+import { FirebarrelProvider, UIOverlay, UIOverlayGrid } from "./components";
 
 import "./AnimateMap.scss";
 
@@ -75,7 +75,13 @@ export const AnimateMap: React.FC<AnimateMapProps> = (props) => {
           <div className="UIOverlay__main">
             <UIOverlayGrid venue={props.space} />
           </div>
-          <div className={"UIOverlay__bottom-panel"} />
+          <div className={"UIOverlay__bottom-panel"}>
+            <FirebarrelProvider
+              venue={props.space}
+              setUserList={props.updateAnimateMapFireBarrelDispatch}
+              onConnectChange={props.onConnectFirebarrelChange}
+            />
+          </div>
         </UIOverlay>
       </div>
       <div ref={props.containerRef} className="AnimateMap__app-wrapper" />
