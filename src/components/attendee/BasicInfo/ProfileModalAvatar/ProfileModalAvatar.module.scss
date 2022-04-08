@@ -4,9 +4,11 @@
 @use "scss/attendee/border";
 @use "scss/attendee/icon";
 
+$-avatar-size: 84px;
+
 .profileModalAvatar {
-  width: icon.$size--profile-overlay-avatar;
-  height: icon.$size--profile-overlay-avatar;
+  width: $-avatar-size;
+  height: $-avatar-size;
 }
 
 .input {
@@ -14,9 +16,9 @@
 }
 
 .image {
-  width: icon.$size--profile-overlay-avatar;
-  height: icon.$size--profile-overlay-avatar;
-  border-radius: 50%;
+  width: $-avatar-size;
+  height: $-avatar-size;
+  border-radius: border.$radius--mx;
   cursor: pointer;
 }
 

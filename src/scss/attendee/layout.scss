@@ -15,13 +15,13 @@ $h-mobile-chat-bar: 180px;
 // Button height plus padding
 $h-top-nav: 42px + space.empty(2);
 
-// TODO Only medium has had its size set. The other sizes need configuring
-// which is why they're odd values.
+// NOTE: these values reflect AVATAR_SIZE_MAP from UserAvatar.tsx
+// @debt they shouldn't be used outside their respective component
 $avatar-sizes: (
-  small: 1px,
+  small: 25px,
   medium: 42px,
-  large: 504px,
-  xlarge: 1000px,
+  large: 54px,
+  xlarge: 100px,
 );
 
 // TODO: at the moment we have only one usage of card.

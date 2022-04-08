@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import classNames from "classnames";
 
 import { useVenueUserStatuses } from "hooks/useVenueUserStatuses";
@@ -10,6 +10,7 @@ interface UserAvatarStatusProps {
   showStatus?: boolean;
   size?: UserAvatarSize;
 }
+
 export const UserAvatarStatus: React.FC<UserAvatarStatusProps> = ({
   user,
   showStatus,
