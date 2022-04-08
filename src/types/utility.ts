@@ -16,8 +16,7 @@ export type Position = {
 // @debt remove this, components shouldn't have containerClassName prop, and
 // in a rare need of injecting classes, className?: string is more close to how React deals with it
 /**
- * @deprecated Do not add this to interfaces.
- * Prefer variance props over injected classes
+ * @deprecated Do not add this to interfaces. Prefer variance props over injected classes
  * */
 export type ContainerClassName = { containerClassName?: string };
 
