@@ -7,7 +7,7 @@ import { SpaceId } from "types/id";
 
 import { openUrl } from "utils/url";
 
-import { useLiveBanner } from "hooks/spaces/useLiveBanner";
+import { useLiveSpace } from "hooks/spaces/useLiveSpace";
 import { useShowHide } from "hooks/useShowHide";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
@@ -33,7 +33,7 @@ export const Banner: React.FC<BannerProps> = ({
 
   const [bannerState, setBannerState] = useState<TBanner>();
 
-  const space = useLiveBanner(spaceId);
+  const space = useLiveSpace(spaceId);
 
   const banner = space?.banner;
 
