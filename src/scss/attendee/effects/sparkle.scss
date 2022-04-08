@@ -1,6 +1,7 @@
 @use "../theme";
 
 $blur: 5px;
+$blur--medium: 14px;
 
 // previously named sparkle-panel
 @mixin panel--normal {
