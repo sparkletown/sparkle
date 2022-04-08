@@ -149,7 +149,7 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
             disabled={isSaveDisabled}
             loading={isSaveLoading}
           >
-            Save
+            {isSaveLoading ? "Saving..." : "Save"}
           </Button>
         </AdminSidebarButtons>
       </form>

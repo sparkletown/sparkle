@@ -210,6 +210,9 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
     [relatedVenues, portal?.spaceId]
   );
 
+  const createLabel = isLoading ? "Creating..." : "Create";
+  const saveLabel = isLoading ? "Saving..." : "Save";
+
   return (
     <div>
       <form className="bg-white" onSubmit={handleSubmit(addPortal)}>
@@ -297,11 +300,12 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
           </Button>
           <Button
             variant="primary"
+            loading={isLoading || isDeleting}
             disabled={isLoading || isDeleting}
             title={title}
             type="submit"
           >
-            {portal ? "Save" : "Create"}
+            {portal ? saveLabel : createLabel}
           </Button>
         </div>
       </form>

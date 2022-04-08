@@ -157,11 +157,18 @@ export const WorldSchedule: React.FC<WorldScheduleProps> = ({ world }) => {
                 </div>
               </section>
 
-              <Button variant="secondary">Cancel</Button>
+              <div className="flex">
+                <Button variant="secondary">Cancel</Button>
 
-              <Button type="submit" disabled={isSaveLoading} variant="primary">
-                {isSaveLoading ? "Saving..." : "Save"}
-              </Button>
+                <Button
+                  type="submit"
+                  disabled={isSaveLoading}
+                  loading={isSaveLoading}
+                  variant="primary"
+                >
+                  {isSaveLoading ? "Saving..." : "Save"}
+                </Button>
+              </div>
             </form>
           </div>
 

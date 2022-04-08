@@ -28,10 +28,12 @@ export const Button: React.FC<ButtonProps> = ({
     data-bem="Button"
     {...extraParams}
     type={type}
-    className={cn(TW.general, TW[variant], TW[borders])}
+    className={cn(TW.general, TW[variant], TW[borders], {
+      [TW.loading]: loading,
+    })}
     ref={forwardRef}
   >
-    {loading && <Loading />}
+    {loading && <Loading containerClassName="pr-4" />}
     {children}
   </button>
 );
