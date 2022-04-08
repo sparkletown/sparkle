@@ -1,7 +1,7 @@
 @use "scss/attendee/space";
 @use "scss/attendee/border";
 @use "scss/attendee/font";
-@use "scss/attendee/icon";
+@use "scss/attendee/layout";
 @use "scss/attendee/theme";
 @use "scss/attendee/effects/error";
 
@@ -43,8 +43,8 @@
 
 .errorIcon {
   background-image: url(/assets/icons/input-error-icon.svg);
-  height: icon.$size--input-error-icon;
-  width: icon.$size--input-error-icon;
+  height: layout.$sz-input-error-icon;
+  width: layout.$sz-input-error-icon;
   // pull icon inside input field
   margin-left: space.empty(-2);
 }
