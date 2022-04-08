@@ -35,6 +35,7 @@ export const DEFAULT_LANDING_BANNER = "/assets/Default_Venue_Banner.png";
 export const DEFAULT_VENUE_BANNER_COLOR = "#000000";
 export const DEFAULT_VENUE_LOGO = "/assets/Default_Venue_Logo.png";
 export const DEFAULT_VENUE_AUTOPLAY = false;
+export const DEFAULT_PORTAL_ICON_PATH = "static/media";
 
 export const DEFAULT_PARTY_NAME = "Anon";
 export const DISPLAY_NAME_MAX_CHAR_COUNT = 40;

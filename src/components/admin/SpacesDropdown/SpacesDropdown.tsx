@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { FieldError, UseFormRegister, UseFormSetValue } from "react-hook-form";
+import classNames from "classnames";
 import { Dropdown } from "components/admin/Dropdown";
 import { omit, omitBy } from "lodash";
 
@@ -10,6 +11,7 @@ import { AnyVenue, PortalTemplate } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
 
 import { WithId } from "utils/id";
+import { isDefaultPortalIcon } from "utils/image";
 
 import "./SpacesDropdown.scss";
 
@@ -84,6 +86,9 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
     () =>
       spaceOptions.map(({ id, name, template, host }) => {
         const spaceIcon = PORTAL_INFO_ICON_MAPPING[template ?? ""];
+        const spaceIconClasses = classNames("w-6 h-6 mr-2 rounded-full", {
+          "bg-gray-800": isDefaultPortalIcon(host?.icon || spaceIcon),
+        });
 
         return (
           <div
@@ -97,9 +102,9 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
           >
             {name !== spaceNoneOption.name ? (
               <img
-                alt={`space-icon-${spaceIcon}`}
+                alt="space-option-icon"
                 src={host?.icon || spaceIcon}
-                className="w-6 h-6 mr-2 rounded-full"
+                className={spaceIconClasses}
               />
             ) : null}
             {name || noneOptionName}
@@ -117,6 +122,9 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
     const space = spaces?.[selected.id ?? ""] ?? parentSpace;
 
     const spaceIcon = PORTAL_INFO_ICON_MAPPING[space?.template ?? ""];
+    const spaceIconClasses = classNames("w-6 h-6 mr-2 rounded-full", {
+      "bg-gray-800": isDefaultPortalIcon(spaceIcon),
+    });
 
     return (
       <span className="flex items-center" data-dropdown-value={selected.name}>
@@ -124,7 +132,7 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
           <img
             alt={`space-icon-${spaceIcon}`}
             src={spaceIcon}
-            className="w-6 h-6 mr-2 rounded-full"
+            className={spaceIconClasses}
           />
         ) : null}
         {selected.name || noneOptionName}
