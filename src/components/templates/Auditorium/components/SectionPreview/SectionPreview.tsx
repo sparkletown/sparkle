@@ -3,17 +3,14 @@ import { faUserFriends } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
-import { ALWAYS_EMPTY_ARRAY } from "settings";
+import { ALWAYS_EMPTY_ARRAY, SECTION_CAPACITY } from "settings";
 
 import { AuditoriumSection } from "types/auditorium";
 import { AuditoriumVenue } from "types/venues";
 
-import { getSectionCapacity } from "utils/auditorium";
 import { WithId } from "utils/id";
 
 import { UserList } from "components/molecules/UserList";
-
-import "./SectionPreview.scss";
 
 export interface SectionPreviewProps {
   section: WithId<AuditoriumSection>;
@@ -26,7 +23,7 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
   venue,
   enterSection,
 }) => {
-  const sectionCapacity = getSectionCapacity(venue, section);
+  const sectionCapacity = SECTION_CAPACITY;
 
   const sectionId = section.id;
 

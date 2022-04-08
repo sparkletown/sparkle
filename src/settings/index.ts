@@ -50,6 +50,10 @@ export const SCHEDULE_SHOW_COPIED_TEXT_MS = 1000; // 1s
 export const LOC_UPDATE_FREQ_MS = FIVE_MINUTES_MS;
 
 export const VENUE_RECENT_SEATED_USERS_UPDATE_INTERVAL = 10000;
+export const USER_PRESENCE_CHECKIN_INTERVAL = 60000;
+export const USER_PRESENCE_DEBOUNCE_INTERVAL = 1000;
+
+export const ATTENDEE_HEADER_AVATAR_LIMIT = 50;
 
 // How often to increment user's timespent
 export const LOCATION_INCREMENT_SECONDS = 10;
@@ -76,36 +80,34 @@ export const IFRAME_ALLOW_ADVANCED = `${IFRAME_ALLOW} camera; microphone;`;
 // These templates use zoomUrl (they should remain alphabetically sorted)
 // @debt Refactor this constant into types/venues + create an actual custom type grouping for it
 // @debt unify this with ZOOM_URL_TEMPLATES in functions/venue.js + share the same code between frontend/backend
-export const ZOOM_URL_TEMPLATES = [
-  VenueTemplate.artcar,
-  VenueTemplate.zoomroom,
-];
+export const ZOOM_URL_TEMPLATES = Object.freeze([VenueTemplate.zoomroom]);
 
 // These templates use iframeUrl (they should remain alphabetically sorted)
 // @debt Refactor this constant into types/venues + create an actual custom type grouping for it
 // @debt unify this with IFRAME_TEMPLATES in functions/venue.js + share the same code between frontend/backend
-export const IFRAME_TEMPLATES = [
+export const IFRAME_TEMPLATES = Object.freeze([
   VenueTemplate.artpiece,
-  VenueTemplate.audience,
   VenueTemplate.auditorium,
   VenueTemplate.embeddable,
   VenueTemplate.firebarrel,
   VenueTemplate.jazzbar,
-  VenueTemplate.performancevenue,
   VenueTemplate.posterpage,
   VenueTemplate.viewingwindow,
-];
+]);
+
+export const EMBEDDABLE_CONTENT_TEMPLATES = Object.freeze([
+  ...IFRAME_TEMPLATES,
+  ...ZOOM_URL_TEMPLATES,
+]);
 
 // @debt Refactor this constant into types/venues + create an actual custom type grouping for it
 export const BACKGROUND_IMG_TEMPLATES = [
-  VenueTemplate.themecamp,
   VenueTemplate.partymap,
   VenueTemplate.animatemap,
 ];
 
 // @debt Refactor this constant into types/venues + create an actual custom type grouping for it
 export const SUBVENUE_TEMPLATES = [
-  VenueTemplate.themecamp,
   VenueTemplate.partymap,
   VenueTemplate.animatemap,
 ];
@@ -124,7 +126,6 @@ export interface Template {
 
 // @debt Refactor this constant into types/templates + create an actual custom type grouping for it
 export const HAS_ROOMS_TEMPLATES: Array<VenueTemplate> = [
-  VenueTemplate.themecamp,
   VenueTemplate.partymap,
   VenueTemplate.animatemap,
   VenueTemplate.playa,
@@ -132,7 +133,6 @@ export const HAS_ROOMS_TEMPLATES: Array<VenueTemplate> = [
 
 // @debt Refactor this constant into types/templates + create an actual custom type grouping for it
 export const HAS_GRID_TEMPLATES: Array<VenueTemplate> = [
-  VenueTemplate.themecamp,
   VenueTemplate.partymap,
   VenueTemplate.animatemap,
 ];
@@ -140,7 +140,6 @@ export const HAS_GRID_TEMPLATES: Array<VenueTemplate> = [
 // @debt Refactor this constant into types/templates + create an actual custom type grouping for it
 // @debt unify this with HAS_REACTIONS_TEMPLATES in functions/venue.js + share the same code between frontend/backend
 export const HAS_REACTIONS_TEMPLATES: Array<VenueTemplate> = [
-  VenueTemplate.audience,
   VenueTemplate.auditorium,
   VenueTemplate.jazzbar,
 ];
@@ -152,6 +151,7 @@ export const SHOW_EMOJI_IN_REACTION_PAGE = true;
 export const DEFAULT_SHOW_SHOUTOUTS = true;
 export const DEFAULT_SHOW_REACTIONS = true;
 export const DEFAULT_REACTIONS_MUTED = false;
+export const DEFAULT_SHOW_CONTENT = true;
 
 export const DEFAULT_CAMERA_ENABLED = true;
 

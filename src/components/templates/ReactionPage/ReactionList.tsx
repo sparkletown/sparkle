@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 import classNames from "classnames";
+import { UserProfilePicture } from "components/attendee/UserProfilePicture";
 
 import { DEFAULT_PARTY_NAME } from "settings";
 
@@ -10,8 +11,6 @@ import {
   isEmojiReaction,
   Reaction,
 } from "types/reactions";
-
-import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
 export interface ReactionListProps {
   reactions: Reaction[];
@@ -34,9 +33,8 @@ export const ReactionList: React.FC<ReactionListProps> = ({
     ].sort((a, b) => b.created_at - a.created_at);
 
     return allReactionsSorted.map((message) => {
-      const messageSenderName = message.created_by?.anonMode
-        ? DEFAULT_PARTY_NAME
-        : message.created_by?.partyName ?? DEFAULT_PARTY_NAME;
+      const messageSenderName =
+        message.created_by?.partyName ?? DEFAULT_PARTY_NAME;
 
       return (
         <div

@@ -1,3 +1,5 @@
+import classNames from "classnames";
+
 import { ChatTypes } from "types/chat";
 
 import { useChatSidebarControls } from "hooks/chats/util/useChatSidebarControls";
@@ -7,7 +9,11 @@ import { ChatSidebar } from "components/organisms/ChatSidebar";
 
 import styles from "./ChatContainer.module.scss";
 
-export const ChatContainer: React.FC = () => {
+type ChatContainerProps = {
+  isRelative?: boolean;
+};
+
+export const ChatContainer: React.FC<ChatContainerProps> = ({ isRelative }) => {
   const numberOfUnreadMessages = useNumberOfUnreadChats();
   const {
     selectPrivateChat,
@@ -17,14 +23,21 @@ export const ChatContainer: React.FC = () => {
     chatSettings: { openedChatType },
   } = useChatSidebarControls();
 
+  const sidebarClasses = classNames(styles.chatSidebar, {
+    [styles.sidebarHidden]: !isExpanded,
+    [styles.relativeSideBar]: isRelative,
+  });
+
+  const containerlasses = classNames(styles.ChatContainer, {
+    [styles.chatContainerExpanded]: isExpanded,
+  });
+
   return (
     <>
-      {isExpanded && (
-        <div className={styles.chatSidebar}>
-          <ChatSidebar />
-        </div>
-      )}
-      <div className={styles.ChatContainer}>
+      <div className={sidebarClasses}>
+        <ChatSidebar />
+      </div>
+      <div className={containerlasses}>
         <nav>
           <span
             onClick={

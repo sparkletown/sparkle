@@ -98,7 +98,6 @@ export const updateWorld = functions.https.onCall(async (data, context) => {
 
   const questionsConfig = {
     code: (questions && questions.code) || [],
-    profile: (questions && questions.profile) || [],
   };
 
   const worldData = {

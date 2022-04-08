@@ -21,7 +21,6 @@ import {
   WorldAndSpaceSlugLocation,
   WorldWithId,
 } from "types/id";
-import { VenueAccessMode } from "types/VenueAcccess";
 
 import { eventEndTime, eventStartTime, hasEventFinished } from "utils/event";
 import { formatTimeLocalised, getTimeBeforeParty } from "utils/time";
@@ -33,7 +32,6 @@ import { useValidImage } from "hooks/useCheckImage";
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import { InformationCard } from "components/molecules/InformationCard";
-import { SecretPasswordForm } from "components/molecules/SecretPasswordForm";
 
 dayjs.extend(advancedFormat);
 
@@ -88,8 +86,6 @@ export const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = (
           });
   };
 
-  const isPasswordRequired = space.access === VenueAccessMode.Password;
-
   const containerClasses = classNames("header");
 
   return (
@@ -104,31 +100,23 @@ export const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = (
 
           <div className="subtitle">{landingPageConfig?.subtitle}</div>
         </div>
-
-        {isPasswordRequired && (
-          <div className="secret-password-form-wrapper">
-            <SecretPasswordForm
-              buttonText={landingPageConfig?.joinButtonText}
-            />
-          </div>
-        )}
-
-        {!isPasswordRequired && (
-          // @debt: this is commented out because we want the button to show even if there are future and ongoing events, but we are not sure why this logic is in place
-          // (!futureOrOngoingVenueEvents ||
-          //   futureOrOngoingVenueEvents.length === 0) &&
-          <button
-            className="btn btn-primary btn-block btn-centered"
-            onClick={onJoinClick}
-          >
-            Join the event
-            {(space?.start_utc_seconds ?? 0) > new Date().getTime() / 1000 && (
-              <span className="countdown">
-                Begins in {getTimeBeforeParty(space.start_utc_seconds)}
-              </span>
-            )}
-          </button>
-        )}
+        {/*
+        // @debt: this is commented out because we want the button to show even
+        if there are future and ongoing events, but we are not sure why this
+        logic is in place // (!futureOrOngoingVenueEvents || //
+        futureOrOngoingVenueEvents.length === 0) &&
+        */}
+        <button
+          className="btn btn-primary btn-block btn-centered"
+          onClick={onJoinClick}
+        >
+          Join the event
+          {(space?.start_utc_seconds ?? 0) > new Date().getTime() / 1000 && (
+            <span className="countdown">
+              Begins in {getTimeBeforeParty(space.start_utc_seconds)}
+            </span>
+          )}
+        </button>
       </div>
 
       <div className="row">
@@ -164,13 +152,6 @@ export const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = (
               allow={IFRAME_ALLOW}
             />
           )}
-
-          {landingPageConfig?.quotations?.map((quotation, index) => (
-            <div className="quotation-container" key={index}>
-              <div className="quotation">{quotation.text}</div>
-              <div className="quotation-author">- {quotation.author}</div>
-            </div>
-          ))}
 
           {landingPageConfig?.presentation?.map(
             (paragraph: string, index: number) => (

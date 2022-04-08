@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { NotFound } from "components/shared/NotFound";
 
 import {
   SpaceWithId,
@@ -7,8 +8,6 @@ import {
   WorldAndSpaceSlugLocation,
   WorldWithId,
 } from "types/id";
-
-import { NotFound } from "components/atoms/NotFound";
 
 import { VenueLandingPageContent } from "./VenueLandingPageContent";
 

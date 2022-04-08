@@ -1,0 +1,27 @@
+@use "scss/attendee/font";
+@use "scss/attendee/theme";
+
+.container {
+  height: 100vh;
+  width: 100vw;
+
+  color: theme.$c-login-page--fg;
+  background-color: theme.$c-login-page--bg;
+
+  display: grid;
+  place-content: center;
+
+  &,
+  * {
+    @include font.large;
+    @include font.sparkle;
+  }
+
+  h1 {
+    @include font.title;
+  }
+}
+
+.contents {
+  text-align: center;
+}

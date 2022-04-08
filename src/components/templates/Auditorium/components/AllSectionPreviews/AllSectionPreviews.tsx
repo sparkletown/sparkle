@@ -7,10 +7,8 @@ import { sample } from "lodash";
 
 import { DEFAULT_SECTIONS_AMOUNT } from "settings";
 
-import { AuditoriumEmptyBlocksCount } from "types/auditorium";
 import { AuditoriumVenue } from "types/venues";
 
-import { chooseAuditoriumSize } from "utils/auditorium";
 import { WithId } from "utils/id";
 
 import { useAllAuditoriumSections } from "hooks/auditorium";
@@ -22,8 +20,6 @@ import { Checkbox } from "components/atoms/Checkbox";
 import { VenueWithOverlay } from "components/atoms/VenueWithOverlay/VenueWithOverlay";
 
 import { SectionPreview } from "../SectionPreview";
-
-import "./AllSectionPreviews.scss";
 
 export interface SectionPreviewsProps {
   venue: WithId<AuditoriumVenue>;
@@ -47,8 +43,6 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
   const hasOnlyOneSection = sectionsCount === 1;
   const [firstSection] = auditoriumSections;
 
-  const auditoriumSize = chooseAuditoriumSize(sectionsCount);
-
   const availableSectionIds = useMemo(
     () => availableSections.map((section) => section.id),
     [availableSections]
@@ -61,10 +55,7 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
     enterSection(randomSectionId);
   }, [enterSection, availableSectionIds]);
 
-  const containerClasses = classNames(
-    "AllSectionPreviews",
-    `AllSectionPreviews--${auditoriumSize}`
-  );
+  const containerClasses = classNames("AllSectionPreviews");
 
   if (hasOnlyOneSection && firstSection) {
     return <Redirect to={`${match.url}/section/${firstSection.id}`} />;
@@ -84,15 +75,6 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
           }
           loader={<Loading containerClassName="AllSectionPreviews__loader" />}
         >
-          {Array(AuditoriumEmptyBlocksCount[auditoriumSize])
-            .fill(0)
-            .map((_, index) => (
-              <div
-                key={index}
-                className={`AllSectionPreviews__empty-block--${index + 1}`}
-              />
-            ))}
-
           <div className="AllSectionPreviews__main">
             <div className="AllSectionPreviews__welcome-text">
               {venue.title}

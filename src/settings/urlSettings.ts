@@ -32,21 +32,16 @@ const EMERGENCY_BASE_URL = "/m";
 const INSIDE_BASE_URL = "/in";
 const LANDING_BASE_URL = "/v";
 const ENTRANCE_BASE_URL = "/e";
-const LOGIN_BASE_URL = `/login`;
 
 export const ATTENDEE_EMERGENCY_PARAM_URL = `${EMERGENCY_BASE_URL}/w/:worldSlug/s/:spaceSlug`;
 export const ATTENDEE_INSIDE_URL = `${INSIDE_BASE_URL}/w/:worldSlug/s/:spaceSlug`;
 export const ATTENDEE_LANDING_URL = `${LANDING_BASE_URL}/w/:worldSlug/s/:spaceSlug`;
 export const ATTENDEE_STEPPING_PARAM_URL = `${ENTRANCE_BASE_URL}/w/:worldSlug/s/:spaceSlug/:step`;
 
-// @debt I don't think we support custom tokens right now. Probably remove this.
-export const LOGIN_CUSTOM_TOKEN_PARAM_URL = `${LOGIN_BASE_URL}/:spaceSlug/:customToken`;
-
 // Account URLs
 export const ACCOUNT_CODE_QUESTIONS_URL = `${ACCOUNT_ROOT_URL}/code-of-conduct/:worldSlug/:spaceSlug?`;
 export const ACCOUNT_PROFILE_BASE_URL = `${ACCOUNT_ROOT_URL}/profile`;
-export const ACCOUNT_PROFILE_VENUE_PARAM_URL = `${ACCOUNT_PROFILE_BASE_URL}/:worldSlug/:spaceSlug?`;
-export const ACCOUNT_PROFILE_QUESTIONS_URL = `${ACCOUNT_ROOT_URL}/questions/:worldSlug/:spaceSlug?`;
+export const ACCOUNT_PROFILE_SPACE_PARAM_URL = `${ACCOUNT_PROFILE_BASE_URL}/:worldSlug/:spaceSlug?`;
 
 // Admin IA URLs
 export const ADMIN_IA_WORLD_BASE_URL = `${ADMIN_ROOT_URL}/w`; // e.g. /admin/w

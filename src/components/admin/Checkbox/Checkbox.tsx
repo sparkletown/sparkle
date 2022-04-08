@@ -34,13 +34,13 @@ export const Checkbox: React.FC<CheckboxProps> = ({
   const error = get(errors, name);
 
   return (
-    <fieldset className="mb-4 mt-4" tabIndex={tabIndex}>
+    <fieldset data-bem="Checkbox" className="mb-4 mt-4" tabIndex={tabIndex}>
       <div className="relative flex items-start">
         <div className="flex items-center h-5">
           <input
             {...inputProps}
             data-bem="AdminCheckbox__input"
-            className="checked:bg-blue-500 indeterminate:bg-gray-300 focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
+            className={TW.checkbox}
             disabled={disabled}
             type="checkbox"
             {...register(name)}

@@ -1,4 +1,4 @@
-#!/usr/bin/env ts-node
+#!/usr/bin/env node -r esm -r ts-node/register
 
 import {
   checkFileExists,

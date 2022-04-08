@@ -4,7 +4,7 @@ import classNames from "classnames";
 import { InputGroupSubtitle } from "./InputGroupSubtitle";
 import { InputGroupTitle } from "./InputGroupTitle";
 
-type MarginVariant = "medium";
+type MarginVariant = "regular" | "no-bottom";
 
 export interface InputGroupProps {
   title?: ReactNode | string;
@@ -22,7 +22,7 @@ export const InputGroup: React.FC<InputGroupProps> = ({
   isRequired,
   isOptional,
   children,
-  margin,
+  margin = "regular",
 }) => {
   const required = isRequired ? "required" : isOptional ? "optional" : "none";
 
@@ -33,8 +33,8 @@ export const InputGroup: React.FC<InputGroupProps> = ({
     </>
   );
 
-  const sectionClasses = classNames("mb-6 mt-6 flow-root", {
-    [`ml-4`]: margin === "medium",
+  const sectionClasses = classNames("mt-6 flow-root", {
+    "mb-6": margin !== "no-bottom",
   });
 
   return (

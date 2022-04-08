@@ -8,13 +8,13 @@ import {
   ALWAYS_EMPTY_ARRAY,
   COLLECTION_SECTIONS,
   COLLECTION_SPACES,
+  SECTION_CAPACITY,
   SECTIONS_NEXT_FETCH_SIZE,
 } from "settings";
 
 import { AuditoriumSection } from "types/auditorium";
 import { AuditoriumVenue } from "types/venues";
 
-import { getSectionCapacity } from "utils/auditorium";
 import { withIdConverter } from "utils/converters";
 import { WithId } from "utils/id";
 import { getUrlWithoutTrailingSlash } from "utils/url";
@@ -68,11 +68,11 @@ export const useAllAuditoriumSections = (venue: WithId<AuditoriumVenue>) => {
 
     return sections.filter((section) => {
       const seatedUsersCount = section?.seatedUsersCount ?? 0;
-      const sectionCapacity = getSectionCapacity(venue, section);
+      const sectionCapacity = SECTION_CAPACITY;
 
       return seatedUsersCount < sectionCapacity;
     });
-  }, [venue, sections]);
+  }, [sections]);
 
   return useMemo(
     () => ({

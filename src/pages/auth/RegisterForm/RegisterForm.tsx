@@ -10,7 +10,7 @@ import { differenceInYears, parseISO } from "date-fns";
 import firebase from "firebase/compat/app";
 
 import {
-  ACCOUNT_PROFILE_VENUE_PARAM_URL,
+  ACCOUNT_PROFILE_SPACE_PARAM_URL,
   DEFAULT_REQUIRES_DOB,
   STRING_SPACE,
 } from "settings";
@@ -37,8 +37,6 @@ import { updateUserPrivate } from "pages/Account/helpers";
 import CN from "pages/auth/auth.module.scss";
 import { LoginFormData } from "pages/auth/LoginForm";
 import { SocialLogin } from "pages/auth/SocialLogin";
-
-import { TicketCodeField } from "components/organisms/TicketCodeField";
 
 const validateDateOfBirth = (stringDate: string) => {
   const yearsDifference = differenceInYears(new Date(), parseISO(stringDate));
@@ -175,7 +173,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
       postRegisterCheck(auth, data);
 
       const profileUrl = generateUrl({
-        route: ACCOUNT_PROFILE_VENUE_PARAM_URL,
+        route: ACCOUNT_PROFILE_SPACE_PARAM_URL,
         required: ["worldSlug", "spaceSlug"],
         params: { worldSlug, spaceSlug },
       });
@@ -189,12 +187,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
       if (code === "auth/email-already-in-use") {
         setShowLoginModal(true);
       }
-      if (status === 404) {
-        setError("email", {
-          type: "validation",
-          message: `Email ${data.email} does not have a ticket; get your ticket at ${space.ticketUrl}`,
-        });
-      } else if (status >= 500) {
+      if (status >= 500) {
         setError("email", {
           type: "validation",
           message: `Error checking ticket: ${message}`,
@@ -336,10 +329,6 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
             </div>
           )}
         </Spacer>
-
-        {space.access === VenueAccessMode.Codes && (
-          <TicketCodeField register={register} error={errors?.code} />
-        )}
 
         {isDobRequired && (
           <div className="input-group">

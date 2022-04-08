@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useMemo } from "react";
 import { useFieldArray, useForm, useFormState } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -17,8 +17,6 @@ import { WithId } from "utils/id";
 
 import { worldEntranceSchema } from "forms/worldEntranceSchema";
 
-import { useUser } from "hooks/useUser";
-
 import { AdminSidebarButtons } from "components/organisms/AdminVenueView/components/AdminSidebarButtons";
 
 import { FormErrors } from "components/molecules/FormErrors";
@@ -35,19 +33,16 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
   world,
 }) => {
   const worldId = world.id;
-  const { user } = useUser();
 
   const defaultValues = useMemo<WorldEntranceFormInput>(
     () => ({
       code: world.questions?.code ?? [],
-      profile: world.questions?.profile ?? [],
       entrance: world.entrance,
       adultContent: world.adultContent ?? false,
       requiresDateOfBirth: world.requiresDateOfBirth ?? false,
     }),
     [
       world.questions?.code,
-      world.questions?.profile,
       world.entrance,
       world.adultContent,
       world.requiresDateOfBirth,
@@ -77,17 +72,6 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
   const clearCodeQuestions = removeCodeQuestion;
 
   const {
-    fields: profileQuestions,
-    append: addProfileQuestion,
-    remove: removeProfileQuestion,
-  } = useFieldArray({ control, shouldUnregister: true, name: "profile" });
-
-  const handleAddProfileQuestion = useCallback(
-    () => addProfileQuestion({ name: "", text: "", link: "" }),
-    [addProfileQuestion]
-  );
-  const clearProfileQuestions = removeProfileQuestion;
-  const {
     fields: entranceSteps,
     append: addEntranceStep,
     remove: removeEntranceStep,
@@ -98,7 +82,6 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
       template: EntranceStepTemplate.WelcomeVideo,
       videoUrl: "",
       autoplay: false,
-      welcomeText: "",
     });
   const clearEntranceSteps = removeEntranceStep;
 
@@ -106,24 +89,24 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
 
   const [{ error, loading: isSaving }, submit] = useAsyncFn(
     async (input: WorldEntranceFormInput) => {
-      if (!user || !worldId) return;
+      if (!worldId) return;
 
       const data = {
         ...input,
         id: worldId,
       };
-      await updateWorldEntranceSettings(data, user);
+      await updateWorldEntranceSettings(data);
 
       reset(data);
     },
-    [worldId, user, reset]
+    [worldId, reset]
   );
 
   const isSaveLoading = isSubmitting || isSaving;
   const isSaveDisabled = !(isDirty || isSaving || isSubmitting);
 
   return (
-    <div className="WorldEntranceForm">
+    <div data-bem="WorldEntranceForm">
       <form onSubmit={handleSubmit(submit)}>
         <Checkbox
           label="Restrict registration to 18+ (adds a date of birth picker)"
@@ -140,18 +123,6 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
             onAdd={handleAddCodeQuestion}
             onRemove={removeCodeQuestion}
             onClear={clearCodeQuestions}
-            register={register}
-          />
-        </InputGroup>
-
-        <InputGroup title="Profile questions">
-          <QuestionsBuilder
-            errors={errors.profile}
-            items={profileQuestions}
-            name="profile"
-            onAdd={handleAddProfileQuestion}
-            onRemove={removeProfileQuestion}
-            onClear={clearProfileQuestions}
             register={register}
           />
         </InputGroup>

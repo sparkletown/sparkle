@@ -24,10 +24,7 @@ export interface InviteAdminModalProps {
 }
 
 type User = Hit<
-  Pick<
-    UserWithLocation,
-    "partyName" | "pictureUrl" | "anonMode" | "enteredVenueIds"
-  >
+  Pick<UserWithLocation, "partyName" | "pictureUrl" | "enteredVenueIds">
 >;
 
 export const InviteAdminModal: React.FC<InviteAdminModalProps> = ({

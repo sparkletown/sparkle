@@ -10,17 +10,15 @@ import { Settings } from "./settings";
 
 import { World } from "api/world";
 
-import { AuditoriumSeatedUser } from "types/auditorium";
 import {
   JukeboxMessage,
   PrivateChatMessage,
   VenueChatMessage,
 } from "types/chat";
 import { Reaction } from "types/reactions";
-import { Role } from "types/Role";
 import { ScreeningRoomVideo } from "types/screeningRoom";
 import { Table } from "types/Table";
-import { TableSeatedUser, User } from "types/User";
+import { User } from "types/User";
 import { AnyVenue, PosterPageVenue, WorldEvent } from "types/venues";
 
 import { WithId } from "utils/id";
@@ -87,14 +85,9 @@ export interface FirestoreStatus {
 // note: these entries should be sorted alphabetically
 export interface FirestoreData {
   adminRole?: AdminRole;
-  allowAllRoles?: Record<string, Role>;
   currentVenue?: AnyVenue;
   currentVenueEventsNG?: Record<string, WorldEvent>;
   currentVenueNG?: AnyVenue;
-  currentAuditoriumSeatedSectionUsers?: Partial<
-    Record<string, AuditoriumSeatedUser>
-  >;
-  currentSeatedTableUsers?: Record<string, TableSeatedUser>;
   currentModalUser?: User;
   currentEvent?: Record<string, WorldEvent>;
   experience?: Experience;
@@ -104,7 +97,6 @@ export interface FirestoreData {
   screeningRoomVideos: Record<string, ScreeningRoomVideo>;
   animatemapFirebarrels: Partial<Record<string, Firebarrel>>;
   animatemapArtcars: Partial<Record<string, ArtCar>>;
-  userRoles?: Record<string, Role>;
   venueChatMessages?: Record<string, VenueChatMessage>;
   venueJukeboxMessages?: Record<string, JukeboxMessage>;
   venueEvents?: Record<string, WorldEvent>;
@@ -117,8 +109,6 @@ export interface FirestoreOrdered {
   currentVenue?: WithId<AnyVenue>[];
   currentVenueEventsNG?: WorldEvent[];
   currentVenueNG?: WithId<AnyVenue>[];
-  currentAuditoriumSeatedSectionUsers?: WithId<AuditoriumSeatedUser>[];
-  currentSeatedTableUsers?: WithId<TableSeatedUser>[];
   currentModalUser?: WithId<User>[];
   currentEvent?: WorldEvent[];
   events?: WorldEvent[];

@@ -1,0 +1,85 @@
+@use "scss/attendee/effects/sparkle";
+@use "scss/attendee/space";
+@use "scss/attendee/font";
+@use "scss/attendee/layout";
+@use "scss/attendee/layer";
+@use "scss/attendee/theme";
+@use "scss/attendee/breakpoint";
+
+$-z-index--ui: layer.level(layer.$z-index--space);
+$-z-index--popover: layer.level($-z-index--ui);
+
+.html {
+  overflow-y: scroll;
+  @include font.core;
+  @include font.sparkle;
+}
+
+.Space {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  transition: padding-right 0.2s ease;
+  padding-right: 0;
+  z-index: layer.$z-index--space;
+  transition: filter 2s ease;
+  background-color: theme.$c-glass-panel-background;
+}
+
+.LayerUi {
+  position: fixed;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  z-index: $-z-index--ui;
+  @include sparkle.panel--normal;
+  background: transparent;
+  pointer-events: none;
+
+  display: flex;
+  flex-direction: column-reverse;
+  transition: filter 2s ease;
+
+  @media (min-width: breakpoint.$md) {
+    top: space.empty(1);
+  }
+
+  &[open] {
+    height: 45vh;
+  }
+
+  > * {
+    pointer-events: all;
+  }
+}
+
+.relative {
+  position: relative;
+  top: space.empty(3);
+  height: 0px;
+
+  @media (min-width: breakpoint.$md) {
+    top: space.empty(1);
+  }
+}
+
+.popoverContainer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: $-z-index--popover;
+  // Make the overlay ignore pointers, however, the things in the overlay must
+  // receive pointer events
+  pointer-events: none;
+
+  * {
+    pointer-events: all;
+  }
+}
+
+.blur {
+  filter: blur(100px) contrast(60%);
+}

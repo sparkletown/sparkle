@@ -86,7 +86,7 @@ export const EventsPanel: React.FC<EventsPanelProps> = ({
     <div className="space-y-6 lg:col-start-2 lg:col-span-2">
       <div className="px-4 sm:px-0">
         {hasMultipleSpaces && (
-          <div className="flex justify-end mb-4">
+          <div className="flex justify-end mb-4 sm:px-6 lg:px-8">
             <Toggle
               checked={showSplittedEvents}
               onChange={toggleSplittedEvents}
