@@ -14,6 +14,8 @@ import {
   EXTERNAL_SPARKLE_HOMEPAGE_URL,
   EXTERNAL_SPARKLEVERSE_HOMEPAGE_URL,
   ROOT_URL,
+  SIGN_IN_URL,
+  SIGN_UP_URL,
   SPARKLEVERSE_REDIRECT_URL,
 } from "settings";
 
@@ -35,6 +37,14 @@ const SubAdmin = lazy(() =>
   tracePromise("AppRouter::lazy-import::AdminSubRouter", () =>
     import("./AdminSubRouter").then(({ AdminSubRouter }) => ({
       default: AdminSubRouter,
+    }))
+  )
+);
+
+const LoginWithWorldAndSpace = lazy(() =>
+  tracePromise("AppRouter::lazy-import::Login", () =>
+    import("pages/auth/Login").then(({ Login }) => ({
+      default: Login,
     }))
   )
 );
@@ -99,6 +109,12 @@ export const AppRouter: React.FC = () => (
               <VenueLandingPage />
             </AnalyticsCheck>
           </RelatedVenuesProvider>
+        </Route>
+        <Route path={SIGN_IN_URL}>
+          <LoginWithWorldAndSpace />
+        </Route>
+        <Route path={SIGN_UP_URL}>
+          <LoginWithWorldAndSpace />
         </Route>
         <Route path={ATTENDEE_STEPPING_PARAM_URL}>
           <LoginRestricted>

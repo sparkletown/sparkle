@@ -1,9 +1,10 @@
 import React, { lazy, ReactNode } from "react";
-import { Unauthorized } from "components/shared/Unauthorized";
+import { Redirect, RouteChildrenProps } from "react-router-dom";
+
+import { SIGN_IN_URL } from "settings";
 
 import { tracePromise } from "utils/performance";
 
-import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useUserId } from "hooks/user/useUserId";
 
 import { Loading } from "components/molecules/Loading";
@@ -19,23 +20,23 @@ const LoginWithWorldAndSpace = lazy(() =>
   )
 );
 
-type LoginRestrictedProps = {
+interface LoginRestrictedProps extends RouteChildrenProps {
   loading?: "spinner" | "page" | ReactNode;
-};
+}
 
 /**
  * This is a simple check and "redirect" component, no styles, just logic
  */
 export const LoginRestricted: React.FC<LoginRestrictedProps> = ({
   loading = null,
+  history,
   children,
 }) => {
-  const { spaceSlug, worldSlug } = useSpaceParams();
   const { userId, isLoading } = useUserId();
 
   if (isLoading) {
-    if ("spinner" === loading) return <Loading />;
-    if ("page" === loading) return <LoadingPage />;
+    if (loading === "spinner") return <Loading />;
+    if (loading === "page") return <LoadingPage />;
     return <>{loading}</>;
   }
 
@@ -43,10 +44,12 @@ export const LoginRestricted: React.FC<LoginRestrictedProps> = ({
     return <>{children}</>;
   }
 
-  if (spaceSlug && worldSlug) {
-    return <LoginWithWorldAndSpace />;
-  }
-
-  // @debt this component should only redirect to login components, replace the following
-  return <Unauthorized />;
+  return (
+    <Redirect
+      to={{
+        pathname: SIGN_IN_URL,
+        search: `?returnUrl=${history.location.pathname}`,
+      }}
+    />
+  );
 };
