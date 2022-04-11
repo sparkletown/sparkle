@@ -21,7 +21,7 @@ $-main-width: 200px;
   background: rgba(255, 255, 255, 0.3);
   border: thin solid #8282824d;
   border-radius: border.$radius--xs;
-  padding: space.$lg;
+  padding: space.empty(1);
   backdrop-filter: blur(sparkle.$blur--lg);
 
   @media (max-width: breakpoint.$md) {
@@ -35,7 +35,8 @@ $-main-width: 200px;
   justify-content: center;
   flex-direction: column;
   align-items: center;
-  padding: space.$xl;
+  padding: space.$lg;
+  padding-left: 0;
   border-right: thin solid #8282824d;
   max-width: $-main-width;
 
