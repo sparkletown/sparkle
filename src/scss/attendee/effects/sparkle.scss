@@ -1,7 +1,7 @@
 @use "../theme";
 
-$blur: 5px;
-$blur--medium: 14px;
+$blur--md: 5px;
+$blur--lg: 14px;
 
 // previously named sparkle-panel
 @mixin panel--normal {
@@ -13,8 +13,8 @@ $blur--medium: 14px;
 @mixin panel--glass {
   color: theme.$c-default-text;
   background: theme.$c-glass-panel-background;
-  -webkit-backdrop-filter: blur($blur);
-  backdrop-filter: blur($blur);
+  -webkit-backdrop-filter: blur($blur--md);
+  backdrop-filter: blur($blur--md);
 }
 
 // previously named sparkle-color
@@ -29,8 +29,8 @@ $blur--medium: 14px;
   color: white;
   -webkit-font-smoothing: antialiased;
   background-color: theme.$c-color-glass-panel-background;
-  -webkit-backdrop-filter: blur($blur);
-  backdrop-filter: blur($blur);
+  -webkit-backdrop-filter: blur($blur--md);
+  backdrop-filter: blur($blur--md);
 }
 
 // gray mask blur

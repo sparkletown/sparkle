@@ -13,9 +13,9 @@ import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import CN from "./ExternalExperience.module.scss";
 
-const componentRules = {
+const componentRules = Object.freeze({
   p: "span",
-};
+});
 
 interface ExternalExperienceProps {
   space: WithId<AnyVenue>;
@@ -32,8 +32,10 @@ export const ExternalExperience: React.FC<ExternalExperienceProps> = ({
     openUrl(redirectUrl);
   }, [redirectUrl]);
 
+  const spaceConfig = space.config?.landingPageConfig;
+
   const styles = useCss({
-    background: `url(${space.config?.landingPageConfig.coverImageUrl}) center center`,
+    background: `url(${spaceConfig?.coverImageUrl}) center center`,
   });
 
   return (
@@ -46,7 +48,7 @@ export const ExternalExperience: React.FC<ExternalExperienceProps> = ({
 
           <p className={CN.venueDescription}>
             <RenderMarkdown
-              text={space.config?.landingPageConfig.description}
+              text={spaceConfig?.description}
               components={componentRules}
             />
           </p>

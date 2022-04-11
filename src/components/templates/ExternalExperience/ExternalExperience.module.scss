@@ -22,7 +22,7 @@ $-main-width: 200px;
   border: thin solid #8282824d;
   border-radius: border.$radius--xs;
   padding: space.$lg;
-  backdrop-filter: blur(sparkle.$blur--medium);
+  backdrop-filter: blur(sparkle.$blur--lg);
 
   @media (max-width: breakpoint.$md) {
     flex-direction: column;
