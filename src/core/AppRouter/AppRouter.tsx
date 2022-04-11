@@ -159,18 +159,13 @@ export const AppRouter: React.FC = () => (
             return <LoadingPage />;
           }}
         />
-        <Route
-          path={ROOT_URL}
-          render={() => {
-            return (
-              <LoginRestricted loading="page">
-                <AnalyticsCheck>
-                  <NotFound />
-                </AnalyticsCheck>
-              </LoginRestricted>
-            );
-          }}
-        />
+        <Route path={ROOT_URL}>
+          <LoginRestricted loading="page">
+            <AnalyticsCheck>
+              <NotFound />
+            </AnalyticsCheck>
+          </LoginRestricted>
+        </Route>
       </Switch>
     </Suspense>
   </Router>
