@@ -61,7 +61,7 @@ export const InviteAdminModal: React.FC<InviteAdminModalProps> = ({
 
     await addWorldAdmins(worldId, userIds);
     onHide();
-  });
+  }, [onHide, selectedUsers, worldId]);
 
   const selectUser = (user: User) => {
     setSelectedUsers((selectedUsers) => {
@@ -124,10 +124,11 @@ export const InviteAdminModal: React.FC<InviteAdminModalProps> = ({
         </Button>
         <Button
           disabled={!hasSelectedUsers || isAddingAdmins}
+          loading={isAddingAdmins}
           variant="danger"
           onClick={addNewAdmins}
         >
-          Add
+          {isAddingAdmins ? "Adding..." : "Add"}
         </Button>
       </div>
     </Modal>
