@@ -29,7 +29,7 @@ type AttendeeLayoutProps = {
 
 export const AttendeeLayout: React.FC<AttendeeLayoutProps> = ({ space }) => {
   const [backButtonSpace, setBackButtonSpace] = useState<SpaceWithId>();
-  const footerRef = useRef<HTMLDivElement>(null);
+  const footerRef = useRef<HTMLElement>(null);
   const footerIntersect = useIntersection(footerRef, {
     rootMargin: "0px",
   });
