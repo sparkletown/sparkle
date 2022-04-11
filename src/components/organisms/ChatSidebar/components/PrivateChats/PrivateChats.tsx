@@ -6,8 +6,8 @@ import { WithId } from "utils/id";
 
 import { usePrivateChatPreviews } from "hooks/chats/private/usePrivateChatPreviews";
 import { useChatSidebarControls } from "hooks/chats/util/useChatSidebarControls";
+import { useLiveUser } from "hooks/user/useLiveUser";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
-import { useUser } from "hooks/useUser";
 
 import { OnlineUser, PrivateChatPreview, RecipientChat } from "..";
 
@@ -20,7 +20,7 @@ export interface PrivateChatsProps {
 export const PrivateChats: React.FC<PrivateChatsProps> = ({ recipient }) => {
   const { sovereignVenue } = useRelatedVenues();
 
-  const { userId } = useUser();
+  const { userId } = useLiveUser();
 
   const { privateChatPreviews } = usePrivateChatPreviews();
   const { selectRecipientChat } = useChatSidebarControls();

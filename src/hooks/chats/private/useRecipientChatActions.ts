@@ -16,12 +16,12 @@ import {
   useSendChatMessage,
   useSendThreadMessage,
 } from "hooks/chats/common/useSendMessage";
-import { useUser } from "hooks/useUser";
+import { useLiveUser } from "hooks/user/useLiveUser";
 
 export const useRecipientChatActions = (
   recipient: WithId<DisplayUser>
 ): PrivateChatActions => {
-  const { userId } = useUser();
+  const { userId } = useLiveUser();
 
   const refs = useMemo(() => {
     if (!userId) return [];

@@ -16,8 +16,8 @@ import { generateUrl } from "utils/url";
 
 import { useChatSidebarControls } from "hooks/chats/util/useChatSidebarControls";
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
+import { useLiveUser } from "hooks/user/useLiveUser";
 import { useShowHide } from "hooks/useShowHide";
-import { useUser } from "hooks/useUser";
 import { useMediaQuery } from "hooks/viewport/useMediaQuery";
 
 import CN from "./AttendeeHeader.module.scss";
@@ -65,7 +65,7 @@ export const AttendeeHeader: React.FC<AttendeeHeaderProps> = ({
     [show]
   );
 
-  const { userWithId } = useUser();
+  const { userWithId } = useLiveUser();
 
   const isNarrow = isTablet || isMobile;
 

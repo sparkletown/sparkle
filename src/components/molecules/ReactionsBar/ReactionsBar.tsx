@@ -17,7 +17,7 @@ import {
 import { createEmojiReaction, createTextReaction } from "utils/reactions";
 
 import { useDispatch } from "hooks/useDispatch";
-import { useUser } from "hooks/useUser";
+import { useLiveUser } from "hooks/user/useLiveUser";
 
 import { Reaction } from "components/atoms/Reaction";
 
@@ -47,7 +47,7 @@ export const ReactionsBar: React.FC<ReactionsBarProps> = ({
   isShoutoutsEnabled,
 }) => {
   const dispatch = useDispatch();
-  const { userWithId } = useUser();
+  const { userWithId } = useLiveUser();
 
   const muteClasses = classNames("ReactionsBar__mute-button", {
     "ReactionsBar__mute-button--disabled": isAudioDisabled,

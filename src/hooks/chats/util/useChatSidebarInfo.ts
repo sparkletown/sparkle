@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 
 import { usePrivateChatPreviews } from "hooks/chats/private/usePrivateChatPreviews";
-import { useUser } from "hooks/useUser";
+import { useLiveUser } from "hooks/user/useLiveUser";
 
 export const useChatSidebarInfo = () => {
   const numberOfUnreadChats = useNumberOfUnreadChats();
@@ -14,7 +14,7 @@ export const useChatSidebarInfo = () => {
 };
 
 export const useNumberOfUnreadChats = () => {
-  const { userId } = useUser();
+  const { userId } = useLiveUser();
   const { privateChatPreviews } = usePrivateChatPreviews();
 
   return useMemo(

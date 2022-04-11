@@ -12,13 +12,13 @@ import {
 } from "utils/localStorage";
 import { isTruthy } from "utils/types";
 
-import { useUser } from "./useUser";
+import { useLiveUser } from "./user/useLiveUser";
 
 export const useVenueAccess = (
   venue?: WithId<AnyVenue>,
   onDenyAccess?: () => void
 ) => {
-  const { user } = useUser();
+  const { user } = useLiveUser();
 
   const denyAccess = useCallback(() => {
     if (!venue) {

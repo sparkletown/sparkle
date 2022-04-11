@@ -7,7 +7,7 @@ import { GenericVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
-import { useUser } from "hooks/useUser";
+import { useLiveUser } from "hooks/user/useLiveUser";
 
 import { Loading } from "components/molecules/Loading";
 import { SpaceInfoText } from "components/molecules/SpaceInfoText";
@@ -23,7 +23,7 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
 }) => {
   const tables = space?.config?.tables ?? CONVERSATION_TABLES;
 
-  const { userWithId } = useUser();
+  const { userWithId } = useLiveUser();
 
   if (!userWithId) {
     return <Loading />;

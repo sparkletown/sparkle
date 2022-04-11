@@ -10,7 +10,7 @@ import {
 } from "utils/url";
 
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
-import { useUser } from "hooks/useUser";
+import { useLiveUser } from "hooks/user/useLiveUser";
 
 import { Loading } from "components/molecules/Loading";
 import { LoadingPage } from "components/molecules/LoadingPage";
@@ -33,7 +33,7 @@ export interface CodeOfConductFormData {
 export const CodeOfConduct: React.FC = () => {
   const history = useHistory();
 
-  const { user } = useUser();
+  const { user } = useLiveUser();
 
   const {
     world,

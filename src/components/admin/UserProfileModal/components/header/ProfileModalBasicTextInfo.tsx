@@ -9,7 +9,7 @@ import { WithId } from "utils/id";
 
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useIsCurrentUser } from "hooks/useIsCurrentUser";
-import { useUser } from "hooks/useUser";
+import { useLiveUser } from "hooks/user/useLiveUser";
 
 export interface ProfileModalBasicTextInfoProps {
   user: WithId<User>;
@@ -20,7 +20,7 @@ export const ProfileModalBasicTextInfo: React.FC<ProfileModalBasicTextInfoProps>
 }) => {
   const { world } = useWorldAndSpaceByParams();
   const isCurrentUser = useIsCurrentUser(user.id);
-  const { user: firebaseUser } = useUser();
+  const { user: firebaseUser } = useLiveUser();
 
   const userStatus = world?.showUserStatus && world?.userStatuses?.[0];
 

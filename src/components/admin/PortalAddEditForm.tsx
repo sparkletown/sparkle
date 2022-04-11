@@ -31,9 +31,9 @@ import { isTruthy } from "utils/types";
 import { roomSchema } from "forms/roomSchema";
 
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
+import { useLiveUser } from "hooks/user/useLiveUser";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useShowHide } from "hooks/useShowHide";
-import { useUser } from "hooks/useUser";
 
 import { AdminSection } from "components/molecules/AdminSection";
 import { SubmitError } from "components/molecules/SubmitError";
@@ -53,7 +53,7 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
   venueVisibility,
   portalIndex,
 }) => {
-  const { user } = useUser();
+  const { user } = useLiveUser();
   const { spaceId: currentSpaceId, world, space } = useWorldAndSpaceByParams();
   const {
     isShown: isPortalDeleteShown,
