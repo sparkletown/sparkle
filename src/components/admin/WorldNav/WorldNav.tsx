@@ -26,9 +26,5 @@ export const WorldNav: React.FC = () => {
     );
   }, [worldSlug]);
 
-  return (
-    <div className="AdminVenueView__options -mb-px flex bg-white shadow">
-      <TabBar tabs={tabs} selectedTab={selectedTab} />
-    </div>
-  );
+  return <TabBar tabs={tabs} selectedTab={selectedTab} />;
 };
