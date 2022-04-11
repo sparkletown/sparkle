@@ -13,12 +13,12 @@ import { buildBaseMessage } from "utils/chat";
 
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 
-import { useUser } from "./useUser";
+import { useLiveUser } from "./user/useLiveUser";
 
 export const useVenuePoll = () => {
   const { spaceId } = useWorldAndSpaceByParams();
 
-  const { userWithId } = useUser();
+  const { userWithId } = useLiveUser();
 
   const voteInPoll = useCallback(
     async (pollVote: PollVoteBase) => {

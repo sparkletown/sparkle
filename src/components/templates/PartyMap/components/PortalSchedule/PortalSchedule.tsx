@@ -8,7 +8,7 @@ import { WorldEvent } from "types/venues";
 import { isEventLater, isEventLive, isEventSoon } from "utils/event";
 import { arrayIncludes } from "utils/types";
 
-import { useUser } from "hooks/useUser";
+import { useLiveUser } from "hooks/user/useLiveUser";
 
 import { PortalScheduleItem } from "components/templates/PartyMap/components/PortalScheduleItem";
 
@@ -25,7 +25,7 @@ export const PortalSchedule: React.FC<PortalScheduleProps> = ({
   const soonEvents = portalEvents.filter(isEventSoon);
   const laterEvents = portalEvents.filter(isEventLater);
 
-  const { userWithId } = useUser();
+  const { userWithId } = useLiveUser();
   const userEvents: MyPersonalizedSchedule =
     userWithId?.myPersonalizedSchedule ?? ALWAYS_EMPTY_OBJECT;
 

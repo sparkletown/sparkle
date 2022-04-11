@@ -6,7 +6,7 @@ import { Profile, UserLocation } from "types/User";
 
 import { useUserId } from "hooks/user/useUserId";
 
-import { useProfile } from "./useProfile";
+import { useLiveProfile } from "./useLiveProfile";
 
 type UseUserResult = LoadStatus & {
   /** @deprecated this field is ambiguous, pick either auth or profile or userId */
@@ -21,12 +21,9 @@ type UseUserResult = LoadStatus & {
   profileError?: Error;
 };
 
-/**
- * Same as @see useLiveUser only without listening for changes on the profile itself
- */
-export const useUser = (): UseUserResult => {
+export const useLiveUser = (): UseUserResult => {
   const authResult = useUserId();
-  const profileResult = useProfile(authResult);
+  const profileResult = useLiveProfile(authResult);
   const authError = authResult.error;
   const profileError = profileResult.error;
 
