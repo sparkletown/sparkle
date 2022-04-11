@@ -219,7 +219,7 @@ export const WorldGeneralForm: React.FC<WorldGeneralFormProps> = ({
             disabled={!isDirty && !isSaving && !isSubmitting}
             loading={isSubmitting || isSaving}
           >
-            Save
+            {isSubmitting || isSaving ? "Saving..." : "Save"}
           </Button>
           <Link to={ADMIN_IA_WORLD_BASE_URL}>
             <Button variant="secondary">Cancel</Button>

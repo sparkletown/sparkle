@@ -1,5 +1,6 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useForm, useFormState } from "react-hook-form";
+import { useAsyncFn } from "react-use";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button } from "components/admin/Button";
 import { Dropdown } from "components/admin/Dropdown";
@@ -27,8 +28,6 @@ import { useUser } from "hooks/useUser";
 import { LoadingPage } from "components/molecules/LoadingPage";
 import { Modal } from "components/molecules/Modal";
 
-import "./TimingEventModal.scss";
-
 export type TimingEventModalProps = {
   show: boolean;
   onHide: () => void;
@@ -53,13 +52,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
 
   const eventSpaceId = event?.spaceId || (venue?.id as SpaceId | undefined);
 
-  const {
-    register,
-    handleSubmit,
-    control,
-    formState,
-    reset,
-  } = useForm<EventInput>({
+  const { register, handleSubmit, control, reset } = useForm<EventInput>({
     mode: "onSubmit",
     reValidateMode: "onChange",
     resolver: yupResolver(eventEditSchema),
@@ -116,7 +109,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
     setSelectedSpace(option.value as SpaceType);
   };
 
-  const onUpdateEvent = useCallback(
+  const [{ loading: isLoading }, onUpdateEvent] = useAsyncFn(
     async (data: EventInput) => {
       const start = dayjs(`${data.start_date} ${data.start_time}`);
       const spaceId = eventSpaceId ?? selectedSpace.id ?? "";
@@ -159,6 +152,9 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
   if (isSpacesLoading) {
     return <LoadingPage />;
   }
+
+  const updateLabel = isLoading ? "Updating..." : "Update";
+  const createLabel = isLoading ? "Creating..." : "Create";
 
   return (
     <Modal show={show} onHide={onHide} centered autoHide>
@@ -271,17 +267,18 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
             </div>
           </div>
 
-          <div className="TimingEventModal__container">
+          <div className="flex">
             <Button variant="secondary" onClick={onHide}>
               Cancel
             </Button>
 
             <Button
-              disabled={formState.isSubmitting}
+              disabled={isLoading}
+              loading={isLoading}
               variant="primary"
               type="submit"
             >
-              {event?.id ? "Update" : "Create"}
+              {event?.id ? updateLabel : createLabel}
             </Button>
           </div>
         </form>

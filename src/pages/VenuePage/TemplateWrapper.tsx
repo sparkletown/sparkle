@@ -19,7 +19,7 @@ import { Auditorium } from "components/templates/Auditorium";
 import { ConversationSpace } from "components/templates/ConversationSpace";
 import { Embeddable } from "components/templates/Embeddable";
 import { ExperimentalSpace } from "components/templates/ExperimentalSpace";
-import { ExternalRoom } from "components/templates/ExternalRoom";
+import { ExternalExperience } from "components/templates/ExternalExperience";
 import { JazzBar } from "components/templates/Jazzbar";
 import { MeetingRoom } from "components/templates/MeetingRoom";
 import { PartyMap } from "components/templates/PartyMap";
@@ -74,7 +74,7 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       break;
 
     case VenueTemplate.zoomroom:
-      template = <ExternalRoom venue={venue} />;
+      template = <ExternalExperience space={venue} />;
       break;
 
     case VenueTemplate.auditorium:
@@ -134,15 +134,20 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
     styles.templateContainer,
     backgroundCss,
     {
-      [styles.shrunk]: isChatExpanded && venueShrinksForChat,
       [styles.gradients]: !venue.backgroundImageUrl && !isPartyMap,
     }
   );
 
+  const wrapperClassnames = classNames({
+    [styles.shrunk]: isChatExpanded && venueShrinksForChat,
+  });
+
   return (
     <ReactionsProvider venueId={venue.id}>
       {/* TODO <AnnouncementMessage isAnnouncementUserView /> */}
-      <div className={containerClassnames}>{template}</div>
+      <div className={containerClassnames}>
+        <div className={wrapperClassnames}>{template}</div>
+      </div>
 
       {/* TODO {shouldShowChat && <ChatSidebar venue={venue} />} */}
     </ReactionsProvider>

@@ -40,8 +40,9 @@ export const AttendeeLayout: React.FC<AttendeeLayoutProps> = ({ space }) => {
     hide: turnOffBlur,
   } = useShowHide();
 
+  const isChatRelative = footerIntersect?.isIntersecting;
   const layerUIClasses = classNames(styles.LayerUi, {
-    [styles.LayerUiAbsolute]: footerIntersect?.isIntersecting,
+    [styles.relative]: isChatRelative,
     [styles.blur]: isBlurTurnedOn,
   });
 
@@ -69,7 +70,7 @@ export const AttendeeLayout: React.FC<AttendeeLayoutProps> = ({ space }) => {
             <VenuePage setBackButtonSpace={setBackButtonSpace} />
           </MainSection>
           <div className={layerUIClasses}>
-            <ChatContainer />
+            <ChatContainer isRelative={isChatRelative} />
             <VideoHuddle />
           </div>
         </main>
@@ -77,9 +78,9 @@ export const AttendeeLayout: React.FC<AttendeeLayoutProps> = ({ space }) => {
         <AttendeeFooter forwardRef={footerRef} />
         {/* Used by popovers to ensure z-index is handled properly */}
         <div id={POPOVER_CONTAINER_ID} className={styles.popoverContainer} />
-        {banner && (
+        {space.id && (
           <Banner
-            banner={banner}
+            spaceId={space.id}
             turnOnBlur={turnOnBlur}
             turnOffBlur={turnOffBlur}
           />

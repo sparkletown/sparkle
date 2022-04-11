@@ -5,18 +5,53 @@ type SparkleErrorOptions = {
   message?: string;
   where?: string;
   args?: unknown;
+  cause?: Error | string;
+  causeInMessage?: "ignore" | "append" | "replace";
+};
+
+type GenerateMessage = (options: {
+  causeInMessage: "ignore" | "append" | "replace";
+  message: string | undefined;
+  cause: Error | string | undefined;
+}) => string;
+
+const generateMessage: GenerateMessage = ({
+  message,
+  causeInMessage,
+  cause,
+}) => {
+  if (!cause || causeInMessage === "ignore") {
+    return message ?? "";
+  }
+
+  if (!message || causeInMessage === "replace") {
+    return String(cause);
+  }
+
+  return message + ". Due to: " + cause;
 };
 
 // NOTE: keep this one private as to only create subclasses for specific uses
 class SparkleError extends Error {
   readonly where?: string;
   readonly args?: unknown;
+  readonly cause?: unknown;
 
-  constructor(name?: string, options?: SparkleErrorOptions) {
-    super(options?.message);
+  constructor(
+    name?: string,
+    {
+      args,
+      cause,
+      message,
+      where,
+      causeInMessage = "append",
+    }: SparkleErrorOptions = {}
+  ) {
+    super(generateMessage({ causeInMessage, message, cause }));
     this.name = name || "SparkleError";
-    this.where = options?.where;
-    this.args = options?.args;
+    this.where = where;
+    this.args = args;
+    this.cause = cause;
   }
 }
 
@@ -114,3 +149,29 @@ export const createErrorCapture: CreateErrorCapture = (
   error instanceof Error
     ? captureError(error)
     : captureError(new SparkleError("", options));
+
+type CreateErrorRethrow = <T>(
+  options: SparkleErrorOptions
+) => (error: unknown) => T;
+/**
+ * A convenience function to generate error capture function for promise rejections that need extra info
+ *
+ * Works like @see createErrorCapture but uses throw instead of return
+ *
+ * NOTE: the return type should be void, but T is used so that TS can allow constructs like
+ *   await someAsyncFunction().catch(createErrorRethrow())
+ * that just re-packages the rejection and doesn't touch the result
+ */
+export const createErrorRethrow: CreateErrorRethrow = (
+  options: SparkleErrorOptions
+) => (error: unknown) => {
+  options ??= {};
+
+  const cause = error instanceof Error ? error : String(error);
+
+  const sparkleError = captureError(
+    new SparkleError("", { ...options, cause })
+  );
+
+  throw sparkleError;
+};

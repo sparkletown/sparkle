@@ -123,8 +123,13 @@ export const EditAdminModal: React.FC<EditAdminModalProps> = ({
         <Button variant="secondary" onClick={onHide}>
           Cancel
         </Button>
-        <Button disabled={isEditing} variant="danger" onClick={editAdminSpaces}>
-          Edit
+        <Button
+          disabled={isEditing}
+          loading={isEditing}
+          variant="danger"
+          onClick={editAdminSpaces}
+        >
+          {isEditing ? "Editing..." : "Edit"}
         </Button>
       </div>
     </Modal>

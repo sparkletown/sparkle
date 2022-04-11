@@ -89,7 +89,7 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
   }, [worldId, user, values, reset]);
 
   const isSaveLoading = isSubmitting || isSaving;
-  const isSaveDisabled = !(isDirty || isSaving || isSubmitting);
+  const isSaveDisabled = !isDirty || isSaving || isSubmitting;
 
   const renderedUserStatuses = useMemo(
     () =>
@@ -190,7 +190,7 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
             disabled={isSaveDisabled}
             loading={isSaveLoading}
           >
-            Save
+            {isSaveLoading ? "Saving..." : "Save"}
           </Button>
         </AdminSidebarButtons>
       </form>

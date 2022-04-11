@@ -10,14 +10,18 @@ type CardSize = "small";
 
 interface CardProps {
   size?: CardSize;
+  withoutButton?: boolean;
 }
 
 export const Card: React.FC<CardProps> & {
   Button: React.FC<ButtonProps>;
   Body: React.FC;
-} = ({ children, size = "small" }) => {
+} = ({ children, size = "small", withoutButton = false }) => {
   return (
-    <div data-bem="Card" className={cn(CN.card, CN[size])}>
+    <div
+      data-bem="Card"
+      className={cn(CN.card, CN[size], { [CN.withoutButton]: withoutButton })}
+    >
       {children}
     </div>
   );

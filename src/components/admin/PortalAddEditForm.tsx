@@ -20,7 +20,7 @@ import {
   SPACE_TAXON,
 } from "settings";
 
-import { createRoom, deleteRoom, upsertRoom } from "api/admin";
+import { createRoom, deletePortal, upsertRoom } from "api/admin";
 
 import { SpaceId } from "types/id";
 import { PortalInput, Room, RoomType } from "types/rooms";
@@ -170,13 +170,13 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
 
   const [
     { loading: isDeleting, error: deleteError },
-    deletePortal,
+    removePortal,
   ] = useAsyncFn(async () => {
     if (!currentSpaceId || !portal) return;
 
-    await deleteRoom(currentSpaceId, portal);
+    await deletePortal(currentSpaceId, portal);
     await onDone();
-  });
+  }, [currentSpaceId, onDone, portal]);
 
   const { relatedVenues } = useRelatedVenues();
 
@@ -210,8 +210,11 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
     [relatedVenues, portal?.spaceId]
   );
 
+  const createLabel = isLoading ? "Creating..." : "Create";
+  const saveLabel = isLoading ? "Saving..." : "Save";
+
   return (
-    <div>
+    <div data-bem="PortalAddEditForm">
       <form className="bg-white" onSubmit={handleSubmit(addPortal)}>
         <div className="text-lg leading-6 font-medium text-gray-900 mb-6">
           {title}
@@ -297,11 +300,12 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
           </Button>
           <Button
             variant="primary"
+            loading={isLoading || isDeleting}
             disabled={isLoading || isDeleting}
             title={title}
             type="submit"
           >
-            {portal ? "Save" : "Create"}
+            {portal ? saveLabel : createLabel}
           </Button>
         </div>
       </form>
@@ -309,7 +313,7 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
         <ConfirmationModal
           header="Delete portal"
           message="Are you sure you want to delete this portal?"
-          onConfirm={deletePortal}
+          onConfirm={removePortal}
           onCancel={hidePortalDelete}
           confirmVariant="danger"
         />

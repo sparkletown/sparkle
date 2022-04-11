@@ -106,7 +106,7 @@ export const NavOverlay: React.FC<NavOverlayProps> = ({ onClose, type }) => {
               <SearchOverlay onClose={onClose} />
             )}
             {selectedNavMenu === NavOverlayTabType.profile && (
-              <ProfileOverlay />
+              <ProfileOverlay onOverlayClose={onClose} />
             )}
           </div>
         )}
