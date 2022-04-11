@@ -514,7 +514,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
             loading={isUpdating}
             disabled={isUpdating}
           >
-            Save changes
+            {isUpdating ? "Saving changes..." : "Save changes"}
           </Button>
         </AdminSidebarButtons>
       </form>

@@ -78,9 +78,9 @@ export const AttendeeLayout: React.FC<AttendeeLayoutProps> = ({ space }) => {
         <AttendeeFooter forwardRef={footerRef} />
         {/* Used by popovers to ensure z-index is handled properly */}
         <div id={POPOVER_CONTAINER_ID} className={styles.popoverContainer} />
-        {banner && (
+        {space.id && (
           <Banner
-            banner={banner}
+            spaceId={space.id}
             turnOnBlur={turnOnBlur}
             turnOffBlur={turnOffBlur}
           />
