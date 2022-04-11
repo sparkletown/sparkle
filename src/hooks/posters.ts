@@ -7,7 +7,7 @@ import {
   DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT,
 } from "settings";
 
-import { PosterPageVenue } from "types/venues";
+import { PosterPageSpaceWithId } from "types/id";
 import { VenueTemplate } from "types/VenueTemplate";
 
 import { tokeniseStringWithQuotesBySpaces } from "utils/text";
@@ -17,7 +17,7 @@ import { useRefiCollection } from "hooks/fire/useRefiCollection";
 import { useDebounceSearch } from "./useDebounceSearch";
 
 export const usePosterVenues = (posterHallId: string) => {
-  const { data, isLoaded } = useRefiCollection<PosterPageVenue>({
+  const { data, isLoaded } = useRefiCollection<PosterPageSpaceWithId>({
     path: [COLLECTION_SPACES],
     constraints: [
       where("template", "==", VenueTemplate.posterpage),

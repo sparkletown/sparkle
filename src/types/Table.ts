@@ -1,8 +1,7 @@
+import { SpaceWithId } from "types/id";
 import { DisplayUser } from "types/User";
 
 import { WithId } from "utils/id";
-
-import { AnyVenue } from "./venues";
 
 export interface Table {
   title: string;
@@ -21,5 +20,5 @@ export interface TableComponentPropsType {
   users: readonly WithId<DisplayUser>[];
   tableCapacity?: number;
   onJoinClicked: (table: string, locked: boolean) => void;
-  space: WithId<AnyVenue>;
+  space: SpaceWithId;
 }

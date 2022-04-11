@@ -12,12 +12,12 @@ import { DAYJS_INPUT_DATE_FORMAT, DAYJS_INPUT_TIME_FORMAT } from "settings";
 
 import { createEvent, EventInput, updateEvent } from "api/admin";
 
-import { SpaceId, WorldId } from "types/id";
+import { SpaceId, SpaceWithId, WorldId } from "types/id";
 import { SpaceType } from "types/spaces";
-import { AnyVenue, WorldEvent } from "types/venues";
+import { WorldEvent } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
 
-import { MaybeWithId, WithId } from "utils/id";
+import { MaybeWithId } from "utils/id";
 
 import { eventEditSchema } from "forms/eventEditSchema";
 
@@ -33,7 +33,7 @@ export type TimingEventModalProps = {
   venueId?: string | undefined;
   event?: WorldEvent;
   template?: VenueTemplate;
-  venue?: WithId<AnyVenue>;
+  venue?: SpaceWithId;
   worldId: WorldId | string;
 };
 

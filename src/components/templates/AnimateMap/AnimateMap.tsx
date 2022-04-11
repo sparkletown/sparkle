@@ -3,9 +3,7 @@ import { useStore } from "react-redux";
 import { useAsyncFn } from "react-use";
 import Bugsnag from "@bugsnag/js";
 
-import { AnimateMapVenue } from "types/venues";
-
-import { WithId } from "utils/id";
+import { AnimateMapSpaceWithId } from "types/id";
 
 import { AnimateMapErrorPrompt } from "components/templates/AnimateMap/components/AnimateMapErrorPrompt";
 
@@ -22,7 +20,7 @@ import { configs } from "./configs";
 import "./AnimateMap.scss";
 
 export interface AnimateMapProps {
-  space: WithId<AnimateMapVenue>;
+  space: AnimateMapSpaceWithId;
 }
 
 export const AnimateMap: React.FC<AnimateMapProps> = ({ space }) => {
@@ -86,7 +84,12 @@ export const AnimateMap: React.FC<AnimateMapProps> = ({ space }) => {
   }
 
   return (
-    <div className="AnimateMap">
+    <div
+      data-bem="AnimateMap"
+      data-block="AnimateMap"
+      data-side="att"
+      className="AnimateMap"
+    >
       <div className="AnimateMap__ui-wrapper">
         <UIOverlay venue={space}>
           <div className="UIOverlay__main">

@@ -2,9 +2,7 @@ import React, { useMemo } from "react";
 
 import { IFRAME_ALLOW } from "settings";
 
-import { PosterPageVenue } from "types/venues";
-
-import { WithId } from "utils/id";
+import { PosterPageSpaceWithId } from "types/id";
 
 import { useShowHide } from "hooks/useShowHide";
 
@@ -13,7 +11,7 @@ import { PosterCategory } from "components/atoms/PosterCategory";
 import { IntroVideoPreviewModal } from "./components/IntroVideoPreviewModal";
 
 export interface PosterPageProps {
-  venue: WithId<PosterPageVenue>;
+  venue: PosterPageSpaceWithId;
 }
 
 export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
@@ -44,7 +42,12 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
   );
 
   return (
-    <div className="PosterPage">
+    <div
+      data-bem="PosterPage"
+      data-block="PosterPage"
+      data-side="att"
+      className="PosterPage"
+    >
       <div className="PosterPage__header">
         {/* This empty div is needed to properly center the middle cell */}
         <div />

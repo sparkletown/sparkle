@@ -2,8 +2,8 @@ import React, { useCallback, useMemo, useState } from "react";
 
 import { COVERT_ROOM_TYPES } from "settings";
 
+import { PartyMapSpaceWithId, SpaceId } from "types/id";
 import { Room } from "types/rooms";
-import { PartyMapVenue } from "types/venues";
 
 import {
   eventsByStartUtcSecondsSorter,
@@ -18,8 +18,8 @@ import { PortalModal } from "components/templates/PartyMap/components/PortalModa
 
 import styles from "./PartyMap.module.scss";
 
-export interface PartyMapProps {
-  venue: PartyMapVenue;
+interface PartyMapProps {
+  venue: PartyMapSpaceWithId;
 }
 
 export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
@@ -28,7 +28,7 @@ export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
   const selfAndPortalSpaceIds = useMemo(() => {
     const spaceIds = (venue?.rooms ?? [])
       .map((portal) => portal.spaceId)
-      .filter((spaceId) => !!spaceId) as string[];
+      .filter((spaceId) => !!spaceId) as SpaceId[];
     return [venue?.id].concat(spaceIds);
   }, [venue]);
 
@@ -65,7 +65,12 @@ export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
   if (!user || !profile) return <>Loading..</>;
 
   return (
-    <div className={styles.PartyMap}>
+    <div
+      data-bem="PartyMap"
+      data-block="PartyMap"
+      data-side="att"
+      className={styles.PartyMap}
+    >
       <Map user={user} venue={venue} selectRoom={selectRoom} />
 
       <PortalModal

@@ -1,15 +1,14 @@
 import React from "react";
 import classNames from "classnames";
 
-import { AnyVenue, EmbeddableVenue } from "types/venues";
-
-import { WithId } from "utils/id";
+import { SpaceWithId } from "types/id";
+import { EmbeddableVenue } from "types/venues";
 
 import "./VenueWithOverlay.scss";
 
 type VenueWithOverlayProps = {
   containerClassNames: string;
-  venue: WithId<AnyVenue> | EmbeddableVenue;
+  venue: SpaceWithId | EmbeddableVenue;
   style?: React.CSSProperties;
 };
 

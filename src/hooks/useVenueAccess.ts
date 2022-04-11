@@ -3,9 +3,8 @@ import { get } from "lodash/fp";
 
 import { checkAccess } from "api/auth";
 
-import { AnyVenue } from "types/venues";
+import { SpaceWithId } from "types/id";
 
-import { WithId } from "utils/id";
 import {
   getLocalStorageToken,
   removeLocalStorageToken,
@@ -15,7 +14,7 @@ import { isTruthy } from "utils/types";
 import { useUser } from "./useUser";
 
 export const useVenueAccess = (
-  venue?: WithId<AnyVenue>,
+  venue?: SpaceWithId,
   onDenyAccess?: () => void
 ) => {
   const { user } = useUser();

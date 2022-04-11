@@ -1,14 +1,13 @@
 import React, { useEffect } from "react";
 
-import { AnyVenue } from "types/venues";
+import { SpaceWithId } from "types/id";
 
-import { WithId } from "utils/id";
 import { openUrl } from "utils/url";
 
 import CN from "./ExternalRoom.module.scss";
 
 export interface ExternalRoomProps {
-  venue: WithId<AnyVenue>;
+  venue: SpaceWithId;
 }
 
 export const ExternalRoom: React.FC<ExternalRoomProps> = ({ venue }) => {
@@ -22,6 +21,9 @@ export const ExternalRoom: React.FC<ExternalRoomProps> = ({ venue }) => {
 
   return (
     <div
+      data-bem="ExternalRoom"
+      data-block="ExternalRoom"
+      data-side="att"
       className={CN.externalRoom}
       style={{
         background: `url(${venue.config?.landingPageConfig.coverImageUrl}) center center`,
