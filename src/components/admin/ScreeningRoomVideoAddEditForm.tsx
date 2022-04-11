@@ -122,14 +122,15 @@ export const ScreeningRoomVideoAddEditForm: React.FC<ScreeningRoomVideoAddEditFo
     await onDone();
   }, [currentSpaceId, getValues, onDone, video, userId]);
 
-  const [{ loading: isDeleting, error: deleteError }, deleteVideo] = useAsyncFn(
-    async () => {
-      if (!currentSpaceId || !video) return;
+  const [
+    { loading: isDeleting, error: deleteError },
+    deleteVideo,
+  ] = useAsyncFn(async () => {
+    if (!currentSpaceId || !video) return;
 
-      await deleteScreeningRoomVideo(video.id, currentSpaceId);
-      await onDone();
-    }
-  );
+    await deleteScreeningRoomVideo(video.id, currentSpaceId);
+    await onDone();
+  }, [currentSpaceId, onDone, video]);
 
   return (
     <form
