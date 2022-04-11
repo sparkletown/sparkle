@@ -30,6 +30,7 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({ isRelative }) => {
 
   const containerlasses = classNames(styles.ChatContainer, {
     [styles.chatContainerExpanded]: isExpanded,
+    [styles.relativeContainer]: isRelative,
   });
 
   return (

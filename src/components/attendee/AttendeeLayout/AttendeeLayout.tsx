@@ -29,7 +29,7 @@ type AttendeeLayoutProps = {
 
 export const AttendeeLayout: React.FC<AttendeeLayoutProps> = ({ space }) => {
   const [backButtonSpace, setBackButtonSpace] = useState<SpaceWithId>();
-  const footerRef = useRef<HTMLElement>(null);
+  const footerRef = useRef<HTMLDivElement>(null);
   const footerIntersect = useIntersection(footerRef, {
     rootMargin: "0px",
   });
@@ -40,9 +40,9 @@ export const AttendeeLayout: React.FC<AttendeeLayoutProps> = ({ space }) => {
     hide: turnOffBlur,
   } = useShowHide();
 
-  const isChatRelative = footerIntersect?.isIntersecting;
+  const isFooterRendered = footerIntersect?.isIntersecting;
   const layerUIClasses = classNames(styles.LayerUi, {
-    [styles.relative]: isChatRelative,
+    [styles.relative]: isFooterRendered,
     [styles.blur]: isBlurTurnedOn,
   });
 
@@ -70,8 +70,8 @@ export const AttendeeLayout: React.FC<AttendeeLayoutProps> = ({ space }) => {
             <VenuePage setBackButtonSpace={setBackButtonSpace} />
           </MainSection>
           <div className={layerUIClasses}>
-            <ChatContainer isRelative={isChatRelative} />
-            <VideoHuddle />
+            <ChatContainer isRelative={isFooterRendered} />
+            <VideoHuddle isFooterRendered={isFooterRendered} />
           </div>
         </main>
 
