@@ -19,7 +19,7 @@ import { Auditorium } from "components/templates/Auditorium";
 import { ConversationSpace } from "components/templates/ConversationSpace";
 import { Embeddable } from "components/templates/Embeddable";
 import { ExperimentalSpace } from "components/templates/ExperimentalSpace";
-import { ExternalRoom } from "components/templates/ExternalRoom";
+import { ExternalExperience } from "components/templates/ExternalExperience";
 import { JazzBar } from "components/templates/Jazzbar";
 import { MeetingRoom } from "components/templates/MeetingRoom";
 import { PartyMap } from "components/templates/PartyMap";
@@ -74,7 +74,7 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       break;
 
     case VenueTemplate.zoomroom:
-      template = <ExternalRoom venue={venue} />;
+      template = <ExternalExperience space={venue} />;
       break;
 
     case VenueTemplate.auditorium:
