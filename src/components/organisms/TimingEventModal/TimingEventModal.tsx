@@ -113,9 +113,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
   );
 
   const selectSpace = (option: Option) => {
-    if (option.value) {
-      setSelectedSpace(option.value as SpaceType);
-    }
+    setSelectedSpace(option.value as SpaceType);
   };
 
   const onUpdateEvent = useCallback(
@@ -172,7 +170,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
           {!eventSpace?.name && (
             <>
               <div className="mb-6">
-                <Dropdown onSelect={selectSpace} title={"None"}>
+                <Dropdown onSelect={selectSpace} title="None">
                   {renderedSpaceIds}
                 </Dropdown>
               </div>
