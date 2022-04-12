@@ -2,8 +2,8 @@ import React, { useCallback, useMemo, useState } from "react";
 
 import { COVERT_ROOM_TYPES } from "settings";
 
+import { PartyMapSpaceWithId, SpaceId } from "types/id";
 import { Room } from "types/rooms";
-import { PartyMapVenue } from "types/venues";
 
 import {
   eventsByStartUtcSecondsSorter,
@@ -11,24 +11,24 @@ import {
 } from "utils/event";
 
 import { useSpaceEvents } from "hooks/events";
-import { useUser } from "hooks/useUser";
+import { useLiveUser } from "hooks/user/useLiveUser";
 
 import { Map } from "components/templates/PartyMap/components/Map";
 import { PortalModal } from "components/templates/PartyMap/components/PortalModal";
 
 import styles from "./PartyMap.module.scss";
 
-export interface PartyMapProps {
-  venue: PartyMapVenue;
+interface PartyMapProps {
+  venue: PartyMapSpaceWithId;
 }
 
 export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
-  const { user, profile } = useUser();
+  const { user, profile } = useLiveUser();
 
   const selfAndPortalSpaceIds = useMemo(() => {
     const spaceIds = (venue?.rooms ?? [])
       .map((portal) => portal.spaceId)
-      .filter((spaceId) => !!spaceId) as string[];
+      .filter((spaceId) => !!spaceId) as SpaceId[];
     return [venue?.id].concat(spaceIds);
   }, [venue]);
 
@@ -65,7 +65,12 @@ export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
   if (!user || !profile) return <>Loading..</>;
 
   return (
-    <div className={styles.PartyMap}>
+    <div
+      data-bem="PartyMap"
+      data-block="PartyMap"
+      data-side="att"
+      className={styles.PartyMap}
+    >
       <Map user={user} venue={venue} selectRoom={selectRoom} />
 
       <PortalModal

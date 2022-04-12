@@ -42,12 +42,10 @@ import { createSlug } from "api/admin";
 import { updateVenueNG } from "api/venue";
 import { World } from "api/world";
 
-import { SpaceId, WorldId } from "types/id";
-import { AnyVenue } from "types/venues";
+import { SpaceId, SpaceWithId, WorldId } from "types/id";
 import { VenueTemplate } from "types/VenueTemplate";
 
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
-import { WithId } from "utils/id";
 import { generateUrl } from "utils/url";
 
 import { spaceEditSchema } from "forms/spaceEditSchema";
@@ -76,7 +74,7 @@ const HANDLED_ERRORS = [
 ];
 
 export interface SpaceEditFormProps {
-  space: WithId<AnyVenue>;
+  space: SpaceWithId;
   world: World;
 }
 

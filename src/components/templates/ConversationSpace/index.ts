@@ -1,1 +1,1 @@
-export { ConversationSpaceHoc as ConversationSpace } from "./ConversationSpace.hoc";
+export { ConversationSpace } from "./ConversationSpace";

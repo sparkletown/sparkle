@@ -1,15 +1,14 @@
 import { DEFAULT_VENUE_LOGO, PORTAL_INFO_ICON_MAPPING } from "settings";
 
-import { WorldSlug } from "types/id";
+import { SpaceWithId, WorldSlug } from "types/id";
 import { MyPersonalizedSchedule } from "types/User";
-import { AnyVenue, ScheduledEvent, WorldEvent } from "types/venues";
+import { ScheduledEvent, WorldEvent } from "types/venues";
 
-import { WithId } from "utils/id";
 import { arrayIncludes } from "utils/types";
 
 interface PrepareForScheduleProps {
   usersEvents: MyPersonalizedSchedule;
-  relatedVenues: WithId<AnyVenue>[];
+  relatedVenues: SpaceWithId[];
   recentRoomUsersCount?: number;
   worldSlug?: WorldSlug;
 }

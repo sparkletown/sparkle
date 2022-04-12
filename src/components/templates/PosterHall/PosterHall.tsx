@@ -1,8 +1,6 @@
 import React, { useMemo } from "react";
 
-import { GenericVenue } from "types/venues";
-
-import { WithId } from "utils/id";
+import { GenericSpaceWithId } from "types/id";
 
 import { usePosters } from "hooks/posters";
 
@@ -11,10 +9,8 @@ import { ButtonOG } from "components/atoms/ButtonOG";
 import { PosterHallSearch } from "./components/PosterHallSearch";
 import { PosterPreview } from "./components/PosterPreview";
 
-import "./PosterHall.scss";
-
-export interface PosterHallProps {
-  venue: WithId<GenericVenue>;
+interface PosterHallProps {
+  venue: GenericSpaceWithId;
 }
 
 export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
@@ -41,13 +37,22 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
   }, [posterVenues]);
 
   return (
-    <div className="PosterHall">
+    <div
+      data-bem="PosterHall"
+      data-block="PosterHall"
+      data-side="att"
+      className="PosterHall"
+    >
       <PosterHallSearch
         setSearchInputValue={setSearchInputValue}
         searchInputValue={searchInputValue}
       />
 
-      <div className="PosterHall__posters">
+      <div
+        data-bem="PosterHall__posters"
+        data-side="att"
+        className="PosterHall__posters"
+      >
         {isPostersLoaded ? renderedPosterPreviews : "Loading posters"}
       </div>
 

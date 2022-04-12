@@ -8,19 +8,20 @@ export const KEY_INVALID_PREFIX = "INVALID-FIRESTORE-KEY-";
 
 // constants for the collections, just in case some get renamed (e.g. venues->spaces)
 export const COLLECTION_EXPERIMENTS = "experiments";
+export const COLLECTION_PRIVATE_CHATS = "privatechats";
+export const COLLECTION_RETUNABLE_MEDIA_ELEMENTS = "retunableMediaElements";
 export const COLLECTION_ROLES = "roles";
+export const COLLECTION_SEATED_USERS = "seatedUsers";
+export const COLLECTION_SEATED_USERS_CHECKINS = "recentSeatedUsers";
 export const COLLECTION_SECTIONS = "sections";
 export const COLLECTION_SETTINGS = "settings";
-export const COLLECTION_SPACES = "venues";
-export const COLLECTION_SPACE_EVENTS = "events";
 export const COLLECTION_SPACE_CHATS = "chats";
+export const COLLECTION_SPACE_EVENTS = "events";
+export const COLLECTION_SPACES = "venues";
+export const COLLECTION_USER_PRESENCE = "userPresence";
 export const COLLECTION_USERS = "users";
 export const COLLECTION_WORLDS = "worlds";
 export const COLLECTION_WORLD_EVENTS = "worldEvents";
-export const COLLECTION_SEATED_USERS = "seatedUsers";
-export const COLLECTION_SEATED_USERS_CHECKINS = "recentSeatedUsers";
-export const COLLECTION_RETUNABLE_MEDIA_ELEMENTS = "retunableMediaElements";
-export const COLLECTION_USER_PRESENCE = "userPresence";
 
 // common search fields, please keep the list short and simple
 export const FIELD_HIDDEN = "isHidden";

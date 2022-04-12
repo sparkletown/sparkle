@@ -9,10 +9,9 @@ import { COLLECTION_EXPERIMENTS } from "settings";
 export const setProjectedVideoTrackId = async (
   huddleId: string,
   trackId: string | null
-) => {
+) =>
   firebase
     .firestore()
     .collection(COLLECTION_EXPERIMENTS)
     .doc(`projection-${huddleId}`)
     .set({ projectedVideoTrackId: trackId });
-};

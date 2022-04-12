@@ -5,9 +5,7 @@ import { SectionHeading } from "components/admin/SectionHeading";
 import { SectionTitle } from "components/admin/SectionTitle";
 import { TablePanel } from "components/admin/TablePanel";
 
-import { AnyVenue } from "types/venues";
-
-import { WithId } from "utils/id";
+import { SpaceWithId } from "types/id";
 
 import { useShowHide } from "hooks/useShowHide";
 
@@ -19,7 +17,7 @@ import { ScreeningRoomVideoAddEditModal } from "./ScreeningRoomVideoAddEditModal
 import { ScreeningRoomVideosStripForm } from "./ScreeningRoomVideosStripForm";
 
 export interface ScreeningRoomVideosTableProps {
-  space: WithId<AnyVenue>;
+  space: SpaceWithId;
 }
 
 export const ScreeningRoomVideosTable: React.FC<ScreeningRoomVideosTableProps> = ({

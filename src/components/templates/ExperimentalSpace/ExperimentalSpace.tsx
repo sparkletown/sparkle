@@ -15,10 +15,9 @@ import { COLLECTION_EXPERIMENTS } from "settings";
 
 import { setProjectedVideoTrackId } from "api/experiments";
 
-import { UserId } from "types/id";
-import { ExperimentalVenue } from "types/venues";
+import { ExperimentalSpaceWithId, UserId } from "types/id";
 
-import { WithId } from "utils/id";
+import { createErrorCapture } from "utils/error";
 
 import { useRefiDocument } from "hooks/fire/useRefiDocument";
 import { useProfileById } from "hooks/user/useProfileById";
@@ -26,7 +25,7 @@ import { useProfileById } from "hooks/user/useProfileById";
 import styles from "./ExperimentalSpace.module.scss";
 
 export interface ExperimentalSpaceProps {
-  venue: WithId<ExperimentalVenue>;
+  venue: ExperimentalSpaceWithId;
   userId: string;
 }
 
@@ -48,6 +47,7 @@ interface UserTracknameProps {
   track: VideoTrack;
   participant: Participant;
 }
+
 const UserTrackname: React.FC<UserTracknameProps> = ({
   track,
   participant,
@@ -147,19 +147,38 @@ const _ExperimentalSpace: React.FC<ExperimentalSpaceProps> = ({
   const trackOptions = useMemo(() => {
     return (
       <>
-        <div onClick={() => setProjectedVideoTrackId(huddleId, null)}>
+        <div
+          onClick={() =>
+            setProjectedVideoTrackId(huddleId, null).catch(
+              createErrorCapture({
+                message: "Problem clearing projected video track id",
+                where: "ExperimentalSpace",
+                args: { huddleId },
+              })
+            )
+          }
+        >
           Nothing
         </div>
-        {allTracks.map(({ track, participant }) => (
-          <div
-            key={track.id}
-            onClick={() => {
-              setProjectedVideoTrackId(huddleId, track.id);
-            }}
-          >
-            <UserTrackname participant={participant} track={track} />
-          </div>
-        ))}
+        {allTracks.map(({ track, participant }) => {
+          const trackId = track.id;
+          return (
+            <div
+              key={trackId}
+              onClick={() =>
+                setProjectedVideoTrackId(huddleId, trackId).catch(
+                  createErrorCapture({
+                    message: "Unable to set projected video track id",
+                    where: "ExperimentalSpace",
+                    args: { huddleId, trackId },
+                  })
+                )
+              }
+            >
+              <UserTrackname participant={participant} track={track} />
+            </div>
+          );
+        })}
       </>
     );
   }, [allTracks, huddleId]);
@@ -170,7 +189,12 @@ const _ExperimentalSpace: React.FC<ExperimentalSpaceProps> = ({
   );
 
   return (
-    <div className={styles.container}>
+    <div
+      data-bem="ExperimentalSpace"
+      data-block="ExperimentalSpace"
+      data-side="att"
+      className={styles.container}
+    >
       <div>
         {inHuddle && <p onClick={disconnectCallback}>Disconnect</p>}
         {!inHuddle && <p onClick={connectCallback}>Connect</p>}

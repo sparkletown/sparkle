@@ -1,19 +1,18 @@
 import React from "react";
 import { Route, Switch, useParams, useRouteMatch } from "react-router-dom";
 
-import { AuditoriumVenue } from "types/venues";
+import { AuditoriumSpaceWithId } from "types/id";
 
 import { captureError, SparkleAssertError } from "utils/error";
-import { WithId } from "utils/id";
 
 import { useAllAuditoriumSections } from "hooks/auditorium";
-import { useUser } from "hooks/useUser";
+import { useLiveUser } from "hooks/user/useLiveUser";
 
 import { AllSectionPreviews } from "../AllSectionPreviews";
 import { Section } from "../Section";
 
 interface SeatingBlockProps {
-  space: WithId<AuditoriumVenue>;
+  space: AuditoriumSpaceWithId;
 }
 
 export const SeatingBlock: React.FC<SeatingBlockProps> = ({ space }) => {
@@ -21,7 +20,7 @@ export const SeatingBlock: React.FC<SeatingBlockProps> = ({ space }) => {
 
   const { allSections, isLoading } = useAllAuditoriumSections(space);
   const { sectionId: urlSectionId } = useParams<{ sectionId: string }>();
-  const { userWithId: user, isLoading: isUserLoading } = useUser();
+  const { userWithId: user, isLoading: isUserLoading } = useLiveUser();
 
   if (isLoading || isUserLoading || !user) {
     return null;
