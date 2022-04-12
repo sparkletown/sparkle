@@ -60,12 +60,15 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
   }
 
   return (
-    <VenueWithOverlay venue={venue}>
+    <VenueWithOverlay>
       <InfiniteScroll
         dataLength={auditoriumSections.length}
         className={`AllSectionPreviews ${containerClasses}`}
         next={loadMore}
-        hasMore={!venue.sectionsCount || auditoriumSections.length < venue.sectionsCount}
+        hasMore={
+          !venue.sectionsCount ||
+          auditoriumSections.length < venue.sectionsCount
+        }
         loader={<Loading containerClassName="AllSectionPreviews__loader" />}
       >
         <div
