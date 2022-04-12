@@ -11,24 +11,23 @@ import { AdminLayout } from "components/layouts/AdminLayout";
 import { WithPermission } from "components/shared/WithPermission";
 import { includes, sortBy } from "lodash";
 
-import { UserId } from "types/id";
+import { UserId, WorldSlug } from "types/id";
 
-import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useWorldSpaces } from "hooks/spaces/useWorldSpaces";
 import { useProfileByIds } from "hooks/user/useProfileByIds";
 import { useUserId } from "hooks/user/useUserId";
 import { useShowHide } from "hooks/useShowHide";
+import { useLiveWorldBySlug } from "hooks/worlds/useLiveWorldBySlug";
+import { useWorldParams } from "hooks/worlds/useWorldParams";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
 import * as TW from "./WorldUsers.tailwind";
 
 export const WorldUsers: React.FC = () => {
-  const {
-    world,
-    worldId,
-    isLoading: isWorldLoading,
-  } = useWorldAndSpaceByParams();
+  const { worldSlug } = useWorldParams();
+
+  const { world, isWorldLoading } = useLiveWorldBySlug(worldSlug as WorldSlug);
 
   const { userId } = useUserId();
 
@@ -55,7 +54,7 @@ export const WorldUsers: React.FC = () => {
 
   const owners = world?.owners;
 
-  const { spaces: worldSpaces } = useWorldSpaces({ worldId });
+  const { spaces: worldSpaces } = useWorldSpaces({ worldId: world?.id });
 
   const users = useProfileByIds({ userIds: owners as UserId[] });
 

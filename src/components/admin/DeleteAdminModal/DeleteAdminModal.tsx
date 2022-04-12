@@ -23,7 +23,7 @@ export const DeleteAdminModal: React.FC<DeleteAdminModalProps> = ({
 }) => {
   const { worldId } = useWorldAndSpaceByParams();
 
-  const [{ loading: isRemoving }, removeAdmin] = useAsyncFn(async () => {
+  const [{ loading: isRemoving, error }, removeAdmin] = useAsyncFn(async () => {
     if (!worldId) {
       return;
     }
@@ -49,6 +49,9 @@ export const DeleteAdminModal: React.FC<DeleteAdminModalProps> = ({
           {isRemoving ? "Deleting..." : "Delete"}
         </Button>
       </div>
+      {error && !isRemoving && (
+        <div className="text-warning-red">Error: {error.message}</div>
+      )}
     </Modal>
   );
 };

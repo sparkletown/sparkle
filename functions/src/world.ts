@@ -190,9 +190,10 @@ export const removeWorldAdmin = functions.https.onCall(
 
     const worldId = data.worldId;
     const userId = data.userId;
+
     await throwErrorIfNotWorldOwner({
       worldId,
-      userId,
+      userId: context.auth?.token.user_id,
     });
 
     const worldRef = await admin
