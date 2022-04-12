@@ -65,11 +65,7 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
         dataLength={auditoriumSections.length}
         className={`AllSectionPreviews ${containerClasses}`}
         next={loadMore}
-        hasMore={
-          venue.sectionsCount
-            ? auditoriumSections.length < venue.sectionsCount
-            : true
-        }
+        hasMore={!venue.sectionsCount || auditoriumSections.length < venue.sectionsCount}
         loader={<Loading containerClassName="AllSectionPreviews__loader" />}
       >
         <div
