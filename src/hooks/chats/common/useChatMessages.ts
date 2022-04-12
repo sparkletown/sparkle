@@ -17,7 +17,7 @@ import { WithId } from "utils/id";
 import { isDeferred } from "utils/query";
 import { isTruthy } from "utils/types";
 
-import { useFireQuery } from "hooks/fire/useFireQuery";
+import { useLiveQuery } from "hooks/fire/useLiveQuery";
 
 export const useChatMessagesForDisplay = <T extends ChatMessage>(
   messagesRef: Query<T>,
@@ -74,7 +74,7 @@ export const useChatMessages = <T extends ChatMessage>(
 export const useChatMessagesRaw = <T extends BaseChatMessage>(
   messagesRef: Query<T> | DeferredAction
 ): [WithId<T>[], boolean] => {
-  const { data: rawMessages = ALWAYS_EMPTY_ARRAY, isLoaded } = useFireQuery(
+  const { data: rawMessages = ALWAYS_EMPTY_ARRAY, isLoaded } = useLiveQuery(
     useMemo(() => {
       if (isDeferred(messagesRef)) return DEFERRED;
 
