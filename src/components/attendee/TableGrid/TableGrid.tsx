@@ -4,10 +4,11 @@ import { groupBy } from "lodash";
 
 import { ALLOWED_EMPTY_TABLES_NUMBER } from "settings";
 
+import { SpaceWithId } from "types/id";
 import { Table } from "types/Table";
 import { SeatedUser, User } from "types/User";
-import { AnyVenue } from "types/venues";
 
+import { createErrorCapture } from "utils/error";
 import { WithId } from "utils/id";
 import { generateTable } from "utils/table";
 import { arrayIncludes, isTruthy } from "utils/types";
@@ -30,7 +31,7 @@ interface TableGridProps {
   defaultTables: Table[];
   showOnlyAvailableTables?: boolean;
   leaveText?: string;
-  space: WithId<AnyVenue>;
+  space: SpaceWithId;
   user: WithId<User>;
 }
 
@@ -112,7 +113,13 @@ export const TableGrid: React.FC<TableGridProps> = ({
         // Remove the user from the seat that they were in
         console.log("First load: cleaning old seating record");
         setSeatedStatus(() => SEATED_STATUS_LEAVING_SEAT);
-        leaveSeat();
+        leaveSeat().catch(
+          createErrorCapture({
+            message: "Problem clearing old seat record",
+            where: "TableGrid",
+            args: { seatedStatus, takenSeat, isSeatedUsersLoaded },
+          })
+        );
       } else {
         console.log("First load: not sat");
         setSeatedStatus(() => SEATED_STATUS_NOT_SAT);
@@ -126,7 +133,13 @@ export const TableGrid: React.FC<TableGridProps> = ({
     if (seatedStatus === SEATED_STATUS_SAT && !inHuddle) {
       console.log("Left huddle: leaving seat");
       setSeatedStatus(() => SEATED_STATUS_LEAVING_SEAT);
-      leaveSeat();
+      leaveSeat().catch(
+        createErrorCapture({
+          message: "Problem leaving seat after leaving huddle",
+          where: "TableGrid",
+          args: { seatedStatus, inHuddle },
+        })
+      );
     }
   }, [seatedStatus, inHuddle, leaveSeat]);
 
@@ -144,7 +157,13 @@ export const TableGrid: React.FC<TableGridProps> = ({
   useEffect(() => {
     if (seatedStatus === SEATED_STATUS_LEAVING_SEAT && takenSeat) {
       console.log("Leaving seat: removing database records");
-      leaveSeat();
+      leaveSeat().catch(
+        createErrorCapture({
+          message: "Problem leaving seat",
+          where: "TableGrid",
+          args: { seatedStatus, takenSeat },
+        })
+      );
     }
   }, [leaveSeat, seatedStatus, takenSeat]);
 
@@ -168,7 +187,13 @@ export const TableGrid: React.FC<TableGridProps> = ({
       const dbTableReference = takenSeat?.seatData.tableReference;
       if (desiredTable !== dbTableReference) {
         console.log("Taking seat: updating database records");
-        takeSeat({ tableReference: desiredTable });
+        takeSeat({ tableReference: desiredTable }).catch(
+          createErrorCapture({
+            message: "Problem taking seat at desired table",
+            where: "TableGrid",
+            args: { seatedStatus, desiredTable },
+          })
+        );
       }
     }
   }, [
@@ -357,7 +382,14 @@ export const TableGrid: React.FC<TableGridProps> = ({
 
   return (
     <>
-      <div className={styles.tableGrid}>{renderedTables}</div>
+      <div
+        data-bem="TableGrid__tables"
+        data-block="TableGrid"
+        data-side="att"
+        className={styles.tableGrid}
+      >
+        {renderedTables}
+      </div>
       {allowCreateEditTable && (
         <StartTable
           defaultTables={defaultTables}
@@ -368,7 +400,7 @@ export const TableGrid: React.FC<TableGridProps> = ({
         />
       )}
       <Modal show={isLockedMessageVisible} onHide={hideLockedMessage}>
-        <div>
+        <div data-bem="TableGrid__modal" data-side="att">
           <p>{`Can't join this table because it's been locked.`}</p>
 
           <p>Perhaps ask in the chat?</p>

@@ -13,15 +13,14 @@ import {
 } from "settings";
 
 import { AuditoriumSection } from "types/auditorium";
-import { AuditoriumVenue } from "types/venues";
+import { AuditoriumSpaceWithId } from "types/id";
 
 import { withIdConverter } from "utils/converters";
-import { WithId } from "utils/id";
 import { getUrlWithoutTrailingSlash } from "utils/url";
 
 import { useShowHide } from "../useShowHide";
 
-export const useAllAuditoriumSections = (venue: WithId<AuditoriumVenue>) => {
+export const useAllAuditoriumSections = (venue: AuditoriumSpaceWithId) => {
   const venueId = venue.id;
 
   const history = useHistory();

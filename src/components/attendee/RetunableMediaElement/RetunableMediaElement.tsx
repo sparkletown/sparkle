@@ -89,7 +89,12 @@ export const RetunableMediaElement: React.FC<RetunableMediaElementProps> = ({
   }
 
   return (
-    <div className={styles.container}>
+    <div
+      data-bem="RetunableMediaElement"
+      data-block="RetunableMediaElement"
+      data-side="att"
+      className={styles.container}
+    >
       {mediaElement}
       {isTuning && <Tuner space={space} stopTuning={stopTuning} />}
       <TuneBanner isTuning={isTuning} startTuning={startTuning} />

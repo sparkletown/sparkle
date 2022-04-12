@@ -1,3 +1,4 @@
+import React from "react";
 import ShowMoreText from "react-show-more-text";
 
 import { AnyVenue } from "types/venues";
@@ -15,7 +16,12 @@ const moreLessSpan = (text: string) => (
 );
 
 export const SpaceInfoText: React.FC<SpaceInfoTextProps> = ({ space }) => (
-  <div className={styles.spaceInfo}>
+  <div
+    data-bem="SpaceInfoText"
+    data-block="SpaceInfoText"
+    data-side="att"
+    className={styles.spaceInfo}
+  >
     <div className={styles.spaceName}>
       {space.name && <h1>{space.name}</h1>}
     </div>

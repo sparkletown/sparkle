@@ -1,5 +1,5 @@
+import { SpaceWithId } from "types/id";
 import { User } from "types/User";
-import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
@@ -13,5 +13,5 @@ export interface RecentLocationsUsersData {
 // @debt Beavers need to refactor this
 
 export const useRecentLocationsUsers = (
-  venues: WithId<AnyVenue>[]
+  venues: SpaceWithId[]
 ): Array<RecentLocationsUsersData> => [];

@@ -4,9 +4,7 @@ import { TableGrid } from "components/attendee/TableGrid";
 
 import { JAZZBAR_TABLES } from "settings";
 
-import { JazzbarVenue } from "types/venues";
-
-import { WithId } from "utils/id";
+import { JazzBarSpaceWithId } from "types/id";
 
 import { useAnalytics } from "hooks/useAnalytics";
 import { useLiveUser } from "hooks/user/useLiveUser";
@@ -15,7 +13,7 @@ import { Loading } from "components/molecules/Loading";
 import { SpaceInfoText } from "components/molecules/SpaceInfoText";
 
 interface JazzProps {
-  space: WithId<JazzbarVenue>;
+  space: JazzBarSpaceWithId;
 }
 
 export const JazzBar: React.FC<JazzProps> = ({ space }) => {
