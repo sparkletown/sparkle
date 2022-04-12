@@ -10,7 +10,7 @@ import { User } from "types/User";
 
 import { WithId } from "utils/id";
 
-import { useLiveUser } from "hooks/user/useLiveUser";
+import { useUserId } from "hooks/user/useUserId";
 import { useUploadProfilePictureHandler } from "hooks/useUploadProfilePictureHandler";
 
 import { UserAvatar } from "components/atoms/UserAvatar";
@@ -37,7 +37,7 @@ export const ProfileModalAvatar: React.FC<ProfileModalAvatarProps> = ({
   const uploadRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState("");
 
-  const { userId } = useLiveUser();
+  const { userId } = useUserId();
   const uploadProfilePictureHandler = useUploadProfilePictureHandler(
     setError,
     userId

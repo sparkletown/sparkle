@@ -23,7 +23,7 @@ import { MaybeWithId, WithId } from "utils/id";
 import { eventEditSchema } from "forms/eventEditSchema";
 
 import { useOwnedVenues } from "hooks/useOwnedVenues";
-import { useLiveUser } from "hooks/user/useLiveUser";
+import { useUserId } from "hooks/user/useUserId";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 import { Modal } from "components/molecules/Modal";
@@ -82,7 +82,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
     }
   }, [event, reset, eventSpaceId]);
 
-  const { userId } = useLiveUser();
+  const { userId } = useUserId();
   const { ownedVenues, isLoading: isSpacesLoading } = useOwnedVenues({
     worldId,
     userId: userId ?? "",
