@@ -60,7 +60,7 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
   }
 
   return (
-    <VenueWithOverlay venue={venue} containerClassNames="">
+    <VenueWithOverlay venue={venue}>
       <InfiniteScroll
         dataLength={auditoriumSections.length}
         className={`AllSectionPreviews ${containerClasses}`}
