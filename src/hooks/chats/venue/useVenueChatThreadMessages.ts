@@ -14,8 +14,8 @@ import { useChatMessagesRaw } from "hooks/chats/common/useChatMessages";
 export const useVenueChatThreadMessages = (
   venueId: string,
   threadId: string | undefined
-) => {
-  return useChatMessagesRaw(
+) =>
+  useChatMessagesRaw(
     useMemo(
       () =>
         collection(
@@ -29,4 +29,3 @@ export const useVenueChatThreadMessages = (
       [venueId, threadId]
     )
   );
-};
