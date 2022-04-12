@@ -1,5 +1,4 @@
 import React, { useMemo } from "react";
-import classNames from "classnames";
 
 import { UserId } from "types/id";
 
@@ -59,10 +58,6 @@ export const VideoCommsParticipant: React.FC<VideoCommsParticipantProps> = ({
   );
   const audioStream = participant.audioTracks[0];
 
-  const controlsClasses = classNames(styles.videoCommsControlsContainer, {
-    [styles.videoCommsControlsContainer__darkButtons]: !webcamTrack?.enabled,
-  });
-
   const isAudioEnabled =
     participant.audioTracks.length !== 0 && participant.audioTracks[0].enabled;
 
@@ -84,7 +79,7 @@ export const VideoCommsParticipant: React.FC<VideoCommsParticipantProps> = ({
 
         <span className={styles.userName}>{profile?.partyName}</span>
 
-        <div className={controlsClasses}>
+        <div className={styles.videoCommsControlsContainer}>
           {isLocal ? (
             <>
               <VideoCommsControls

@@ -82,18 +82,23 @@ export const WebcamGrid: React.FC<TableGridProps> = ({ space }) => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.WebcamGrid}>
-        {meComponent}
-        {othersComponents}
-        {hasJoined ? (
-          <div className={styles.leaveButton} onClick={leaveVideo}>
-            Leave <FontAwesomeIcon icon={faTimesCircle} />
-          </div>
-        ) : (
-          <div className={styles.joinButton} onClick={joinVideo}>
-            Join
+      <div className={styles.webcamContainer}>
+        {hasJoined && (
+          <div className={styles.leaveContainer}>
+            <div className={styles.leaveButton} onClick={leaveVideo}>
+              Leave <FontAwesomeIcon icon={faTimesCircle} />
+            </div>
           </div>
         )}
+        <div className={styles.WebcamGrid}>
+          {meComponent}
+          {othersComponents}
+          {!hasJoined && (
+            <div className={styles.joinButton} onClick={joinVideo}>
+              Join with video
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

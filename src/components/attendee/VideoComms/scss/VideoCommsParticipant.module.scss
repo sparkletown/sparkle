@@ -29,18 +29,20 @@
   flex-direction: row-reverse;
   font-size: font.$size--lg;
   color: theme.$c-light-text-on-dark;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.4);
   border-top-left-radius: 4px;
-  padding-left: space.$md;
+  cursor: pointer;
 
   span {
-    margin: space.$sm space.$md space.$sm 0;
-  }
+    display: flex;
+    width: layout.$w-video-chat-icon;
+    height: layout.$h-video-chat-icon;
+    align-items: center;
+    justify-content: center;
 
-  &__darkButtons {
-    color: theme.$c-default-text;
-    background: none;
-    cursor: pointer;
+    &:hover {
+      background: rgba(0, 0, 0, 0.5);
+    }
   }
 }
 
@@ -49,7 +51,7 @@
   border: 1px solid theme.$sparkle--border;
   min-width: 186px;
 
-  @include sparkle.panel--normal;
+  @include sparkle.panel--glass;
 
   img {
     max-width: 64px;
@@ -61,8 +63,8 @@
 .userName {
   position: absolute;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  color: theme.$c-light-text-on-dark;
+  background: rgba(0, 0, 0, 0.4);
+  color: rgba(theme.$c-light-text-on-dark, 0.8);
   padding: space.$s2 space.$xs space.$xs;
   border-radius: 3px;
   font-size: font.$size--sm;

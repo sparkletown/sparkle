@@ -8,6 +8,8 @@
 @mixin participantPanel {
   display: flex;
   justify-content: center;
+  @include sparkle.panel--glass;
+  @include rounded.normal;
 
   overflow: hidden;
   height: layout.$h-video-chat;
@@ -18,19 +20,18 @@
   @include participantPanel();
 }
 
-.WebcamGrid {
-  @include sparkle.panel--normal;
+.webcamContainer {
+  @include sparkle.panel--glass;
   @include rounded.normal;
 
   margin: 0 auto;
   padding: space.gap(10);
   width: fit-content;
-  flex-wrap: wrap;
+}
 
-  @media (min-width: breakpoint.$md) {
-    display: flex;
-    flex-wrap: wrap;
-  }
+.WebcamGrid {
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .container {
@@ -47,7 +48,21 @@
   border: 1px solid theme.$sparkle--border;
 }
 
+.leaveContainer {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .leaveButton {
+  width: fit-content;
   opacity: 0.5;
   cursor: pointer;
+  text-align: end;
+  padding: 0 2px 0 2px;
+
+  &:hover {
+    opacity: 0.8;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 2px;
+  }
 }
