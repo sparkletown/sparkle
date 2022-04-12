@@ -1,9 +1,12 @@
-import React, { Suspense, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import { Redirect, useHistory } from "react-router-dom";
 import classNames from "classnames";
 import { NotFound } from "components/shared/NotFound";
 import { addDays } from "date-fns";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
+
+import { SIGN_IN_URL } from "settings";
 
 import {
   eventTimeAndOrderComparator,
@@ -15,8 +18,6 @@ import { formatDateRelativeToNow } from "utils/time";
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useUser } from "hooks/useUser";
 import useVenueScheduleEvents from "hooks/useVenueScheduleEvents";
-
-import { Login } from "pages/auth/Login";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 import { ScheduleEventSubList } from "components/molecules/ScheduleEventList/ScheduleEventSubList";
@@ -31,6 +32,7 @@ dayjs.extend(advancedFormat);
 const emptyPersonalizedSchedule = {};
 
 export const EmergencyViewPage: React.FC = () => {
+  const history = useHistory();
   const [selectedTab, updateTab] = useState(0);
 
   const {
@@ -102,9 +104,12 @@ export const EmergencyViewPage: React.FC = () => {
 
   if (!user) {
     return (
-      <Suspense fallback={<LoadingPage />}>
-        <Login />
-      </Suspense>
+      <Redirect
+        to={{
+          pathname: SIGN_IN_URL,
+          search: `?returnUrl=${history.location.pathname}`,
+        }}
+      />
     );
   }
 

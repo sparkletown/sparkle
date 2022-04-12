@@ -13,6 +13,7 @@ import {
   ATTENDEE_STEPPING_PARAM_URL,
   EXTERNAL_SPARKLE_HOMEPAGE_URL,
   EXTERNAL_SPARKLEVERSE_HOMEPAGE_URL,
+  PASSWORD_RESET_URL,
   ROOT_URL,
   SIGN_IN_URL,
   SIGN_UP_URL,
@@ -41,10 +42,26 @@ const SubAdmin = lazy(() =>
   )
 );
 
-const LoginWithWorldAndSpace = lazy(() =>
+const RegisterPage = lazy(() =>
+  tracePromise("AppRouter::lazy-import::Register", () =>
+    import("pages/auth/RegisterForm").then(({ RegisterForm }) => ({
+      default: RegisterForm,
+    }))
+  )
+);
+
+const LoginPage = lazy(() =>
   tracePromise("AppRouter::lazy-import::Login", () =>
-    import("pages/auth/Login").then(({ Login }) => ({
-      default: Login,
+    import("pages/auth/LoginForm").then(({ LoginForm }) => ({
+      default: LoginForm,
+    }))
+  )
+);
+
+const PasswordResetPage = lazy(() =>
+  tracePromise("AppRouter::lazy-import::Login", () =>
+    import("pages/auth/PasswordResetForm").then(({ PasswordResetForm }) => ({
+      default: PasswordResetForm,
     }))
   )
 );
@@ -111,10 +128,13 @@ export const AppRouter: React.FC = () => (
           </RelatedVenuesProvider>
         </Route>
         <Route path={SIGN_IN_URL}>
-          <LoginWithWorldAndSpace />
+          <LoginPage />
         </Route>
         <Route path={SIGN_UP_URL}>
-          <LoginWithWorldAndSpace />
+          <RegisterPage />
+        </Route>
+        <Route path={PASSWORD_RESET_URL}>
+          <PasswordResetPage />
         </Route>
         <Route path={ATTENDEE_STEPPING_PARAM_URL}>
           <LoginRestricted>

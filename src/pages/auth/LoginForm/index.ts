@@ -1,2 +1,2 @@
-export { LoginFormHoc as LoginForm } from "./LoginForm.hoc";
+export { LoginForm } from "./LoginForm";
 export type { LoginFormData } from "./LoginForm";

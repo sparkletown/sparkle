@@ -28,6 +28,7 @@ export const ADMIN_ROOT_URL = "/admin";
 export const SPARKLEVERSE_REDIRECT_URL = "/sparkleverse";
 export const SIGN_IN_URL = "/signin";
 export const SIGN_UP_URL = "/signup";
+export const PASSWORD_RESET_URL = "/password-reset";
 
 // Attendee URLs
 const EMERGENCY_BASE_URL = "/m";
