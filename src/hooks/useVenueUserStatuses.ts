@@ -8,14 +8,14 @@ import { User, UserStatus } from "types/User";
 
 import { WithId } from "utils/id";
 
+import { useLiveUser } from "./user/useLiveUser";
 import { useRelatedVenues } from "./useRelatedVenues";
-import { useUser } from "./useUser";
 
 const emptyStatuses: UserStatus[] = [];
 
 export const useVenueUserStatuses = (user?: WithId<User>) => {
   const { sovereignVenue } = useRelatedVenues();
-  const { userId, profile } = useUser();
+  const { userId, profile } = useLiveUser();
 
   // @debt replace this with useAsync / useAsyncFn / similar
   const changeUserStatus = useCallback(

@@ -4,6 +4,7 @@ import { useAsyncFn } from "react-use";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button } from "components/admin/Button";
 import { Dropdown } from "components/admin/Dropdown";
+import { Option } from "components/admin/Dropdown/Dropdown";
 import { Input } from "components/admin/Input";
 import { Textarea } from "components/admin/Textarea";
 import dayjs from "dayjs";
@@ -22,7 +23,7 @@ import { MaybeWithId } from "utils/id";
 import { eventEditSchema } from "forms/eventEditSchema";
 
 import { useOwnedVenues } from "hooks/useOwnedVenues";
-import { useUser } from "hooks/useUser";
+import { useUserId } from "hooks/user/useUserId";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 import { Modal } from "components/molecules/Modal";
@@ -81,7 +82,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
     }
   }, [event, reset, eventSpaceId]);
 
-  const { userId } = useUser();
+  const { userId } = useUserId();
   const { ownedVenues, isLoading: isSpacesLoading } = useOwnedVenues({
     worldId,
     userId: userId ?? "",
@@ -96,13 +97,17 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
     () =>
       spacesMap.map((space) => {
         return (
-          <div key={space.id} onClick={() => setSelectedSpace(space)}>
+          <div key={space.id} data-dropdown-value={space}>
             {space.name}
           </div>
         );
       }) ?? [],
     [spacesMap]
   );
+
+  const selectSpace = (option: Option) => {
+    setSelectedSpace(option.value as SpaceType);
+  };
 
   const [{ loading: isLoading }, onUpdateEvent] = useAsyncFn(
     async (data: EventInput) => {
@@ -161,7 +166,9 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
           {!eventSpace?.name && (
             <>
               <div className="mb-6">
-                <Dropdown title={"None"}>{renderedSpaceIds}</Dropdown>
+                <Dropdown onSelect={selectSpace} title="None">
+                  {renderedSpaceIds}
+                </Dropdown>
               </div>
               {errors.space && (
                 <span className="text-red-500">

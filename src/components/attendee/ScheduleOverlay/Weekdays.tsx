@@ -3,7 +3,7 @@ import { range } from "lodash";
 
 import { ALWAYS_EMPTY_OBJECT } from "settings";
 
-import { useUser } from "hooks/useUser";
+import { useLiveUser } from "hooks/user/useLiveUser";
 import useVenueScheduleEvents from "hooks/useVenueScheduleEvents";
 
 import { ScheduleDay } from "./ScheduleDay";
@@ -21,7 +21,7 @@ export const Weekdays: React.FC<WeekDaysProps> = ({
   selectedDayIndex,
   isScheduleTimeshifted,
 }) => {
-  const { userWithId } = useUser();
+  const { userWithId } = useLiveUser();
   const userEventIds =
     userWithId?.myPersonalizedSchedule ?? ALWAYS_EMPTY_OBJECT;
 

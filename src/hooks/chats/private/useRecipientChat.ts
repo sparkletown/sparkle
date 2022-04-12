@@ -7,10 +7,10 @@ import { DisplayUser } from "types/User";
 import { convertToFirestoreKey, WithId } from "utils/id";
 
 import { useChatMessagesForDisplay } from "hooks/chats/common/useChatMessages";
-import { useUser } from "hooks/useUser";
+import { useUserId } from "hooks/user/useUserId";
 
 export const useRecipientChatMessages = (recipient: WithId<DisplayUser>) => {
-  const { userId } = useUser();
+  const { userId } = useUserId();
   const firestore = useFirestore();
 
   const messagesRef = collection(

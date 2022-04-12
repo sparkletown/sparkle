@@ -1,10 +1,10 @@
 import { useCallback } from "react";
 import firebase from "firebase/compat/app";
 
-import { useUser } from "hooks/useUser";
+import { useLiveUser } from "hooks/user/useLiveUser";
 
 export const useCheckOldPassword = () => {
-  const { user } = useUser();
+  const { user } = useLiveUser();
   const email = user?.email;
 
   return useCallback(

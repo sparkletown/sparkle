@@ -7,7 +7,7 @@ import { JAZZBAR_TABLES } from "settings";
 import { JazzBarSpaceWithId } from "types/id";
 
 import { useAnalytics } from "hooks/useAnalytics";
-import { useUser } from "hooks/user/useUser";
+import { useLiveUser } from "hooks/user/useLiveUser";
 
 import { Loading } from "components/molecules/Loading";
 import { SpaceInfoText } from "components/molecules/SpaceInfoText";
@@ -21,7 +21,7 @@ export const JazzBar: React.FC<JazzProps> = ({ space }) => {
 
   const jazzbarTables = space.config?.tables ?? JAZZBAR_TABLES;
 
-  const { userWithId } = useUser();
+  const { userWithId } = useLiveUser();
 
   useEffect(() => {
     analytics.trackEnterJazzBarEvent();

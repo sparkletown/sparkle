@@ -16,7 +16,7 @@ import {
 } from "utils/event";
 
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
-import { useUser } from "hooks/useUser";
+import { useLiveUser } from "hooks/user/useLiveUser";
 import useVenueScheduleEvents from "hooks/useVenueScheduleEvents";
 
 import { ScheduleEvent } from "./ScheduleEvent";
@@ -38,7 +38,7 @@ export const ScheduleEvents: React.FC<ScheduleEventsProps> = ({
   selectedDayIndex,
 }) => {
   const { worldId } = useWorldAndSpaceByParams();
-  const { userWithId } = useUser();
+  const { userWithId } = useLiveUser();
   const userEventIds =
     userWithId?.myPersonalizedSchedule ?? ALWAYS_EMPTY_OBJECT;
 

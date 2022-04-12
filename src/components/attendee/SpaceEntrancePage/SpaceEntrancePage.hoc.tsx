@@ -1,14 +1,14 @@
 import { NotFound } from "components/shared/NotFound";
 
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
-import { useUser } from "hooks/user/useUser";
+import { useLiveUser } from "hooks/user/useLiveUser";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { SpaceEntrancePage } from "./SpaceEntrancePage";
 
 export const SpaceEntrancePageHoc: React.FC = () => {
-  const { profile, isLoading: isProfileLoading } = useUser();
+  const { profile, isLoading: isProfileLoading } = useLiveUser();
 
   const {
     world,

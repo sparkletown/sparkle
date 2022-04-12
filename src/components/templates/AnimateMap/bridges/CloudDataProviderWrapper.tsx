@@ -11,7 +11,7 @@ import { getFirebaseStorageResizedImage } from "utils/image";
 import { WithVenue } from "utils/venue";
 
 import { useSpaceEvents } from "hooks/events";
-import { useUser } from "hooks/useUser";
+import { useLiveUser } from "hooks/user/useLiveUser";
 
 import { useFirebarrels } from "../hooks/useFirebarrels";
 import { useRecentLocationsUsers } from "../hooks/useRecentLocationsUsers";
@@ -50,7 +50,7 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
   const [dataProvider, setDataProvider] = useState<CloudDataProvider | null>(
     null
   );
-  const user = useUser();
+  const user = useLiveUser();
 
   const venues: SpaceWithId[] = useMemo(
     () =>

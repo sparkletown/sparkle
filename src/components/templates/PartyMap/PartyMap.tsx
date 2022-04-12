@@ -11,7 +11,7 @@ import {
 } from "utils/event";
 
 import { useSpaceEvents } from "hooks/events";
-import { useUser } from "hooks/useUser";
+import { useLiveUser } from "hooks/user/useLiveUser";
 
 import { Map } from "components/templates/PartyMap/components/Map";
 import { PortalModal } from "components/templates/PartyMap/components/PortalModal";
@@ -23,7 +23,7 @@ interface PartyMapProps {
 }
 
 export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
-  const { user, profile } = useUser();
+  const { user, profile } = useLiveUser();
 
   const selfAndPortalSpaceIds = useMemo(() => {
     const spaceIds = (venue?.rooms ?? [])
