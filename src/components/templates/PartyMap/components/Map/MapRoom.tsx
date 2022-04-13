@@ -4,10 +4,10 @@ import { PortalModal } from "components/attendee/PortalModal";
 
 import { COVERT_ROOM_TYPES } from "settings";
 
+import { PartyMapSpaceWithId } from "types/id";
 import { Room, RoomType } from "types/rooms";
 import { RoomVisibility } from "types/RoomVisibility";
 import { Dimensions, Position } from "types/utility";
-import { PartyMapVenue } from "types/venues";
 
 import { isExternalPortal, openUrl } from "utils/url";
 
@@ -19,8 +19,8 @@ import { RoomAttendance } from "components/templates/PartyMap/components/RoomAtt
 
 import styles from "./MapRoom.module.scss";
 
-export interface MapRoomProps {
-  venue: PartyMapVenue;
+interface MapRoomProps {
+  venue: PartyMapSpaceWithId;
   room: Room;
   selectRoom: () => void;
   safeZoneBounds: Dimensions & Position;

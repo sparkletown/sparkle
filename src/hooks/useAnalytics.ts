@@ -18,9 +18,7 @@ import {
   VENUE_PAGE_LOADED_EVENT_NAME,
 } from "settings";
 
-import { AnyVenue } from "types/venues";
-
-import { WithId } from "utils/id";
+import { SpaceWithId } from "types/id";
 
 import { useLoginCheck } from "hooks/user/useLoginCheck";
 import { useWorldById } from "hooks/worlds/useWorldById";
@@ -66,7 +64,7 @@ export const identifyUser = ({ email, name = "N/A" }: IdentifyUserProps) => {
 };
 
 interface UseAnalyticsOptions {
-  venue?: WithId<AnyVenue>;
+  venue?: SpaceWithId;
 }
 
 export interface IdentifyUserProps {

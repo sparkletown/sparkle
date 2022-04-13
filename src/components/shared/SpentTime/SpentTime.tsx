@@ -16,8 +16,7 @@ import {
 import { getUserRef } from "api/profile";
 
 import { UserVisit } from "types/Firestore";
-import { UserId } from "types/id";
-import { AnyVenue } from "types/venues";
+import { SpaceWithId, UserId } from "types/id";
 
 import { WithId } from "utils/id";
 import { isTruthy } from "utils/types";
@@ -34,7 +33,7 @@ interface SpentTimeProps {
 export const SpentTime: React.FC<SpentTimeProps> = ({ userId }) => {
   const { isLoaded: isWorldLoaded, spaceId } = useWorldAndSpaceByParams();
   const [visits, setVisits] = useState<WithId<UserVisit>[]>([]);
-  const [venues, setVenues] = useState<WithId<AnyVenue>[]>([]);
+  const [venues, setVenues] = useState<SpaceWithId[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // @debt move firestore code from the component + check the logic if it can be updated
@@ -66,7 +65,7 @@ export const SpentTime: React.FC<SpentTimeProps> = ({ userId }) => {
       )
     );
 
-    let venues: WithId<AnyVenue>[] = [];
+    let venues: SpaceWithId[] = [];
     const hasVenuesRequests = isTruthy(venuesRequests);
 
     // If there are no venues visited avoid sending the request.
@@ -81,7 +80,7 @@ export const SpentTime: React.FC<SpentTimeProps> = ({ userId }) => {
             ({
               ...venueSnapshot.data(),
               id: venueSnapshot.id,
-            } as WithId<AnyVenue>)
+            } as SpaceWithId)
         )
       );
     }

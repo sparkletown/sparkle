@@ -12,7 +12,7 @@ import {
 import { generateUrl } from "utils/url";
 
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
-import { useUser } from "hooks/useUser";
+import { useLiveUser } from "hooks/user/useLiveUser";
 
 import { Loading } from "components/molecules/Loading";
 import { ProfilePictureInput } from "components/molecules/ProfilePictureInput";
@@ -33,7 +33,7 @@ export interface ProfileFormData {
 
 export const Profile: React.FC = () => {
   const history = useHistory();
-  const { userId, userWithId } = useUser();
+  const { userId, userWithId } = useLiveUser();
 
   const { worldSlug, spaceSlug = DEFAULT_SPACE_SLUG } = useSpaceParams();
 

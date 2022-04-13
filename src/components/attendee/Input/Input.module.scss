@@ -1,32 +1,23 @@
 @use "scss/attendee/space";
 @use "scss/attendee/border";
 @use "scss/attendee/font";
-@use "scss/attendee/icon";
+@use "scss/attendee/layout";
 @use "scss/attendee/theme";
 @use "scss/attendee/effects/error";
 
 .input {
   display: flex;
   flex-direction: column;
+}
 
-  label {
-    width: 100%;
-  }
-
-  label::after {
-    content: attr(data-label);
-    position: absolute;
-    top: space.empty(0.75);
-    display: flex;
-    align-items: center;
-    padding: 0 0 0 space.empty(0.75);
-    height: 26px;
-    color: theme.$c-glass-panel-text;
-    right: space.empty(0.8);
-    border-left: border.$width--slim solid theme.$sparkle--border;
-    color: theme.$c-inverted-text;
-    cursor: pointer;
-  }
+label {
+  display: flex;
+  align-items: center;
+  padding-left: space.empty(0.75);
+  padding-right: space.empty(0.8);
+  border-left: border.$width--slim solid theme.$sparkle--border;
+  color: theme.$c-default-text;
+  cursor: pointer;
 }
 
 .border-borderless {
@@ -43,8 +34,8 @@
 
 .errorIcon {
   background-image: url(/assets/icons/input-error-icon.svg);
-  height: icon.$size--input-error-icon;
-  width: icon.$size--input-error-icon;
+  height: layout.$sz-input-error-icon;
+  width: layout.$sz-input-error-icon;
   // pull icon inside input field
   margin-left: space.empty(-2);
 }
@@ -64,27 +55,13 @@
   outline: none;
 }
 
-.variant-overlay,
-.variant-overlay-profile,
-.variant-overlay-search {
-  display: flex;
-  align-items: center;
+.variant-overlay {
+  @include font.core;
   height: space.$l3;
   border-radius: space.$xs;
   box-sizing: border-box;
   width: 100%;
-}
-
-// @debt, there should be a single .overlay, variant, remove these exceptions
-.variant-overlay-profile {
-  padding: space.gap(2) 5em space.gap(2) space.empty(1); // different
-  font-size: 14px;
-  line-height: 1.4;
-}
-
-// @debt, there should be a single .overlay, variant, remove these exceptions
-.variant-overlay-search {
-  padding: 0 5em 0 space.empty(1); // different
+  padding: space.gap(2) space.empty(1) space.gap(2);
 }
 
 .variant-login {

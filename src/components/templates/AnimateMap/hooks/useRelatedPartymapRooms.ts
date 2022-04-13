@@ -1,10 +1,8 @@
 import { useMemo } from "react";
 
-import { SpaceId } from "types/id";
+import { AnimateMapSpaceWithId, SpaceId } from "types/id";
 import { Room } from "types/rooms";
-import { AnimateMapVenue } from "types/venues";
 
-import { WithId } from "utils/id";
 import { isTruthy } from "utils/types";
 import { getLastUrlParam, getUrlWithoutTrailingSlash } from "utils/url";
 import { WithVenue, withVenue } from "utils/venue";
@@ -12,7 +10,7 @@ import { WithVenue, withVenue } from "utils/venue";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 interface UseRelatedPartymapRoomsOptions {
-  venue: WithId<AnimateMapVenue>;
+  venue: AnimateMapSpaceWithId;
 }
 
 export type UseRelatedPartymapRoomsResult =

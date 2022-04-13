@@ -3,22 +3,21 @@ import { get } from "lodash/fp";
 
 import { checkAccess } from "api/auth";
 
-import { AnyVenue } from "types/venues";
+import { SpaceWithId } from "types/id";
 
-import { WithId } from "utils/id";
 import {
   getLocalStorageToken,
   removeLocalStorageToken,
 } from "utils/localStorage";
 import { isTruthy } from "utils/types";
 
-import { useUser } from "./useUser";
+import { useLiveUser } from "./user/useLiveUser";
 
 export const useVenueAccess = (
-  venue?: WithId<AnyVenue>,
+  venue?: SpaceWithId,
   onDenyAccess?: () => void
 ) => {
-  const { user } = useUser();
+  const { user } = useLiveUser();
 
   const denyAccess = useCallback(() => {
     if (!venue) {

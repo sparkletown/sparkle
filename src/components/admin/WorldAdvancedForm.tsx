@@ -18,7 +18,7 @@ import { shouldScheduleBeShown } from "utils/schedule";
 
 import { emptyObjectSchema } from "forms/emptyObjectSchema";
 
-import { useUser } from "hooks/useUser";
+import { useLiveUser } from "hooks/user/useLiveUser";
 
 import { AdminSidebarButtons } from "components/organisms/AdminVenueView/components/AdminSidebarButtons";
 
@@ -36,7 +36,7 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
   world,
 }) => {
   const worldId = world.id;
-  const { user } = useUser();
+  const { user } = useLiveUser();
 
   const defaultValues = useMemo<WorldAdvancedFormInput>(
     () => ({
@@ -89,7 +89,7 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
   }, [worldId, user, values, reset]);
 
   const isSaveLoading = isSubmitting || isSaving;
-  const isSaveDisabled = !(isDirty || isSaving || isSubmitting);
+  const isSaveDisabled = !isDirty || isSaving || isSubmitting;
 
   const renderedUserStatuses = useMemo(
     () =>
@@ -190,7 +190,7 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
             disabled={isSaveDisabled}
             loading={isSaveLoading}
           >
-            Save
+            {isSaveLoading ? "Saving..." : "Save"}
           </Button>
         </AdminSidebarButtons>
       </form>
