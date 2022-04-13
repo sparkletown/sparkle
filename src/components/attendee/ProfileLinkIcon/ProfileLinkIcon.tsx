@@ -6,26 +6,26 @@ import { UserProfileModalFormData } from "types/profileModal";
 
 import { useProfileModalLinkIcon } from "utils/profileModalLinkUtilities";
 
-import CN from "./ProfileLinkIcon.module.scss";
+import styles from "./ProfileLinkIcon.module.scss";
 
 type ProfileLinkIconProps = {
   link: string;
   index: number;
-  setValue: UseFormSetValue<UserProfileModalFormData>;
+  setLinkIcon: UseFormSetValue<UserProfileModalFormData>;
 };
 export const ProfileLinkIcon: React.FC<ProfileLinkIconProps> = ({
   link,
-  setValue,
+  setLinkIcon,
   index,
 }) => {
   const linkIcon = useProfileModalLinkIcon(link);
 
   useEffect(() => {
-    setValue(`profileLinks.${index}.title`, linkIcon.iconName);
-  }, [linkIcon, setValue, index]);
+    setLinkIcon(`profileLinks.${index}.title`, linkIcon.iconName);
+  }, [linkIcon, setLinkIcon, index]);
 
   return (
-    <div className={CN.linkWrapper}>
+    <div className={styles.linkWrapper}>
       <FontAwesomeIcon icon={linkIcon} size="lg" />
     </div>
   );

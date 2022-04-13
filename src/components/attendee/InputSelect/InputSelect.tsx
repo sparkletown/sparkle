@@ -6,11 +6,10 @@ import {
   UseFormSetValue,
 } from "react-hook-form";
 import classNames from "classnames";
+import { ProfileLinkIcon } from "components/attendee/ProfileLinkIcon";
 
 import { UserProfileModalFormData } from "types/profileModal";
 import { AnyForm, ContainerClassName } from "types/utility";
-
-import { ProfileLinkIcon } from "../ProfileLinkIcon/ProfileLinkIcon";
 
 import styles from "./InputSelect.module.scss";
 
@@ -76,7 +75,7 @@ export const InputSelect: React.FC<InputSelectProps> = ({
             </span>
           )}
         </div>
-        <ProfileLinkIcon link={urlValue} index={index} setValue={setValue} />
+        <ProfileLinkIcon link={urlValue} index={index} setLinkIcon={setValue} />
       </form>
     </div>
   );
