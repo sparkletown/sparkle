@@ -1,32 +1,32 @@
 import { useMemo } from "react";
-import { useFirestore } from "reactfire";
-import { collection, query } from "firebase/firestore";
+import { collection, getFirestore, query } from "firebase/firestore";
+
+import { COLLECTION_PRIVATE_CHATS, DEFERRED } from "settings";
 
 import { PreviewChatMessageMap, PrivateChatMessage } from "types/chat";
 
 import { getPreviewChatMessage } from "utils/chat";
 import { withIdConverter } from "utils/converters";
-import { convertToFirestoreKey } from "utils/id";
 
 import { useChatMessagesRaw } from "hooks/chats/common/useChatMessages";
-import { useUser } from "hooks/useUser";
+import { useUserId } from "hooks/user/useUserId";
 
 export const usePrivateChatPreviews = () => {
-  const { userId } = useUser();
-  const firestore = useFirestore();
+  const { userId } = useUserId();
 
-  const [
-    privateChatMessages,
-    isUserPrivateChatsLoaded,
-  ] = useChatMessagesRaw<PrivateChatMessage>(
-    query<PrivateChatMessage>(
-      collection(
-        firestore,
-        "privatechats",
-        convertToFirestoreKey(userId),
-        "chats"
-      ).withConverter<PrivateChatMessage>(withIdConverter())
-    )
+  const [privateChatMessages, isUserPrivateChatsLoaded] = useChatMessagesRaw(
+    useMemo(() => {
+      if (!userId) return DEFERRED;
+
+      return query<PrivateChatMessage>(
+        collection(
+          getFirestore(),
+          COLLECTION_PRIVATE_CHATS,
+          userId,
+          "chats"
+        ).withConverter<PrivateChatMessage>(withIdConverter())
+      );
+    }, [userId])
   );
 
   const privateChatPreviewsMap: PreviewChatMessageMap = useMemo(

@@ -27,7 +27,7 @@ export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
   onHide,
   event,
 }) => {
-  const { handleSubmit, formState, reset } = useForm<EventInput>({
+  const { handleSubmit, reset } = useForm<EventInput>({
     mode: "onSubmit",
     reValidateMode: "onChange",
   });
@@ -90,17 +90,20 @@ export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
           <p>Are you sure you wish to delete this event?</p>
         </div>
 
-        <Button onClick={onHide} variant="secondary">
-          Cancel
-        </Button>
+        <div className="flex">
+          <Button onClick={onHide} variant="secondary">
+            Cancel
+          </Button>
 
-        <Button
-          type="submit"
-          variant="primary"
-          disabled={formState.isSubmitting || isDeletingEvent}
-        >
-          Delete
-        </Button>
+          <Button
+            type="submit"
+            variant="primary"
+            loading={isDeletingEvent}
+            disabled={isDeletingEvent}
+          >
+            {isDeletingEvent ? "Deleting..." : "Delete"}
+          </Button>
+        </div>
       </form>
     </Modal>
   );

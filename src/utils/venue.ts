@@ -2,11 +2,9 @@ import { CONVERSATION_TABLES, JAZZBAR_TABLES } from "settings";
 
 import { createSlug, VenueInput_v2 } from "api/admin";
 
-import { SpaceSlug } from "types/id";
+import { SpaceSlug, SpaceWithId } from "types/id";
 import { AnyVenue } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
-
-import { WithId } from "./id";
 
 export const buildEmptySpace = (
   name: string,
@@ -63,13 +61,13 @@ export interface FindSovereignVenueOptions {
 }
 
 export interface FindSovereignVenueReturn {
-  sovereignVenue: WithId<AnyVenue>;
+  sovereignVenue: SpaceWithId;
   checkedVenueIds: readonly string[];
 }
 
 export const findSovereignVenue = (
   venueId: string,
-  venues: WithId<AnyVenue>[],
+  venues: SpaceWithId[],
   options?: FindSovereignVenueOptions
 ): FindSovereignVenueReturn | undefined => {
   const { previouslyCheckedVenueIds = [], maxDepth } = options ?? {};

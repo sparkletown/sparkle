@@ -35,7 +35,7 @@ import { PortalList } from "components/molecules/PortalList";
 import { SubmitError } from "components/molecules/SubmitError";
 import { YourUrlDisplay } from "components/molecules/YourUrlDisplay";
 
-import { ButtonNG } from "components/atoms/ButtonNG";
+import { Button } from "../Button";
 
 import * as TW from "./SpaceCreateForm.tailwind";
 
@@ -166,23 +166,21 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({
         <FormErrors errors={errors} omitted={HANDLED_ERRORS} />
         <SubmitError error={submitError} />
         <div className={TW.footer}>
-          <ButtonNG
+          <Button
             type="submit"
             loading={isLoading}
             disabled={isSaveDisabled}
             className={TW.saveButton}
-            title="Save"
           >
-            Save
-          </ButtonNG>
-          <ButtonNG
+            {isLoading ? "Saving..." : "Save"}
+          </Button>
+          <Button
             onClick={navigateToSpaces}
             className={TW.cancelButton}
-            title="Cancel"
-            variant="white"
+            variant="secondary"
           >
             Cancel
-          </ButtonNG>
+          </Button>
         </div>
       </FormCover>
     </form>

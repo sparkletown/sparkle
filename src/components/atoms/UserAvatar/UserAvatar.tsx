@@ -49,10 +49,10 @@ const AVATAR_SIZE_MAP: { [key in UserAvatarSize]: number | null } = {
 };
 
 // @debt the UserProfilePicture component serves a very similar purpose to this, we should unify them as much as possible
-export const _UserAvatar: React.FC<UserAvatarProps> = ({
+const _UserAvatar: React.FC<UserAvatarProps> = ({
   user,
-  containerClassName,
-  imageClassName,
+  containerClassName, // @debt remove injected classes in favor of variance props
+  imageClassName, // @debt remove injected classes in favor of variance props
   clickable = true,
   showStatus,
   size,

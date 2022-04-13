@@ -6,6 +6,8 @@ export const secondary =
   "border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus:ring-indigo-500";
 export const danger =
   "border-transparent text-white bg-warning-red focus:ring-indigo-500";
+export const loading =
+  "bg-sparkle-lighter cursor-not-allowed hover:bg-sparkle-lighter disabled:bg-sparkle-lighter";
 
 export const rounded = "h-10 text-center px-3.5 text-sm leading-4 rounded-full";
 export const regular = "rounded-md";

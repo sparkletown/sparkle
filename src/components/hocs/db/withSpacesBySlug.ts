@@ -4,7 +4,6 @@ import { get } from "lodash/fp";
 import {
   MaybeWorldIdLocation,
   SpaceId,
-  Spaces,
   SpacesSlugLocation,
   SpaceWithId,
 } from "types/id";
@@ -20,7 +19,7 @@ export type WithSpacesBySlugProps = {
   isSpacesLoaded: boolean;
   isSpacesLoading: boolean;
   space: SpaceWithId;
-  spaces: Spaces;
+  spaces: SpaceWithId[];
   spaceId: SpaceId;
 };
 

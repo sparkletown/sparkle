@@ -19,7 +19,7 @@ import { Auditorium } from "components/templates/Auditorium";
 import { ConversationSpace } from "components/templates/ConversationSpace";
 import { Embeddable } from "components/templates/Embeddable";
 import { ExperimentalSpace } from "components/templates/ExperimentalSpace";
-import { ExternalRoom } from "components/templates/ExternalRoom";
+import { ExternalExperience } from "components/templates/ExternalExperience";
 import { JazzBar } from "components/templates/Jazzbar";
 import { MeetingRoom } from "components/templates/MeetingRoom";
 import { PartyMap } from "components/templates/PartyMap";
@@ -74,7 +74,7 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       break;
 
     case VenueTemplate.zoomroom:
-      template = <ExternalRoom venue={venue} />;
+      template = <ExternalExperience space={venue} />;
       break;
 
     case VenueTemplate.auditorium:
@@ -111,7 +111,11 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
 
     case VenueTemplate.playa:
       template = (
-        <div>
+        <div
+          data-bem="TemplateWrapper__playa"
+          data-block="Playa"
+          data-side="att"
+        >
           Legacy Template: ${venue.template} has been removed from the platform
         </div>
       );
@@ -119,7 +123,15 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
 
     default:
       // Technically TypeScript should prevent us missing a case here, but just in case, we work around it with an explicit cast to be able to render this
-      template = <div>Unknown Template: ${(venue as AnyVenue).template}</div>;
+      template = (
+        <div
+          data-bem="TemplateWrapper__unknown"
+          data-block="UnknownSpaceTemplate"
+          data-side="att"
+        >
+          Unknown Template: ${(venue as AnyVenue).template}
+        </div>
+      );
   }
 
   const isPartyMap = venue.template === VenueTemplate.partymap;

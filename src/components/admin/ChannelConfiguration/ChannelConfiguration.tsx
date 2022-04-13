@@ -8,10 +8,8 @@ import { TablePanel } from "components/admin/TablePanel";
 
 import * as adminApi from "api/admin";
 
-import { SpaceId } from "types/id";
-import { Channel, MeetingRoomVenue } from "types/venues";
-
-import { WithId } from "utils/id";
+import { MeetingRoomSpaceWithId, SpaceId } from "types/id";
+import { Channel } from "types/venues";
 
 import { useShowHide } from "hooks/useShowHide";
 
@@ -21,7 +19,7 @@ import { ChannelAddEditModal } from "./ChannelAddEditModal";
 import { ChannelRow } from "./ChannelRow";
 
 interface ChannelConfigurationProps {
-  space: WithId<MeetingRoomVenue>;
+  space: MeetingRoomSpaceWithId;
 }
 
 export const ChannelConfiguration: React.FC<ChannelConfigurationProps> = ({
