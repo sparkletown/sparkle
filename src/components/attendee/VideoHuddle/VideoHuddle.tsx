@@ -9,11 +9,9 @@ import { useVideoHuddle } from "./useVideoHuddle";
 import styles from "./VideoHuddle.module.scss";
 
 type VideoHuddleProps = {
-  isFooterRendered?: boolean;
+  isFixed?: boolean;
 };
-export const VideoHuddle: React.FC<VideoHuddleProps> = ({
-  isFooterRendered,
-}) => {
+export const VideoHuddle: React.FC<VideoHuddleProps> = ({ isFixed }) => {
   const {
     inHuddle,
     localParticipant,
@@ -26,7 +24,7 @@ export const VideoHuddle: React.FC<VideoHuddleProps> = ({
   }
 
   const videoHuddleClasses = classNames(styles.VideoHuddle, {
-    [styles.huddleFixed]: isFooterRendered,
+    [styles.huddleFixed]: isFixed,
   });
 
   return (

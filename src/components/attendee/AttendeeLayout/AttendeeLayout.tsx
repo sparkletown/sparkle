@@ -71,7 +71,7 @@ export const AttendeeLayout: React.FC<AttendeeLayoutProps> = ({ space }) => {
           </MainSection>
           <div className={layerUIClasses}>
             <ChatContainer isRelative={isFooterRendered} />
-            <VideoHuddle isFooterRendered={isFooterRendered} />
+            <VideoHuddle isFixed={isFooterRendered} />
           </div>
         </main>
 
