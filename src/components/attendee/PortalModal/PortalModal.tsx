@@ -1,6 +1,8 @@
 import React, { MouseEventHandler } from "react";
+import { Button } from "components/attendee/Button";
+import { Popover } from "components/attendee/Popover";
 
-import { STRING_DASH_SPACE, STRING_SPACE } from "settings";
+import { SCSS_SPACE_EMPTY, STRING_DASH_SPACE, STRING_SPACE } from "settings";
 
 import { Room } from "types/rooms";
 import { WorldEvent } from "types/venues";
@@ -10,29 +12,28 @@ import { formatTimeLocalised } from "utils/time";
 
 import { useSpaceById } from "hooks/spaces/useSpaceById";
 
-import { Button } from "../Button";
-import { Popover } from "../Popover";
-
 import CN from "./PortalModal.module.scss";
 
 interface PortalModalProps {
   onEnter?: MouseEventHandler<HTMLButtonElement>;
   portal: Room;
   event?: WorldEvent;
-  roomRef: HTMLDivElement | null;
+  portalRef: HTMLDivElement | null;
 }
 
 export const PortalModal: React.FC<PortalModalProps> = ({
   onEnter,
   portal,
   event,
-  roomRef,
+  portalRef,
 }) => {
   const { space } = useSpaceById({ spaceId: portal.spaceId });
-  const popOverOffset = event ? [0, 12] : [-60, 12];
+  const popOverOffset = event
+    ? [0, SCSS_SPACE_EMPTY]
+    : [-(SCSS_SPACE_EMPTY * 5), SCSS_SPACE_EMPTY];
 
   return (
-    <Popover referenceElement={roomRef} offset={popOverOffset}>
+    <Popover referenceElement={portalRef} offset={popOverOffset}>
       <div className={CN.PortalPopupInfo}>
         {event ? (
           <>

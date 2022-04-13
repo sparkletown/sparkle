@@ -27,61 +27,61 @@ interface PartyMapProps {
 export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
   const { user, profile } = useLiveUser();
 
-  const [roomRef, setRoomRef] = useState<HTMLDivElement | null>(null);
-  const [selectedRoom, setSelectedRoom] = useState<Room | undefined>();
+  const [portalRef, setPortalRef] = useState<HTMLDivElement | null>(null);
+  const [selectedPortal, setSelectedPortal] = useState<Room | undefined>();
 
   const { events: selfAndChildVenueEvents } = useSpaceEvents({
     worldId: venue.worldId,
-    spaceIds: [selectedRoom?.spaceId || ""],
+    spaceIds: [selectedPortal?.spaceId || ""],
   });
 
   const [firstEvent] = useMemo(() => {
-    if (!selfAndChildVenueEvents || !selectedRoom) return [];
+    if (!selfAndChildVenueEvents || !selectedPortal) return [];
 
     return selfAndChildVenueEvents
       .filter(
         (event) =>
-          event.spaceId === selectedRoom.spaceId && isEventLiveOrFuture(event)
+          event.spaceId === selectedPortal.spaceId && isEventLiveOrFuture(event)
       )
       .sort(eventTimeAndOrderComparator);
-  }, [selfAndChildVenueEvents, selectedRoom]);
+  }, [selfAndChildVenueEvents, selectedPortal]);
 
-  const selectRoom = useCallback((room: Room) => {
-    if (room.type && COVERT_ROOM_TYPES.includes(room.type)) return;
+  const selectPortal = useCallback((portal: Room) => {
+    if (portal.type && COVERT_ROOM_TYPES.includes(portal.type)) return;
 
-    setSelectedRoom(room);
+    setSelectedPortal(portal);
   }, []);
 
-  const unselectRoom = useCallback(() => {
-    setSelectedRoom(undefined);
+  const unselectPortal = useCallback(() => {
+    setSelectedPortal(undefined);
   }, []);
 
   const isUnclickable =
-    selectedRoom?.visibility === RoomVisibility.unclickable ||
-    selectedRoom?.type === RoomType.unclickable;
+    selectedPortal?.visibility === RoomVisibility.unclickable ||
+    selectedPortal?.type === RoomType.unclickable;
   const isCovertRoom =
-    selectedRoom?.type && COVERT_ROOM_TYPES.includes(selectedRoom?.type);
+    selectedPortal?.type && COVERT_ROOM_TYPES.includes(selectedPortal?.type);
   const shouldBeClickable = !isCovertRoom && !isUnclickable;
-  const { enterPortal } = usePortal({ portal: selectedRoom });
+  const { enterPortal } = usePortal({ portal: selectedPortal });
   const analytics = useAnalytics({ venue });
 
-  const [enterWithSound] = useCustomSound(selectedRoom?.enterSound, {
+  const [enterWithSound] = useCustomSound(selectedPortal?.enterSound, {
     interrupt: true,
     onend: enterPortal,
   });
 
-  const selectRoomWithSound = useCallback(
+  const selectPortalWithSound = useCallback(
     (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
-      if (!shouldBeClickable || !selectedRoom) return;
+      if (!shouldBeClickable || !selectedPortal) return;
       analytics.trackEnterRoomEvent(
-        selectedRoom?.title,
-        selectedRoom?.template
+        selectedPortal?.title,
+        selectedPortal?.template
       );
-      isExternalPortal(selectedRoom)
-        ? openUrl(selectedRoom?.url)
+      isExternalPortal(selectedPortal)
+        ? openUrl(selectedPortal?.url)
         : enterWithSound();
     },
-    [analytics, enterWithSound, selectedRoom, shouldBeClickable]
+    [analytics, enterWithSound, selectedPortal, shouldBeClickable]
   );
 
   if (!user || !profile) return <>Loading..</>;
@@ -96,18 +96,18 @@ export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
       <Map
         user={user}
         venue={venue}
-        selectRoom={selectRoom}
-        unselectRoom={unselectRoom}
-        setRoomRef={setRoomRef}
-        selectedRoom={selectedRoom}
+        selectPortal={selectPortal}
+        unselectPortal={unselectPortal}
+        setPortalRef={setPortalRef}
+        selectedPortal={selectedPortal}
       />
 
-      {selectedRoom && (
+      {selectedPortal && (
         <PortalModal
-          onEnter={selectRoomWithSound}
-          portal={selectedRoom}
+          onEnter={selectPortalWithSound}
+          portal={selectedPortal}
           event={firstEvent}
-          roomRef={roomRef}
+          portalRef={portalRef}
         />
       )}
     </div>

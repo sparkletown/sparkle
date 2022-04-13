@@ -259,3 +259,7 @@ Object.freeze(DEFAULT_SAFE_ZONE);
 
 // Allow 70px for the top and bottom UI. Ideally, this would come from CSS
 export const PARTY_MAP_VERTICAL_PAD = 140;
+
+// JS constants derived and in sync with their SCSS constants
+// "scss/attendee/space";
+export const SCSS_SPACE_EMPTY = 12;

@@ -12,18 +12,18 @@ import { calculateImageDimensions } from "utils/mapPositioning";
 
 import { useValidImage } from "hooks/useCheckImage";
 
-import { MapRoom } from "./MapRoom";
+import { MapPortal } from "./MapPortal";
 
 import styles from "./Map.module.scss";
 
 interface PortalsProps {
   portals: Room[];
   space: PartyMapSpaceWithId;
-  selectPortal: (room: Room) => void;
+  selectPortal: (portal: Room) => void;
   safeZoneBounds: Dimensions & Position;
-  setRoomRef: React.Dispatch<React.SetStateAction<HTMLDivElement | null>>;
-  selectedRoom?: Room;
-  unselectRoom: () => void;
+  setPortalRef: React.Dispatch<React.SetStateAction<HTMLDivElement | null>>;
+  selectedPortal?: Room;
+  unselectPortal: () => void;
 }
 
 const Portals: React.FC<PortalsProps> = ({
@@ -31,26 +31,26 @@ const Portals: React.FC<PortalsProps> = ({
   selectPortal,
   portals,
   safeZoneBounds,
-  setRoomRef,
-  selectedRoom,
-  unselectRoom,
+  setPortalRef,
+  selectedPortal,
+  unselectPortal,
 }) => {
   const portalsFragment = useMemo(
     () =>
       portals
         .filter((portal) => portal.isEnabled)
         .map((portal) => (
-          <MapRoom
+          <MapPortal
             key={portal.title}
-            venue={space}
-            room={portal}
-            selectRoom={() => {
+            space={space}
+            portal={portal}
+            selectPortal={() => {
               selectPortal(portal);
             }}
             safeZoneBounds={safeZoneBounds}
-            setRoomRef={setRoomRef}
-            selectedRoom={selectedRoom}
-            unselectRoom={unselectRoom}
+            setPortalRef={setPortalRef}
+            selectedPortal={selectedPortal}
+            unselectPortal={unselectPortal}
           />
         )),
     [
@@ -58,9 +58,9 @@ const Portals: React.FC<PortalsProps> = ({
       safeZoneBounds,
       selectPortal,
       space,
-      selectedRoom,
-      setRoomRef,
-      unselectRoom,
+      selectedPortal,
+      setPortalRef,
+      unselectPortal,
     ]
   );
   return <div className={styles.Portals}>{portalsFragment}</div>;
@@ -69,19 +69,19 @@ const Portals: React.FC<PortalsProps> = ({
 interface MapProps {
   user: RefiAuthUser;
   venue: PartyMapSpaceWithId;
-  selectRoom: (room: Room) => void;
-  setRoomRef: React.Dispatch<React.SetStateAction<HTMLDivElement | null>>;
-  selectedRoom?: Room;
-  unselectRoom: () => void;
+  selectPortal: (portal: Room) => void;
+  setPortalRef: React.Dispatch<React.SetStateAction<HTMLDivElement | null>>;
+  selectedPortal?: Room;
+  unselectPortal: () => void;
 }
 
 export const Map: React.FC<MapProps> = ({
   user,
-  unselectRoom,
+  unselectPortal,
   venue,
-  selectRoom,
-  setRoomRef,
-  selectedRoom,
+  selectPortal,
+  setPortalRef,
+  selectedPortal,
 }) => {
   const [
     mapBackground,
@@ -129,11 +129,11 @@ export const Map: React.FC<MapProps> = ({
       <Portals
         portals={venue.rooms ?? []}
         space={venue}
-        selectPortal={selectRoom}
+        selectPortal={selectPortal}
         safeZoneBounds={safeZoneBounds}
-        setRoomRef={setRoomRef}
-        selectedRoom={selectedRoom}
-        unselectRoom={unselectRoom}
+        setPortalRef={setPortalRef}
+        selectedPortal={selectedPortal}
+        unselectPortal={unselectPortal}
       />
     </>
   );

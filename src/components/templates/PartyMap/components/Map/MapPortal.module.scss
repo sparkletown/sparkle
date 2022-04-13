@@ -11,7 +11,7 @@
 
 $-title-height: 42px;
 
-.MapRoom {
+.MapPortal {
   @media (max-width: calc(#{breakpoint.$md} - 1px)) {
     // Override inline styles. The code for this component calculates the width
     // and height for the element for when the element is displayed on a

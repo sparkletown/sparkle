@@ -19,51 +19,51 @@ import { usePortal } from "hooks/usePortal";
 
 import { RoomAttendance } from "components/templates/PartyMap/components/RoomAttendance";
 
-import styles from "./MapRoom.module.scss";
+import styles from "./MapPortal.module.scss";
 
-interface MapRoomProps {
-  venue: PartyMapSpaceWithId;
-  room: Room;
-  selectRoom: (room: Room) => void;
+interface MapPortalProps {
+  space: PartyMapSpaceWithId;
+  portal: Room;
+  selectPortal: (portal: Room) => void;
   safeZoneBounds: Dimensions & Position;
-  setRoomRef: React.Dispatch<React.SetStateAction<HTMLDivElement | null>>;
-  selectedRoom?: Room;
-  unselectRoom: () => void;
+  setPortalRef: React.Dispatch<React.SetStateAction<HTMLDivElement | null>>;
+  selectedPortal?: Room;
+  unselectPortal: () => void;
 }
 
-export const MapRoom: React.FC<MapRoomProps> = ({
-  venue,
-  room,
+export const MapPortal: React.FC<MapPortalProps> = ({
+  space,
+  portal,
   safeZoneBounds,
-  selectRoom,
-  setRoomRef,
-  selectedRoom,
-  unselectRoom,
+  selectPortal,
+  setPortalRef,
+  selectedPortal,
+  unselectPortal,
 }) => {
-  const { enterPortal } = usePortal({ portal: room });
-  const analytics = useAnalytics({ venue });
+  const { enterPortal } = usePortal({ portal });
+  const analytics = useAnalytics({ venue: space });
   const { events: selfAndChildVenueEvents = [] } = useSpaceEvents({
-    worldId: venue.worldId,
-    spaceIds: [room.spaceId ?? ""],
+    worldId: space.worldId,
+    spaceIds: [portal.spaceId ?? ""],
   });
   const [firstEvent] = selfAndChildVenueEvents.sort(
     eventTimeAndOrderComparator
   );
 
   const isUnclickable =
-    room.visibility === RoomVisibility.unclickable ||
-    room.type === RoomType.unclickable;
-  const isCovertRoom = room.type && COVERT_ROOM_TYPES.includes(room.type);
+    portal.visibility === RoomVisibility.unclickable ||
+    portal.type === RoomType.unclickable;
+  const isCovertRoom = portal.type && COVERT_ROOM_TYPES.includes(portal.type);
   const shouldBeClickable = !isCovertRoom && !isUnclickable;
 
   // All the percentages are stored as 0 to 100 in the database for historical
   // reasons. We scale them back down here.
   const left =
-    safeZoneBounds.left + (safeZoneBounds.width * room.x_percent) / 100;
+    safeZoneBounds.left + (safeZoneBounds.width * portal.x_percent) / 100;
   const top =
-    safeZoneBounds.top + (safeZoneBounds.height * room.y_percent) / 100;
-  const width = (safeZoneBounds.width * room.width_percent) / 100;
-  const height = (safeZoneBounds.height * room.height_percent) / 100;
+    safeZoneBounds.top + (safeZoneBounds.height * portal.y_percent) / 100;
+  const width = (safeZoneBounds.width * portal.width_percent) / 100;
+  const height = (safeZoneBounds.height * portal.height_percent) / 100;
 
   const roomInlineStyles = useMemo(
     () => ({
@@ -71,12 +71,12 @@ export const MapRoom: React.FC<MapRoomProps> = ({
       top: `${top}px`,
       width: `${width}px`,
       height: `${height}px`,
-      zIndex: room.zIndex,
+      zIndex: portal.zIndex,
     }),
-    [height, left, room.zIndex, top, width]
+    [height, left, portal.zIndex, top, width]
   );
 
-  const [enterWithSound] = useCustomSound(room.enterSound, {
+  const [enterWithSound] = useCustomSound(portal.enterSound, {
     interrupt: true,
     onend: enterPortal,
   });
@@ -84,44 +84,47 @@ export const MapRoom: React.FC<MapRoomProps> = ({
   const selectRoomWithSound = useCallback(
     (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
       if (!shouldBeClickable) return;
-      analytics.trackEnterRoomEvent(room.title, room.template);
-      isExternalPortal(room) ? openUrl(room.url) : enterWithSound();
+      analytics.trackEnterRoomEvent(portal.title, portal.template);
+      isExternalPortal(portal) ? openUrl(portal.url) : enterWithSound();
     },
-    [analytics, enterWithSound, room, shouldBeClickable]
+    [analytics, enterWithSound, portal, shouldBeClickable]
   );
 
   const portalImageClasses = classNames(styles.PortalImage, {
     [styles.livePortalEvent]: isEventLive(firstEvent),
   });
 
-  const isCurrentRoomSelected = isEqual(selectedRoom, room);
+  const isCurrentRoomSelected = isEqual(selectedPortal, portal);
 
-  const handleSelectRoom = (room: Room) => {
-    if (isCurrentRoomSelected) {
-      unselectRoom();
-      return;
-    }
+  const handleSelectPortal = useCallback(
+    (portal: Room) => {
+      if (isCurrentRoomSelected) {
+        unselectPortal();
+        return;
+      }
 
-    selectRoom(room);
-  };
+      selectPortal(portal);
+    },
+    [isCurrentRoomSelected, selectPortal, unselectPortal]
+  );
 
   return (
-    <div className={styles.MapRoom} style={roomInlineStyles}>
+    <div className={styles.MapPortal} style={roomInlineStyles}>
       <div className={styles.PortalOnMap}>
         <div className={portalImageClasses} onClick={selectRoomWithSound}>
-          <img src={room.image_url} alt={room.title} />
+          <img src={portal.image_url} alt={portal.title} />
         </div>
         <div
           className={styles.portalInfo}
-          ref={isCurrentRoomSelected ? setRoomRef : null}
+          ref={isCurrentRoomSelected ? setPortalRef : null}
         >
           <div className={styles.PortalTitle}>
-            <span>{room.title}</span>
-            <RoomAttendance room={room} />
-            {room.spaceId && shouldBeClickable && (
+            <span>{portal.title}</span>
+            <RoomAttendance room={portal} />
+            {portal.spaceId && shouldBeClickable && (
               <span
                 className={styles.InfoButton}
-                onClick={() => handleSelectRoom(room)}
+                onClick={() => handleSelectPortal(portal)}
               >
                 <span />
               </span>
