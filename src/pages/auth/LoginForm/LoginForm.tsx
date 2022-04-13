@@ -1,12 +1,18 @@
 import React, { useCallback } from "react";
 import { useForm, useFormState } from "react-hook-form";
 import { useHistory } from "react-router-dom";
+import { useSearchParam } from "react-use";
 import { Button } from "components/attendee/Button";
 import { Input } from "components/attendee/Input";
 import { Spacer } from "components/attendee/Spacer";
 import firebase from "firebase/compat/app";
 
-import { PASSWORD_RESET_URL, SIGN_UP_URL, STRING_SPACE } from "settings";
+import {
+  PASSWORD_RESET_URL,
+  RETURN_URL_PARAM_NAME,
+  SIGN_UP_URL,
+  STRING_SPACE,
+} from "settings";
 
 import { errorMessage, errorStatus } from "utils/error";
 
@@ -40,6 +46,8 @@ export const LoginForm: React.FC<LoginFormProps> = () => {
     });
   }, [history]);
 
+  const returnUrl = useSearchParam(RETURN_URL_PARAM_NAME);
+
   const { signInWithGoogle, signInWithFacebook } = useSocialSignIn();
 
   const {
@@ -64,15 +72,13 @@ export const LoginForm: React.FC<LoginFormProps> = () => {
     return firebase.auth().signInWithEmailAndPassword(email, password);
   };
 
-  const postSignInCheck = (data?: LoginFormData) => {
-    // afterUserIsLoggedIn?.(data);
-  };
-
   const onSubmit = async (data: LoginFormData) => {
     try {
       await signIn(data);
 
-      postSignInCheck(data);
+      if (returnUrl) {
+        history.push(returnUrl);
+      }
     } catch (error) {
       const status = errorStatus(error);
       const message = errorMessage(error);
@@ -95,7 +101,10 @@ export const LoginForm: React.FC<LoginFormProps> = () => {
   const handleGoogleSignIn = async () => {
     try {
       await signInWithGoogle();
-      postSignInCheck();
+
+      if (returnUrl) {
+        history.push(returnUrl);
+      }
     } catch {
       setError("backend", { type: "firebase", message: "Error" });
     }
@@ -111,7 +120,9 @@ export const LoginForm: React.FC<LoginFormProps> = () => {
         return;
       }
 
-      postSignInCheck();
+      if (returnUrl) {
+        history.push(returnUrl);
+      }
     } catch {
       setError("backend", { type: "firebase", message: "Error" });
     }

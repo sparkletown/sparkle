@@ -1,7 +1,7 @@
 import React, { ReactNode } from "react";
 import { Redirect, useHistory } from "react-router-dom";
 
-import { SIGN_IN_URL } from "settings";
+import { RETURN_URL_PARAM_NAME, SIGN_IN_URL } from "settings";
 
 import { useUserId } from "hooks/user/useUserId";
 
@@ -37,7 +37,7 @@ export const LoginRestricted: React.FC<LoginRestrictedProps> = ({
     <Redirect
       to={{
         pathname: SIGN_IN_URL,
-        search: `?returnUrl=${history.location.pathname}`,
+        search: `?${RETURN_URL_PARAM_NAME}=${history.location.pathname}`,
       }}
     />
   );

@@ -67,3 +67,6 @@ export const JOBS_URL = "#jobs";
 export const PRESS_URL = "#press";
 export const ACCESSIBILITY_URL = "#accessibility";
 export const PARTNERS_URL = "#partners";
+
+// Search params names
+export const RETURN_URL_PARAM_NAME = "returnUrl";
