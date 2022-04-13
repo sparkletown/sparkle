@@ -1,5 +1,11 @@
 import React, { useCallback } from "react";
-import { FieldErrors, UseFormRegister, ValidateResult } from "react-hook-form";
+import {
+  FieldErrors,
+  UseFormRegister,
+  UseFormSetValue,
+  UseFormWatch,
+  ValidateResult,
+} from "react-hook-form";
 import { InputSelect } from "components/attendee/InputSelect";
 
 import { UserProfileModalFormData } from "types/profileModal";
@@ -13,6 +19,8 @@ export interface ProfileModalEditLinkProps extends ContainerClassName {
   otherUrls: (string | undefined)[];
   register: UseFormRegister<UserProfileModalFormData>;
   error?: FieldErrors<ProfileLink>;
+  watch: UseFormWatch<UserProfileModalFormData>;
+  setValue: UseFormSetValue<UserProfileModalFormData>;
 }
 
 export const ProfileModalEditLink: React.FC<ProfileModalEditLinkProps> = ({
@@ -20,6 +28,8 @@ export const ProfileModalEditLink: React.FC<ProfileModalEditLinkProps> = ({
   otherUrls,
   register,
   error,
+  watch,
+  setValue,
 }) => {
   const validateURLUnique: (url: string) => ValidateResult = useCallback(
     (url: string) => {
@@ -27,13 +37,12 @@ export const ProfileModalEditLink: React.FC<ProfileModalEditLinkProps> = ({
     },
     [otherUrls]
   );
-
+  const linkUrlValue = watch(`profileLinks.${index}.url`);
   return (
     <InputSelect
       inputName={`profileLinks.${index}.url`}
-      selectName={`profileLinks.${index}.title`}
+      index={index}
       inputPlaceholder="url"
-      selectPlaceholder="Select type"
       inputRules={{
         pattern: {
           value: urlRegex,
@@ -41,10 +50,10 @@ export const ProfileModalEditLink: React.FC<ProfileModalEditLinkProps> = ({
         },
         validate: validateURLUnique,
       }}
-      selectRules={{ required: "Title cannot empty" }}
       register={register}
       errorInput={error?.url}
-      errorSelect={error?.title}
+      urlValue={linkUrlValue}
+      setValue={setValue}
     />
   );
 };

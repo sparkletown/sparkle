@@ -35,6 +35,11 @@
 
 .variant-alternative {
   background: transparent;
+
+  &.disabled {
+    background: transparent;
+    opacity: theme.$disabled-opacity;
+  }
 }
 
 .variant-login {

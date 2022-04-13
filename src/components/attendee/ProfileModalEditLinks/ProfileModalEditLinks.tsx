@@ -1,5 +1,10 @@
 import React, { useEffect } from "react";
-import { FieldErrors, UseFormRegister } from "react-hook-form";
+import {
+  FieldErrors,
+  UseFormRegister,
+  UseFormSetValue,
+  UseFormWatch,
+} from "react-hook-form";
 import classNames from "classnames";
 import { Button } from "components/attendee/Button";
 import { ProfileModalEditLink } from "components/attendee/ProfileModalEditLinks/ProfileModalEditLink";
@@ -15,6 +20,8 @@ export interface ProfileModalEditLinksProps extends ContainerClassName {
   register: UseFormRegister<UserProfileModalFormData>;
   errors?: FieldErrors<ProfileLink>[];
   onAddLink: () => void;
+  watch: UseFormWatch<UserProfileModalFormData>;
+  setValue: UseFormSetValue<UserProfileModalFormData>;
 }
 
 export const ProfileModalEditLinks: React.FC<ProfileModalEditLinksProps> = ({
@@ -23,6 +30,8 @@ export const ProfileModalEditLinks: React.FC<ProfileModalEditLinksProps> = ({
   errors,
   onAddLink,
   containerClassName,
+  watch,
+  setValue,
 }) => {
   useEffect(() => {
     if (!links.length) {
@@ -30,7 +39,7 @@ export const ProfileModalEditLinks: React.FC<ProfileModalEditLinksProps> = ({
     }
   }, [links, onAddLink]);
 
-  const renderedLinks = links.map((link, i) => {
+  const renderedLinks = links.map((_, i) => {
     const otherUrls = links.filter((l) => l !== links[i]).map((l) => l.url);
 
     return (
@@ -40,6 +49,8 @@ export const ProfileModalEditLinks: React.FC<ProfileModalEditLinksProps> = ({
         register={register}
         otherUrls={otherUrls}
         error={errors?.[i]}
+        watch={watch}
+        setValue={setValue}
       />
     );
   });
