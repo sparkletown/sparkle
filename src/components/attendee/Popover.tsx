@@ -6,20 +6,33 @@ import { POPOVER_CONTAINER_ID } from "settings";
 
 export interface PopoverProps {
   referenceElement?: Element | null;
+  offset?: number[];
 }
 
 export const Popover: React.FC<PopoverProps> = ({
   children,
   referenceElement,
+  offset,
 }) => {
   const popoverContainerElement = document.querySelector(
     `#${POPOVER_CONTAINER_ID}`
   );
+  const [left, top] = offset ?? [];
 
   const [popperElement, setPopperElement] = useState<HTMLElement | null>(null);
   const { styles: popperStyles, attributes: popperAttributes } = usePopper(
     referenceElement,
-    popperElement
+    popperElement,
+    {
+      modifiers: [
+        {
+          name: "offset",
+          options: {
+            ...(offset && { offset: [left, top] }),
+          },
+        },
+      ],
+    }
   );
 
   return (

@@ -117,11 +117,10 @@ $-title-height: 42px;
 .InfoButton {
   @include atom.button;
   height: space.button(1) - space.gap(8);
-  margin: space.gap(4) 0;
+  margin: space.gap(4) 0 space.gap(4) space.empty(1);
   border-left: 1px solid theme.$sparkle--border;
   border-radius: 0;
   padding-right: 0;
-  margin-left: auto;
 
   span {
     @include atom.icon;
@@ -129,8 +128,4 @@ $-title-height: 42px;
     position: relative;
     filter: invert(1);
   }
-}
-
-.portalName {
-  margin-right: space.empty(1);
 }

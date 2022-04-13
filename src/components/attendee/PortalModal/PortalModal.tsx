@@ -1,5 +1,4 @@
 import React, { MouseEventHandler } from "react";
-import classNames from "classnames";
 
 import { STRING_DASH_SPACE, STRING_SPACE } from "settings";
 
@@ -10,9 +9,9 @@ import { eventEndTime, eventStartTime } from "utils/event";
 import { formatTimeLocalised } from "utils/time";
 
 import { useSpaceById } from "hooks/spaces/useSpaceById";
-import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { Button } from "../Button";
+import { Popover } from "../Popover";
 
 import CN from "./PortalModal.module.scss";
 
@@ -20,29 +19,20 @@ interface PortalModalProps {
   onEnter?: MouseEventHandler<HTMLButtonElement>;
   portal: Room;
   event?: WorldEvent;
+  roomRef: HTMLDivElement | null;
 }
 
 export const PortalModal: React.FC<PortalModalProps> = ({
   onEnter,
   portal,
   event,
+  roomRef,
 }) => {
   const { space } = useSpaceById({ spaceId: portal.spaceId });
-
-  const portalSpaceId = portal.spaceId;
-
-  const { findVenueInRelatedVenues } = useRelatedVenues();
-
-  const portalVenue = findVenueInRelatedVenues({ spaceId: portalSpaceId });
-
-  const numberOfUsersInRoom = portalVenue?.recentUserCount ?? 0;
-
-  const popupWrapperClasses = classNames(CN.popupWrapper, {
-    [CN.popupWrapperAligned]: !!numberOfUsersInRoom,
-  });
+  const popOverOffset = event ? [0, 12] : [-60, 12];
 
   return (
-    <div className={popupWrapperClasses}>
+    <Popover referenceElement={roomRef} offset={popOverOffset}>
       <div className={CN.PortalPopupInfo}>
         {event ? (
           <>
@@ -54,7 +44,9 @@ export const PortalModal: React.FC<PortalModalProps> = ({
                   STRING_DASH_SPACE}
               </span>
               {STRING_SPACE}
-              <span>{formatTimeLocalised(eventEndTime({ event }))}</span>
+              <span>
+                {STRING_SPACE + formatTimeLocalised(eventEndTime({ event }))}
+              </span>
             </div>
             <div className={CN.portalEventContent}>{event?.description}</div>
           </>
@@ -68,6 +60,6 @@ export const PortalModal: React.FC<PortalModalProps> = ({
           Enter
         </Button>
       </div>
-    </div>
+    </Popover>
   );
 };

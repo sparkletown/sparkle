@@ -1,9 +1,8 @@
 import React, { useCallback, useMemo } from "react";
-import { useToggle } from "react-use";
 import classNames from "classnames";
-import { PortalModal } from "components/attendee/PortalModal";
+import { isEqual } from "lodash";
 
-import { ALWAYS_EMPTY_OBJECT, COVERT_ROOM_TYPES } from "settings";
+import { COVERT_ROOM_TYPES } from "settings";
 
 import { Room, RoomType } from "types/rooms";
 import { RoomVisibility } from "types/RoomVisibility";
@@ -13,10 +12,10 @@ import { PartyMapVenue } from "types/venues";
 import { eventTimeAndOrderComparator, isEventLive } from "utils/event";
 import { isExternalPortal, openUrl } from "utils/url";
 
+import { useSpaceEvents } from "hooks/events";
 import { useCustomSound } from "hooks/sounds";
 import { useAnalytics } from "hooks/useAnalytics";
 import { usePortal } from "hooks/usePortal";
-import useVenueScheduleEvents from "hooks/useVenueScheduleEvents";
 
 import { RoomAttendance } from "components/templates/PartyMap/components/RoomAttendance";
 
@@ -25,26 +24,31 @@ import styles from "./MapRoom.module.scss";
 export interface MapRoomProps {
   venue: PartyMapVenue;
   room: Room;
-  selectRoom: () => void;
+  selectRoom: (room: Room) => void;
   safeZoneBounds: Dimensions & Position;
+  setRoomRef: React.Dispatch<React.SetStateAction<HTMLDivElement | null>>;
+  selectedRoom?: Room;
+  unselectRoom: () => void;
 }
 
 export const MapRoom: React.FC<MapRoomProps> = ({
   venue,
   room,
   safeZoneBounds,
+  selectRoom,
+  setRoomRef,
+  selectedRoom,
+  unselectRoom,
 }) => {
   const { enterPortal } = usePortal({ portal: room });
   const analytics = useAnalytics({ venue });
-  const { liveAndFutureEvents } = useVenueScheduleEvents({
-    userEventIds: ALWAYS_EMPTY_OBJECT,
+  const { events: selfAndChildVenueEvents = [] } = useSpaceEvents({
+    worldId: venue.worldId,
+    spaceIds: [room.spaceId ?? ""],
   });
-
-  const eventsFilledWithPriority = liveAndFutureEvents.sort(
+  const [firstEvent] = selfAndChildVenueEvents.sort(
     eventTimeAndOrderComparator
   );
-  const [firstEvent] = eventsFilledWithPriority;
-  const [infoVisible, toggleInfoVisible] = useToggle(false);
 
   const isUnclickable =
     room.visibility === RoomVisibility.unclickable ||
@@ -90,29 +94,39 @@ export const MapRoom: React.FC<MapRoomProps> = ({
     [styles.livePortalEvent]: isEventLive(firstEvent),
   });
 
+  const isCurrentRoomSelected = isEqual(selectedRoom, room);
+
+  const handleSelectRoom = (room: Room) => {
+    if (isCurrentRoomSelected) {
+      unselectRoom();
+      return;
+    }
+
+    selectRoom(room);
+  };
+
   return (
     <div className={styles.MapRoom} style={roomInlineStyles}>
       <div className={styles.PortalOnMap}>
         <div className={portalImageClasses} onClick={selectRoomWithSound}>
           <img src={room.image_url} alt={room.title} />
         </div>
-        <div className={styles.portalInfo}>
+        <div
+          className={styles.portalInfo}
+          ref={isCurrentRoomSelected ? setRoomRef : null}
+        >
           <div className={styles.PortalTitle}>
-            <span className={styles.portalName}>{room.title}</span>
+            <span>{room.title}</span>
             <RoomAttendance room={room} />
-            {room.spaceId && (
-              <span className={styles.InfoButton} onClick={toggleInfoVisible}>
+            {room.spaceId && shouldBeClickable && (
+              <span
+                className={styles.InfoButton}
+                onClick={() => handleSelectRoom(room)}
+              >
                 <span />
               </span>
             )}
           </div>
-          {infoVisible && (
-            <PortalModal
-              onEnter={selectRoomWithSound}
-              portal={room}
-              event={firstEvent}
-            />
-          )}
         </div>
       </div>
     </div>

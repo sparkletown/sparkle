@@ -5,18 +5,6 @@
 @use "scss/attendee/effects/sparkle";
 @use "scss/attendee/theme";
 
-.popupWrapper {
-  position: absolute;
-  top: calc(100% + space.empty(1));
-  left: space.empty(-3);
-  min-width: 200px;
-  cursor: default;
-}
-
-.popupWrapperAligned {
-  left: space.empty(-1.5);
-}
-
 .PortalPopupInfo {
   @include sparkle.panel--glass;
   @include rounded.normal;
