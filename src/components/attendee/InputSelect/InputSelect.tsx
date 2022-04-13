@@ -1,17 +1,18 @@
 import React from "react";
-import { FieldError, RegisterOptions, UseFormRegister } from "react-hook-form";
+import {
+  FieldError,
+  RegisterOptions,
+  UseFormRegister,
+  UseFormSetValue,
+} from "react-hook-form";
 import classNames from "classnames";
 
+import { UserProfileModalFormData } from "types/profileModal";
 import { AnyForm, ContainerClassName } from "types/utility";
 
-import styles from "./InputSelect.module.scss";
+import { ProfileLinkIcon } from "../ProfileLinkIcon/ProfileLinkIcon";
 
-const urlSources: Record<string, string> = {
-  facebook: "Facebook",
-  twitter: "Twitter",
-  bandcamp: "Bandcamp",
-  website: "Website",
-};
+import styles from "./InputSelect.module.scss";
 
 interface InputSelectProps
   extends React.HTMLProps<HTMLInputElement>,
@@ -21,28 +22,29 @@ interface InputSelectProps
   errorSelect?: FieldError;
   errorInput?: FieldError;
   inputName: string;
-  selectName: string;
+  index: number;
   inputPlaceholder?: string;
   selectPlaceholder?: string;
   register: UseFormRegister<AnyForm>;
   inputRules?: RegisterOptions;
   selectRules?: RegisterOptions;
+  urlValue?: string;
+  setValue: UseFormSetValue<UserProfileModalFormData>;
 }
 
 export const InputSelect: React.FC<InputSelectProps> = ({
   containerClassName,
   inputClassName,
   errorTextClassName,
-  errorSelect,
   errorInput,
   inputName,
-  selectName,
+  index,
   inputPlaceholder,
-  selectPlaceholder,
+  urlValue = "",
   register,
   // TODO: possibly unite rules into a single object
   inputRules = {},
-  selectRules = {},
+  setValue,
 }) => {
   const containerClassNames = classNames(
     styles.inputSelect,
@@ -55,49 +57,27 @@ export const InputSelect: React.FC<InputSelectProps> = ({
 
   const inputClassNames = classNames(styles.input, inputClassName);
 
-  const selectWrapperClassNames = classNames(styles.selectWrapper, {
-    [styles.invalid]: errorSelect,
-  });
-  const selectClassNames = classNames(styles.select, containerClassNames);
-
   return (
     <div className={containerClassNames}>
       <form className={styles.wrapper} autoComplete="off">
-        <div className={wrapperClassNames}>
-          <input
-            className={inputClassNames}
-            placeholder={inputPlaceholder}
-            autoComplete="off"
-            {...register(inputName, inputRules)}
-          />
-          {errorInput && <span className={styles.errorIcon}></span>}
-        </div>
-        <div className={selectWrapperClassNames}>
-          <select
-            className={selectClassNames}
-            {...register(selectName, selectRules)}
-          >
-            <option value={""} disabled>
-              {selectPlaceholder}
-            </option>
-            {Object.entries(urlSources).map(([key, label]) => (
-              <option key={key} value={label}>
-                {label}
-              </option>
-            ))}
-          </select>
-          {errorSelect && (
+        <div className={styles.inputContainer}>
+          <div className={wrapperClassNames}>
+            <input
+              className={inputClassNames}
+              placeholder={inputPlaceholder}
+              autoComplete="off"
+              {...register(inputName, inputRules)}
+            />
+            {errorInput && <span className={styles.errorIcon}></span>}
+          </div>
+          {errorInput && (
             <span className={classNames(styles.error, errorTextClassName)}>
-              {errorSelect?.message}
+              {errorInput?.message}
             </span>
           )}
         </div>
+        <ProfileLinkIcon link={urlValue} index={index} setValue={setValue} />
       </form>
-      {errorInput && (
-        <span className={classNames(styles.error, errorTextClassName)}>
-          {errorInput?.message}
-        </span>
-      )}
     </div>
   );
 };
