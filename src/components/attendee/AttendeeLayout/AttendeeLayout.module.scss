@@ -15,18 +15,6 @@ $-z-index--popover: layer.level($-z-index--ui);
   @include font.sparkle;
 }
 
-.Space {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  transition: padding-right 0.2s ease;
-  padding-right: 0;
-  z-index: layer.$z-index--space;
-  transition: filter 2s ease;
-  background-color: theme.$c-glass-panel-background;
-}
-
 .LayerUi {
   position: fixed;
   top: 0;
