@@ -2,7 +2,7 @@ import { World } from "api/world";
 
 import { SpaceWithId } from "types/id";
 
-import { useUser } from "hooks/useUser";
+import { useUserId } from "hooks/user/useUserId";
 
 type UseCanDeleteVenueChatMessagesOptions = {
   space: SpaceWithId;
@@ -13,7 +13,7 @@ export const useCanDeleteVenueChatMessages = (
   options: UseCanDeleteVenueChatMessagesOptions
 ) => {
   const { world, space } = options;
-  const { userId } = useUser();
+  const { userId } = useUserId();
 
   if (!userId) return false;
 

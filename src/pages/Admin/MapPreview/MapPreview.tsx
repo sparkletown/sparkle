@@ -20,7 +20,7 @@ import { PortalInput, Room } from "types/rooms";
 import { SafeZone } from "types/venues";
 
 import { useCheckImage } from "hooks/useCheckImage";
-import { useUser } from "hooks/useUser";
+import { useLiveUser } from "hooks/user/useLiveUser";
 
 import {
   Container,
@@ -52,7 +52,7 @@ export const MapPreview: React.FC<MapPreviewProps> = ({
   onRoomChange,
   safeZone,
 }) => {
-  const { user } = useUser();
+  const { user } = useLiveUser();
   const [mapRooms, setMapRooms] = useState<Room[]>([]);
 
   useEffect(() => {

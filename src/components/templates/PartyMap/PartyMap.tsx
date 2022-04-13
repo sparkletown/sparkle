@@ -3,9 +3,9 @@ import { PortalModal } from "components/attendee/PortalModal";
 
 import { COVERT_ROOM_TYPES } from "settings";
 
+import { PartyMapSpaceWithId } from "types/id";
 import { Room, RoomType } from "types/rooms";
 import { RoomVisibility } from "types/RoomVisibility";
-import { PartyMapVenue } from "types/venues";
 
 import { eventTimeAndOrderComparator, isEventLiveOrFuture } from "utils/event";
 import { isExternalPortal, openUrl } from "utils/url";
@@ -14,22 +14,22 @@ import { useSpaceEvents } from "hooks/events";
 import { useCustomSound } from "hooks/sounds";
 import { useAnalytics } from "hooks/useAnalytics";
 import { usePortal } from "hooks/usePortal";
-import { useUser } from "hooks/useUser";
+import { useLiveUser } from "hooks/user/useLiveUser";
 
 import { Map } from "components/templates/PartyMap/components/Map";
 
-// import { PortalModal } from "components/templates/PartyMap/components/PortalModal";
 import styles from "./PartyMap.module.scss";
 
-export interface PartyMapProps {
-  venue: PartyMapVenue;
+interface PartyMapProps {
+  venue: PartyMapSpaceWithId;
 }
 
 export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
-  const { user, profile } = useUser();
+  const { user, profile } = useLiveUser();
 
   const [roomRef, setRoomRef] = useState<HTMLDivElement | null>(null);
   const [selectedRoom, setSelectedRoom] = useState<Room | undefined>();
+
   const { events: selfAndChildVenueEvents } = useSpaceEvents({
     worldId: venue.worldId,
     spaceIds: [selectedRoom?.spaceId || ""],
@@ -87,7 +87,12 @@ export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
   if (!user || !profile) return <>Loading..</>;
 
   return (
-    <div className={styles.PartyMap}>
+    <div
+      data-bem="PartyMap"
+      data-block="PartyMap"
+      data-side="att"
+      className={styles.PartyMap}
+    >
       <Map
         user={user}
         venue={venue}

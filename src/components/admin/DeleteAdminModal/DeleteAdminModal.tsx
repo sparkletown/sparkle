@@ -23,18 +23,14 @@ export const DeleteAdminModal: React.FC<DeleteAdminModalProps> = ({
 }) => {
   const { worldId } = useWorldAndSpaceByParams();
 
-  const removeAdminCallback = async () => {
+  const [{ loading: isRemoving }, removeAdmin] = useAsyncFn(async () => {
     if (!worldId) {
       return;
     }
 
     await removeWorldAdmin(worldId, user.id);
     onHide();
-  };
-
-  const [{ loading: isRemoving }, removeAdmin] = useAsyncFn(
-    removeAdminCallback
-  );
+  }, [onHide, user.id, worldId]);
 
   return (
     <Modal show={show} onHide={onHide} autoHide>
@@ -44,8 +40,13 @@ export const DeleteAdminModal: React.FC<DeleteAdminModalProps> = ({
         <Button variant="secondary" onClick={onHide}>
           Cancel
         </Button>
-        <Button disabled={isRemoving} variant="danger" onClick={removeAdmin}>
-          Delete
+        <Button
+          disabled={isRemoving}
+          loading={isRemoving}
+          variant="danger"
+          onClick={removeAdmin}
+        >
+          {isRemoving ? "Deleting..." : "Delete"}
         </Button>
       </div>
     </Modal>

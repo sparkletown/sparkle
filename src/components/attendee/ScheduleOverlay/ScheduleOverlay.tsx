@@ -5,8 +5,8 @@ import { fromUnixTime, isToday, startOfDay, startOfToday } from "date-fns";
 import { ALWAYS_EMPTY_OBJECT, WORLD_TAXON } from "settings";
 
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
+import { useLiveUser } from "hooks/user/useLiveUser";
 import { useShowHide } from "hooks/useShowHide";
-import { useUser } from "hooks/useUser";
 import useVenueScheduleEvents from "hooks/useVenueScheduleEvents";
 
 import { Loading } from "components/molecules/Loading";
@@ -21,7 +21,7 @@ const minWeekDaysScrollValue = 8;
 
 export const ScheduleOverlay: React.FC = () => {
   const { world } = useWorldAndSpaceByParams();
-  const { userWithId } = useUser();
+  const { userWithId } = useLiveUser();
   const userEventIds =
     userWithId?.myPersonalizedSchedule ?? ALWAYS_EMPTY_OBJECT;
 

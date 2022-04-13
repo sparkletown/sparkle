@@ -1,8 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useForm, useFormState } from "react-hook-form";
+import { useAsyncFn } from "react-use";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button } from "components/admin/Button";
 import { Dropdown } from "components/admin/Dropdown";
+import { Option } from "components/admin/Dropdown/Dropdown";
 import { Input } from "components/admin/Input";
 import { Textarea } from "components/admin/Textarea";
 import dayjs from "dayjs";
@@ -11,22 +13,20 @@ import { DAYJS_INPUT_DATE_FORMAT, DAYJS_INPUT_TIME_FORMAT } from "settings";
 
 import { createEvent, EventInput, updateEvent } from "api/admin";
 
-import { SpaceId, WorldId } from "types/id";
+import { SpaceId, SpaceWithId, WorldId } from "types/id";
 import { SpaceType } from "types/spaces";
-import { AnyVenue, WorldEvent } from "types/venues";
+import { WorldEvent } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
 
-import { MaybeWithId, WithId } from "utils/id";
+import { MaybeWithId } from "utils/id";
 
 import { eventEditSchema } from "forms/eventEditSchema";
 
 import { useOwnedVenues } from "hooks/useOwnedVenues";
-import { useUser } from "hooks/useUser";
+import { useUserId } from "hooks/user/useUserId";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 import { Modal } from "components/molecules/Modal";
-
-import "./TimingEventModal.scss";
 
 export type TimingEventModalProps = {
   show: boolean;
@@ -34,7 +34,7 @@ export type TimingEventModalProps = {
   venueId?: string | undefined;
   event?: WorldEvent;
   template?: VenueTemplate;
-  venue?: WithId<AnyVenue>;
+  venue?: SpaceWithId;
   worldId: WorldId | string;
 };
 
@@ -52,13 +52,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
 
   const eventSpaceId = event?.spaceId || (venue?.id as SpaceId | undefined);
 
-  const {
-    register,
-    handleSubmit,
-    control,
-    formState,
-    reset,
-  } = useForm<EventInput>({
+  const { register, handleSubmit, control, reset } = useForm<EventInput>({
     mode: "onSubmit",
     reValidateMode: "onChange",
     resolver: yupResolver(eventEditSchema),
@@ -88,7 +82,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
     }
   }, [event, reset, eventSpaceId]);
 
-  const { userId } = useUser();
+  const { userId } = useUserId();
   const { ownedVenues, isLoading: isSpacesLoading } = useOwnedVenues({
     worldId,
     userId: userId ?? "",
@@ -103,7 +97,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
     () =>
       spacesMap.map((space) => {
         return (
-          <div key={space.id} onClick={() => setSelectedSpace(space)}>
+          <div key={space.id} data-dropdown-value={space}>
             {space.name}
           </div>
         );
@@ -111,7 +105,11 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
     [spacesMap]
   );
 
-  const onUpdateEvent = useCallback(
+  const selectSpace = (option: Option) => {
+    setSelectedSpace(option.value as SpaceType);
+  };
+
+  const [{ loading: isLoading }, onUpdateEvent] = useAsyncFn(
     async (data: EventInput) => {
       const start = dayjs(`${data.start_date} ${data.start_time}`);
       const spaceId = eventSpaceId ?? selectedSpace.id ?? "";
@@ -155,6 +153,9 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
     return <LoadingPage />;
   }
 
+  const updateLabel = isLoading ? "Updating..." : "Update";
+  const createLabel = isLoading ? "Creating..." : "Create";
+
   return (
     <Modal show={show} onHide={onHide} centered autoHide>
       <div className="TimingEventModal form-container">
@@ -165,7 +166,9 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
           {!eventSpace?.name && (
             <>
               <div className="mb-6">
-                <Dropdown title={"None"}>{renderedSpaceIds}</Dropdown>
+                <Dropdown onSelect={selectSpace} title="None">
+                  {renderedSpaceIds}
+                </Dropdown>
               </div>
               {errors.space && (
                 <span className="text-red-500">
@@ -264,17 +267,18 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
             </div>
           </div>
 
-          <div className="TimingEventModal__container">
+          <div className="flex">
             <Button variant="secondary" onClick={onHide}>
               Cancel
             </Button>
 
             <Button
-              disabled={formState.isSubmitting}
+              disabled={isLoading}
+              loading={isLoading}
               variant="primary"
               type="submit"
             >
-              {event?.id ? "Update" : "Create"}
+              {event?.id ? updateLabel : createLabel}
             </Button>
           </div>
         </form>

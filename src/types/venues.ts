@@ -47,44 +47,10 @@ export type AnyVenue =
   | ArtPieceVenue
   | MeetingRoomVenue;
 
-// --- VENUE V2
-export interface Venue_v2 extends Venue_v2_Base, VenueAdvancedConfig {}
-
-export interface Venue_v2_Base {
-  name: string;
-  slug: string;
-  config: {
-    landingPageConfig: {
-      subtitle?: string;
-      description?: string;
-      coverImageUrl: string;
-    };
-  };
-  host: {
-    icon: string;
-  };
-  owners?: string[];
-  id: string;
-  rooms?: Room[];
-  mapBackgroundImageUrl?: string;
-  worldId: string;
-}
-
-export interface VenueAdvancedConfig {
-  columns?: number;
-  radioStations?: string | string[]; // single string on form, array in DB
-  roomVisibility?: RoomVisibility;
-  showGrid?: boolean;
-  showRadio?: boolean;
-  parentId?: SpaceId;
-  showUserStatus?: boolean;
-  userStatuses?: UserStatus[];
-  enableJukebox?: boolean;
-}
-
-// @debt refactor this into separated logical chunks? (eg. if certain params are only expected to be set for certain venue types)
+// @debt refactor into separated chunks (interface segregation principle).
+// E.g. if certain params are only expected to be set for certain templates
 // @debt The following keys are marked as required on this type, but i'm not sure they should be:
-//   termsAndConditions, width, height
+// termsAndConditions, width, height
 export interface BaseVenue {
   template: VenueTemplate;
   parentId?: SpaceId;
@@ -164,6 +130,7 @@ export interface ArtPieceVenue extends BaseVenue {
   template: VenueTemplate.artpiece;
   iframeUrl: string;
 }
+
 export interface MeetingRoomVenue extends BaseVenue {
   template: VenueTemplate.meetingroom;
   channels?: Channel[];

@@ -6,11 +6,11 @@ import { omit, omitBy } from "lodash";
 
 import { ALWAYS_EMPTY_ARRAY, PORTAL_INFO_ICON_MAPPING } from "settings";
 
+import { SpaceWithId } from "types/id";
 import { AnyForm } from "types/utility";
-import { AnyVenue, PortalTemplate } from "types/venues";
+import { PortalTemplate } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
 
-import { WithId } from "utils/id";
 import { isDefaultPortalIcon } from "utils/image";
 
 import "./SpacesDropdown.scss";
@@ -39,7 +39,7 @@ interface SpacesDropdownProps {
   register: UseFormRegister<AnyForm>;
   fieldName: string;
   error?: FieldError;
-  spaces: Record<string, WithId<AnyVenue>>;
+  spaces: Record<string, SpaceWithId>;
 }
 
 export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
