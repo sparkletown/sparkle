@@ -5,9 +5,8 @@ import { DEFAULT_PARTY_NAME } from "settings";
 
 import { addVenueOwner, removeVenueOwner } from "api/admin";
 
-import { Users } from "types/id";
+import { SpaceWithId, Users } from "types/id";
 import { User } from "types/User";
-import { AnyVenue, Venue_v2 } from "types/venues";
 
 import { WithId } from "utils/id";
 import { determineAvatar } from "utils/image";
@@ -55,7 +54,7 @@ const makePartyNameFilter = (searchText: string) => (user: WithId<User>) =>
 
 interface VenueOwnersModalProps {
   visible: boolean;
-  venue: WithId<AnyVenue> | Venue_v2;
+  venue: SpaceWithId;
   onHide?: () => void;
   users: Users;
 }

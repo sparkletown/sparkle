@@ -12,10 +12,8 @@ import {
 
 import { World } from "api/world";
 
-import { AnyVenue } from "types/venues";
+import { SpaceWithId } from "types/id";
 import { VenueTemplate } from "types/VenueTemplate";
-
-import { WithId } from "utils/id";
 
 import { MapPreview } from "pages/Admin/MapPreview";
 import { ScreeningRoomPreview } from "pages/Admin/ScreeningRoomPreview";
@@ -27,7 +25,7 @@ import { PortalsTable } from "components/molecules/PortalsTable";
 import { AdminShowcase } from "../AdminShowcase";
 
 interface SpacesProps {
-  space: WithId<AnyVenue>;
+  space: SpaceWithId;
   world: World;
 }
 

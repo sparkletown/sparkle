@@ -4,9 +4,7 @@ import { InputField } from "components/attendee/InputField";
 
 import { ALWAYS_NOOP_FUNCTION } from "settings";
 
-import { AnyVenue } from "types/venues";
-
-import { WithId } from "utils/id";
+import { SpaceWithId } from "types/id";
 
 import { ScreeningVideoPreview } from "components/templates/ScreeningRoom/components/ScreeningVideoPreview";
 import { useScreeningRoom } from "components/templates/ScreeningRoom/useScreeningRoom";
@@ -16,7 +14,7 @@ import { PosterCategory } from "components/atoms/PosterCategory";
 import "./ScreeningRoomPreview.scss";
 
 export interface ScreeningRoomPreviewProps {
-  space: WithId<AnyVenue>;
+  space: SpaceWithId;
 }
 
 export const ScreeningRoomPreview: React.FC<ScreeningRoomPreviewProps> = ({

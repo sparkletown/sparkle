@@ -1,3 +1,4 @@
+import React from "react";
 import { Link } from "react-router-dom";
 import ShowMoreText from "react-show-more-text";
 import { faExternalLinkAlt, faUsers } from "@fortawesome/free-solid-svg-icons";
@@ -12,10 +13,8 @@ import {
   SPACE_INFO_MAP,
 } from "settings";
 
-import { WorldWithId } from "types/id";
-import { AnyVenue } from "types/venues";
+import { SpaceWithId, WorldWithId } from "types/id";
 
-import { WithId } from "utils/id";
 import { generateUrl } from "utils/url";
 
 import { useWorldEvents } from "hooks/events";
@@ -27,7 +26,7 @@ const cardHeaderStyles = {
 };
 
 interface SpaceCardProps {
-  space: WithId<AnyVenue>;
+  space: SpaceWithId;
   world: WorldWithId;
   isEditable?: boolean;
 }

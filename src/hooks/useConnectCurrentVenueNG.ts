@@ -7,10 +7,13 @@ import {
   FIELD_WORLD_ID,
 } from "settings";
 
-import { WorldAndSpaceIdLocation, WorldEventWithId } from "types/id";
-import { AnyVenue } from "types/venues";
+import {
+  SpaceWithId,
+  WorldAndSpaceIdLocation,
+  WorldEventWithId,
+} from "types/id";
 
-import { convertToFirestoreKey, WithId } from "utils/id";
+import { convertToFirestoreKey } from "utils/id";
 
 import { useRefiCollection } from "hooks/fire/useRefiCollection";
 import { useRefiDocument } from "hooks/fire/useRefiDocument";
@@ -22,7 +25,7 @@ type UseConnectCurrentVenueNG = ({
   isCurrentVenueEventsLoaded: boolean;
   isCurrentVenueLoaded: boolean;
   currentVenueEvents: WorldEventWithId[];
-  currentVenue?: WithId<AnyVenue>;
+  currentVenue?: SpaceWithId;
 };
 export const useConnectCurrentVenueNG: UseConnectCurrentVenueNG = ({
   worldId,
@@ -33,7 +36,7 @@ export const useConnectCurrentVenueNG: UseConnectCurrentVenueNG = ({
   const {
     data: space,
     isLoaded: isCurrentVenueLoaded,
-  } = useRefiDocument<AnyVenue>([COLLECTION_SPACES, spaceKey]);
+  } = useRefiDocument<SpaceWithId>([COLLECTION_SPACES, spaceKey]);
 
   const {
     data: currentVenueEvents,

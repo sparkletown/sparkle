@@ -9,20 +9,6 @@ import { RelatedVenuesData, useRelatedVenues } from "hooks/useRelatedVenues";
 type Attributes = MaybeSpaceIdLocation;
 type Props<T extends Attributes> = T;
 
-//isLoading: boolean;
-//
-//   sovereignVenue?: WithId<AnyVenue>;
-//   sovereignVenueId?: string;
-//   sovereignVenueDescendantIds?: readonly string[];
-//
-//   relatedVenues: WithId<AnyVenue>[];
-//   descendantVenues: WithId<AnyVenue>[];
-//   relatedVenueIds: string[];
-//
-//   findVenueInRelatedVenues: (
-//     searchOptions: FindVenueInRelatedVenuesOptions
-//   ) => WithId<AnyVenue> | undefined;
-
 export const withRelatedSpacesById = <T extends Attributes>(
   Component: React.FC<Props<T>>
 ) => {

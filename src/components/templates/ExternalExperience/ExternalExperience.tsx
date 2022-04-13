@@ -4,9 +4,8 @@ import cn from "classnames";
 
 import { STRING_SPACE } from "settings";
 
-import { AnyVenue } from "types/venues";
+import { SpaceWithId } from "types/id";
 
-import { WithId } from "utils/id";
 import { externalUrlAdditionalProps, openUrl } from "utils/url";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
@@ -18,7 +17,7 @@ const componentRules = Object.freeze({
 });
 
 interface ExternalExperienceProps {
-  space: WithId<AnyVenue>;
+  space: SpaceWithId;
 }
 
 export const ExternalExperience: React.FC<ExternalExperienceProps> = ({
@@ -39,7 +38,12 @@ export const ExternalExperience: React.FC<ExternalExperienceProps> = ({
   });
 
   return (
-    <div className={cn(CN.general, styles)}>
+    <div
+      data-bem="ExternalExperience"
+      data-block="ExternalExperience"
+      data-side="att"
+      className={cn(CN.general, styles)}
+    >
       <img src={space.host?.icon} alt="space icon" className={CN.venueIcon} />
 
       <div className={CN.infoContainer}>

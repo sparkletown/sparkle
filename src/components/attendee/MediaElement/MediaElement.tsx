@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   faCompressArrowsAlt,
   faExpandArrowsAlt,
@@ -19,8 +19,7 @@ interface MediaElementProps {
   track?: VideoTrack;
   url?: string;
   autoPlay: boolean;
-  // Used in various templates to create a "full width" non-resizable media
-  // element
+  // Used in various templates to create a "full width" non-resizable media element
   fullWidth?: boolean;
 }
 
@@ -50,7 +49,12 @@ export const MediaElement: React.FC<MediaElementProps> = ({
   });
 
   return (
-    <div className={containerClassnames}>
+    <div
+      data-bem="MediaElement"
+      data-block="MediaElement"
+      data-side="att"
+      className={containerClassnames}
+    >
       <div className={videoClassnames}>
         {embedIframeUrl && (
           <iframe

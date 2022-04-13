@@ -2,11 +2,9 @@ import React, { useEffect } from "react";
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { UserWithId } from "types/id";
-import { AuditoriumVenue } from "types/venues";
+import { AuditoriumSpaceWithId, UserWithId } from "types/id";
 
 import { createErrorCapture } from "utils/error";
-import { WithId } from "utils/id";
 
 import { useAuditoriumGrid, useAuditoriumSection } from "hooks/auditorium";
 import { useAnalytics } from "hooks/useAnalytics";
@@ -17,7 +15,7 @@ import styles from "./Section.module.scss";
 
 export interface SectionProps {
   user: UserWithId;
-  venue: WithId<AuditoriumVenue>;
+  venue: AuditoriumSpaceWithId;
   sectionId: string;
 }
 
@@ -74,7 +72,12 @@ export const Section: React.FC<SectionProps> = ({ user, venue, sectionId }) => {
   if (!auditoriumSection) return <p>The section id is invalid</p>;
 
   return (
-    <div data-bem="Section" className={styles.section}>
+    <div
+      data-bem="Section"
+      data-block="Section"
+      data-side="att"
+      className={styles.section}
+    >
       <div className={styles.sectionHeader}>
         <h2>Auditorium</h2>
         {isUserSeated && (

@@ -19,13 +19,14 @@ import { Reaction } from "types/reactions";
 import { ScreeningRoomVideo } from "types/screeningRoom";
 import { Table } from "types/Table";
 import { User } from "types/User";
-import { AnyVenue, PosterPageVenue, WorldEvent } from "types/venues";
+import { AnyVenue, WorldEvent } from "types/venues";
 
 import { WithId } from "utils/id";
 
 import { AdminRole } from "hooks/user/useAdminRole";
 
 import { ArtCar, Firebarrel } from "./animateMap";
+import { PosterPageSpaceWithId, SpaceWithId } from "./id";
 
 // RE-EXPORT BEGIN
 
@@ -106,20 +107,20 @@ export interface FirestoreData {
 
 // note: these entries should be sorted alphabetically
 export interface FirestoreOrdered {
-  currentVenue?: WithId<AnyVenue>[];
+  currentVenue?: SpaceWithId[];
   currentVenueEventsNG?: WorldEvent[];
-  currentVenueNG?: WithId<AnyVenue>[];
+  currentVenueNG?: SpaceWithId[];
   currentModalUser?: WithId<User>[];
   currentEvent?: WorldEvent[];
   events?: WorldEvent[];
   experience: WithId<Experience>;
-  ownedVenues?: WithId<AnyVenue>[];
+  ownedVenues?: SpaceWithId[];
   reactions?: WithId<Reaction>[];
   screeningRoomVideos: WithId<ScreeningRoomVideo>[];
   animatemapFirebarrels: WithId<Firebarrel>[];
   animatemapArtcars: WithId<ArtCar>[];
   privateChatMessages?: WithId<PrivateChatMessage>[];
-  posterVenues?: WithId<PosterPageVenue>[];
+  posterVenues?: PosterPageSpaceWithId[];
   venueChatMessages?: WithId<VenueChatMessage>[];
   venueJukeboxMessages?: WithId<JukeboxMessage>[];
   venueEvents?: WorldEvent[];

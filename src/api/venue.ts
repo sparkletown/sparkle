@@ -10,11 +10,11 @@ import {
   CompatFirestoreDataConverter,
   CompatQueryDocumentSnapshot,
 } from "types/Firestore";
-import { UserId } from "types/id";
+import { SpaceId, SpaceWithId, UserId } from "types/id";
 import { AnyVenue } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
 
-import { WithId, withId } from "utils/id";
+import { withId } from "utils/id";
 
 export const getVenueCollectionRef: () => CompatCollectionReference<CompatDocumentData> = () =>
   firebase.firestore().collection("venues");
@@ -65,10 +65,8 @@ export const setVenueLiveStatus = async ({
 /**
  * Convert Venue objects between the app/firestore formats (@debt:, including validation).
  */
-export const anyVenueWithIdConverter: CompatFirestoreDataConverter<
-  WithId<AnyVenue>
-> = {
-  toFirestore: (anyVenue: WithId<AnyVenue>): CompatDocumentData => {
+export const anyVenueWithIdConverter: CompatFirestoreDataConverter<SpaceWithId> = {
+  toFirestore: (anyVenue: SpaceWithId): CompatDocumentData => {
     // @debt Properly check/validate this data
     //   return AnyVenueSchema.validateSync(anyVenue);
 
@@ -77,11 +75,14 @@ export const anyVenueWithIdConverter: CompatFirestoreDataConverter<
 
   fromFirestore: (
     snapshot: CompatQueryDocumentSnapshot<AnyVenue>
-  ): WithId<AnyVenue> => {
+  ): SpaceWithId => {
     // @debt Properly check/validate this data rather than using 'as'
     //   return withId(AnyVenueSchema.validateSync(snapshot.data(), snapshot.id);
 
-    return withId(snapshot.data() as AnyVenue, snapshot.id);
+    return withId<AnyVenue, SpaceId>(
+      snapshot.data() as AnyVenue,
+      snapshot.id as SpaceId
+    );
   },
 };
 
@@ -94,7 +95,7 @@ export const updateIframeUrl = async (iframeUrl: string, venueId?: string) => {
   )({ venueId, iframeUrl });
 };
 
-type VenueInputForm = Partial<WithId<AnyVenue>> & {
+type VenueInputForm = Partial<SpaceWithId> & {
   backgroundImageUrl?: string;
   backgroundImageFile?: FileList;
   logoImageUrl?: string;
