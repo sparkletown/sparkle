@@ -1,0 +1,25 @@
+@use "scss/attendee/space";
+@use "scss/attendee/border";
+@use "scss/attendee/theme";
+@use "scss/attendee/breakpoint";
+
+$icon-wrapper-height: $h-chat-controls;
+
+.linkWrapper {
+  width: 10%;
+  display: flex;
+  flex-direction: column;
+  align-self: baseline;
+  justify-content: center;
+  align-items: center;
+  height: $icon-wrapper-height;
+  box-sizing: border-box;
+  border-radius: 0px space.empty(0.33) space.empty(0.33) 0px;
+  border: none;
+  color: theme.$c-glass-panel-background;
+  background: theme.$c-button-fg;
+
+  @media (min-width: breakpoint.$sm) {
+    width: 5%;
+  }
+}

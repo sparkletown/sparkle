@@ -10,8 +10,8 @@
   display: flex;
   width: 100%;
   align-items: flex-start;
-  width: 100%;
   padding: space.empty(0.33) 0px;
+  margin: space.empty(1) 0;
 }
 
 .input {
@@ -22,16 +22,6 @@
   width: 100%;
   border: none;
   border-right: border.$width--slim solid theme.$c-glass-panel-background;
-}
-
-.select {
-  height: space.item(1);
-  padding: space.empty(0.33) space.empty(0.33) space.empty(0.33) 16px;
-  border-radius: 0px space.empty(0.33) space.empty(0.33) 0px;
-  box-sizing: border-box;
-  width: 100%;
-  border: none;
-  border-right: border.$radius--xs solid transparent;
 }
 
 .errorIcon {
@@ -49,16 +39,14 @@
   align-items: center;
 }
 
-.selectWrapper {
-  width: 20%;
+.inputContainer {
   display: flex;
   flex-direction: column;
-  align-self: flex-end;
+  width: 100%;
 }
 
 .invalid {
-  input,
-  select {
+  input {
     @include error.input-error;
   }
 }
