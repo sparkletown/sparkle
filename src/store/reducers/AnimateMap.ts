@@ -11,7 +11,9 @@ import { Room } from "types/rooms";
 import { User } from "types/User";
 import { Point } from "types/utility";
 
-import { StartPoint } from "components/templates/AnimateMap/game/utils/Point";
+export const StartPoint = (): Point => {
+  return { x: 4500, y: 4600 };
+};
 
 export interface AnimateMapEntity {
   x: number;

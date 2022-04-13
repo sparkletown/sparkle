@@ -1,20 +1,18 @@
 import React, { useEffect, useState } from "react";
 
 import { User } from "types/User";
-import { AnimateMapVenue } from "types/venues";
-
-import { WithId } from "utils/id";
 
 import { BugsnagNotify } from "../Bugsnag";
+import { GameInstance } from "../GameInstance/GameInstance";
+import { AnimateMapVenue } from "../types";
 
 import { AnimateMapErrorPrompt } from "./components/AnimateMapErrorPrompt";
-import { GameInstance } from "./game/GameInstance";
 import { FirebarrelProvider, UIOverlay, UIOverlayGrid } from "./components";
 
 import "./AnimateMap.scss";
 
 export interface AnimateMapProps {
-  space: WithId<AnimateMapVenue>;
+  space: AnimateMapVenue;
   updateAnimateMapFireBarrelDispatch: (
     roomId: string,
     userList: User[]

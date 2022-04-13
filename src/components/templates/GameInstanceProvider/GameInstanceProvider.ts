@@ -3,8 +3,8 @@ import { AnimateMapState, ReplicatedUser } from "store/reducers/AnimateMap";
 import { Room } from "types/rooms";
 import { Point } from "types/utility";
 
-import { GameConfig } from "../AnimateMap/configs/GameConfig";
 import { DataProvider } from "../DataProvider";
+import { GameConfig } from "../GameConfig/GameConfig";
 
 export type GameInstanceProvider = {
   config: GameConfig;

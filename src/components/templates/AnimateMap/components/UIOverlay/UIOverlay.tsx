@@ -1,6 +1,6 @@
 import React from "react";
 
-import { AnimateMapVenue } from "types/venues";
+import { AnimateMapVenue } from "../../../types";
 
 import "./UIOverlay.scss";
 

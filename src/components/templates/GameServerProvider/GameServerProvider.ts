@@ -4,9 +4,9 @@ import { Point } from "types/utility";
 
 import { getRandomInt } from "utils/getRandomInt";
 
-import { PlaygroundMap } from "../AnimateMap/game/utils/PlaygroundMap";
 import { DataProvider } from "../DataProvider";
 import { EventProvider, EventType } from "../EventProvider";
+import { PlaygroundMap } from "../GameInstance/utils";
 import { GameServerProviderInterface } from "../GameServerProviderInterface";
 import { playerModel, RoomInfoType } from "../GameStructures";
 import { PlayerIOInstance } from "../PlayerIO/PlayerIO";

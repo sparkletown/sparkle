@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useRef } from "react";
 
+import { ENTER, KeyPoll } from "components/templates/GameInstance/utils";
+
 import { EventProvider, EventType } from "../../../EventProvider";
-import { ENTER } from "../../game/utils/Keyboard";
-import KeyPoll from "../../game/utils/KeyPollSingleton";
 
 import arrowImg from "assets/images/AnimateMap/UI/icon-send.svg";
 

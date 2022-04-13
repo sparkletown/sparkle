@@ -8,10 +8,10 @@ import { Room } from "types/rooms";
 
 import { useDispatch } from "hooks/useDispatch";
 
+import { ENTER, KeyPoll } from "components/templates/GameInstance/utils";
+
 import { EventProvider, EventType } from "../../../EventProvider";
 import { ReplicatedVenue } from "../../../GameInstanceCommonInterfaces";
-import { ENTER } from "../../game/utils/Keyboard";
-import KeyPoll from "../../game/utils/KeyPollSingleton";
 
 import "./TooltipWidget.scss";
 export interface TooltipWidgetProps {}

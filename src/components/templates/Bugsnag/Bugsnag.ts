@@ -1,13 +1,11 @@
 import Bugsnag from "@bugsnag/js";
 
-import { AnimateMapVenue } from "types/venues";
-
-import { WithId } from "utils/id";
+import { AnimateMapVenue } from "../types";
 
 export type BugsnagType = {
   appError: Error;
   location: string;
-  space: WithId<AnimateMapVenue>;
+  space: AnimateMapVenue;
 };
 
 export const BugsnagNotify = (args: BugsnagType) => {

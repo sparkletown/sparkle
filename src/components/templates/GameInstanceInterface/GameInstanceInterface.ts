@@ -1,8 +1,8 @@
 import { Renderer } from "pixi.js";
 
-import { GameConfig } from "../AnimateMap/configs/GameConfig";
-import { MapContainer } from "../AnimateMap/game/map/MapContainer";
 import { DataProvider } from "../DataProvider";
+import { GameConfig } from "../GameConfig/GameConfig";
+import { MapContainer } from "../GameInstance/map/MapContainer";
 import { GameInstanceProvider } from "../GameInstanceProvider";
 
 export type GameInstanceInterface = {

@@ -7,7 +7,7 @@ import { SpaceId, SpaceSlug, UserWithId } from "types/id";
 import { RoomVisibility } from "types/RoomVisibility";
 import { VenueTemplate } from "types/VenueTemplate";
 
-import { GameOptions } from "components/templates/AnimateMap/configs/GameConfig";
+import { GameOptions } from "components/templates/GameConfig/GameConfig";
 
 import { Banner } from "./banner";
 import { Poster } from "./posters";

@@ -17,23 +17,23 @@ import {
 import { Room } from "types/rooms";
 import { User } from "types/User";
 import { Point } from "types/utility";
-import { AnimateMapVenue } from "types/venues";
-
-import { WithId } from "utils/id";
 
 import { useDispatch } from "hooks/useDispatch";
 
 import { AnimateMap } from "../AnimateMap";
-import { CloudDataProviderWrapper } from "../AnimateMap/bridges/CloudDataProviderWrapper";
-import { CloudDataProvider } from "../AnimateMap/bridges/DataProvider/CloudDataProvider";
-import { configs } from "../AnimateMap/configs";
-import { GameConfig } from "../AnimateMap/configs/GameConfig";
-import { GameInstance } from "../AnimateMap/game/GameInstance";
-import { useRelatedPartymapRooms } from "../AnimateMap/hooks/useRelatedPartymapRooms";
+import {
+  CloudDataProvider,
+  CloudDataProviderWrapper,
+} from "../CloudDataProvider";
+import { configs } from "../GameConfig";
+import { GameConfig } from "../GameConfig/GameConfig";
+import { GameInstance } from "../GameInstance/GameInstance";
 import { ReplicatedUser } from "../GameInstanceCommonInterfaces";
+import { useRelatedPartymapRooms } from "../hooks";
+import { AnimateMapVenue } from "../types";
 
 export type AnimateMapWrapperProps = {
-  space: WithId<AnimateMapVenue>;
+  space: AnimateMapVenue;
 };
 
 export const AnimateMapWrapper: React.VFC<AnimateMapWrapperProps> = (props) => {

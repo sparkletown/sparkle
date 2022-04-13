@@ -7,7 +7,8 @@ import {
 } from "store/actions/AnimateMap";
 
 import { User } from "types/User";
-import { AnimateMapVenue } from "types/venues";
+
+import { AnimateMapVenue } from "../../../types";
 
 import { FirebarrelWidget } from "./FirebarrelWidget";
 

@@ -8,11 +8,11 @@ import {
 } from "store/actions/AnimateMap";
 
 import { Room } from "types/rooms";
-import { AnimateMapVenue } from "types/venues";
 
 import { PortalModal } from "components/templates/PartyMap/components/PortalModal";
 
 import { EventProvider, EventType } from "../../../EventProvider";
+import { AnimateMapVenue } from "../../../types";
 import { ControlPanel } from "../ControlPanel/ControlPanel";
 import { UIPlayerClickHandler } from "../PlayerContextMenu/PlayerContextMenu";
 import { Shoutouter } from "../Shoutouter/Shoutouter";
