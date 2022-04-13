@@ -10,7 +10,7 @@
 .navOverlay {
   background: theme.$c-overlay-bg;
   color: theme.$c-overlay-fg;
-  backdrop-filter: blur(sparkle.$blur);
+  backdrop-filter: blur(sparkle.$blur--md);
   position: fixed;
   z-index: layer.level(layer.$z-index--attendee);
   top: 0;

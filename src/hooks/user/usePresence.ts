@@ -9,8 +9,7 @@ import { SpaceId } from "types/id";
 import { UserPresenceDocument } from "types/userPresence";
 
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
-
-import { useUser } from "./useUser";
+import { useLiveUser } from "hooks/user/useLiveUser";
 
 /*
  * Presence is tracked in a dedicated collection. This allows for subscribing
@@ -75,7 +74,7 @@ export const usePresenceData = ({
 export const useTrackPresence = () => {
   const [checkInId, setCheckInId] = useState<string>();
   const { space, isLoading } = useWorldAndSpaceByParams();
-  const { userId, profile, isLoading: userIsLoading } = useUser();
+  const { userId, profile, isLoading: userIsLoading } = useLiveUser();
 
   const performCheckIn = useCallback(() => {
     if (userId && space) {

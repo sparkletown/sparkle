@@ -3,10 +3,8 @@ import { useAsyncFn } from "react-use";
 
 import { updateVenueTable } from "api/table";
 
+import { SpaceWithId } from "types/id";
 import { Table } from "types/Table";
-import { AnyVenue } from "types/venues";
-
-import { WithId } from "utils/id";
 
 import { Loading } from "components/molecules/Loading";
 
@@ -17,7 +15,7 @@ import styles from "./StartTable.module.scss";
 export interface StartTablePropsType {
   defaultTables: Table[];
   newTable: Table;
-  space: WithId<AnyVenue>;
+  space: SpaceWithId;
 }
 
 export const StartTable: React.FC<StartTablePropsType> = ({

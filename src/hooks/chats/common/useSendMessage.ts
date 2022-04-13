@@ -24,7 +24,7 @@ import { CompatCollectionReference, CompatDocumentData } from "types/Firestore";
 import { buildBaseMessage, ExcludeBuiltMessage } from "utils/chat";
 import { waitAtLeast } from "utils/promise";
 
-import { useUser } from "hooks/useUser";
+import { useLiveUser } from "hooks/user/useLiveUser";
 
 export const useSendChatMessage = <T extends BaseChatMessage>(
   chats: firebase.firestore.CollectionReference<firebase.firestore.DocumentData>[],
@@ -78,7 +78,7 @@ export const useSendMessage = <
   getAdditionalFields,
   processResultingBatch = noop,
 }: UseSendMessageProps<T, K>): SendChatMessage<K> => {
-  const { userWithId } = useUser();
+  const { userWithId } = useLiveUser();
   const firestore = useFirestore();
 
   return useCallback(

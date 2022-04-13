@@ -9,9 +9,15 @@ import styles from "./MeetingRoom.module.scss";
 interface MeetingRoomProps {
   space: SpaceWithId;
 }
+
 export const MeetingRoom: React.FC<MeetingRoomProps> = ({ space }) => {
   return (
-    <div className={styles.meetingRoom}>
+    <div
+      data-bem="MeetingRoom"
+      data-block="MeetingRoom"
+      data-side="att"
+      className={styles.meetingRoom}
+    >
       <RetunableMediaElement space={space} />
       <WebcamGrid space={space} />
     </div>

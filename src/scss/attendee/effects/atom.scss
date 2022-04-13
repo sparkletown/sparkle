@@ -88,3 +88,10 @@ $-icon-size: 1.3rem;
     border-left: 1px solid theme.$sparkle--border;
   }
 }
+
+@mixin line-clamp($number-of-lines: 5) {
+  display: -webkit-box;
+  -webkit-line-clamp: $number-of-lines;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

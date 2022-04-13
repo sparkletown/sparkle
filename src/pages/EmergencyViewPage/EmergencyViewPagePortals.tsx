@@ -1,13 +1,11 @@
 import React from "react";
 
-import { AnyVenue } from "types/venues";
-
-import { WithId } from "utils/id";
+import { SpaceWithId } from "types/id";
 
 import { EmergencyViewPortal } from "./EmergencyViewPortal";
 
 type EmergencyViewTabsProps = {
-  descendantVenues: WithId<AnyVenue>[];
+  descendantVenues: SpaceWithId[];
 };
 
 export const EmergencyViewPagePortals: React.FC<EmergencyViewTabsProps> = ({

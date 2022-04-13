@@ -13,7 +13,7 @@ import { range } from "utils/range";
 import { formatDateRelativeToNow } from "utils/time";
 
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
-import { useUser } from "hooks/useUser";
+import { useLiveUser } from "hooks/user/useLiveUser";
 import useVenueScheduleEvents from "hooks/useVenueScheduleEvents";
 
 import { Login } from "pages/auth/Login";
@@ -39,7 +39,7 @@ export const EmergencyViewPage: React.FC = () => {
     isLoaded: isCurrentVenueLoaded,
   } = useWorldAndSpaceByParams();
 
-  const { user, userWithId } = useUser();
+  const { user, userWithId } = useLiveUser();
   const userEventIds =
     userWithId?.myPersonalizedSchedule ?? emptyPersonalizedSchedule;
 

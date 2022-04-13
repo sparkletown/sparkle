@@ -26,7 +26,7 @@ import { WithId, WithOptionalWorldId } from "utils/id";
 import { worldStartSchema } from "forms/worldStartSchema";
 
 import { useDispatch } from "hooks/useDispatch";
-import { useUser } from "hooks/useUser";
+import { useLiveUser } from "hooks/user/useLiveUser";
 
 import { AdminSidebarButtons } from "components/organisms/AdminVenueView/components/AdminSidebarButtons";
 
@@ -58,7 +58,7 @@ export const WorldGeneralForm: React.FC<WorldGeneralFormProps> = ({
 }) => {
   const [worldId, setWorldId] = useState(world?.id);
   const history = useHistory();
-  const { user } = useUser();
+  const { user } = useLiveUser();
 
   const defaultValues = useMemo<WorldGeneralFormInput>(
     () => ({

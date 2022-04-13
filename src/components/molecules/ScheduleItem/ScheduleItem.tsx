@@ -22,9 +22,9 @@ import { getFirebaseStorageResizedImage } from "utils/image";
 import { formatDateRelativeToNow, formatTimeLocalised } from "utils/time";
 import { enterSpace, generateAttendeeInsideUrl } from "utils/url";
 
+import { useUserId } from "hooks/user/useUserId";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useShowHide } from "hooks/useShowHide";
-import { useUser } from "hooks/useUser";
 import { useWorldParams } from "hooks/worlds/useWorldParams";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
@@ -102,7 +102,7 @@ export const ScheduleItem: React.FC<ScheduleItemProps> = ({
     "ScheduleItem__time--live": isCurrentEventLive,
   });
 
-  const { userId } = useUser();
+  const { userId } = useUserId();
 
   const bookmarkEvent: MouseEventHandler<HTMLDivElement> = useCallback(
     (e) => {

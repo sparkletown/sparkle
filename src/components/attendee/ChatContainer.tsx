@@ -1,3 +1,4 @@
+import React from "react";
 import classNames from "classnames";
 
 import { ChatTypes } from "types/chat";
@@ -58,7 +59,7 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({ isRelative }) => {
           >
             Messages
             {numberOfUnreadMessages > 0 && (
-              <div className={styles.messageNotification}></div>
+              <div className={styles.messageNotification} />
             )}
           </span>
           <span onClick={toggleSidebar} className={styles.toggler}>

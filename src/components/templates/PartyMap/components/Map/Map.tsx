@@ -4,9 +4,9 @@ import { useWindowSize } from "react-use";
 import { DEFAULT_MAP_BACKGROUND } from "settings";
 
 import { RefiAuthUser } from "types/fire";
+import { PartyMapSpaceWithId } from "types/id";
 import { Room } from "types/rooms";
 import { Dimensions, Position } from "types/utility";
-import { PartyMapVenue } from "types/venues";
 
 import { calculateImageDimensions } from "utils/mapPositioning";
 
@@ -15,9 +15,10 @@ import { useValidImage } from "hooks/useCheckImage";
 import { MapRoom } from "./MapRoom";
 
 import styles from "./Map.module.scss";
+
 interface PortalsProps {
   portals: Room[];
-  space: PartyMapVenue;
+  space: PartyMapSpaceWithId;
   selectPortal: (room: Room) => void;
   safeZoneBounds: Dimensions & Position;
 }
@@ -47,9 +48,10 @@ const Portals: React.FC<PortalsProps> = ({
   );
   return <div className={styles.Portals}>{portalsFragment}</div>;
 };
+
 interface MapProps {
   user: RefiAuthUser;
-  venue: PartyMapVenue;
+  venue: PartyMapSpaceWithId;
   selectRoom: (room: Room) => void;
 }
 
