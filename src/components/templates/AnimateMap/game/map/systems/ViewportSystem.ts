@@ -16,6 +16,7 @@ import {
 import { EventType } from "components/templates/AnimateMap/bridges/EventProvider/EventProvider";
 
 import { TimeoutCommand } from "../../commands/TimeoutCommand";
+import { GameControls } from "../../common";
 import { GameInstance } from "../../GameInstance";
 import { easeInOutQuad, Easing } from "../../utils/Easing";
 import { ViewportComponent } from "../components/ViewportComponent";
@@ -26,7 +27,6 @@ import { ViewportNode } from "../nodes/ViewportNode";
 
 export class ViewportSystem extends System {
   private player?: NodeList<ViewportFollowNode>;
-  private config = GameInstance.instance.getConfig();
 
   private easing?: Easing;
   private viewportList?: NodeList<ViewportNode>;
@@ -39,6 +39,7 @@ export class ViewportSystem extends System {
   private firstPlayerAdding = true;
 
   constructor(
+    private _controls: GameControls,
     private _app: Application,
     private _viewport: Viewport,
     private _entityCreator: EntityFactory
@@ -50,7 +51,7 @@ export class ViewportSystem extends System {
     this.viewportList = engine.getNodeList(ViewportNode);
     this._entityCreator.createViewport(new ViewportComponent());
 
-    const config = GameInstance.instance.getConfig();
+    const config = this._controls.getConfig();
     const worldWidth = config.worldWidth;
     const worldHeight = config.worldHeight;
 
@@ -126,17 +127,17 @@ export class ViewportSystem extends System {
     );
 
     this._setAnimateMapZoomThrottle = throttle((value: number) => {
-      GameInstance.instance.getStore().dispatch(setAnimateMapZoom(value));
+      this._controls.dispatch(setAnimateMapZoom(value));
     }, GameInstance.DEBOUNCE_TIME);
 
-    Howler.mute(!GameInstance.instance.getState().environmentSound);
+    Howler.mute(!this._controls.getEnvironmentSound());
 
     this.player = engine.getNodeList(ViewportFollowNode);
     this.player.nodeAdded.add(this.handlePlayerAdded);
     this.player.nodeRemoved.add(this.handlePlayerRemoved);
 
-    const zoomLevel = GameInstance.instance.getState().zoomLevel;
-    const zoomViewport = GameInstance.instance
+    const zoomLevel = this._controls.getZoomLevel();
+    const zoomViewport = this._controls
       .getConfig()
       .zoomLevelToViewport(zoomLevel);
     this._viewport.setZoom(zoomViewport);
@@ -221,12 +222,12 @@ export class ViewportSystem extends System {
       this.firstPlayerAdding = false;
 
       let zoom: number;
-      if (GameInstance.instance.getConfig().firstEntrance) {
-        zoom = GameInstance.instance
+      if (this._controls.getConfig().firstEntrance) {
+        zoom = this._controls
           .getConfig()
-          .zoomLevelToViewport(this.config.ZOOM_LEVEL_WALKING);
+          .zoomLevelToViewport(this._controls.getConfig().ZOOM_LEVEL_WALKING);
       } else {
-        zoom = GameInstance.instance.getState().lastZoom;
+        zoom = this._controls.getLastZoom();
         if (zoom < 0.1) {
           zoom = 0.1;
         }
@@ -275,7 +276,7 @@ export class ViewportSystem extends System {
 
   private _viewportZoomedHandler(data: ZoomedEventData) {
     if (this.viewportList && this.viewportList.head) {
-      this.viewportList.head.viewport.zoomLevel = GameInstance.instance
+      this.viewportList.head.viewport.zoomLevel = this._controls
         .getConfig()
         .zoomViewportToLevel(data.viewport.scale.y);
       this.viewportList.head.viewport.zoomViewport = data.viewport.scale.y;
@@ -299,9 +300,7 @@ export class ViewportSystem extends System {
       return;
     }
 
-    this.easeZoom(
-      GameInstance.instance.getConfig().zoomLevelToViewport(zoomLevel)
-    );
+    this.easeZoom(this._controls.getConfig().zoomLevelToViewport(zoomLevel));
   }
 
   private easeZoom(viewportZoom: number) {
@@ -313,7 +312,7 @@ export class ViewportSystem extends System {
     this.easing.onComplete = () => {
       this.easing = undefined;
       if (this.viewportList && this.viewportList.head) {
-        this.viewportList.head.viewport.zoomLevel = GameInstance.instance
+        this.viewportList.head.viewport.zoomLevel = this._controls
           .getConfig()
           .zoomViewportToLevel(endValue);
         this.viewportList.head.viewport.zoomViewport = endValue;
@@ -326,7 +325,7 @@ export class ViewportSystem extends System {
     this.easing.onStep = (value: number) => {
       this._viewport.setZoom(value, true);
       if (this.viewportList && this.viewportList.head) {
-        this.viewportList.head.viewport.zoomLevel = GameInstance.instance
+        this.viewportList.head.viewport.zoomLevel = this._controls
           .getConfig()
           .zoomViewportToLevel(value);
         this.viewportList.head.viewport.zoomViewport = endValue;
@@ -338,7 +337,7 @@ export class ViewportSystem extends System {
   private _viewportZoomedEndHandler(viewport: Viewport) {
     if (this.viewportList && this.viewportList.head) {
       this.viewportList.head.viewport.zoomViewport = viewport.scale.y;
-      this.viewportList.head.viewport.zoomLevel = GameInstance.instance
+      this.viewportList.head.viewport.zoomLevel = this._controls
         .getConfig()
         .zoomViewportToLevel(this.viewportList.head.viewport.zoomViewport);
       this._entityCreator.updateViewport();
@@ -348,9 +347,7 @@ export class ViewportSystem extends System {
       );
     }
 
-    GameInstance.instance
-      .getStore()
-      .dispatch(setAnimateMapLastZoom(viewport.scale.y));
+    this._controls.dispatch(setAnimateMapLastZoom(viewport.scale.y));
   }
 
   private _viewportDragStartHandler(e: { world: Point }) {

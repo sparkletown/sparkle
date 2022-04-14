@@ -37,7 +37,7 @@ import { stubUsersData } from "./constants/StubData";
 import { MapContainer } from "./map/MapContainer";
 import { PlaygroundMap } from "./utils/PlaygroundMap";
 import { StartPoint } from "./utils/Point";
-import { GameConfig } from "./common";
+import { GameConfig, GameControls } from "./common";
 
 // @debt do not create objects on load time, but only in the constructor.
 // Globals (or module level) constants like mapLightningShader and mapStaticLightningShader
@@ -53,12 +53,14 @@ export class GameInstance {
   private _stage?: Container;
   public _mapContainer?: MapContainer;
   private _eventProvider = EventProvider;
+
   get eventProvider() {
     return this._eventProvider;
   }
 
   constructor(
     private _config: GameConfig,
+    private _controls: GameControls,
     private _store: Store,
     public dataProvider: CloudDataProvider,
     private _containerElement: HTMLDivElement,
@@ -97,9 +99,9 @@ export class GameInstance {
 
   private async initMap(): Promise<void> {
     if (!this._app) return console.error();
-    this._store.dispatch(setAnimateMapUsers(stubUsersData()));
+    this._controls.dispatch(setAnimateMapUsers(stubUsersData()));
 
-    this._mapContainer = new MapContainer(this._app);
+    this._mapContainer = new MapContainer(this._app, this._controls);
     this._stage?.addChild(this._mapContainer);
     return await this._mapContainer.init();
   }
@@ -146,7 +148,7 @@ export class GameInstance {
           // })
           .then(async (command: WaitClickForHeroCreation) => {
             await this._play(command.clickPoint);
-            this.getStore().dispatch(setAnimateMapFirstEntrance("false"));
+            this._controls.dispatch(setAnimateMapFirstEntrance("false"));
           })
       );
     }

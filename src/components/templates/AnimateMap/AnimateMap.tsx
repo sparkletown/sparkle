@@ -14,7 +14,7 @@ import { AnimateMapUI } from "../AnimateMapUI";
 
 import { CloudDataProviderWrapper } from "./bridges/CloudDataProviderWrapper";
 import { CloudDataProvider } from "./bridges/DataProvider/CloudDataProvider";
-import { GameConfig } from "./game/common";
+import { GameConfig, GameControls } from "./game/common";
 import { GameInstance } from "./game/GameInstance";
 import { PlaygroundMap } from "./game/utils/PlaygroundMap";
 import { useRelatedPartymapRooms } from "./hooks/useRelatedPartymapRooms";
@@ -46,8 +46,18 @@ export const AnimateMap: React.FC<AnimateMapProps> = (props) => {
 
       const playgroundMap = new PlaygroundMap(config);
 
+      const controls: GameControls = {
+        dispatch: (data: { type: string }) => store.dispatch(data),
+        getUsers: () => store.getState().animatemap.users,
+        getEnvironmentSound: () => store.getState().animatemap.environmentSound,
+        getZoomLevel: () => store.getState().animatemap.zoomLevel,
+        getLastZoom: () => store.getState().animatemap.lastZoom,
+        getConfig: () => config,
+      };
+
       const game = new GameInstance(
         config,
+        controls,
         store,
         dataProvider,
         gameAreaRef.current as HTMLDivElement,

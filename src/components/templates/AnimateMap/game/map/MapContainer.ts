@@ -12,6 +12,7 @@ import EventProvider, {
   EventType,
 } from "../../bridges/EventProvider/EventProvider";
 import { TimeoutCommand } from "../commands/TimeoutCommand";
+import { GameControls } from "../common";
 import { MAP_JSON, sounds } from "../constants/AssetConstants";
 import { stubArtcarsData } from "../constants/StubData";
 import { GameInstance } from "../GameInstance";
@@ -48,7 +49,9 @@ import { ViewportBackgroundSystem } from "./systems/ViewportBackgroundSystem";
 import { ViewportSystem } from "./systems/ViewportSystem";
 
 export class MapContainer extends Container {
-  private _app: Application;
+  private readonly _controls: GameControls;
+
+  private readonly _app: Application;
 
   private _viewport?: Viewport;
 
@@ -64,9 +67,10 @@ export class MapContainer extends Container {
 
   private _player: ReplicatedUser | undefined;
 
-  constructor(app: Application) {
+  constructor(app: Application, controls: GameControls) {
     super();
 
+    this._controls = controls;
     this._app = app;
 
     if (
@@ -99,7 +103,7 @@ export class MapContainer extends Container {
     this.initMap(MAP_JSON);
 
     this._viewport?.on("clicked", (e: { world: Point }) =>
-      GameInstance.instance.getStore().dispatch(
+      this._controls.dispatch(
         setAnimateMapPointer({
           x: e.world.x,
           y: e.world.y,
@@ -227,6 +231,7 @@ export class MapContainer extends Container {
 
     this._engine.addSystem(
       new ViewportSystem(
+        this._controls,
         this._app,
         this._viewport as Viewport,
         this.entityFactory
@@ -313,7 +318,7 @@ export class MapContainer extends Container {
         .then(() => {
           if (this.entityFactory) {
             const map: PlaygroundMap = GameInstance.instance.playgroundMap;
-            const bots = GameInstance.instance.getState().users;
+            const bots = this._controls.getUsers();
             const itrb: IterableIterator<ReplicatedUser> = bots.values();
             const self: MapContainer = this;
             const loop = async () => {
