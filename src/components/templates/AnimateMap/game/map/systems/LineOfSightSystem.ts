@@ -2,8 +2,7 @@ import { Engine, NodeList, System } from "@ash.ts/ash";
 
 import { Point } from "types/utility";
 
-import { GameConfig } from "components/templates/AnimateMap/configs/GameConfig";
-
+import { GameConfig } from "../../common";
 import { GameInstance } from "../../GameInstance";
 import { AvatarTuningComponent } from "../components/AvatarTuningComponent";
 import EntityFactory from "../entities/EntityFactory";
@@ -53,7 +52,10 @@ export class LineOfSightSystem extends System {
     }
 
     this.currentZoomLevel = this.viewport.head.viewport.zoomLevel;
-    if (this.currentZoomLevel === GameConfig.ZOOM_LEVEL_FLYING) {
+    if (
+      this.currentZoomLevel ===
+      GameInstance.instance.getConfig().ZOOM_LEVEL_FLYING
+    ) {
       for (
         let node: AvatarTuningNode | null | undefined = this.avatars?.head;
         node;

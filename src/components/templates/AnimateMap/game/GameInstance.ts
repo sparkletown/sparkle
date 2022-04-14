@@ -29,14 +29,15 @@ import { DataProviderEvent } from "../bridges/DataProvider/Providers/DataProvide
 import EventProvider, {
   EventType,
 } from "../bridges/EventProvider/EventProvider";
-import { GameConfig } from "../configs/GameConfig";
 
 import { TimeoutCommand } from "./commands/TimeoutCommand";
 import WaitClickForHeroCreation from "./commands/WaitClickForHeroCreation";
 import { assets } from "./constants/AssetConstants";
 import { stubUsersData } from "./constants/StubData";
 import { MapContainer } from "./map/MapContainer";
+import { PlaygroundMap } from "./utils/PlaygroundMap";
 import { StartPoint } from "./utils/Point";
+import { GameConfig } from "./common";
 
 // @debt do not create objects on load time, but only in the constructor.
 // Globals (or module level) constants like mapLightningShader and mapStaticLightningShader
@@ -61,10 +62,15 @@ export class GameInstance {
     private _store: Store,
     public dataProvider: CloudDataProvider,
     private _containerElement: HTMLDivElement,
+    private _playgroundMap: PlaygroundMap,
     private _pictureUrl?: string
   ) {
     if (GameInstance.instance) console.error("Multiply instancing!");
     GameInstance.instance = this;
+  }
+
+  get playgroundMap(): PlaygroundMap {
+    return this._playgroundMap;
   }
 
   public async init(): Promise<void> {

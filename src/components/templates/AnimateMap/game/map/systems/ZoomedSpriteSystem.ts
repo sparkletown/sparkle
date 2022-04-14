@@ -1,12 +1,13 @@
 import { Engine, NodeList, System } from "@ash.ts/ash";
 import { Texture } from "pixi.js";
 
-import { GameConfig } from "../../../configs/GameConfig";
+import { GameInstance } from "../../GameInstance";
 import { PlayerMovementNode } from "../nodes/PlayerMovementNode";
 import { ViewportNode } from "../nodes/ViewportNode";
 import { ZoomedSpriteNode } from "../nodes/ZoomedSpriteNode";
 
 export class ZoomedSpriteSystem extends System {
+  private config = GameInstance.instance.getConfig();
   private zoomUpdated = true;
   private currentZoomLevel = -1;
   private sprites?: NodeList<ZoomedSpriteNode>;
@@ -62,9 +63,9 @@ export class ZoomedSpriteSystem extends System {
   };
 
   private updatePlayer(node: PlayerMovementNode) {
-    if (this.currentZoomLevel === GameConfig.ZOOM_LEVEL_WALKING) {
+    if (this.currentZoomLevel === this.config.ZOOM_LEVEL_WALKING) {
       node.player.fsm.changeState(node.player.WALKING);
-    } else if (this.currentZoomLevel === GameConfig.ZOOM_LEVEL_CYCLING) {
+    } else if (this.currentZoomLevel === this.config.ZOOM_LEVEL_CYCLING) {
       node.player.fsm.changeState(node.player.CYCLING);
     } else {
       node.player.fsm.changeState(node.player.FLYING);

@@ -40,10 +40,7 @@ export class MotionBotSystem extends MotionBaseSystem {
         continue;
       }
       if (Math.random() > 0.8) {
-        const point: Point = GameInstance.instance
-          .getConfig()
-          .playgroundMap.getRandomPointInTheCentralCircle();
-        // .playgroundMap.getRandomPointOnThePlayground();
+        const point: Point = GameInstance.instance.playgroundMap.getRandomPointInTheCentralCircle();
         this.creator.updateBotPosition(idle.bot.data, point.x, point.y);
       }
     }
@@ -59,10 +56,7 @@ export class MotionBotSystem extends MotionBaseSystem {
   }
 
   private handleBotsMotionAdded = (node: MotionBotControlNode) => {
-    const point: Point = GameInstance.instance
-      .getConfig()
-      .playgroundMap.getRandomPointInTheCentralCircle();
-    // .playgroundMap.getRandomPointOnThePlayground();
+    const point: Point = GameInstance.instance.playgroundMap.getRandomPointInTheCentralCircle();
     node.click.x = point.x;
     node.click.y = point.y;
     node.click.zoom = this.getRandomZoom();

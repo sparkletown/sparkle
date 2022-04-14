@@ -8,9 +8,7 @@ export default class WaitClickForHeroCreation implements Command {
   public clickPoint?: Point;
 
   public execute(): Promise<WaitClickForHeroCreation> {
-    this.clickPoint = GameInstance.instance
-      .getConfig()
-      .playgroundMap.getRandomPointInTheCentralCircle();
+    this.clickPoint = GameInstance.instance.playgroundMap.getRandomPointInTheCentralCircle();
 
     return Promise.resolve(this);
   }

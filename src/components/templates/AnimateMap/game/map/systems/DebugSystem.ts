@@ -4,10 +4,9 @@ import { Viewport } from "pixi-viewport";
 
 import { Point } from "types/utility";
 
-import { GameConfig } from "components/templates/AnimateMap/configs/GameConfig";
-
 import { RoomPointNode } from "../../../bridges/DataProvider/Structures/RoomsModel";
 import { EventType } from "../../../bridges/EventProvider/EventProvider";
+import { GameConfig } from "../../common";
 import { GameInstance } from "../../GameInstance";
 import EntityFactory from "../entities/EntityFactory";
 import { BotNode } from "../nodes/BotNode";
@@ -159,7 +158,7 @@ export class DebugSystem extends System {
       s.position.set(center.x, center.y);
 
       const lineThikness =
-        currentZoomLevel === GameConfig.ZOOM_LEVEL_WALKING ? 2 : 4;
+        currentZoomLevel === config.ZOOM_LEVEL_WALKING ? 2 : 4;
 
       const dayTime = Math.floor(
         GameInstance.instance.getConfig().getCurUTCTime() % 24

@@ -3,8 +3,7 @@ import { Box, Point, QuadTree } from "js-quadtree";
 import { Application, BaseTexture, Container, Sprite } from "pixi.js";
 import { Viewport } from "pixi-viewport";
 
-import { GameConfig } from "components/templates/AnimateMap/configs/GameConfig";
-
+import { GameConfig } from "../../common";
 import { MAP_IMAGE } from "../../constants/AssetConstants";
 import { tiles } from "../../constants/AssetsMapTilesConstants";
 import { GameInstance } from "../../GameInstance";
@@ -126,7 +125,7 @@ export class ViewportBackgroundSystem extends System {
       .getConfig()
       .zoomViewportToLevel(this.viewport.scale.y);
 
-    if (zoomLevel === GameConfig.ZOOM_LEVEL_FLYING) {
+    if (zoomLevel === GameInstance.instance.getConfig().ZOOM_LEVEL_FLYING) {
       // removing mapLOD_0
       if (this.mapLOD_0.children.length) {
         this.mapLOD_0.removeChildren();

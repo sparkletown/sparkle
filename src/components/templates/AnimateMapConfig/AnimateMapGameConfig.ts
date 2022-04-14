@@ -1,19 +1,17 @@
-import { Point } from "types/utility";
+import { GameConfig } from "../AnimateMap/game/common";
 
-import { PlaygroundMap } from "../game/utils/PlaygroundMap";
-
-export interface GameOptions {
+export interface AnimateMapGameOptions {
   worldWidth: number;
   worldHeight: number;
   backgroundImage: string;
 }
 
-export class GameConfig {
-  private options: GameOptions;
+export class AnimateMapGameConfig implements GameConfig {
+  public options: AnimateMapGameOptions;
 
   constructor(
-    options: GameOptions,
-    private timeOffset: number = new Date().getTimezoneOffset() / 60
+    options: AnimateMapGameOptions,
+    public timeOffset: number = new Date().getTimezoneOffset() / 60
   ) {
     this.options = {
       ...{
@@ -26,25 +24,25 @@ export class GameConfig {
     };
   }
 
-  public static DEBUG_MODE_ON = true;
+  public DEBUG_MODE_ON = true;
 
-  public static ZOOM_LEVEL_WALKING = 0;
-  public static ZOOM_LEVEL_CYCLING = 1;
-  public static ZOOM_LEVEL_FLYING = 2;
+  public ZOOM_LEVEL_WALKING = 0;
+  public ZOOM_LEVEL_CYCLING = 1;
+  public ZOOM_LEVEL_FLYING = 2;
 
-  public static QA_BOTS_NUMBER = 0; //TODO: remove this
+  public QA_BOTS_NUMBER = 0; //TODO: remove this
 
-  public static AVATAR_TEXTURE_USE_WITHOUT_PREPROCESSING = false;
-  public static AVATAR_TEXTURE_DEFAULT_SIZE = 128;
+  public AVATAR_TEXTURE_USE_WITHOUT_PREPROCESSING = false;
+  public AVATAR_TEXTURE_DEFAULT_SIZE = 128;
 
-  public static VENUE_MIN_PEOPLE_COUNT_FOR_HALO = 1;
-  public static VENUE_TEXTURE_DEFAULT_SIZE = 256;
-  public static VENUE_DEFAULT_COLLISION_RADIUS = 60;
-  public static VENUE_DEFAULT_SIZE = Math.floor(
-    ((GameConfig.VENUE_DEFAULT_COLLISION_RADIUS * (4 * Math.sqrt(2))) / 4) * 1.2
+  public VENUE_MIN_PEOPLE_COUNT_FOR_HALO = 1;
+  public VENUE_TEXTURE_DEFAULT_SIZE = 256;
+  public VENUE_DEFAULT_COLLISION_RADIUS = 60;
+  public VENUE_DEFAULT_SIZE = Math.floor(
+    ((this.VENUE_DEFAULT_COLLISION_RADIUS * (4 * Math.sqrt(2))) / 4) * 1.2
   );
 
-  public static ARTCAR_ANGULAR_VELOCITY = 0.05;
+  public ARTCAR_ANGULAR_VELOCITY = 0.05;
 
   public minSpeed = 0;
   public maxSpeed = 8;
@@ -57,27 +55,17 @@ export class GameConfig {
     { x: 1, y: 1 },
   ];
 
-  private _speedByZoomLevel: Array<number> = [0.3, 1, 2];
-  private _zoomLevelViewportCorresponding: Array<number> = [
-    1.6137,
-    0.809,
-    0.32,
-  ];
-  private _zoomLevelAvatarRadiusCorresponding: Array<number> = [25, 17, 3];
-  private _zoomLevelLineOfSightCorresponding: Array<number> = [
+  public _speedByZoomLevel: Array<number> = [0.3, 1, 2];
+  public _zoomLevelViewportCorresponding: Array<number> = [1.6137, 0.809, 0.32];
+  public _zoomLevelAvatarRadiusCorresponding: Array<number> = [25, 17, 3];
+  public _zoomLevelLineOfSightCorresponding: Array<number> = [
     78 * 10,
     28 * 30,
     8 * 100,
   ];
 
-  private _playgroundMap: PlaygroundMap = (null as unknown) as PlaygroundMap;
-
   public get backgroundImage() {
     return this.options.backgroundImage;
-  }
-
-  public get playgroundMap(): PlaygroundMap {
-    return this._playgroundMap;
   }
 
   public get worldWidth(): number {
@@ -88,7 +76,7 @@ export class GameConfig {
     return this.options.worldHeight;
   }
 
-  public get worldCenter(): Point {
+  public get worldCenter(): { x: number; y: number } {
     return { x: this.worldWidth * 0.4947, y: this.worldHeight * 0.4858 };
   }
 

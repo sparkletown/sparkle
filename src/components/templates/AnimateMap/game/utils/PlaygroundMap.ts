@@ -1,9 +1,11 @@
 import { Point } from "types/utility";
 
-import { GameConfig } from "../../configs/GameConfig";
-import { GameInstance } from "../GameInstance";
+import { GameConfig } from "../common";
+// import { GameInstance } from "../GameInstance";
 
 export class PlaygroundMap {
+  constructor(private _config: GameConfig) {}
+
   private static playgroundBounds: Array<number> = [
     5055,
     233,
@@ -20,9 +22,9 @@ export class PlaygroundMap {
   ];
 
   public pointIsInTheOuterCircle(x: number, y: number): boolean {
-    const config: GameConfig = GameInstance.instance.getConfig();
-    const outerRadius = config.borderRadius;
-    const worldCenter: Point = config.worldCenter;
+    // const config: GameConfig = GameInstance.instance.getConfig();
+    const outerRadius = this._config.borderRadius;
+    const worldCenter: Point = this._config.worldCenter;
 
     const deltaX = x - worldCenter.x;
     const deltaY = y - worldCenter.y;
@@ -32,9 +34,9 @@ export class PlaygroundMap {
   }
 
   public pointIsInTheCentralCircle(x: number, y: number): boolean {
-    const config: GameConfig = GameInstance.instance.getConfig();
-    const center: Point = config.worldCenter;
-    const radius = config.worldWidth * 0.073;
+    // const config: GameConfig = GameInstance.instance.getConfig();
+    const center: Point = this._config.worldCenter;
+    const radius = this._config.worldWidth * 0.073;
 
     const deltaX = x - center.x;
     const deltaY = y - center.y;
@@ -123,9 +125,9 @@ export class PlaygroundMap {
   }
 
   public getRandomPointInTheCentralCircle(): Point {
-    const config: GameConfig = GameInstance.instance.getConfig();
-    const center: Point = config.worldCenter;
-    const radius = config.worldWidth * 0.073;
+    // const config: GameConfig = GameInstance.instance.getConfig();
+    const center: Point = this._config.worldCenter;
+    const radius = this._config.worldWidth * 0.073;
 
     let x = 0;
     let y = 0;
@@ -141,7 +143,7 @@ export class PlaygroundMap {
 
   public getRandomPointOnThePlayground(): Point {
     const min = 100;
-    const max = GameInstance.instance.getConfig().worldWidth;
+    const max = this._config.worldWidth;
     let x = 0;
     let y = 0;
     let result = false;

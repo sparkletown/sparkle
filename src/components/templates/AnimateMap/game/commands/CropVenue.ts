@@ -1,11 +1,12 @@
-import { GameConfig } from "../../configs/GameConfig";
 import { venues } from "../constants/AssetConstants";
+import { GameInstance } from "../GameInstance";
 
 import Command from "./Command";
 import { ImageToCanvas } from "./ImageToCanvas";
 import { LoadImage } from "./LoadImage";
 
 export class CropVenue implements Command {
+  private config = GameInstance.instance.getConfig();
   private resolve?: Function;
   public canvas: HTMLCanvasElement;
   public usersCount = 0;
@@ -63,7 +64,7 @@ export class CropVenue implements Command {
   }
 
   private setup(): Promise<void> {
-    const size = GameConfig.VENUE_TEXTURE_DEFAULT_SIZE;
+    const size = this.config.VENUE_TEXTURE_DEFAULT_SIZE;
 
     const plate = new LoadImage(venues.VENUE_PLATE)
       .execute()
@@ -92,7 +93,7 @@ export class CropVenue implements Command {
       .then((comm) => {
         if (comm.image) {
           const scale =
-            (GameConfig.VENUE_TEXTURE_DEFAULT_SIZE / comm.image.height) * 0.8;
+            (this.config.VENUE_TEXTURE_DEFAULT_SIZE / comm.image.height) * 0.8;
           return new ImageToCanvas(comm.image)
             .scaleTo(scale)
             .execute()
@@ -131,7 +132,7 @@ export class CropVenue implements Command {
         if (!comm.image) return console.error();
 
         const border = 1;
-        this.canvas.width = GameConfig.VENUE_TEXTURE_DEFAULT_SIZE;
+        this.canvas.width = this.config.VENUE_TEXTURE_DEFAULT_SIZE;
         this.canvas.height =
           comm.image.height * (this.canvas.width / comm.image.width);
 
@@ -167,10 +168,11 @@ export class CropVenue implements Command {
 
         const border = 1;
         this.canvas.width =
-          CropVenue.VENUE_PLATE?.width || GameConfig.VENUE_TEXTURE_DEFAULT_SIZE;
+          CropVenue.VENUE_PLATE?.width ||
+          this.config.VENUE_TEXTURE_DEFAULT_SIZE;
         this.canvas.height =
           CropVenue.VENUE_PLATE?.height ||
-          GameConfig.VENUE_TEXTURE_DEFAULT_SIZE;
+          this.config.VENUE_TEXTURE_DEFAULT_SIZE;
 
         const ctx = this.canvas.getContext("2d");
         if (ctx) {
@@ -217,7 +219,7 @@ export class CropVenue implements Command {
         }
       })
       .catch((error) => {
-        const size = GameConfig.VENUE_TEXTURE_DEFAULT_SIZE;
+        const size = this.config.VENUE_TEXTURE_DEFAULT_SIZE;
         this.canvas.width = size;
         this.canvas.height = size;
 

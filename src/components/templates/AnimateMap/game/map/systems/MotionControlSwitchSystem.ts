@@ -126,11 +126,7 @@ export class MotionControlSwitchSystem extends System {
   private setPlayerTweenControl(e: Point) {
     const x = e.x;
     const y = e.y;
-    if (
-      !GameInstance.instance
-        .getConfig()
-        .playgroundMap.pointIsOnThePlayground(x, y)
-    ) {
+    if (!GameInstance.instance.playgroundMap.pointIsOnThePlayground(x, y)) {
       // TODO show warning for user
       return;
     }
@@ -152,11 +148,7 @@ export class MotionControlSwitchSystem extends System {
     const x = e.x;
     const y = e.y;
 
-    if (
-      !GameInstance.instance
-        .getConfig()
-        .playgroundMap.pointIsOnThePlayground(x, y)
-    ) {
+    if (!GameInstance.instance.playgroundMap.pointIsOnThePlayground(x, y)) {
       // TODO show warning for user
       return;
     }

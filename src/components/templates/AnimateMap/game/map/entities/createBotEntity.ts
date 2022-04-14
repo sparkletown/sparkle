@@ -27,9 +27,7 @@ export const createBotEntity = (
   creator: EntityFactory,
   realUser = false
 ) => {
-  const point: Point = GameInstance.instance
-    .getConfig()
-    .playgroundMap.getRandomPointInTheCentralCircle();
+  const point: Point = GameInstance.instance.playgroundMap.getRandomPointInTheCentralCircle();
 
   if (!realUser) {
     user.x = point.x;

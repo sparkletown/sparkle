@@ -1,9 +1,8 @@
 import { Engine, NodeList, System } from "@ash.ts/ash";
 import { Sprite } from "pixi.js";
 
-import { GameConfig } from "components/templates/AnimateMap/configs/GameConfig";
-
 import { avatarCycles, avatarFeets } from "../../constants/AssetConstants";
+import { GameInstance } from "../../GameInstance";
 import EntityFactory from "../entities/EntityFactory";
 import { Avatar } from "../graphics/Avatar";
 import { AvatarTuningNode } from "../nodes/AvatarTuningNode";
@@ -11,6 +10,7 @@ import { PlayerMovementNode } from "../nodes/PlayerMovementNode";
 import { ViewportNode } from "../nodes/ViewportNode";
 
 export class AvatarTuningSystem extends System {
+  private config = GameInstance.instance.getConfig();
   private creator: EntityFactory;
 
   private viewport?: NodeList<ViewportNode>;
@@ -88,7 +88,7 @@ export class AvatarTuningSystem extends System {
 
   private updatePlayerDirections = () => {
     if (
-      this.zoomLevelCurrent !== GameConfig.ZOOM_LEVEL_FLYING &&
+      this.zoomLevelCurrent !== this.config.ZOOM_LEVEL_FLYING &&
       this.player &&
       this.player.head &&
       this.player.head.movement.velocityX !== 0
@@ -118,7 +118,7 @@ export class AvatarTuningSystem extends System {
       if (view.cycle && view.cycle.parent) {
         view.cycle.parent.removeChild(view.cycle);
       }
-      if (this.zoomLevelCurrent === GameConfig.ZOOM_LEVEL_WALKING) {
+      if (this.zoomLevelCurrent === this.config.ZOOM_LEVEL_WALKING) {
         view.cycle = Sprite.from(avatarFeets[0]);
         view.cycle.y = view.avatar.height * 0.55;
         view.cycle.anchor.set(0.5);
@@ -126,7 +126,7 @@ export class AvatarTuningSystem extends System {
         view.cycle.scale.set(1);
 
         view.addChildAt(view.cycle, view.getChildIndex(view.avatar));
-      } else if (this.zoomLevelCurrent === GameConfig.ZOOM_LEVEL_CYCLING) {
+      } else if (this.zoomLevelCurrent === this.config.ZOOM_LEVEL_CYCLING) {
         view.cycle = Sprite.from(avatarCycles[0]);
         view.cycle.y = view.avatar.height * 0.46;
         view.cycle.anchor.set(0.5);
@@ -140,7 +140,7 @@ export class AvatarTuningSystem extends System {
     // HAT
     if (
       node.tuning.user.data.hat &&
-      this.zoomLevelCurrent !== GameConfig.ZOOM_LEVEL_FLYING &&
+      this.zoomLevelCurrent !== this.config.ZOOM_LEVEL_FLYING &&
       !view.hat
     ) {
       view.hat = Sprite.from(node.tuning.user.data.hat);
@@ -149,7 +149,7 @@ export class AvatarTuningSystem extends System {
       view.addChild(view.hat);
     } else if (
       (!node.tuning.user.data.cycle ||
-        this.zoomLevelCurrent === GameConfig.ZOOM_LEVEL_FLYING) &&
+        this.zoomLevelCurrent === this.config.ZOOM_LEVEL_FLYING) &&
       view.hat
     ) {
       view.removeChild(view.hat);
@@ -159,7 +159,7 @@ export class AvatarTuningSystem extends System {
     // ACCESSORIES
     if (
       node.tuning.user.data.accessories &&
-      this.zoomLevelCurrent !== GameConfig.ZOOM_LEVEL_FLYING &&
+      this.zoomLevelCurrent !== this.config.ZOOM_LEVEL_FLYING &&
       !view.accessories
     ) {
       view.accessories = Sprite.from(node.tuning.user.data.accessories);
@@ -167,7 +167,7 @@ export class AvatarTuningSystem extends System {
       view.addChild(view.accessories);
     } else if (
       (!node.tuning.user.data.accessories ||
-        this.zoomLevelCurrent === GameConfig.ZOOM_LEVEL_FLYING) &&
+        this.zoomLevelCurrent === this.config.ZOOM_LEVEL_FLYING) &&
       view.accessories
     ) {
       view.removeChild(view.accessories);

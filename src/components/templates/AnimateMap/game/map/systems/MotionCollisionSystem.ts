@@ -45,7 +45,7 @@ export class MotionCollisionSystem extends System {
   }
 
   update(time: number) {
-    const playgroundMap = GameInstance.instance.getConfig().playgroundMap;
+    const playgroundMap = GameInstance.instance.playgroundMap;
 
     if (!this.colliders || !this.colliders.head) {
       return;
@@ -160,7 +160,7 @@ export class MotionCollisionSystem extends System {
     position: PositionComponent,
     movement: MovementComponent
   ): boolean {
-    const playgroundMap = GameInstance.instance.getConfig().playgroundMap;
+    const playgroundMap = GameInstance.instance.playgroundMap;
 
     time *= 2;
     const nextX = position.x + movement.velocityX * time;

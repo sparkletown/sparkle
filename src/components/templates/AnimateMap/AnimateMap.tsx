@@ -9,10 +9,15 @@ import { AnimateMapErrorPrompt } from "components/templates/AnimateMap/component
 
 import { LoadingSpinner } from "components/atoms/LoadingSpinner";
 
+import { AnimateMapGameConfig } from "../AnimateMapConfig";
+import { AnimateMapUI } from "../AnimateMapUI";
+
 import { CloudDataProviderWrapper } from "./bridges/CloudDataProviderWrapper";
 import { CloudDataProvider } from "./bridges/DataProvider/CloudDataProvider";
-import { GameConfig } from "./configs/GameConfig";
+import { GameConfig as GameConfigOld } from "./configs/GameConfig";
+import { GameConfig } from "./game/common";
 import { GameInstance } from "./game/GameInstance";
+import { PlaygroundMap } from "./game/utils/PlaygroundMap";
 import { useRelatedPartymapRooms } from "./hooks/useRelatedPartymapRooms";
 import { UIOverlay, UIOverlayGrid } from "./components";
 import { configs } from "./configs";
@@ -23,7 +28,61 @@ export interface AnimateMapProps {
   space: AnimateMapSpaceWithId;
 }
 
-export const AnimateMap: React.FC<AnimateMapProps> = ({ space }) => {
+export const AnimateMap: React.FC<AnimateMapProps> = (props) => {
+  const [dataProvider, setDataProvider] = useState<CloudDataProvider | null>(
+    null
+  );
+  const gameAreaRef = useRef<HTMLDivElement>(null);
+  const store = useStore();
+
+  const relatedRooms = useRelatedPartymapRooms({ venue: props.space });
+
+  useEffect(() => {
+    if (dataProvider) {
+      // const config: GameConfig = props.space.gameOptions
+      //   ? new AnimateMapGameConfig(props.space.gameOptions)
+      //   : configs.animateMap;
+      const config: GameConfig = new AnimateMapGameConfig(
+        props.space.gameOptions
+      );
+
+      const playgroundMap = new PlaygroundMap(config);
+
+      const game = new GameInstance(
+        config,
+        store,
+        dataProvider,
+        gameAreaRef.current as HTMLDivElement,
+        playgroundMap
+      );
+
+      game
+        .init()
+        .then(() => {
+          console.log("game init success");
+          game
+            .start()
+            .then(() => console.log("game start success"))
+            .catch((e) => console.log("game start error", e));
+        })
+        .catch((e) => console.log("game init error", e));
+    }
+  }, [gameAreaRef, store, dataProvider, props.space.gameOptions]);
+
+  return (
+    <>
+      <AnimateMapUI gameAreaRef={gameAreaRef} />
+      <CloudDataProviderWrapper
+        venue={props.space}
+        newDataProviderCreate={setDataProvider}
+        relatedRooms={relatedRooms}
+        reInitOnError={true}
+      />
+    </>
+  );
+};
+
+export const AnimateMapOld: React.FC<AnimateMapProps> = ({ space }) => {
   const [dataProvider, setDataProvider] = useState<CloudDataProvider | null>(
     null
   );
@@ -40,20 +99,25 @@ export const AnimateMap: React.FC<AnimateMapProps> = ({ space }) => {
     }
 
     const config = space.gameOptions
-      ? new GameConfig(space.gameOptions)
+      ? new GameConfigOld(space.gameOptions)
       : configs.animateMap;
 
-    const game = new GameInstance(
-      config,
-      store,
-      dataProvider,
-      containerRef.current as HTMLDivElement
-    );
+    console.log("old setApp", setApp);
+    console.log("old config", config);
+    console.log("old store", store);
 
-    await game.init();
-    await game.start();
+    // const game = new GameInstance(
+    //   config as unknown as GameConfigOld,
+    //   store,
+    //   dataProvider,
+    //   containerRef.current as HTMLDivElement,
+    //   null as unknown as PlaygroundMap,
+    // );
 
-    setApp(game);
+    // await game.init();
+    // await game.start();
+    //
+    // setApp(game);
   }, [containerRef, app, dataProvider, store, space]);
 
   useEffect(() => void initialize(), [initialize]);
