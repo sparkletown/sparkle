@@ -1,9 +1,10 @@
 @use "scss/attendee/space";
 @use "scss/attendee/border";
+@use "scss/attendee/layout";
 @use "scss/attendee/theme";
 @use "scss/attendee/breakpoint";
 
-$icon-wrapper-height: $h-chat-controls;
+$icon-wrapper-height: layout.$h-chat-controls;
 
 .linkWrapper {
   width: 10%;
