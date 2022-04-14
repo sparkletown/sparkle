@@ -36,8 +36,6 @@ $-title-height: 42px;
 }
 
 .PortalImage {
-  cursor: pointer;
-
   img {
     display: block;
     max-width: 90vw;
@@ -91,7 +89,6 @@ $-title-height: 42px;
 .portalInfo {
   width: fit-content;
   margin: 0 auto;
-  cursor: pointer;
 
   @media (min-width: breakpoint.$md) {
     position: absolute;
@@ -103,8 +100,12 @@ $-title-height: 42px;
   @include atom.button;
   @include rounded.normal;
   @include sparkle.color--glass;
-
+  cursor: default;
   white-space: nowrap;
+
+  &:hover {
+    background-color: theme.$c-color-glass-panel-background-hover;
+  }
 }
 
 .PortalOnMap {
@@ -117,7 +118,7 @@ $-title-height: 42px;
 .InfoButton {
   @include atom.button;
   height: space.button(1) - space.gap(8);
-  margin: space.gap(4) 0 space.gap(4) space.empty(1);
+  margin: space.gap(4) 0 space.gap(4) space.empty(0.5);
   border-left: 1px solid theme.$sparkle--border;
   border-radius: 0;
   padding-right: 0;
@@ -128,4 +129,26 @@ $-title-height: 42px;
     position: relative;
     filter: invert(1);
   }
+}
+
+.externalIcon {
+  cursor: pointer;
+  @include atom.button;
+  height: space.button(1) - space.gap(8);
+  margin: space.gap(4) 0 space.gap(4) space.empty(0.3);
+  padding: 0;
+
+  span {
+    @include atom.icon;
+    background-image: url(/assets/icons/icon-room-externallink.svg);
+    position: relative;
+  }
+}
+
+.linkHidden {
+  visibility: hidden;
+}
+
+.portalName {
+  margin-right: space.empty(0.75);
 }

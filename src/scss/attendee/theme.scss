@@ -15,6 +15,7 @@
   --panel-background: rgb(255, 255, 255);
   --glass-panel-background: rgba(255, 255, 255, 0.4);
   --color-glass-panel-background: rgba(99, 42, 199, 0.7);
+  --color-glass-panel-background-hover: #632ac7;
 
   --sparkle--bg: rgb(99, 42, 199);
   --sparkle--border: rgba(130, 130, 130, 0.3);
@@ -73,6 +74,9 @@ $c-glass-panel-background-transparent: var(
 );
 $c-glass-panel-text: var(--glass-panel-text);
 $c-color-glass-panel-background: var(--color-glass-panel-background);
+$c-color-glass-panel-background-hover: var(
+  --color-glass-panel-background-hover
+);
 $c-space-wrapper-background: var(--space-wrapper-background);
 
 $c-button-fg: var(--button-fg);

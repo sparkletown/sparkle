@@ -108,10 +108,13 @@ export const MapPortal: React.FC<MapPortalProps> = ({
     [isCurrentRoomSelected, selectPortal, unselectPortal]
   );
 
+  const externalIconClasses = classNames(styles.externalIcon, {
+    [styles.linkHidden]: !shouldBeClickable,
+  });
   return (
     <div className={styles.MapPortal} style={roomInlineStyles}>
       <div className={styles.PortalOnMap}>
-        <div className={portalImageClasses} onClick={selectRoomWithSound}>
+        <div className={portalImageClasses}>
           <img src={portal.image_url} alt={portal.title} />
         </div>
         <div
@@ -119,9 +122,12 @@ export const MapPortal: React.FC<MapPortalProps> = ({
           ref={isCurrentRoomSelected ? setPortalRef : null}
         >
           <div className={styles.PortalTitle}>
-            <span>{portal.title}</span>
+            <span className={styles.portalName}>{portal.title}</span>
             <RoomAttendance room={portal} />
-            {portal.spaceId && shouldBeClickable && (
+            <span className={externalIconClasses} onClick={selectRoomWithSound}>
+              <span />
+            </span>
+            {portal.spaceId && (
               <span
                 className={styles.InfoButton}
                 onClick={() => handleSelectPortal(portal)}
