@@ -29,6 +29,9 @@ interface PortalModalProps {
   portalRef: RefObject<HTMLDivElement> | null;
 }
 
+const topOffsetMultiplier = 5.5;
+const leftOffsetDivider = 2;
+
 export const PortalModal: React.FC<PortalModalProps> = ({
   onEnter,
   portal,
@@ -44,8 +47,10 @@ export const PortalModal: React.FC<PortalModalProps> = ({
     portalRef?.current?.getBoundingClientRect() ?? {};
 
   const popoverStyle = useCss({
-    top: `${top + (height + SCSS_SPACE_EMPTY * 5.5)}px`,
-    left: `${left - (SCSS_SPACE_PORTAL_EVENT_WIDTH - width) / 2}px`,
+    top: `${top + (height + SCSS_SPACE_EMPTY * topOffsetMultiplier)}px`,
+    left: `${
+      left - (SCSS_SPACE_PORTAL_EVENT_WIDTH - width) / leftOffsetDivider
+    }px`,
   });
 
   if (!top || !left) {
