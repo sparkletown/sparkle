@@ -1,8 +1,5 @@
 import React, { useCallback, useState } from "react";
-import {
-  faCompressArrowsAlt,
-  faExpandArrowsAlt,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCompress, faExpand } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
@@ -74,8 +71,9 @@ export const MediaElement: React.FC<MediaElementProps> = ({
       {!fullWidth && (
         <div className={styles.mediaControls}>
           <FontAwesomeIcon
-            icon={expandedIframe ? faCompressArrowsAlt : faExpandArrowsAlt}
+            icon={expandedIframe ? faCompress : faExpand}
             onClick={toggleExpandedIframe}
+            title={expandedIframe ? "Compress media" : "Expand media"}
           />
         </div>
       )}
