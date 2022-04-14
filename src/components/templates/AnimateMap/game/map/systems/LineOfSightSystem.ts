@@ -2,7 +2,6 @@ import { Engine, NodeList, System } from "@ash.ts/ash";
 
 import { Point } from "types/utility";
 
-import { GameConfig } from "../../common";
 import { GameInstance } from "../../GameInstance";
 import { AvatarTuningComponent } from "../components/AvatarTuningComponent";
 import EntityFactory from "../entities/EntityFactory";
@@ -66,7 +65,7 @@ export class LineOfSightSystem extends System {
       return;
     }
 
-    const config: GameConfig = GameInstance.instance.getConfig();
+    const config = GameInstance.instance.getConfig();
     const center: Point = {
       x: this.player.head.position.x,
       y: this.player.head.position.y,

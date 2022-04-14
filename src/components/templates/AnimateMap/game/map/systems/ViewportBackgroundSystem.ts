@@ -3,7 +3,6 @@ import { Box, Point, QuadTree } from "js-quadtree";
 import { Application, BaseTexture, Container, Sprite } from "pixi.js";
 import { Viewport } from "pixi-viewport";
 
-import { GameConfig } from "../../common";
 import { MAP_IMAGE } from "../../constants/AssetConstants";
 import { tiles } from "../../constants/AssetsMapTilesConstants";
 import { GameInstance } from "../../GameInstance";
@@ -309,7 +308,7 @@ export class ViewportBackgroundSystem extends System {
   }
 
   private setupTree() {
-    const config: GameConfig = GameInstance.instance.getConfig();
+    const config = GameInstance.instance.getConfig();
     this.tree = new QuadTree(
       new Box(0, 0, config.worldWidth, config.worldWidth)
     );

@@ -9,7 +9,6 @@ import {
   ReplicatedVenue,
 } from "store/reducers/AnimateMap";
 
-import { GameConfig } from "../../../configs/GameConfig";
 import { ImageToCanvas } from "../../commands/ImageToCanvas";
 import { LoadImage } from "../../commands/LoadImage";
 import { RoundAvatar } from "../../commands/RoundAvatar";
@@ -60,6 +59,7 @@ import { createVenueEntity, updateVenueEntity } from "./createVenueEntity";
 
 export default class EntityFactory {
   public engine: Engine;
+  private config = GameInstance.instance.getConfig();
 
   constructor(engine: Engine) {
     this.engine = engine;
@@ -322,7 +322,7 @@ export default class EntityFactory {
     const url = user.data.pictureUrl;
     const sprite: Avatar = new Avatar();
 
-    if (GameConfig.AVATAR_TEXTURE_USE_WITHOUT_PREPROCESSING) {
+    if (this.config.AVATAR_TEXTURE_USE_WITHOUT_PREPROCESSING) {
       new LoadImage(url)
         .execute()
         .then((comm) => {

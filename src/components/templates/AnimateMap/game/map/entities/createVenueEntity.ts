@@ -6,7 +6,6 @@ import { DEFAULT_PORTAL_BOX } from "settings";
 import { setAnimateMapRoom } from "store/actions/AnimateMap";
 import { ReplicatedVenue } from "store/reducers/AnimateMap";
 
-import { GameConfig } from "../../../configs/GameConfig";
 import { CropVenue } from "../../commands/CropVenue";
 import { GameInstance } from "../../GameInstance";
 import { AnimationComponent } from "../components/AnimationComponent";
@@ -60,8 +59,9 @@ const updateVenueImage = (
     )
     .execute()
     .then((comm: CropVenue) => {
+      const config = GameInstance.instance.getConfig();
       const scaleSize = replicatedVenue.data.withoutPlate ? 4 : 1;
-      const size = GameConfig.VENUE_DEFAULT_SIZE * scaleSize;
+      const size = config.VENUE_DEFAULT_SIZE * scaleSize;
       const scale = size / comm.canvas.width;
       positionComponent.scaleY = scale;
       positionComponent.scaleX = scale;
@@ -118,6 +118,7 @@ export const createVenueEntity = (
   venue: ReplicatedVenue,
   creator: EntityFactory
 ) => {
+  const config = GameInstance.instance.getConfig();
   const engine = creator.engine;
   const entity: Entity = new Entity();
   const fsm: FSMBase = new FSMBase(entity);
@@ -166,9 +167,7 @@ export const createVenueEntity = (
     .add(venueComponent)
     .add(spriteComponent)
     .add(
-      new CollisionComponent(
-        GameConfig.VENUE_DEFAULT_COLLISION_RADIUS * scaleSize
-      )
+      new CollisionComponent(config.VENUE_DEFAULT_COLLISION_RADIUS * scaleSize)
     )
     .add(
       new HoverableSpriteComponent(

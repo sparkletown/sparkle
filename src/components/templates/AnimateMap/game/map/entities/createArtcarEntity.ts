@@ -6,7 +6,6 @@ import { DEFAULT_PORTAL_BOX } from "settings";
 import { setAnimateMapRoom } from "../../../../../../store/actions/AnimateMap";
 import { ReplicatedArtcar } from "../../../../../../store/reducers/AnimateMap";
 import { Point } from "../../../../../../types/utility";
-import { GameConfig } from "../../../configs/GameConfig";
 import { GameInstance } from "../../GameInstance";
 import { ArtcarComponent } from "../components/ArtcarComponent";
 import { ClickableSpriteComponent } from "../components/ClickableSpriteComponent";
@@ -85,7 +84,7 @@ export const createArtcarEntity = (
   entity
     .add(artcarComponent)
     .add(new PositionComponent(user.x, user.y, 0, scale, scale))
-    .add(new CollisionComponent(GameConfig.VENUE_DEFAULT_COLLISION_RADIUS))
+    .add(new CollisionComponent(config.VENUE_DEFAULT_COLLISION_RADIUS))
     .add(
       new HoverableSpriteComponent(
         () => {

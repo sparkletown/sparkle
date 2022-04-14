@@ -2,7 +2,7 @@ import { Engine, NodeList, System } from "@ash.ts/ash";
 import { subscribeActionAfter } from "redux-subscribe-action";
 
 import { AnimateMapActionTypes } from "../../../../../../store/actions/AnimateMap";
-import { GameConfig } from "../../../configs/GameConfig";
+import { GameInstance } from "../../GameInstance";
 import EntityFactory from "../entities/EntityFactory";
 import { FirebarrelCamIcon } from "../graphics/FirebarrelCamIcon";
 import { FirebarrelNode } from "../nodes/FirebarrelNode";
@@ -15,6 +15,7 @@ export class FirebarrelSystem extends System {
   private viewport?: NodeList<ViewportNode>;
   private zoomLevelCurrent = -1;
   private zoomLevelUpdated = false;
+  private config = GameInstance.instance.getConfig();
 
   private _unsubscribeFirebarrelSet!: () => void;
   private _unsubscribeFirebarrelEnter!: () => void;
@@ -112,7 +113,7 @@ export class FirebarrelSystem extends System {
     if (camIcon && camIcon.view.camIcon) {
       camIcon.view.camIcon.visible =
         this.viewport?.head?.viewport.zoomLevel !==
-        GameConfig.ZOOM_LEVEL_FLYING;
+        this.config.ZOOM_LEVEL_FLYING;
     }
   }
 

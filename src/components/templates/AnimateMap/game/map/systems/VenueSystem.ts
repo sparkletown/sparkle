@@ -1,10 +1,11 @@
 import { Engine, NodeList, System } from "@ash.ts/ash";
 
-import { GameConfig } from "../../../configs/GameConfig";
+import { GameInstance } from "../../GameInstance";
 import { VenueNode } from "../nodes/VenueNode";
 
 export class VenueSystem extends System {
   private venues?: NodeList<VenueNode>;
+  private config = GameInstance.instance.getConfig();
 
   addToEngine(engine: Engine) {
     this.venues = engine.getNodeList(VenueNode);
@@ -23,7 +24,7 @@ export class VenueSystem extends System {
       node.venue.fsm.changeState(node.venue.HALO_ANIMATED);
     } else if (
       node.venue.model.data.countUsers >=
-      GameConfig.VENUE_MIN_PEOPLE_COUNT_FOR_HALO
+      this.config.VENUE_MIN_PEOPLE_COUNT_FOR_HALO
     ) {
       node.venue.fsm.changeState(node.venue.HALO);
     } else {

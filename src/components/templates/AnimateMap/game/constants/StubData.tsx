@@ -9,7 +9,6 @@ import { determineAvatar } from "utils/image";
 
 import { Point } from "../../../../../types/utility";
 import { getIntByHash } from "../../bridges/DataProvider/Contructor/PlayerIO/utils/getIntByHash";
-import { GameConfig } from "../../configs/GameConfig";
 import { GameInstance } from "../GameInstance";
 
 import {
@@ -130,7 +129,7 @@ export const stubArtcarsData = () => {
   const sector = 360 / arr.length + 2;
   for (let i = 0; i < arr.length; i++) {
     let angle = sector * i;
-    angle += GameConfig.ARTCAR_ANGULAR_VELOCITY * (Date.now() - 1630629578769);
+    angle += config.ARTCAR_ANGULAR_VELOCITY * (Date.now() - 1630629578769);
 
     const radiusX = getRandomNumber(innerRadius, outerRadius);
     const radiusY = getRandomNumber(innerRadius, outerRadius);
@@ -170,7 +169,7 @@ export const stubUsersData = () => {
   const config = GameInstance.instance.getConfig();
 
   const users: Map<string, ReplicatedUser> = new Map();
-  const len = GameConfig.QA_BOTS_NUMBER;
+  const len = config.QA_BOTS_NUMBER;
   const paddingH = config.worldWidth * 0.1;
   const paddingV = config.worldHeight * 0.1;
   for (let i = 0; i < len; i++) {

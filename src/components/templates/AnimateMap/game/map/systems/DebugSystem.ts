@@ -6,7 +6,6 @@ import { Point } from "types/utility";
 
 import { RoomPointNode } from "../../../bridges/DataProvider/Structures/RoomsModel";
 import { EventType } from "../../../bridges/EventProvider/EventProvider";
-import { GameConfig } from "../../common";
 import { GameInstance } from "../../GameInstance";
 import EntityFactory from "../entities/EntityFactory";
 import { BotNode } from "../nodes/BotNode";
@@ -135,7 +134,7 @@ export class DebugSystem extends System {
 
   private updateLineOfSight(time: number) {
     const name = "visionOfSightRadius";
-    const config: GameConfig = GameInstance.instance.getConfig();
+    const config = GameInstance.instance.getConfig();
     const currentZoomLevel = config.zoomViewportToLevel(this.viewport.scale.y);
     if (this.player && this.player.head) {
       const center: Point = this.player?.head

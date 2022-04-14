@@ -15,7 +15,6 @@ import {
 
 import { EventType } from "components/templates/AnimateMap/bridges/EventProvider/EventProvider";
 
-import { GameConfig } from "../../../configs/GameConfig";
 import { TimeoutCommand } from "../../commands/TimeoutCommand";
 import { GameInstance } from "../../GameInstance";
 import { easeInOutQuad, Easing } from "../../utils/Easing";
@@ -27,6 +26,7 @@ import { ViewportNode } from "../nodes/ViewportNode";
 
 export class ViewportSystem extends System {
   private player?: NodeList<ViewportFollowNode>;
+  private config = GameInstance.instance.getConfig();
 
   private easing?: Easing;
   private viewportList?: NodeList<ViewportNode>;
@@ -224,7 +224,7 @@ export class ViewportSystem extends System {
       if (GameInstance.instance.getConfig().firstEntrance) {
         zoom = GameInstance.instance
           .getConfig()
-          .zoomLevelToViewport(GameConfig.ZOOM_LEVEL_WALKING);
+          .zoomLevelToViewport(this.config.ZOOM_LEVEL_WALKING);
       } else {
         zoom = GameInstance.instance.getState().lastZoom;
         if (zoom < 0.1) {

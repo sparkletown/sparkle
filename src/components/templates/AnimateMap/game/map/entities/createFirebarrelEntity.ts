@@ -3,10 +3,10 @@ import { Sprite } from "pixi.js";
 
 import { ReplicatedFirebarrel } from "store/reducers/AnimateMap";
 
-import { GameConfig } from "../../../configs/GameConfig";
 import { ImageToCanvas } from "../../commands/ImageToCanvas";
 import { LoadImage } from "../../commands/LoadImage";
 import { barrels } from "../../constants/AssetConstants";
+import { GameInstance } from "../../GameInstance";
 import { AnimationComponent } from "../components/AnimationComponent";
 import { ClickableSpriteComponent } from "../components/ClickableSpriteComponent";
 import { CollisionComponent } from "../components/CollisionComponent";
@@ -30,7 +30,8 @@ import { Venue } from "../graphics/Venue";
 import EntityFactory from "./EntityFactory";
 
 const getCollisionRadius = (): number => {
-  return GameConfig.VENUE_DEFAULT_COLLISION_RADIUS / 2;
+  const config = GameInstance.instance.getConfig();
+  return config.VENUE_DEFAULT_COLLISION_RADIUS / 2;
 };
 
 const createTooltip = (entity: Entity, text: string = "Join") => {
