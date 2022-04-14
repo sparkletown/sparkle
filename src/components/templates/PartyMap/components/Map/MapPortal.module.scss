@@ -122,13 +122,13 @@ $-title-height: 42px;
   border-left: 1px solid theme.$sparkle--border;
   border-radius: 0;
   padding-right: 0;
-  cursor: pointer;
 
   span {
     @include atom.icon;
     background-image: url(/assets/icons/icon-info.svg);
     position: relative;
     filter: invert(1);
+    cursor: pointer;
   }
 }
 
