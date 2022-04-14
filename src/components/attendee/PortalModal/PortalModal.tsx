@@ -48,7 +48,7 @@ export const PortalModal: React.FC<PortalModalProps> = ({
     left: `${left - (SCSS_SPACE_PORTAL_EVENT_WIDTH - width) / 2}px`,
   });
 
-  if (top === 0 || left === 0) {
+  if (!top || !left) {
     return null;
   }
 
