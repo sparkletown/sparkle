@@ -1,3 +1,11 @@
+import { GamePoint } from "./GamePoint";
+
+export type GameConfigOptions = {
+  worldWidth: number;
+  worldHeight: number;
+  backgroundImage: string;
+};
+
 export type GameConfig = {
   DEBUG_MODE_ON: boolean;
 
@@ -26,19 +34,9 @@ export type GameConfig = {
   backgroundImage: string;
   worldWidth: number;
   worldHeight: number;
-  worldCenter: {
-    x: number;
-    y: number;
-  };
-  options: {
-    worldWidth: number;
-    worldHeight: number;
-    backgroundImage: string;
-  };
-  pointForBezieSpeedCurve: Array<{
-    x: number;
-    y: number;
-  }>;
+  worldCenter: GamePoint;
+  options: GameConfigOptions;
+  pointForBezieSpeedCurve: Array<GamePoint>;
   timeOffset: number;
   firstEntrance: boolean;
   minSpeed: number;

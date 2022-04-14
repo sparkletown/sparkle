@@ -14,13 +14,11 @@ import { AnimateMapUI } from "../AnimateMapUI";
 
 import { CloudDataProviderWrapper } from "./bridges/CloudDataProviderWrapper";
 import { CloudDataProvider } from "./bridges/DataProvider/CloudDataProvider";
-import { GameConfig as GameConfigOld } from "./configs/GameConfig";
 import { GameConfig } from "./game/common";
 import { GameInstance } from "./game/GameInstance";
 import { PlaygroundMap } from "./game/utils/PlaygroundMap";
 import { useRelatedPartymapRooms } from "./hooks/useRelatedPartymapRooms";
 import { UIOverlay, UIOverlayGrid } from "./components";
-import { configs } from "./configs";
 
 import "./AnimateMap.scss";
 
@@ -98,9 +96,7 @@ export const AnimateMapOld: React.FC<AnimateMapProps> = ({ space }) => {
       return;
     }
 
-    const config = space.gameOptions
-      ? new GameConfigOld(space.gameOptions)
-      : configs.animateMap;
+    const config = space.gameOptions;
 
     console.log("old setApp", setApp);
     console.log("old config", config);

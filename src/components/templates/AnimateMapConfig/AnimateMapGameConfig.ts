@@ -1,4 +1,5 @@
 import { GameConfig } from "../AnimateMap/game/common";
+import { MAP_IMAGE } from "../AnimateMap/game/constants/AssetConstants";
 
 export interface AnimateMapGameOptions {
   worldWidth: number;
@@ -18,6 +19,7 @@ export class AnimateMapGameConfig implements GameConfig {
         //default options can be here
         worldWidth: 9920,
         worldHeight: 9920,
+        backgroundImage: MAP_IMAGE,
         timeOffset: new Date().getTimezoneOffset(),
       },
       ...options,

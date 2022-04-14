@@ -7,7 +7,7 @@ import { SpaceId, SpaceSlug, UserWithId } from "types/id";
 import { RoomVisibility } from "types/RoomVisibility";
 import { VenueTemplate } from "types/VenueTemplate";
 
-import { GameOptions } from "components/templates/AnimateMap/configs/GameConfig";
+import { GameConfigOptions } from "components/templates/AnimateMap/game/common";
 
 import { Banner } from "./banner";
 import { Poster } from "./posters";
@@ -105,7 +105,7 @@ export interface GenericVenue extends BaseVenue {
 
 export interface AnimateMapVenue extends BaseVenue {
   id: string;
-  gameOptions: GameOptions;
+  gameOptions: GameConfigOptions;
   relatedPartymapId: SpaceId;
   template: VenueTemplate.animatemap;
 }

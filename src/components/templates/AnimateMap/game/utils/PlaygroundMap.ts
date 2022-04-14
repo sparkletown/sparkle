@@ -1,7 +1,6 @@
 import { Point } from "types/utility";
 
-import { GameConfig } from "../common";
-// import { GameInstance } from "../GameInstance";
+import { GameConfig, GamePoint } from "../common";
 
 export class PlaygroundMap {
   constructor(private _config: GameConfig) {}
@@ -68,7 +67,7 @@ export class PlaygroundMap {
     y1: number,
     x2: number,
     y2: number
-  ): { x: number; y: number } | undefined {
+  ): GamePoint | undefined {
     if (
       this.pointIsInTheOuterCircle(x1, y1) &&
       this.pointIsInTheOuterCircle(x2, y2)
@@ -99,7 +98,7 @@ export class PlaygroundMap {
     y3: number,
     x4: number,
     y4: number
-  ): { x: number; y: number } | undefined {
+  ): GamePoint | undefined {
     const denom = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
     const numeA = (x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3);
     const numeB = (x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3);
