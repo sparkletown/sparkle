@@ -2,37 +2,24 @@ import { useState } from "react";
 import ReactDOM from "react-dom";
 import { usePopper } from "react-popper";
 
-import { ALWAYS_EMPTY_ARRAY, POPOVER_CONTAINER_ID } from "settings";
+import { POPOVER_CONTAINER_ID } from "settings";
 
 export interface PopoverProps {
   referenceElement?: Element | null;
-  offset?: number[];
 }
 
 export const Popover: React.FC<PopoverProps> = ({
   children,
   referenceElement,
-  offset,
 }) => {
   const popoverContainerElement = document.querySelector(
     `#${POPOVER_CONTAINER_ID}`
   );
-  const [left, top] = offset ?? ALWAYS_EMPTY_ARRAY;
 
   const [popperElement, setPopperElement] = useState<HTMLElement | null>(null);
   const { styles: popperStyles, attributes: popperAttributes } = usePopper(
     referenceElement,
-    popperElement,
-    {
-      modifiers: [
-        {
-          name: "offset",
-          options: {
-            ...(offset && { offset: [left, top] }),
-          },
-        },
-      ],
-    }
+    popperElement
   );
 
   return (

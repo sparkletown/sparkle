@@ -263,3 +263,5 @@ export const PARTY_MAP_VERTICAL_PAD = 140;
 // JS constants derived and in sync with their SCSS constants
 // "scss/attendee/space";
 export const SCSS_SPACE_EMPTY = 12;
+// "scss/attendee/layout";
+export const SCSS_SPACE_PORTAL_EVENT_WIDTH = 180;

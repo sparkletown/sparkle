@@ -2,8 +2,14 @@
 @use "scss/attendee/effects/atom";
 @use "scss/attendee/effects/rounded";
 @use "scss/attendee/space";
+@use "scss/attendee/layout";
 @use "scss/attendee/effects/sparkle";
 @use "scss/attendee/theme";
+
+.modalWrapper {
+  position: absolute;
+  min-width: layout.$w-space-portal-event-modal;
+}
 
 .PortalPopupInfo {
   @include sparkle.panel--glass;

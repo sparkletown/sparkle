@@ -1,10 +1,10 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import { PortalModal } from "components/attendee/PortalModal";
 
 import { COVERT_ROOM_TYPES } from "settings";
 
 import { PartyMapSpaceWithId } from "types/id";
-import { Room, RoomType } from "types/rooms";
+import { RoomType, RoomWithBounds } from "types/rooms";
 import { RoomVisibility } from "types/RoomVisibility";
 
 import { eventTimeAndOrderComparator, isEventLiveOrFuture } from "utils/event";
@@ -27,8 +27,10 @@ interface PartyMapProps {
 export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
   const { user, profile } = useLiveUser();
 
-  const [portalRef, setPortalRef] = useState<HTMLDivElement | null>(null);
-  const [selectedPortal, setSelectedPortal] = useState<Room | undefined>();
+  const portalRef = useRef<HTMLDivElement | null>(null);
+  const [selectedPortal, setSelectedPortal] = useState<
+    RoomWithBounds | undefined
+  >();
 
   const { events: selfAndChildVenueEvents } = useSpaceEvents({
     worldId: venue.worldId,
@@ -46,9 +48,7 @@ export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
       .sort(eventTimeAndOrderComparator);
   }, [selfAndChildVenueEvents, selectedPortal]);
 
-  const selectPortal = useCallback((portal: Room) => {
-    if (portal.type && COVERT_ROOM_TYPES.includes(portal.type)) return;
-
+  const selectPortal = useCallback((portal: RoomWithBounds) => {
     setSelectedPortal(portal);
   }, []);
 
@@ -98,7 +98,7 @@ export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
         venue={venue}
         selectPortal={selectPortal}
         unselectPortal={unselectPortal}
-        setPortalRef={setPortalRef}
+        portalRef={portalRef}
         selectedPortal={selectedPortal}
       />
 

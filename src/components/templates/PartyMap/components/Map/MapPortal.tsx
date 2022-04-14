@@ -1,6 +1,6 @@
-import React, { useCallback, useMemo } from "react";
+import React, { RefObject, useCallback, useMemo } from "react";
 import classNames from "classnames";
-import { isEqual } from "lodash";
+import { isEqual, omit } from "lodash";
 
 import { COVERT_ROOM_TYPES } from "settings";
 
@@ -26,7 +26,7 @@ interface MapPortalProps {
   portal: Room;
   selectPortal: (portal: Room) => void;
   safeZoneBounds: Dimensions & Position;
-  setPortalRef: React.Dispatch<React.SetStateAction<HTMLDivElement | null>>;
+  portalRef: RefObject<HTMLDivElement> | null;
   selectedPortal?: Room;
   unselectPortal: () => void;
 }
@@ -36,7 +36,7 @@ export const MapPortal: React.FC<MapPortalProps> = ({
   portal,
   safeZoneBounds,
   selectPortal,
-  setPortalRef,
+  portalRef,
   selectedPortal,
   unselectPortal,
 }) => {
@@ -94,7 +94,8 @@ export const MapPortal: React.FC<MapPortalProps> = ({
     [styles.livePortalEvent]: isEventLive(firstEvent),
   });
 
-  const isCurrentRoomSelected = isEqual(selectedPortal, portal);
+  const cleanPortal = omit(selectedPortal, "bounds");
+  const isCurrentRoomSelected = isEqual(cleanPortal, portal);
 
   const handleSelectPortal = useCallback(
     (portal: Room) => {
@@ -111,6 +112,7 @@ export const MapPortal: React.FC<MapPortalProps> = ({
   const externalIconClasses = classNames(styles.externalIcon, {
     [styles.linkHidden]: !shouldBeClickable,
   });
+
   return (
     <div className={styles.MapPortal} style={roomInlineStyles}>
       <div className={styles.PortalOnMap}>
@@ -119,7 +121,7 @@ export const MapPortal: React.FC<MapPortalProps> = ({
         </div>
         <div
           className={styles.portalInfo}
-          ref={isCurrentRoomSelected ? setPortalRef : null}
+          ref={isCurrentRoomSelected ? portalRef : null}
         >
           <div className={styles.PortalTitle}>
             <span className={styles.portalName}>{portal.title}</span>
