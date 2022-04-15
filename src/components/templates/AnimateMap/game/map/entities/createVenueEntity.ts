@@ -7,7 +7,7 @@ import { setAnimateMapRoom } from "store/actions/AnimateMap";
 import { ReplicatedVenue } from "store/reducers/AnimateMap";
 
 import { CropVenue } from "../../commands/CropVenue";
-import { GameInstance } from "../../GameInstance";
+import { GameConfig } from "../../common";
 import { AnimationComponent } from "../components/AnimationComponent";
 import { ClickableSpriteComponent } from "../components/ClickableSpriteComponent";
 import { CollisionComponent } from "../components/CollisionComponent";
@@ -49,7 +49,8 @@ const addVenueTooltip = (venue: ReplicatedVenue, entity: Entity) => {
 const updateVenueImage = (
   replicatedVenue: ReplicatedVenue,
   spriteComponent: SpriteComponent,
-  positionComponent: PositionComponent
+  positionComponent: PositionComponent,
+  config: GameConfig
 ): Promise<void> => {
   return new CropVenue(replicatedVenue.data.image_url)
     .setUsersCount(replicatedVenue.data.countUsers)
@@ -59,7 +60,6 @@ const updateVenueImage = (
     )
     .execute()
     .then((comm: CropVenue) => {
-      const config = GameInstance.instance.getConfig();
       const scaleSize = replicatedVenue.data.withoutPlate ? 4 : 1;
       const size = config.VENUE_DEFAULT_SIZE * scaleSize;
       const scale = size / comm.canvas.width;
@@ -111,14 +111,14 @@ export const updateVenueEntity = (
   if (!sprite) {
     return;
   }
-  updateVenueImage(venue, sprite, node.position);
+  updateVenueImage(venue, sprite, node.position, creator.controls.getConfig());
 };
 
 export const createVenueEntity = (
   venue: ReplicatedVenue,
   creator: EntityFactory
 ) => {
-  const config = GameInstance.instance.getConfig();
+  const config = creator.controls.getConfig();
   const engine = creator.engine;
   const entity: Entity = new Entity();
   const fsm: FSMBase = new FSMBase(entity);
@@ -219,7 +219,7 @@ export const createVenueEntity = (
     .add(
       new ClickableSpriteComponent(() => {
         const currentVenue = getCurrentReplicatedVenue(venueComponent);
-        GameInstance.instance.getStore().dispatch(
+        creator.controls.dispatch(
           setAnimateMapRoom({
             ...DEFAULT_PORTAL_BOX,
             title: currentVenue.data.title,
@@ -236,7 +236,12 @@ export const createVenueEntity = (
   engine.addEntity(entity);
 
   spriteComponent.view.visible = false;
-  updateVenueImage(venue, spriteComponent, positionComponent).finally(() => {
+  updateVenueImage(
+    venue,
+    spriteComponent,
+    positionComponent,
+    creator.controls.getConfig()
+  ).finally(() => {
     if (spriteComponent && spriteComponent.view) {
       spriteComponent.view.visible = true;
     }

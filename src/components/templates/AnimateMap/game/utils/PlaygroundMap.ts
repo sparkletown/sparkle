@@ -1,5 +1,3 @@
-import { Point } from "types/utility";
-
 import { GameConfig, GamePoint } from "../common";
 
 export class PlaygroundMap {
@@ -23,7 +21,7 @@ export class PlaygroundMap {
   public pointIsInTheOuterCircle(x: number, y: number): boolean {
     // const config: GameConfig = GameInstance.instance.getConfig();
     const outerRadius = this._config.borderRadius;
-    const worldCenter: Point = this._config.worldCenter;
+    const worldCenter: GamePoint = this._config.worldCenter;
 
     const deltaX = x - worldCenter.x;
     const deltaY = y - worldCenter.y;
@@ -34,7 +32,7 @@ export class PlaygroundMap {
 
   public pointIsInTheCentralCircle(x: number, y: number): boolean {
     // const config: GameConfig = GameInstance.instance.getConfig();
-    const center: Point = this._config.worldCenter;
+    const center: GamePoint = this._config.worldCenter;
     const radius = this._config.worldWidth * 0.073;
 
     const deltaX = x - center.x;
@@ -123,9 +121,9 @@ export class PlaygroundMap {
     return undefined;
   }
 
-  public getRandomPointInTheCentralCircle(): Point {
+  public getRandomPointInTheCentralCircle(): GamePoint {
     // const config: GameConfig = GameInstance.instance.getConfig();
-    const center: Point = this._config.worldCenter;
+    const center: GamePoint = this._config.worldCenter;
     const radius = this._config.worldWidth * 0.073;
 
     let x = 0;
@@ -140,7 +138,7 @@ export class PlaygroundMap {
     return { x, y };
   }
 
-  public getRandomPointOnThePlayground(): Point {
+  public getRandomPointOnThePlayground(): GamePoint {
     const min = 100;
     const max = this._config.worldWidth;
     let x = 0;

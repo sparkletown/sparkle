@@ -2,7 +2,7 @@ import { Engine, Entity, NodeList, System } from "@ash.ts/ash";
 
 import { Point } from "types/utility";
 
-import { GameInstance } from "../../GameInstance";
+import { GameControls } from "../../common";
 import { MotionClickControlComponent } from "../components/MotionClickControlComponent";
 import { MotionJoystickControlComponent } from "../components/MotionJoystickControlComponent";
 import { MotionKeyboardControlComponent } from "../components/MotionKeyboardControlComponent";
@@ -15,6 +15,10 @@ import { MotionControlSwitchNode } from "../nodes/MotionControlSwitchNode";
 import { ViewportNode } from "../nodes/ViewportNode";
 
 export class MotionControlSwitchSystem extends System {
+  constructor(private _controls: GameControls) {
+    super();
+  }
+
   private player?: NodeList<MotionControlSwitchNode>;
   private viewport?: NodeList<ViewportNode>;
   private keyboard?: NodeList<KeyboardNode>;
@@ -113,7 +117,7 @@ export class MotionControlSwitchSystem extends System {
 
     if (
       node.viewport.zoomLevel ===
-      GameInstance.instance.getConfig().speedByZoomLevelArray.length - 1
+      this._controls.getConfig().speedByZoomLevelArray.length - 1
     ) {
       this.setPlayerTweenControl(node.viewport.click);
     } else {
@@ -126,7 +130,7 @@ export class MotionControlSwitchSystem extends System {
   private setPlayerTweenControl(e: Point) {
     const x = e.x;
     const y = e.y;
-    if (!GameInstance.instance.playgroundMap.pointIsOnThePlayground(x, y)) {
+    if (!this._controls.playgroundMap.pointIsOnThePlayground(x, y)) {
       // TODO show warning for user
       return;
     }
@@ -148,7 +152,7 @@ export class MotionControlSwitchSystem extends System {
     const x = e.x;
     const y = e.y;
 
-    if (!GameInstance.instance.playgroundMap.pointIsOnThePlayground(x, y)) {
+    if (!this._controls.playgroundMap.pointIsOnThePlayground(x, y)) {
       // TODO show warning for user
       return;
     }

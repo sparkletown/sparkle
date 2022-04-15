@@ -6,6 +6,7 @@ import { Point } from "types/utility";
 
 import { RoomPointNode } from "../../../bridges/DataProvider/Structures/RoomsModel";
 import { EventType } from "../../../bridges/EventProvider/EventProvider";
+import { GameControls } from "../../common";
 import { GameInstance } from "../../GameInstance";
 import EntityFactory from "../entities/EntityFactory";
 import { BotNode } from "../nodes/BotNode";
@@ -14,8 +15,6 @@ import { VenueNode } from "../nodes/VenueNode";
 import { ViewportNode } from "../nodes/ViewportNode";
 
 export class DebugSystem extends System {
-  private container: Container;
-
   private venues?: NodeList<VenueNode>;
   private bots?: NodeList<BotNode>;
   private viewportNodes?: NodeList<ViewportNode>;
@@ -25,12 +24,12 @@ export class DebugSystem extends System {
   private currentZoom = 0;
 
   constructor(
-    container: Container,
+    private _controls: GameControls,
+    private container: Container,
     private creator: EntityFactory,
     private viewport: Viewport
   ) {
     super();
-    this.container = container;
   }
 
   addToEngine(engine: Engine) {
@@ -134,7 +133,7 @@ export class DebugSystem extends System {
 
   private updateLineOfSight(time: number) {
     const name = "visionOfSightRadius";
-    const config = GameInstance.instance.getConfig();
+    const config = this._controls.getConfig();
     const currentZoomLevel = config.zoomViewportToLevel(this.viewport.scale.y);
     if (this.player && this.player.head) {
       const center: Point = this.player?.head
@@ -160,7 +159,7 @@ export class DebugSystem extends System {
         currentZoomLevel === config.ZOOM_LEVEL_WALKING ? 2 : 4;
 
       const dayTime = Math.floor(
-        GameInstance.instance.getConfig().getCurUTCTime() % 24
+        this._controls.getConfig().getCurUTCTime() % 24
       );
       const backgroundColor = dayTime > 5 && dayTime < 18 ? 0x5e07ca : 0xffffff;
       const borderColor = dayTime > 5 && dayTime < 18 ? 0x6108e6 : 0xffffff;
@@ -219,7 +218,7 @@ export class DebugSystem extends System {
   };
 
   private drawVenuesInnerCircle() {
-    const config = GameInstance.instance.getConfig();
+    const config = this._controls.getConfig();
     const center: Point = config.worldCenter;
     const radius = config.worldWidth * 0.073;
 
@@ -232,7 +231,7 @@ export class DebugSystem extends System {
   }
 
   private drawVenuesOuterCircle() {
-    const config = GameInstance.instance.getConfig();
+    const config = this._controls.getConfig();
     const center: Point = config.worldCenter;
     const radius = config.worldWidth * 0.1713;
 
@@ -245,7 +244,7 @@ export class DebugSystem extends System {
   }
 
   private drawPlayaBorderCircle() {
-    const config = GameInstance.instance.getConfig();
+    const config = this._controls.getConfig();
     const center: Point = config.worldCenter;
     const radius = config.worldWidth * 0.4;
 

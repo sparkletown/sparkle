@@ -6,7 +6,6 @@ import { DEFAULT_PORTAL_BOX } from "settings";
 import { setAnimateMapRoom } from "../../../../../../store/actions/AnimateMap";
 import { ReplicatedArtcar } from "../../../../../../store/reducers/AnimateMap";
 import { Point } from "../../../../../../types/utility";
-import { GameInstance } from "../../GameInstance";
 import { ArtcarComponent } from "../components/ArtcarComponent";
 import { ClickableSpriteComponent } from "../components/ClickableSpriteComponent";
 import { CollisionComponent } from "../components/CollisionComponent";
@@ -52,11 +51,9 @@ export const createArtcarEntity = (
   creator: EntityFactory
 ): Entity => {
   const scale = 0.3;
-
-  const config = GameInstance.instance.getConfig();
   // const innerRadius = config.venuesMainCircleOuterRadius;
   // const outerRadius = config.borderRadius;
-  const worldCenter: Point = config.worldCenter;
+  const worldCenter: Point = creator.controls.getConfig().worldCenter;
   //
   // const angle = creator.getRandomNumber(0, 360) * (Math.PI / 180);
   // const radiusX = creator.getRandomNumber(innerRadius, outerRadius);
@@ -84,7 +81,11 @@ export const createArtcarEntity = (
   entity
     .add(artcarComponent)
     .add(new PositionComponent(user.x, user.y, 0, scale, scale))
-    .add(new CollisionComponent(config.VENUE_DEFAULT_COLLISION_RADIUS))
+    .add(
+      new CollisionComponent(
+        creator.controls.getConfig().VENUE_DEFAULT_COLLISION_RADIUS
+      )
+    )
     .add(
       new HoverableSpriteComponent(
         () => {
@@ -104,7 +105,7 @@ export const createArtcarEntity = (
     .add(
       new ClickableSpriteComponent(() => {
         const currentVenueArtcar = getCurrentArtcar(artcarComponent);
-        GameInstance.instance.getStore().dispatch(
+        creator.controls.dispatch(
           setAnimateMapRoom({
             ...DEFAULT_PORTAL_BOX,
             title: currentVenueArtcar.data.title,

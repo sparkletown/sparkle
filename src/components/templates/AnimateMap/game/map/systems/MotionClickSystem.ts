@@ -1,5 +1,6 @@
 import { Engine, NodeList } from "@ash.ts/ash";
 
+import { GameControls } from "../../common";
 import { MotionClickControlComponent } from "../components/MotionClickControlComponent";
 import EntityFactory from "../entities/EntityFactory";
 import { MotionClickControlNode } from "../nodes/MotionClickControlNode";
@@ -10,8 +11,11 @@ import { MotionBaseSystem } from "./MotionBaseSystem";
 export class MotionClickSystem extends MotionBaseSystem {
   private nodes?: NodeList<MotionClickControlNode>;
 
-  constructor(private entityFactory: EntityFactory) {
-    super();
+  constructor(
+    protected _controls: GameControls,
+    private entityFactory: EntityFactory
+  ) {
+    super(_controls);
   }
 
   addToEngine(engine: Engine) {

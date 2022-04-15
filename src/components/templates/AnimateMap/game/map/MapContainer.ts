@@ -17,7 +17,6 @@ import { MAP_JSON, sounds } from "../constants/AssetConstants";
 import { stubArtcarsData } from "../constants/StubData";
 import { GameInstance } from "../GameInstance";
 import KeyPoll from "../utils/KeyPollSingleton";
-import { PlaygroundMap } from "../utils/PlaygroundMap";
 
 import EntityFactory from "./entities/EntityFactory";
 import { AnimationNode } from "./nodes/AnimationNode";
@@ -135,32 +134,42 @@ export class MapContainer extends Container {
 
     // const keyPoll = keyPoll;
     this._engine = new Engine();
-    this.entityFactory = new EntityFactory(this._engine);
+    this.entityFactory = new EntityFactory(this._controls, this._engine);
 
-    this._engine.addSystem(new VenueSystem(), SystemPriorities.update);
+    this._engine.addSystem(
+      new VenueSystem(this._controls),
+      SystemPriorities.update
+    );
     this._engine.addSystem(
       new DeadSystem(this._engine),
       SystemPriorities.update
     );
-    this._engine.addSystem(new VenueSystem(), SystemPriorities.update);
     this._engine.addSystem(
-      new MotionControlSwitchSystem(),
+      new VenueSystem(this._controls),
       SystemPriorities.update
     );
     this._engine.addSystem(
-      new MotionKeyboardSystem(KeyPoll, this.entityFactory),
+      new MotionControlSwitchSystem(this._controls),
       SystemPriorities.update
     );
     this._engine.addSystem(
-      new MotionClickSystem(this.entityFactory),
+      new MotionKeyboardSystem(this._controls, KeyPoll, this.entityFactory),
       SystemPriorities.update
     );
     this._engine.addSystem(
-      new MotionTeleportSystem(this.entityFactory),
+      new MotionClickSystem(this._controls, this.entityFactory),
       SystemPriorities.update
     );
     this._engine.addSystem(
-      new MotionJoystickSystem(this._joystickContainer, this.entityFactory),
+      new MotionTeleportSystem(this._controls, this.entityFactory),
+      SystemPriorities.update
+    );
+    this._engine.addSystem(
+      new MotionJoystickSystem(
+        this._controls,
+        this._joystickContainer,
+        this.entityFactory
+      ),
       SystemPriorities.update
     );
     this._engine.addSystem(
@@ -168,23 +177,24 @@ export class MapContainer extends Container {
       SystemPriorities.update
     );
     this._engine.addSystem(
-      new MotionBotSystem(this.entityFactory),
+      new MotionBotSystem(this._controls, this.entityFactory),
       SystemPriorities.update
     );
 
     this._engine.addSystem(
-      new MotionArtcarSystem(this.entityFactory),
+      new MotionArtcarSystem(this._controls, this.entityFactory),
       SystemPriorities.update
     );
     this._engine.addSystem(new SoundEmitterSystem(), SystemPriorities.update);
     this._engine.addSystem(
-      new AvatarTuningSystem(this.entityFactory),
+      new AvatarTuningSystem(this._controls, this.entityFactory),
       SystemPriorities.update
     );
 
     if (this._debugContainer && this._viewport) {
       this._engine.addSystem(
         new DebugSystem(
+          this._controls,
           this._debugContainer,
           this.entityFactory,
           this._viewport
@@ -195,11 +205,11 @@ export class MapContainer extends Container {
 
     this._engine.addSystem(new MovementSystem(), SystemPriorities.move);
     this._engine.addSystem(
-      new LineOfSightSystem(this.entityFactory),
+      new LineOfSightSystem(this._controls, this.entityFactory),
       SystemPriorities.move
     );
     this._engine.addSystem(
-      new MotionCollisionSystem(this.entityFactory),
+      new MotionCollisionSystem(this._controls, this.entityFactory),
       SystemPriorities.resolveCollisions
     );
 
@@ -239,11 +249,15 @@ export class MapContainer extends Container {
       SystemPriorities.render
     );
     this._engine.addSystem(
-      new ViewportBackgroundSystem(this._viewport as Viewport, this._app),
+      new ViewportBackgroundSystem(
+        this._controls,
+        this._viewport as Viewport,
+        this._app
+      ),
       SystemPriorities.render
     );
     this._engine.addSystem(
-      new FirebarrelSystem(this.entityFactory),
+      new FirebarrelSystem(this._controls, this.entityFactory),
       SystemPriorities.render
     );
   }
@@ -317,7 +331,7 @@ export class MapContainer extends Container {
         })
         .then(() => {
           if (this.entityFactory) {
-            const map: PlaygroundMap = GameInstance.instance.playgroundMap;
+            const map = this._controls.playgroundMap;
             const bots = this._controls.getUsers();
             const itrb: IterableIterator<ReplicatedUser> = bots.values();
             const self: MapContainer = this;

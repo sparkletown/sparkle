@@ -12,8 +12,8 @@ import {
 import { ImageToCanvas } from "../../commands/ImageToCanvas";
 import { LoadImage } from "../../commands/LoadImage";
 import { RoundAvatar } from "../../commands/RoundAvatar";
+import { GameControls } from "../../common";
 import { avatarCycles } from "../../constants/AssetConstants";
-import { GameInstance } from "../../GameInstance";
 import { AvatarTuningComponent } from "../components/AvatarTuningComponent";
 import { BubbleComponent } from "../components/BubbleComponent";
 import { CollisionComponent } from "../components/CollisionComponent";
@@ -59,9 +59,10 @@ import { createVenueEntity, updateVenueEntity } from "./createVenueEntity";
 
 export default class EntityFactory {
   public engine: Engine;
-  private config = GameInstance.instance.getConfig();
+  public controls: GameControls;
 
-  constructor(engine: Engine) {
+  constructor(controls: GameControls, engine: Engine) {
+    this.controls = controls;
     this.engine = engine;
   }
 
@@ -146,7 +147,8 @@ export default class EntityFactory {
   }
 
   public getRandomBot(): ReplicatedUser | undefined {
-    const bots = GameInstance.instance.getState().users;
+    const bots = this.controls.getUsers();
+    console.log("bots => ", bots);
     const botIndex = Math.floor(Math.random() * bots.size);
     if (botIndex > 0) {
       const itr = bots.values();
@@ -322,7 +324,7 @@ export default class EntityFactory {
     const url = user.data.pictureUrl;
     const sprite: Avatar = new Avatar();
 
-    if (this.config.AVATAR_TEXTURE_USE_WITHOUT_PREPROCESSING) {
+    if (this.controls.getConfig().AVATAR_TEXTURE_USE_WITHOUT_PREPROCESSING) {
       new LoadImage(url)
         .execute()
         .then((comm) => {
@@ -347,7 +349,7 @@ export default class EntityFactory {
           entity.add(spriteComponent);
         });
     } else {
-      new RoundAvatar(url)
+      new RoundAvatar(this.controls, url)
         .execute()
         .then((comm: RoundAvatar) => {
           if (!comm.canvas) return Promise.reject();
@@ -481,9 +483,7 @@ export default class EntityFactory {
       firebarrelNode &&
       playerNode.player.fsm.currentStateName !== playerNode.player.IMMOBILIZED
     ) {
-      GameInstance.instance
-        .getStore()
-        .dispatch(setAnimateMapFireBarrel(firebarrelId));
+      this.controls.dispatch(setAnimateMapFireBarrel(firebarrelId));
 
       playerNode.entity.add(firebarrelNode.firebarrel);
       playerNode.player.fsm.changeState(playerNode.player.IMMOBILIZED);

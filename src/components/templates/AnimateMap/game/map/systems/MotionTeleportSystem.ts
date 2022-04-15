@@ -1,5 +1,6 @@
 import { Engine, NodeList } from "@ash.ts/ash";
 
+import { GameControls } from "../../common";
 import { Easing } from "../../utils/Easing";
 import EntityFactory from "../entities/EntityFactory";
 import { MotionTeleportNode } from "../nodes/MotionTeleportNode";
@@ -9,8 +10,11 @@ import { MotionBaseSystem } from "./MotionBaseSystem";
 export class MotionTeleportSystem extends MotionBaseSystem {
   private nodes?: NodeList<MotionTeleportNode>;
 
-  constructor(public creator: EntityFactory) {
-    super();
+  constructor(
+    protected _controls: GameControls,
+    public creator: EntityFactory
+  ) {
+    super(_controls);
   }
 
   addToEngine(engine: Engine) {

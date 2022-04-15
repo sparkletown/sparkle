@@ -1,5 +1,6 @@
 import { Engine, NodeList } from "@ash.ts/ash";
 
+import { GameControls } from "../../common";
 import { KeyPollSingleton } from "../../utils/KeyPollSingleton";
 import { KeyboardComponent } from "../components/KeyboardComponent";
 import { MotionKeyboardControlComponent } from "../components/MotionKeyboardControlComponent";
@@ -15,10 +16,11 @@ export class MotionKeyboardSystem extends MotionBaseSystem {
   private keyboardControl?: NodeList<MotionKeyboardControlNode>;
 
   constructor(
+    protected _controls: GameControls,
     private keyPoll: KeyPollSingleton,
     private entityFactory: EntityFactory
   ) {
-    super();
+    super(_controls);
   }
 
   addToEngine(engine: Engine) {

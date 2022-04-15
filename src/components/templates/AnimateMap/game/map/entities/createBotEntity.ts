@@ -27,7 +27,7 @@ export const createBotEntity = (
   creator: EntityFactory,
   realUser = false
 ) => {
-  const point: Point = GameInstance.instance.playgroundMap.getRandomPointInTheCentralCircle();
+  const point: Point = creator.controls.playgroundMap.getRandomPointInTheCentralCircle();
 
   if (!realUser) {
     user.x = point.x;
@@ -93,7 +93,7 @@ export const createBotEntity = (
   // }
   const url = pictureUrls.length > 0 ? pictureUrls[0] : "";
 
-  new RoundAvatar(url)
+  new RoundAvatar(creator.controls, url)
     .execute()
     .then((comm: RoundAvatar) => {
       if (!comm.canvas) return Promise.reject();

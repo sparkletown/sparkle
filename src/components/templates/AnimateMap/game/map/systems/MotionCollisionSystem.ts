@@ -3,6 +3,7 @@ import { Engine, NodeList, System } from "@ash.ts/ash";
 import { ReplicatedVenue } from "store/reducers/AnimateMap";
 
 import { EventType } from "../../../bridges/EventProvider/EventProvider";
+import { GameControls } from "../../common";
 import { GameInstance } from "../../GameInstance";
 import { CollisionComponent } from "../components/CollisionComponent";
 import { MovementComponent } from "../components/MovementComponent";
@@ -21,11 +22,8 @@ export class MotionCollisionSystem extends System {
   private artcars?: NodeList<ArtcarNode>;
   private barrels?: NodeList<FirebarrelNode>;
 
-  private creator: EntityFactory;
-
-  constructor(creator: EntityFactory) {
+  constructor(private _controls: GameControls, private creator: EntityFactory) {
     super();
-    this.creator = creator;
   }
 
   addToEngine(engine: Engine) {
@@ -45,8 +43,6 @@ export class MotionCollisionSystem extends System {
   }
 
   update(time: number) {
-    const playgroundMap = GameInstance.instance.playgroundMap;
-
     if (!this.colliders || !this.colliders.head) {
       return;
     }
@@ -85,7 +81,7 @@ export class MotionCollisionSystem extends System {
         currentPosition.y - this.colliders.head.movement.velocityY * time;
 
       if (this.player && this.player.head) {
-        playgroundMap.pointIsOnThePlayground(
+        this._controls.playgroundMap.pointIsOnThePlayground(
           this.player.head.position.x,
           this.player.head.position.y
         );
@@ -160,24 +156,27 @@ export class MotionCollisionSystem extends System {
     position: PositionComponent,
     movement: MovementComponent
   ): boolean {
-    const playgroundMap = GameInstance.instance.playgroundMap;
-
     time *= 2;
     const nextX = position.x + movement.velocityX * time;
     const nextY = position.y + movement.velocityY * time;
 
-    if (playgroundMap.pointIsInTheOuterCircle(position.x, position.y)) {
+    if (
+      this._controls.playgroundMap.pointIsInTheOuterCircle(
+        position.x,
+        position.y
+      )
+    ) {
       return false;
     }
 
-    if (playgroundMap.pointIsOnThePlayground(nextX, nextY)) {
+    if (this._controls.playgroundMap.pointIsOnThePlayground(nextX, nextY)) {
       return false;
     }
 
     const previousX = position.x - movement.velocityX * time;
     const previousY = position.y - movement.velocityY * time;
 
-    const boundingCollide = playgroundMap.getPointIfBoundingPlaygroundBorder(
+    const boundingCollide = this._controls.playgroundMap.getPointIfBoundingPlaygroundBorder(
       previousX,
       previousY,
       nextX,
@@ -195,8 +194,8 @@ export class MotionCollisionSystem extends System {
   public collideBoundingBox(player: MotionCollidedNode): boolean {
     const left = 100;
     const top = 100;
-    const right = GameInstance.instance.getConfig().worldWidth - left;
-    const bottom = GameInstance.instance.getConfig().worldWidth - top;
+    const right = this._controls.getConfig().worldWidth - left;
+    const bottom = this._controls.getConfig().worldWidth - top;
 
     let collide = false;
     if (player.position.x < left) {

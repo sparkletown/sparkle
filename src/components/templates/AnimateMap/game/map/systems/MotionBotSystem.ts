@@ -1,8 +1,6 @@
 import { Engine, NodeList } from "@ash.ts/ash";
 
-import { Point } from "types/utility";
-
-import { GameInstance } from "../../GameInstance";
+import { GameControls, GamePoint } from "../../common";
 import EntityFactory from "../entities/EntityFactory";
 import { MotionBotControlNode } from "../nodes/MotionBotControlNode";
 import { MotionBotIdleNode } from "../nodes/MotionBotIdleNode";
@@ -13,8 +11,11 @@ export class MotionBotSystem extends MotionBaseSystem {
   private botsIdle?: NodeList<MotionBotIdleNode>;
   private botsMotion?: NodeList<MotionBotControlNode>;
 
-  constructor(private creator: EntityFactory) {
-    super();
+  constructor(
+    protected _controls: GameControls,
+    private creator: EntityFactory
+  ) {
+    super(_controls);
   }
 
   addToEngine(engine: Engine) {
@@ -40,7 +41,7 @@ export class MotionBotSystem extends MotionBaseSystem {
         continue;
       }
       if (Math.random() > 0.8) {
-        const point: Point = GameInstance.instance.playgroundMap.getRandomPointInTheCentralCircle();
+        const point: GamePoint = this._controls.playgroundMap.getRandomPointInTheCentralCircle();
         this.creator.updateBotPosition(idle.bot.data, point.x, point.y);
       }
     }
@@ -56,7 +57,7 @@ export class MotionBotSystem extends MotionBaseSystem {
   }
 
   private handleBotsMotionAdded = (node: MotionBotControlNode) => {
-    const point: Point = GameInstance.instance.playgroundMap.getRandomPointInTheCentralCircle();
+    const point: GamePoint = this._controls.playgroundMap.getRandomPointInTheCentralCircle();
     node.click.x = point.x;
     node.click.y = point.y;
     node.click.zoom = this.getRandomZoom();

@@ -1,4 +1,4 @@
-import { GameInstance } from "../GameInstance";
+import { GameControls } from "../common";
 
 import Command from "./Command";
 import { LoadImage } from "./LoadImage";
@@ -6,9 +6,8 @@ import { LoadImage } from "./LoadImage";
 export class RoundAvatar implements Command {
   private resolve?: Function;
   public canvas: HTMLCanvasElement;
-  private config = GameInstance.instance.getConfig();
 
-  constructor(private url?: string) {
+  constructor(private controls: GameControls, private url?: string) {
     this.canvas = document.createElement("canvas");
   }
 
@@ -27,7 +26,7 @@ export class RoundAvatar implements Command {
   }
 
   private doIt() {
-    const size = this.config.AVATAR_TEXTURE_DEFAULT_SIZE;
+    const size = this.controls.getConfig().AVATAR_TEXTURE_DEFAULT_SIZE;
     new LoadImage(this.url)
       .execute()
       .then((comm: LoadImage) => {

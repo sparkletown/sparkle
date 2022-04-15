@@ -1,4 +1,5 @@
 import { GameConfig } from "./GameConfig";
+import { GamePoint } from "./GamePoint";
 
 export type GameUserData = {
   id: string;
@@ -18,8 +19,20 @@ export type GameUser = {
 };
 
 export type GameControls = {
+  playgroundMap: {
+    pointIsOnThePlayground: (x: number, y: number) => boolean;
+    pointIsInTheOuterCircle: (x: number, y: number) => boolean;
+    getPointIfBoundingPlaygroundBorder: (
+      x1: number,
+      y1: number,
+      x2: number,
+      y2: number
+    ) => GamePoint | undefined;
+    getRandomPointInTheCentralCircle: () => GamePoint;
+    getRandomPointOnThePlayground: () => GamePoint;
+  };
   dispatch: (data: { type: string }) => void;
-  getUsers: () => Array<GameUser>;
+  getUsers: () => Map<string, GameUser>;
   getEnvironmentSound: () => object;
   getZoomLevel: () => number;
   getLastZoom: () => number;

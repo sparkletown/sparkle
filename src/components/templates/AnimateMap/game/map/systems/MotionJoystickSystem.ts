@@ -2,6 +2,7 @@ import { Engine, NodeList } from "@ash.ts/ash";
 import { Container, Graphics, Sprite } from "pixi.js";
 import { Joystick, JoystickChangeEvent } from "pixi-virtual-joystick";
 
+import { GameControls } from "../../common";
 import {
   JOYSTICK_HANDLE_IMAGE,
   JOYSTICK_IMAGE,
@@ -20,18 +21,18 @@ export class MotionJoystickSystem extends MotionBaseSystem {
   private joystick?: NodeList<JoystickNode>;
   private motionJoystickControl?: NodeList<MotionJoystickControlNode>;
   private motionKeyboardControl?: NodeList<MotionKeyboardControlNode>;
-
-  private _container: Container;
   private _joystick: Joystick;
   private _outer: Graphics;
   private _inner: Sprite;
   private easingX?: Easing;
   private easingY?: Easing;
 
-  constructor(container: Container, private entityFactory: EntityFactory) {
-    super();
-
-    this._container = container;
+  constructor(
+    protected _controls: GameControls,
+    private _container: Container,
+    private entityFactory: EntityFactory
+  ) {
+    super(_controls);
 
     const background = Sprite.from(JOYSTICK_IMAGE);
     background.anchor.set(0.5);

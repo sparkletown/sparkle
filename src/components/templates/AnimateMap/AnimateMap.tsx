@@ -47,6 +47,7 @@ export const AnimateMap: React.FC<AnimateMapProps> = (props) => {
       const playgroundMap = new PlaygroundMap(config);
 
       const controls: GameControls = {
+        playgroundMap: playgroundMap,
         dispatch: (data: { type: string }) => store.dispatch(data),
         getUsers: () => store.getState().animatemap.users,
         getEnvironmentSound: () => store.getState().animatemap.environmentSound,

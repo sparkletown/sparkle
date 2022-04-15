@@ -3,9 +3,9 @@ import { Box, Point, QuadTree } from "js-quadtree";
 import { Application, BaseTexture, Container, Sprite } from "pixi.js";
 import { Viewport } from "pixi-viewport";
 
+import { GameControls } from "../../common";
 import { MAP_IMAGE } from "../../constants/AssetConstants";
 import { tiles } from "../../constants/AssetsMapTilesConstants";
-import { GameInstance } from "../../GameInstance";
 import { KeyFramer } from "../../utils/KeyFramer";
 import {
   mapLightningShader,
@@ -49,6 +49,7 @@ export class ViewportBackgroundSystem extends System {
    * @param timeAccelerator set to 1 in prod
    */
   constructor(
+    private _controls: GameControls,
     viewport: Viewport,
     private app: Application,
     private timeAccelerator: number = 1
@@ -78,7 +79,7 @@ export class ViewportBackgroundSystem extends System {
 
       const back: Sprite = Sprite.from(MAP_IMAGE);
       back.anchor.set(0.5);
-      const scale = GameInstance.instance.getConfig().worldWidth / back.width;
+      const scale = this._controls.getConfig().worldWidth / back.width;
       back.scale.set(scale);
       back.anchor.set(0);
 
@@ -120,11 +121,11 @@ export class ViewportBackgroundSystem extends System {
 
     this._updateFilters();
 
-    const zoomLevel = GameInstance.instance
+    const zoomLevel = this._controls
       .getConfig()
       .zoomViewportToLevel(this.viewport.scale.y);
 
-    if (zoomLevel === GameInstance.instance.getConfig().ZOOM_LEVEL_FLYING) {
+    if (zoomLevel === this._controls.getConfig().ZOOM_LEVEL_FLYING) {
       // removing mapLOD_0
       if (this.mapLOD_0.children.length) {
         this.mapLOD_0.removeChildren();
@@ -251,7 +252,7 @@ export class ViewportBackgroundSystem extends System {
       this.viewport.worldScreenWidth,
       this.viewport.worldScreenHeight,
     ];
-    this.setDayTime(GameInstance.instance.getConfig().getCurUTCTime());
+    this.setDayTime(this._controls.getConfig().getCurUTCTime());
   }
 
   /**
@@ -298,9 +299,9 @@ export class ViewportBackgroundSystem extends System {
       this.worldDivision = Math.sqrt(tiles.length);
 
       this.worldTileWidth =
-        GameInstance.instance.getConfig().worldWidth / this.worldDivision;
+        this._controls.getConfig().worldWidth / this.worldDivision;
       this.worldTileHeight =
-        GameInstance.instance.getConfig().worldHeight / this.worldDivision;
+        this._controls.getConfig().worldHeight / this.worldDivision;
 
       this.tileScaleX = this.worldTileWidth / baseTexture.width;
       this.tileScaleY = this.worldTileHeight / baseTexture.height;
@@ -308,7 +309,7 @@ export class ViewportBackgroundSystem extends System {
   }
 
   private setupTree() {
-    const config = GameInstance.instance.getConfig();
+    const config = this._controls.getConfig();
     this.tree = new QuadTree(
       new Box(0, 0, config.worldWidth, config.worldWidth)
     );

@@ -2,7 +2,7 @@ import { Engine, NodeList, System } from "@ash.ts/ash";
 
 import { Point } from "types/utility";
 
-import { GameInstance } from "../../GameInstance";
+import { GameControls } from "../../common";
 import { AvatarTuningComponent } from "../components/AvatarTuningComponent";
 import EntityFactory from "../entities/EntityFactory";
 import { AvatarTuningNode } from "../nodes/AvatarTuningNode";
@@ -11,7 +11,6 @@ import { PlayerNode } from "../nodes/PlayerNode";
 import { ViewportNode } from "../nodes/ViewportNode";
 
 export class LineOfSightSystem extends System {
-  private creator: EntityFactory;
   private player?: NodeList<PlayerNode>;
   private avatars?: NodeList<AvatarTuningNode>;
   private bots?: NodeList<BotNode>;
@@ -20,9 +19,8 @@ export class LineOfSightSystem extends System {
   private currentZoomLevel = -1;
   private lineOfSightRadius = 0;
 
-  constructor(creator: EntityFactory) {
+  constructor(private _controls: GameControls, private creator: EntityFactory) {
     super();
-    this.creator = creator;
   }
 
   addToEngine(engine: Engine) {
@@ -52,8 +50,7 @@ export class LineOfSightSystem extends System {
 
     this.currentZoomLevel = this.viewport.head.viewport.zoomLevel;
     if (
-      this.currentZoomLevel ===
-      GameInstance.instance.getConfig().ZOOM_LEVEL_FLYING
+      this.currentZoomLevel === this._controls.getConfig().ZOOM_LEVEL_FLYING
     ) {
       for (
         let node: AvatarTuningNode | null | undefined = this.avatars?.head;
@@ -65,7 +62,7 @@ export class LineOfSightSystem extends System {
       return;
     }
 
-    const config = GameInstance.instance.getConfig();
+    const config = this._controls.getConfig();
     const center: Point = {
       x: this.player.head.position.x,
       y: this.player.head.position.y,

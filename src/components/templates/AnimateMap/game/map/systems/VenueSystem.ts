@@ -1,11 +1,15 @@
 import { Engine, NodeList, System } from "@ash.ts/ash";
 
-import { GameInstance } from "../../GameInstance";
+import { GameControls } from "../../common";
 import { VenueNode } from "../nodes/VenueNode";
 
 export class VenueSystem extends System {
+  constructor(private _controls: GameControls) {
+    super();
+  }
+
   private venues?: NodeList<VenueNode>;
-  private config = GameInstance.instance.getConfig();
+  private config = this._controls.getConfig();
 
   addToEngine(engine: Engine) {
     this.venues = engine.getNodeList(VenueNode);

@@ -5,8 +5,8 @@ import { ReplicatedFirebarrel } from "store/reducers/AnimateMap";
 
 import { ImageToCanvas } from "../../commands/ImageToCanvas";
 import { LoadImage } from "../../commands/LoadImage";
+import { GameConfig } from "../../common";
 import { barrels } from "../../constants/AssetConstants";
-import { GameInstance } from "../../GameInstance";
 import { AnimationComponent } from "../components/AnimationComponent";
 import { ClickableSpriteComponent } from "../components/ClickableSpriteComponent";
 import { CollisionComponent } from "../components/CollisionComponent";
@@ -29,8 +29,7 @@ import { Venue } from "../graphics/Venue";
 
 import EntityFactory from "./EntityFactory";
 
-const getCollisionRadius = (): number => {
-  const config = GameInstance.instance.getConfig();
+const getCollisionRadius = (config: GameConfig): number => {
   return config.VENUE_DEFAULT_COLLISION_RADIUS / 2;
 };
 
@@ -53,7 +52,8 @@ const getCurrentReplicatedFirebarrel = (
 const updateBarrelImage = (
   barrel: ReplicatedFirebarrel,
   spriteComponent: SpriteComponent,
-  positionComponent: PositionComponent
+  positionComponent: PositionComponent,
+  config: GameConfig
 ): Promise<void> => {
   return new LoadImage(barrel.data.iconSrc)
     .execute()
@@ -65,12 +65,12 @@ const updateBarrelImage = (
         if (!comm.image) return Promise.reject();
 
         // the picture can be very large
-        const scale = ((getCollisionRadius() * 2) / comm.image.width) * 2;
+        const scale = ((getCollisionRadius(config) * 2) / comm.image.width) * 2;
         return new ImageToCanvas(comm.image).scaleTo(scale).execute();
       }
     )
     .then((comm: ImageToCanvas) => {
-      const scale = (getCollisionRadius() * 2) / comm.canvas.width / 2;
+      const scale = (getCollisionRadius(config) * 2) / comm.canvas.width / 2;
       positionComponent.scaleX = scale;
       positionComponent.scaleY = scale;
 
@@ -109,7 +109,12 @@ export const updateFirebarrelEntity = (
     return;
   }
 
-  updateBarrelImage(barrel, spriteComponent, node.position);
+  updateBarrelImage(
+    barrel,
+    spriteComponent,
+    node.position,
+    creator.controls.getConfig()
+  );
 };
 
 export const createFirebarrelEntity = (
@@ -164,7 +169,9 @@ export const createFirebarrelEntity = (
 
   entity
     .add(barrelComponent)
-    .add(new CollisionComponent(getCollisionRadius()))
+    .add(
+      new CollisionComponent(getCollisionRadius(creator.controls.getConfig()))
+    )
     .add(positionComponent)
     .add(spriteComponent)
     .add(new FirebarrelCamIcon(spriteComponent.view))
@@ -223,7 +230,12 @@ export const createFirebarrelEntity = (
   creator.engine.addEntity(entity);
 
   spriteComponent.view.visible = false;
-  updateBarrelImage(barrel, spriteComponent, positionComponent).finally(() => {
+  updateBarrelImage(
+    barrel,
+    spriteComponent,
+    positionComponent,
+    creator.controls.getConfig()
+  ).finally(() => {
     if (spriteComponent && spriteComponent.view) {
       spriteComponent.view.visible = true;
     }
