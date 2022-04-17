@@ -3,6 +3,7 @@
 @use "scss/attendee/effects/rounded";
 @use "scss/attendee/effects/atom";
 @use "scss/attendee/opacity";
+@use "scss/attendee/theme";
 
 .componentMediaObject {
   position: sticky;
@@ -13,7 +14,7 @@
   z-index: 10;
   padding: space.empty(2) 0 0;
   margin-top: space.empty(2);
-  margin-bottom: space.empty(4);
+  margin-bottom: space.button(1);
   height: min-content;
 
   &__fullWidth {
@@ -78,17 +79,22 @@
   flex-direction: column;
   justify-self: start;
   margin-left: space.empty(0.25);
+  cursor: pointer;
+
   @media (min-width: breakpoint.$md) {
     display: flex;
   }
+
   svg {
     @include atom.icon;
+    color: theme.$c-default-text;
     opacity: opacity.$md;
-    @media (prefers-color-scheme: dark) {
-      filter: invert(1);
-    }
     border-radius: 0;
     width: space.empty(2);
     position: relative;
+
+    &:hover {
+      opacity: opacity.$mx;
+    }
   }
 }

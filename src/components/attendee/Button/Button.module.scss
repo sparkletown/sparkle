@@ -35,6 +35,11 @@
 
 .variant-alternative {
   background: transparent;
+
+  &.disabled {
+    background: transparent;
+    opacity: theme.$disabled-opacity;
+  }
 }
 
 .variant-login {
@@ -80,4 +85,8 @@
 
 .large {
   font-size: font.$size--xl;
+}
+
+.buttonPaddingNone {
+  padding: 0;
 }
