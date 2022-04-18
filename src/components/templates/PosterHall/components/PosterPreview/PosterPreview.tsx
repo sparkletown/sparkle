@@ -7,7 +7,7 @@ import { PosterPageSpaceWithId } from "types/id";
 
 import { enterSpace } from "utils/url";
 
-import { useValidImage } from "hooks/useCheckImage";
+import { useValidImage } from "hooks/image/useValidImage";
 import { useWorldParams } from "hooks/worlds/useWorldParams";
 
 import { PosterCategory } from "components/atoms/PosterCategory";
@@ -50,10 +50,11 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
 
   const userCount = posterVenue.recentUserCount ?? 0;
 
-  const [validatedThumbnailUrl, { isValid: isThumbnailValid }] = useValidImage(
-    thumbnailUrl,
-    ""
-  );
+  const {
+    src: validatedThumbnailUrl,
+    isValid: isThumbnailValid,
+  } = useValidImage(thumbnailUrl, "");
+
   const thumbnailStyles = useCss({
     backgroundImage: `url(${validatedThumbnailUrl})`,
   });
