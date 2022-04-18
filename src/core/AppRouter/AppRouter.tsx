@@ -2,6 +2,7 @@ import React, { lazy, Suspense } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { LoginRestricted } from "components/shared/LoginRestricted";
 import { NotFound } from "components/shared/NotFound";
+import { SplashGated } from "components/shared/SplashGated";
 import { AnalyticsCheck } from "core/AnalyticsCheck";
 
 import {
@@ -9,8 +10,11 @@ import {
   ADMIN_ROOT_URL,
   ATTENDEE_EMERGENCY_PARAM_URL,
   ATTENDEE_INSIDE_URL,
-  ATTENDEE_LANDING_URL,
+  ATTENDEE_SPACE_SPLASH_URL,
+  ATTENDEE_SPACE_URL,
   ATTENDEE_STEPPING_PARAM_URL,
+  ATTENDEE_WORLD_SPLASH_URL,
+  ATTENDEE_WORLD_URL,
   EXTERNAL_SPARKLE_HOMEPAGE_URL,
   EXTERNAL_SPARKLEVERSE_HOMEPAGE_URL,
   PASSWORD_RESET_URL,
@@ -66,10 +70,18 @@ const PasswordResetPage = lazy(() =>
   )
 );
 
-const VenueLandingPage = lazy(() =>
-  tracePromise("AppRouter::lazy-import::VenueLandingPage", () =>
-    import("pages/VenueLandingPage").then(({ VenueLandingPage }) => ({
-      default: VenueLandingPage,
+const SplashWorld = lazy(() =>
+  tracePromise("AppRouter::lazy-import::SplashWorld", () =>
+    import("components/attendee/SplashWorld").then(({ SplashWorld }) => ({
+      default: SplashWorld,
+    }))
+  )
+);
+
+const SplashSpace = lazy(() =>
+  tracePromise("AppRouter::lazy-import::SplashSpace", () =>
+    import("components/attendee/SplashSpace").then(({ SplashSpace }) => ({
+      default: SplashSpace,
     }))
   )
 );
@@ -119,14 +131,6 @@ export const AppRouter: React.FC = () => (
         {
           // Subs END
         }
-
-        <Route path={ATTENDEE_LANDING_URL}>
-          <RelatedVenuesProvider>
-            <AnalyticsCheck>
-              <VenueLandingPage />
-            </AnalyticsCheck>
-          </RelatedVenuesProvider>
-        </Route>
         <Route path={SIGN_IN_URL}>
           <LoginPage />
         </Route>
@@ -136,6 +140,28 @@ export const AppRouter: React.FC = () => (
         <Route path={PASSWORD_RESET_URL}>
           <PasswordResetPage />
         </Route>
+        {/* Is Signed in / profile filled / onboarded  */}
+        <Route path={ATTENDEE_WORLD_SPLASH_URL}>
+          <SplashWorld />
+        </Route>
+        <Route path={ATTENDEE_SPACE_SPLASH_URL}>
+          <SplashSpace />
+        </Route>
+
+        {/* If not Signed in / profile filled / onboarded redirect to splash page */}
+        <Route path={ATTENDEE_SPACE_URL}>
+          <SplashGated>
+            <RelatedVenuesProvider>
+              <AnalyticsCheck>
+                <AttendeeLayout />
+              </AnalyticsCheck>
+            </RelatedVenuesProvider>
+          </SplashGated>
+        </Route>
+        <Route path={ATTENDEE_WORLD_URL}>
+          <SplashGated>{/* Redirect to default world space*/}</SplashGated>
+        </Route>
+
         <Route path={ATTENDEE_STEPPING_PARAM_URL}>
           <LoginRestricted>
             <RelatedVenuesProvider>

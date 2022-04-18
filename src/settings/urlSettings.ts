@@ -41,6 +41,14 @@ export const ATTENDEE_INSIDE_URL = `${INSIDE_BASE_URL}/w/:worldSlug/s/:spaceSlug
 export const ATTENDEE_LANDING_URL = `${LANDING_BASE_URL}/w/:worldSlug/s/:spaceSlug`;
 export const ATTENDEE_STEPPING_PARAM_URL = `${ENTRANCE_BASE_URL}/w/:worldSlug/s/:spaceSlug/:step`;
 
+// New Attendee URLs
+export const ATTENDEE_WORLD_URL = `/w/:worldSlug`;
+export const ATTENDEE_SPACE_URL = `${ATTENDEE_WORLD_URL}/:spaceSlug`;
+
+// Splash URLs
+export const ATTENDEE_WORLD_SPLASH_URL = `${ATTENDEE_WORLD_URL}/splash`;
+export const ATTENDEE_SPACE_SPLASH_URL = `${ATTENDEE_SPACE_URL}/splash`;
+
 // Account URLs
 export const ACCOUNT_CODE_QUESTIONS_URL = `${ACCOUNT_ROOT_URL}/code-of-conduct/:worldSlug/:spaceSlug?`;
 export const ACCOUNT_PROFILE_BASE_URL = `${ACCOUNT_ROOT_URL}/profile`;
