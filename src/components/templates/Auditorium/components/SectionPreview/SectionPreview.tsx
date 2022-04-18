@@ -6,7 +6,7 @@ import classNames from "classnames";
 import { ALWAYS_EMPTY_ARRAY, SECTION_CAPACITY } from "settings";
 
 import { AuditoriumSection } from "types/auditorium";
-import { AuditoriumVenue } from "types/venues";
+import { AuditoriumSpaceWithId } from "types/id";
 
 import { WithId } from "utils/id";
 
@@ -14,7 +14,7 @@ import { UserList } from "components/molecules/UserList";
 
 export interface SectionPreviewProps {
   section: WithId<AuditoriumSection>;
-  venue: WithId<AuditoriumVenue>;
+  venue: AuditoriumSpaceWithId;
   enterSection: (sectionId: string) => void;
 }
 

@@ -206,6 +206,8 @@ export const ProfileOverlay: React.FC<ProfileOverlayProps> = ({
             links={links}
             errors={errors?.profileLinks}
             onAddLink={addLinkHandler}
+            watch={watch}
+            setValue={setValue}
           />
           <ProfileModalChangePassword
             register={register}
@@ -223,7 +225,7 @@ export const ProfileOverlay: React.FC<ProfileOverlayProps> = ({
               variant="alternative"
               border="alternative"
             >
-              {isSubmitting ? "Saving..." : "Save changes"}
+              Save changes
             </Button>
             <Button
               disabled={isSubmitting}
@@ -234,10 +236,11 @@ export const ProfileOverlay: React.FC<ProfileOverlayProps> = ({
             </Button>
             {isSuccess ? <span>✓ Saved</span> : ""}
           </div>
-
-          <Button large variant="alternative" onClick={logout}>
-            {isLoggingOut ? "Logging Out..." : "Log Out"}
-          </Button>
+          <div className={styles.logOut}>
+            <Button large variant="alternative" onClick={logout} paddingless>
+              {isLoggingOut ? "Logging Out..." : "Log Out"}
+            </Button>
+          </div>
         </div>
       </div>
     </div>

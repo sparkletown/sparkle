@@ -8,6 +8,7 @@
   --default-text: rgb(0, 0, 0);
   --subdued-text: rgb(142, 142, 142);
   --chat-input-background: rgb(230, 230, 230);
+  --space-wrapper-background: rgb(230, 230, 230);
   --disabled-color: rgba(255, 255, 255, 0.4);
   --glass-panel-background-transparent: rgba(255, 255, 255, 0.1);
   --glass-panel-background-transparent--inverted: rgba(0, 0, 0, 0.1);
@@ -49,6 +50,7 @@
   @media (prefers-color-scheme: dark) {
     --default-text: rgb(255, 255, 255);
     --chat-input-background: rgb(60, 60, 60);
+    --space-wrapper-background: rgb(50, 50, 50);
 
     --panel-background: rgb(0, 0, 0);
     --glass-panel-background: rgba(0, 0, 0, 0.4);
@@ -86,6 +88,7 @@ $c-glass-panel-background-text-inverted: var(
 );
 $c-glass-panel-text: var(--glass-panel-text);
 $c-color-glass-panel-background: var(--color-glass-panel-background);
+$c-space-wrapper-background: var(--space-wrapper-background);
 
 $c-button-fg: var(--button-fg);
 $c-button-bg: var(--button-bg);
@@ -138,3 +141,5 @@ $c-tuner-text-color: rgb(255, 255, 255);
 $c-tuner-radio-button-background: rgba(255, 255, 255, 0.16);
 $c-tuner-radio-button-border: rgba(255, 255, 255, 0.4);
 $c-tuner-divider-color: rgba(255, 255, 255, 0.14);
+
+$disabled-opacity: 0.4;

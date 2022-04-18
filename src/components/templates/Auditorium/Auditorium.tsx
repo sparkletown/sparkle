@@ -1,14 +1,12 @@
 import React from "react";
 import { MediaElement } from "components/attendee/MediaElement";
 
-import { AuditoriumVenue } from "types/venues";
-
-import { WithId } from "utils/id";
+import { AuditoriumSpaceWithId } from "types/id";
 
 import { SeatingBlock } from "./components/SeatingBlock";
 
-export interface AuditoriumProps {
-  venue: WithId<AuditoriumVenue>;
+interface AuditoriumProps {
+  venue: AuditoriumSpaceWithId;
 }
 
 export const Auditorium: React.FC<AuditoriumProps> = ({ venue }) => {

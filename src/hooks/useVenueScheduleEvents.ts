@@ -23,6 +23,7 @@ import { useWorldParams } from "./worlds/useWorldParams";
 import { useSpaceEvents } from "./events";
 import { useRelatedVenues } from "./useRelatedVenues";
 
+// @debt shared mutable value should most likely be replaced with ALWAYS_EMPTY_ARRAY
 const emptyRelatedEvents: WorldEvent[] = [];
 const todaysDate = startOfToday();
 

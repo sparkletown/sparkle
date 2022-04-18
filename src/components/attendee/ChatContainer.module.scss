@@ -41,6 +41,14 @@
   }
 }
 
+.relativeContainer {
+  margin-bottom: space.empty(3);
+
+  @media (min-width: breakpoint.$md) {
+    margin: 0 space.empty(1) space.empty(2) auto;
+  }
+}
+
 .chatContainerExpanded {
   @media (min-width: breakpoint.$md) {
     @include rounded.bottom;
@@ -88,12 +96,12 @@
 
 .relativeSideBar {
   min-height: layout.$h-mobile-chat-bar;
+  margin-top: space.empty(-3);
+  margin-bottom: space.empty(3);
 
   @media (min-width: breakpoint.$md) {
-    min-height: 500px;
-    position: absolute;
-    right: 0;
-    bottom: 66px;
+    min-height: 90vh;
+    margin: 0 space.empty(1) 0 auto;
   }
 }
 

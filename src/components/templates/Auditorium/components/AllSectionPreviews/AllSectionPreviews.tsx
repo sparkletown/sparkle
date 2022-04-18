@@ -7,9 +7,7 @@ import { sample } from "lodash";
 
 import { DEFAULT_SECTIONS_AMOUNT } from "settings";
 
-import { AuditoriumVenue } from "types/venues";
-
-import { WithId } from "utils/id";
+import { AuditoriumSpaceWithId } from "types/id";
 
 import { useAllAuditoriumSections } from "hooks/auditorium";
 
@@ -21,8 +19,8 @@ import { VenueWithOverlay } from "components/atoms/VenueWithOverlay/VenueWithOve
 
 import { SectionPreview } from "../SectionPreview";
 
-export interface SectionPreviewsProps {
-  venue: WithId<AuditoriumVenue>;
+interface SectionPreviewsProps {
+  venue: AuditoriumSpaceWithId;
 }
 
 export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
@@ -62,50 +60,50 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
   }
 
   return (
-    <>
-      <VenueWithOverlay venue={venue} containerClassNames="">
-        <InfiniteScroll
-          dataLength={auditoriumSections.length}
-          className={`AllSectionPreviews ${containerClasses}`}
-          next={loadMore}
-          hasMore={
-            venue.sectionsCount
-              ? auditoriumSections.length < venue.sectionsCount
-              : true
-          }
-          loader={<Loading containerClassName="AllSectionPreviews__loader" />}
+    <VenueWithOverlay>
+      <InfiniteScroll
+        dataLength={auditoriumSections.length}
+        className={`AllSectionPreviews ${containerClasses}`}
+        next={loadMore}
+        hasMore={
+          !venue.sectionsCount ||
+          auditoriumSections.length < venue.sectionsCount
+        }
+        loader={<Loading containerClassName="AllSectionPreviews__loader" />}
+      >
+        <div
+          data-bem="AllSectionPreviews__main"
+          data-block="AllSectionPreviews"
+          data-side="att"
+          className="AllSectionPreviews__main"
         >
-          <div className="AllSectionPreviews__main">
-            <div className="AllSectionPreviews__welcome-text">
-              {venue.title}
-            </div>
-            <div className="AllSectionPreviews__description-text">
-              {venue.config?.landingPageConfig?.description}
-            </div>
-            <div className="AllSectionPreviews__action-buttons">
-              <Checkbox
-                defaultChecked={isFullAuditoriumsHidden}
-                onChange={toggleFullAuditoriums}
-                containerClassName="AllSectionPreviews__toggler"
-                label="Hide full sections"
-              />
-
-              <ButtonOG onClick={enterRandomSection}>
-                Enter random section
-              </ButtonOG>
-            </div>
+          <div className="AllSectionPreviews__welcome-text">{venue.title}</div>
+          <div className="AllSectionPreviews__description-text">
+            {venue.config?.landingPageConfig?.description}
           </div>
-
-          {auditoriumSections.map((section) => (
-            <SectionPreview
-              key={section.id}
-              section={section}
-              venue={venue}
-              enterSection={enterSection}
+          <div className="AllSectionPreviews__action-buttons">
+            <Checkbox
+              defaultChecked={isFullAuditoriumsHidden}
+              onChange={toggleFullAuditoriums}
+              containerClassName="AllSectionPreviews__toggler"
+              label="Hide full sections"
             />
-          ))}
-        </InfiniteScroll>
-      </VenueWithOverlay>
-    </>
+
+            <ButtonOG onClick={enterRandomSection}>
+              Enter random section
+            </ButtonOG>
+          </div>
+        </div>
+
+        {auditoriumSections.map((section) => (
+          <SectionPreview
+            key={section.id}
+            section={section}
+            venue={venue}
+            enterSection={enterSection}
+          />
+        ))}
+      </InfiniteScroll>
+    </VenueWithOverlay>
   );
 };

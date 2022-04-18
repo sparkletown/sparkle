@@ -3,11 +3,10 @@ import firebase from "firebase/compat/app";
 
 import { ALWAYS_EMPTY_ARRAY } from "settings";
 
+import { AnimateMapSpaceWithId, SpaceWithId } from "types/id";
 import { Room } from "types/rooms";
-import { AnimateMapVenue, AnyVenue } from "types/venues";
 
 import { isEventLive } from "utils/event";
-import { WithId } from "utils/id";
 import { getFirebaseStorageResizedImage } from "utils/image";
 import { WithVenue } from "utils/venue";
 
@@ -27,7 +26,7 @@ const EMPTY_WORLD_USERS = {
 };
 
 export interface CloudDataProviderWrapperProps {
-  venue: WithId<AnimateMapVenue>;
+  venue: AnimateMapSpaceWithId;
   newDataProviderCreate: (dataProvider: CloudDataProvider) => void;
   relatedRooms: UseRelatedPartymapRoomsResult;
   reInitOnError?: boolean;
@@ -40,7 +39,7 @@ export type RoomWithFullData = (WithVenue<Room> | Room) & {
 };
 
 // @debt use ALWAYS_EMPTY_ARRAY to avoid shared mutable state
-const emptyRelatedVenues: WithId<AnyVenue>[] = [];
+const emptyRelatedVenues: SpaceWithId[] = [];
 
 export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> = ({
   venue,
@@ -53,12 +52,12 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
   );
   const user = useLiveUser();
 
-  const venues: WithId<AnyVenue>[] = useMemo(
+  const venues: SpaceWithId[] = useMemo(
     () =>
       relatedRooms
         ? relatedRooms
             .filter((room) => "venue" in room && "id" in venue)
-            .map((room) => (room as WithVenue<Room>)?.venue as WithId<AnyVenue>)
+            .map((room) => (room as WithVenue<Room>)?.venue as SpaceWithId)
         : emptyRelatedVenues,
     [relatedRooms, venue]
   );
@@ -86,7 +85,7 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
     (room, index) => {
       if ("venue" in room) {
         const roomWithVenue = room as WithVenue<Room>;
-        const venue = roomWithVenue.venue as WithId<AnyVenue>;
+        const venue = roomWithVenue.venue as SpaceWithId;
         const location = locationUsers.find(
           (location) => location.id === venue.id
         );

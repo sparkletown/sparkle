@@ -9,7 +9,7 @@ import { PollMessage, PollQuestion } from "types/chat";
 import { WithId } from "utils/id";
 
 import { useIsCurrentUser } from "hooks/useIsCurrentUser";
-import { useLiveUser } from "hooks/user/useLiveUser";
+import { useUserId } from "hooks/user/useUserId";
 import { useVenuePoll } from "hooks/useVenuePoll";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
@@ -30,7 +30,7 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
   pollMessage,
   voteInPoll,
 }) => {
-  const { userId } = useLiveUser();
+  const { userId } = useUserId();
   const { id, poll, votes } = pollMessage;
   const { questions, topic } = poll;
   const isMine = useIsCurrentUser(pollMessage.fromUser.id);

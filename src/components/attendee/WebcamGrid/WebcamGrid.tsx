@@ -4,16 +4,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useVideoComms } from "components/attendee/VideoComms/hooks";
 import { VideoCommsParticipant } from "components/attendee/VideoComms/VideoCommsParticipant";
 
-import { AnyVenue } from "types/venues";
-
-import { WithId } from "utils/id";
+import { SpaceWithId } from "types/id";
 
 import { useUserId } from "hooks/user/useUserId";
 
 import styles from "./WebcamGrid.module.scss";
 
 interface TableGridProps {
-  space: WithId<AnyVenue>;
+  space: SpaceWithId;
 }
 
 export const WebcamGrid: React.FC<TableGridProps> = ({ space }) => {
@@ -81,7 +79,12 @@ export const WebcamGrid: React.FC<TableGridProps> = ({ space }) => {
   }, [disconnect]);
 
   return (
-    <div className={styles.container}>
+    <div
+      data-bem="WebcamGrid"
+      data-block="WebcamGrid"
+      data-side="att"
+      className={styles.container}
+    >
       <div className={styles.webcamContainer}>
         {hasJoined && (
           <div className={styles.leaveContainer}>
