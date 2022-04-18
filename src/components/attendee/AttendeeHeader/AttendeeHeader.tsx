@@ -32,10 +32,12 @@ const tabCaptions: Readonly<Record<HeaderTab, String>> = {
 
 interface AttendeeHeaderProps {
   backButtonSpace?: BaseVenue;
+  isBannerOn?: boolean;
 }
 
 export const AttendeeHeader: React.FC<AttendeeHeaderProps> = ({
   backButtonSpace,
+  isBannerOn,
 }) => {
   const { isShown, hide, show } = useShowHide(false);
   const [overlayLabel, setOverlayLabel] = useState("");
@@ -99,6 +101,7 @@ export const AttendeeHeader: React.FC<AttendeeHeaderProps> = ({
 
   const containerClasses = classNames(CN.container, {
     [CN.narrow]: isNarrow,
+    [CN.blur]: isBannerOn,
   });
 
   return (
@@ -118,17 +121,25 @@ export const AttendeeHeader: React.FC<AttendeeHeaderProps> = ({
               transparent={isNarrow}
               onClick={() => handleOverlayOpen(space?.name || "")}
             >
-              {space?.name ?? `This ${SPACE_TAXON.title}`}
-              <span className={CN.headerTime}>
+              <div className={CN.headerTitle}>
+                {space?.name ?? `This ${SPACE_TAXON.title}`}
+              </div>
+              <span className={CN.headerTimeTransparent}>
                 {getDateHoursAndMinutes(currentMilliseconds())}
               </span>
             </Button>
           )}
           {!isLaptopSmall && space && <Attendance space={space} />}
-          <div>{renderedCaptions}</div>
+          <div className={CN.captionWrapper}>{renderedCaptions}</div>
         </div>
       </header>
-      {isShown && <NavOverlay onClose={hide} type={overlayLabel} />}
+      {isShown && (
+        <NavOverlay
+          onClose={hide}
+          type={overlayLabel}
+          isBannerOn={isBannerOn}
+        />
+      )}
     </>
   );
 };

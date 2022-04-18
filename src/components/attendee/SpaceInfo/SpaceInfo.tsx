@@ -1,40 +1,43 @@
 import { Link } from "react-router-dom";
 import { useCss } from "react-use";
 
-import { ATTENDEE_INSIDE_URL, DEFAULT_MAP_BACKGROUND } from "settings";
+import { DEFAULT_MAP_BACKGROUND } from "settings";
 
-import { generateUrl } from "utils/url";
+import { SpaceWithId } from "types/id";
 
-import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useValidImage } from "hooks/useCheckImage";
 
 import CN from "./SpaceInfo.module.scss";
 
-export const SpaceInfo: React.FC = () => {
-  const { world, space } = useWorldAndSpaceByParams();
-  const [mapBackground] = useValidImage(
+type SpaceInfoProps = {
+  space?: SpaceWithId;
+};
+
+export const SpaceInfo: React.FC<SpaceInfoProps> = ({ space }) => {
+  const [mapBackground, { isLoading }] = useValidImage(
     space?.host?.icon,
     DEFAULT_MAP_BACKGROUND
   );
 
-  const visitSpaceUrl = generateUrl({
-    route: ATTENDEE_INSIDE_URL,
-    required: ["worldSlug", "spaceSlug"],
-    params: { worldSlug: world?.slug, spaceSlug: space?.slug },
-  });
+  // @debt: To be replaced with proper redirect mechanism
+  const visitSpaceUrl = () => alert("NOT YET IMPLEMENTED");
 
   const mapStyles = useCss({
     backgroundImage: `url(${mapBackground})`,
   });
 
+  if (!space || isLoading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className={CN.spaceWrapper}>
       <div className={`${CN.spaceImage} ${mapStyles}`}></div>
-      <div>About {space?.name || "Space"}</div>
+      <div className={CN.headerTitle}>About {space?.name || "Space"}</div>
       <div className={CN.spaceDescription}>
         {space?.config?.landingPageConfig?.description ?? ""}
       </div>
-      <Link to={visitSpaceUrl} className={CN.spaceLink}>
+      <Link to="#" onClick={visitSpaceUrl} className={CN.spaceLink}>
         Go to homepage
       </Link>
     </div>

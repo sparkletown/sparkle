@@ -55,6 +55,7 @@ export const USER_PRESENCE_CHECKIN_INTERVAL = 60000;
 export const USER_PRESENCE_DEBOUNCE_INTERVAL = 1000;
 
 export const ATTENDEE_HEADER_AVATAR_LIMIT = 50;
+export const ATTENDEE_DESCRIPTION_AVATAR_LIMIT = 200;
 
 // How often to increment user's timespent
 export const LOCATION_INCREMENT_SECONDS = 10;
