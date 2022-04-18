@@ -6,33 +6,18 @@ import {
   AnimateMapActionTypes,
 } from "store/actions/AnimateMap";
 
-import { Firebarrel } from "types/animateMap";
 import { Room } from "types/rooms";
-import { User } from "types/User";
 import { Point } from "types/utility";
 
 import { StartPoint } from "components/templates/AnimateMap/game/utils/Point";
+import {
+  AnimateMapFirebarrel,
+  AnimateMapUser,
+  AnimateMapUserData,
+  AnimateMapVenue,
+} from "components/templates/AnimateMapCommon";
 
-export interface AnimateMapEntity {
-  x: number;
-  y: number;
-  data: ReplicatedUserData | ReplicatedVenueData | ReplicatedFirebarrelData;
-}
-
-export interface ReplicatedUserData extends User {
-  id: string;
-  partyName?: string;
-  messengerId: number; //playerio messager id
-  pictureUrl?: string;
-  dotColor: number; //hex
-  hat?: string;
-  accessories?: string;
-  cycle?: string;
-}
-
-export interface ReplicatedUser extends AnimateMapEntity {
-  data: ReplicatedUserData;
-}
+export type ReplicatedUser = AnimateMapUser;
 
 export interface ReplicatedArtcar extends ReplicatedVenue {
   radiusX: number;
@@ -42,31 +27,12 @@ export interface ReplicatedArtcar extends ReplicatedVenue {
   colorIndex: number;
 }
 
-export interface ReplicatedVenueData extends Room {
-  id: number;
-  isLive: boolean;
-  countUsers: number;
-  withoutPlate?: boolean;
-}
+export type ReplicatedVenue = AnimateMapVenue;
 
-export interface ReplicatedVenue extends AnimateMapEntity {
-  data: ReplicatedVenueData;
-}
-
-export interface ReplicatedVenue extends AnimateMapEntity {
-  data: ReplicatedVenueData;
-}
-
-export interface ReplicatedFirebarrelData extends Firebarrel {
-  connectedUsers?: string[];
-}
-
-export interface ReplicatedFirebarrel extends AnimateMapEntity {
-  data: ReplicatedFirebarrelData;
-}
+export type ReplicatedFirebarrel = AnimateMapFirebarrel;
 
 export class PlayerModel implements ReplicatedUser {
-  public data: ReplicatedUserData = {
+  public data: AnimateMapUserData = {
     id: "",
     partyName: "",
     messengerId: 0,
