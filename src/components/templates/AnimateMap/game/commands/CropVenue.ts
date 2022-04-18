@@ -1,12 +1,11 @@
+import { GameConfig } from "../common";
 import { venues } from "../constants/AssetConstants";
-import { GameInstance } from "../GameInstance";
 
 import Command from "./Command";
 import { ImageToCanvas } from "./ImageToCanvas";
 import { LoadImage } from "./LoadImage";
 
 export class CropVenue implements Command {
-  private config = GameInstance.instance.getConfig();
   private resolve?: Function;
   public canvas: HTMLCanvasElement;
   public usersCount = 0;
@@ -16,7 +15,7 @@ export class CropVenue implements Command {
   private static VENUE_PLATE?: HTMLCanvasElement;
   private static VENUE_PEOPLE?: HTMLCanvasElement;
 
-  constructor(private url: string) {
+  constructor(private url: string, private config: GameConfig) {
     this.canvas = document.createElement("canvas");
   }
 

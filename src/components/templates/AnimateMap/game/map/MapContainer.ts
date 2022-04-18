@@ -386,7 +386,7 @@ export class MapContainer extends Container {
         .then(() => {
           if (this.entityFactory) {
             const self: MapContainer = this;
-            const artcars = stubArtcarsData();
+            const artcars = stubArtcarsData(this._controls.getConfig());
             const loop = async () => {
               for (let i = 0; i < artcars.length; i++) {
                 await new Promise((resolve) => {

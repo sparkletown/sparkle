@@ -52,7 +52,7 @@ const updateVenueImage = (
   positionComponent: PositionComponent,
   config: GameConfig
 ): Promise<void> => {
-  return new CropVenue(replicatedVenue.data.image_url)
+  return new CropVenue(replicatedVenue.data.image_url, config)
     .setUsersCount(replicatedVenue.data.countUsers)
     .setWithoutPlate(replicatedVenue.data.withoutPlate)
     .setUsersCountColor(

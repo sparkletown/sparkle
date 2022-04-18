@@ -99,7 +99,7 @@ export class GameInstance {
 
   private async initMap(): Promise<void> {
     if (!this._app) return console.error();
-    this._controls.dispatch(setAnimateMapUsers(stubUsersData()));
+    this._controls.dispatch(setAnimateMapUsers(stubUsersData(this._config)));
 
     this._mapContainer = new MapContainer(this._app, this._controls);
     this._stage?.addChild(this._mapContainer);
@@ -137,6 +137,7 @@ export class GameInstance {
     window.addEventListener("resize", this.resize);
 
     if (this.getState().firstEntrance === "false") {
+      console.log("this start first");
       return await this._play();
     } else {
       this.getConfig().firstEntrance = true;
@@ -147,6 +148,7 @@ export class GameInstance {
           //   return new WaitClickForHeroCreation().execute();
           // })
           .then(async (command: WaitClickForHeroCreation) => {
+            console.log("this is start command => ", command);
             await this._play(command.clickPoint);
             this._controls.dispatch(setAnimateMapFirstEntrance("false"));
           })

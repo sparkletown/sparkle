@@ -9,7 +9,7 @@ import { determineAvatar } from "utils/image";
 
 import { Point } from "../../../../../types/utility";
 import { getIntByHash } from "../../bridges/DataProvider/Contructor/PlayerIO/utils/getIntByHash";
-import { GameInstance } from "../GameInstance";
+import { GameConfig } from "../common";
 
 import {
   artcars13,
@@ -18,7 +18,7 @@ import {
   avatarHats,
 } from "./AssetConstants";
 
-export const stubArtcarsData = () => {
+export const stubArtcarsData = (config: GameConfig) => {
   const users: Array<ReplicatedArtcar> = [];
   const arr = [
     {
@@ -122,7 +122,6 @@ export const stubArtcarsData = () => {
     return Math.floor(pseudoRandom.nextFloat() * (max - min) + min);
   };
 
-  const config = GameInstance.instance.getConfig();
   const innerRadius = config.venuesMainCircleOuterRadius;
   const outerRadius = config.borderRadius;
   const worldCenter: Point = config.worldCenter;
@@ -165,9 +164,7 @@ export const stubArtcarsData = () => {
   return users;
 };
 
-export const stubUsersData = () => {
-  const config = GameInstance.instance.getConfig();
-
+export const stubUsersData = (config: GameConfig) => {
   const users: Map<string, ReplicatedUser> = new Map();
   const len = config.QA_BOTS_NUMBER;
   const paddingH = config.worldWidth * 0.1;
