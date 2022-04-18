@@ -24,21 +24,7 @@ export const eventEditSchema = Yup.object().shape<EventInput>({
                 () => !!selectedSpace.id
               )
       ),
-      name: Yup.string().when(
-        ["$eventSpaceId", "$selectedSpace"],
-        (
-          eventSpaceId: string,
-          selectedSpace: SpaceType,
-          schema: Yup.ObjectSchema<SpaceType>
-        ) =>
-          eventSpaceId
-            ? schema.notRequired()
-            : schema.test(
-                "space",
-                "Space name required",
-                () => !!selectedSpace.name
-              )
-      ),
+      label: Yup.string(),
     })
     .notRequired(),
   name: Yup.string().required("Name required"),

@@ -1,14 +1,7 @@
-import React, { ReactElement, ReactNode, useState } from "react";
+import { PropsWithChildren, useCallback, useState } from "react";
 import { MenuPlacement } from "react-select";
-
-import {
-  ALWAYS_EMPTY_ARRAY,
-  ALWAYS_EMPTY_OBJECT,
-  ALWAYS_EMPTY_SELECT_OPTION,
-  ALWAYS_NO_STYLE_FUNCTION,
-} from "settings";
-
-import { PortalOptionProps } from "types/venues";
+import { IconDefinition } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import {
   buttonTailwind,
@@ -21,89 +14,37 @@ import {
 
 import CN from "./Dropdown.module.scss";
 
-// if these are undefined, the 3rd party library will provide own defaults
-const NO_INLINE_STYLES_PLEASE = {
-  menu: ALWAYS_NO_STYLE_FUNCTION,
-  input: ALWAYS_NO_STYLE_FUNCTION,
-  option: ALWAYS_NO_STYLE_FUNCTION,
-  control: ALWAYS_NO_STYLE_FUNCTION,
-  menuList: ALWAYS_NO_STYLE_FUNCTION,
-  container: ALWAYS_NO_STYLE_FUNCTION,
-  singleValue: ALWAYS_NO_STYLE_FUNCTION,
-  valueContainer: ALWAYS_NO_STYLE_FUNCTION,
-  inputContainer: ALWAYS_NO_STYLE_FUNCTION,
-  dropdownIndicator: ALWAYS_NO_STYLE_FUNCTION,
-  indicatorSeparator: ALWAYS_NO_STYLE_FUNCTION,
-  indicatorsContainer: ALWAYS_NO_STYLE_FUNCTION,
-};
-Object.freeze(NO_INLINE_STYLES_PLEASE);
+export interface Option {
+  icon?: string | IconDefinition;
+  label: string;
+}
 
-const DROPDOWN_VALUE_PROP = "data-dropdown-value";
-const DROPDOWN_PROPS_PROP = "data-dropdown-props";
-type DropdownItemProps = {
-  [DROPDOWN_VALUE_PROP]?: string;
-  [DROPDOWN_PROPS_PROP]?: PortalOptionProps;
-};
-
-const remap: (label: ReactNode) => { label: ReactNode; value: string } = (
-  reactNode
-) => {
-  if (null === reactNode || undefined === reactNode || "" === reactNode) {
-    return ALWAYS_EMPTY_SELECT_OPTION;
-  }
-
-  const type = typeof reactNode;
-
-  return type === "string" || type === "number" || type === "boolean"
-    ? { label: reactNode, value: String(reactNode) }
-    : {
-        label: reactNode,
-        value:
-          (reactNode as ReactElement<DropdownItemProps>).props[
-            DROPDOWN_VALUE_PROP
-          ] ?? "",
-        props:
-          (reactNode as ReactElement<DropdownItemProps>).props[
-            DROPDOWN_PROPS_PROP
-          ] ?? ALWAYS_EMPTY_OBJECT,
-      };
-};
-
-interface DropdownProps {
-  title?: ReactNode;
+interface DropdownProps<T> {
+  title?: string;
   className?: string;
   placement?: MenuPlacement;
   noArrow?: boolean;
-  onSelect?: (option: Option) => void;
-  titleElement?: JSX.Element;
+  options: T[];
   disabled?: boolean;
+  renderOption?: (option: T) => JSX.Element;
+  onSelect?: (option: T) => void;
 }
 
-export type Option = {
-  label: ReactNode;
-  value: string;
-  props?: PortalOptionProps;
-};
-
-export const Dropdown: React.FC<DropdownProps> = ({
+export const Dropdown = <T extends Option>({
   title,
-  children,
+  options,
+  renderOption,
+  disabled,
   onSelect,
-  titleElement,
-  disabled = false,
-}) => {
+}: PropsWithChildren<DropdownProps<T>>) => {
   const [isOpened, setOpened] = useState<boolean>(false);
   const [selectedOption, setSelectedOption] = useState<Option>();
-  const titleName = !selectedOption
-    ? titleElement?.props?.["data-dropdown-value"]
-    : null;
-  const options = React.Children.map(children, remap) ?? ALWAYS_EMPTY_ARRAY;
 
-  const selectOption = (option: Option) => {
+  const selectOption = useCallback((option) => {
     setSelectedOption(option);
     setOpened(false);
     onSelect?.(option);
-  };
+  }, [onSelect])
 
   return (
     <>
@@ -133,10 +74,8 @@ export const Dropdown: React.FC<DropdownProps> = ({
         <ul className={listTailwind}>
           {options.map((option, index) => {
             const isSelected =
-              option.value === selectedOption?.value ||
-              option.value === titleName ||
-              (!selectedOption && !option.value && !titleName);
-
+              option.label === selectedOption?.label ||
+              (!selectedOption && !option.label);
             const textContainerClasses = isSelected
               ? "font-semibold select-none relative py-2 pl-3 w-max"
               : "select-none relative py-2 pl-3 w-max";
@@ -146,12 +85,34 @@ export const Dropdown: React.FC<DropdownProps> = ({
 
             return (
               <li
-                key={`${index}-${option.value}`}
-                className={`${CN.optionContainer} ${listItem}`}
+                key={`${index}-${option.label}`}
+                className={listItem}
                 onClick={() => selectOption(option)}
               >
-                <div className={textContainerClasses}>{option.label}</div>
-                {isSelected && <span className={checkmarkClasses}></span>}
+                {!!renderOption && renderOption(option)}
+                {!renderOption && (
+                  <>
+                    {!!option.icon && (
+                      <div className="flex items-center rounded-full w-8 h-8 justify-center bg-sparkle ml-2">
+                        {typeof option.icon === "string" && (
+                          <img
+                            alt={`space-icon-${option.icon}`}
+                            src={option.icon}
+                            className="w-6 h-6 w-full h-full"
+                          />
+                        )}
+                        {typeof option.icon === "object" && (
+                          <FontAwesomeIcon
+                            icon={option.icon}
+                            className="w-6 h-6 w-full h-full"
+                          />
+                        )}
+                      </div>
+                    )}
+                    <div className={textContainerClasses}>{option.label}</div>
+                    {isSelected && <span className={checkmarkClasses}></span>}
+                  </>
+                )}
               </li>
             );
           })}

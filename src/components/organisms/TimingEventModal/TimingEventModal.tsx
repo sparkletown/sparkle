@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, useFormState } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -48,7 +48,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
 }) => {
   const [selectedSpace, setSelectedSpace] = useState<SpaceType>({
     id: "",
-    name: "",
+    label: "",
   });
 
   const eventSpaceId = event?.spaceId || (venue?.id as SpaceId | undefined);
@@ -91,25 +91,19 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
     userId: userId ?? "",
   });
 
-  const spacesMap: SpaceType[] = ownedVenues.map((venue) => ({
+  const spacesOptions: SpaceType[] = ownedVenues.map((venue) => ({
     id: venue.id,
-    name: venue.name,
+    label: venue.name,
   }));
 
-  const renderedSpaceIds = useMemo(
-    () =>
-      spacesMap.map((space) => {
-        return (
-          <div key={space.id} data-dropdown-value={space}>
-            {space.name}
-          </div>
-        );
-      }) ?? [],
-    [spacesMap]
+  const renderOption = (space: SpaceType) => (
+    <div key={space.id} data-dropdown-value={space}>
+      {space.label}
+    </div>
   );
 
   const selectSpace = (option: Option) => {
-    setSelectedSpace(option.value as SpaceType);
+    setSelectedSpace(option as SpaceType);
   };
 
   const [{ loading: isLoading }, onUpdateEvent] = useAsyncFn(
@@ -168,13 +162,16 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
           {!eventSpace?.name && (
             <>
               <div className="mb-6">
-                <Dropdown onSelect={selectSpace} title="None">
-                  {renderedSpaceIds}
-                </Dropdown>
+                <Dropdown
+                  onSelect={selectSpace}
+                  options={spacesOptions}
+                  renderOption={renderOption}
+                  title="None"
+                />
               </div>
               {errors.space && (
                 <span className="text-red-500">
-                  {errors.space.name?.message}
+                  {errors.space.label?.message}
                 </span>
               )}
             </>
