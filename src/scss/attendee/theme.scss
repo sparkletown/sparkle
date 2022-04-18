@@ -10,9 +10,13 @@
   --chat-input-background: rgb(230, 230, 230);
   --disabled-color: rgba(255, 255, 255, 0.4);
   --glass-panel-background-transparent: rgba(255, 255, 255, 0.1);
+  --glass-panel-background-transparent--inverted: rgba(0, 0, 0, 0.1);
 
   --panel-background: rgb(255, 255, 255);
-  --glass-panel-background: rgba(255, 255, 255, 0.4);
+  --glass-panel-background: rgba(255, 255, 255, 0.199);
+  --glass-panel-background--inverted: rgba(0, 0, 0, 0.4);
+  --glass-panel-background-text: rgba(255, 255, 255, 0.8);
+  --glass-panel-background-text--inverted: rgba(0, 0, 0, 0.8);
   --color-glass-panel-background: rgba(99, 42, 199, 0.7);
 
   --sparkle--bg: rgb(99, 42, 199);
@@ -48,6 +52,11 @@
 
     --panel-background: rgb(0, 0, 0);
     --glass-panel-background: rgba(0, 0, 0, 0.4);
+    --glass-panel-background--inverted: rgba(255, 255, 255, 0.4);
+    --glass-panel-background-text: rgba(0, 0, 0, 0.8);
+    --glass-panel-background-text--inverted: rgba(255, 255, 255, 0.8);
+    --glass-panel-background-transparent: rgba(0, 0, 0, 0.1);
+    --glass-panel-background-transparent--inverted: rgba(255, 255, 255, 0.1);
     --glass-panel-text: rgba(0, 0, 0, 0.6);
   }
 }
@@ -64,8 +73,16 @@ $sparkle--border: var(--sparkle--border); // previously named $sparkle-border
 
 $c-panel-background: var(--panel-background);
 $c-glass-panel-background: var(--glass-panel-background);
+$c-glass-panel-background-inverted: var(--glass-panel-background--inverted);
 $c-glass-panel-background-transparent: var(
   --glass-panel-background-transparent
+);
+$c-glass-panel-background-transparent-inverted: var(
+  --glass-panel-background-transparent--inverted
+);
+$c-glass-panel-background-text: var(--glass-panel-background-text);
+$c-glass-panel-background-text-inverted: var(
+  --glass-panel-background-text--inverted
 );
 $c-glass-panel-text: var(--glass-panel-text);
 $c-color-glass-panel-background: var(--color-glass-panel-background);

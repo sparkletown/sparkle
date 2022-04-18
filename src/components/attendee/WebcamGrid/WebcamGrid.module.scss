@@ -4,6 +4,7 @@
 @use "scss/attendee/layout.scss";
 @use "scss/attendee/space.scss";
 @use "scss/attendee/theme.scss";
+@use "scss/attendee/border.scss";
 
 @mixin participantPanel {
   display: flex;
@@ -58,11 +59,11 @@
   opacity: 0.5;
   cursor: pointer;
   text-align: end;
-  padding: 0 2px 0 2px;
+  padding: 0 space.$s2 0 space.$s2;
 
   &:hover {
     opacity: 0.8;
-    background-color: rgba(0, 0, 0, 0.1);
-    border-radius: 2px;
+    background-color: theme.$c-glass-panel-background-transparent-inverted;
+    border-radius: border.$radius--s2;
   }
 }

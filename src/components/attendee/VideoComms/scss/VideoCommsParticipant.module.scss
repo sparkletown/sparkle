@@ -29,7 +29,7 @@
   flex-direction: row-reverse;
   font-size: font.$size--lg;
   color: theme.$c-light-text-on-dark;
-  background: rgba(0, 0, 0, 0.4);
+  background: theme.$c-glass-panel-background-inverted;
   border-top-left-radius: 4px;
   cursor: pointer;
 
@@ -41,7 +41,7 @@
     justify-content: center;
 
     &:hover {
-      background: rgba(0, 0, 0, 0.5);
+      background: theme.$c-mask-bg;
     }
   }
 }
@@ -63,8 +63,8 @@
 .userName {
   position: absolute;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.4);
-  color: rgba(theme.$c-light-text-on-dark, 0.8);
+  background: theme.$c-glass-panel-background-inverted;
+  color: theme.$c-glass-panel-background-text;
   padding: space.$s2 space.$xs space.$xs;
   border-radius: 3px;
   font-size: font.$size--sm;
