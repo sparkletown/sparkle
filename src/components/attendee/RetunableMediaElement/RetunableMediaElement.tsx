@@ -97,7 +97,9 @@ export const RetunableMediaElement: React.FC<RetunableMediaElementProps> = ({
     >
       {mediaElement}
       {isTuning && <Tuner space={space} stopTuning={stopTuning} />}
-      <TuneBanner isTuning={isTuning} startTuning={startTuning} />
+      {localParticipant && (
+        <TuneBanner isTuning={isTuning} startTuning={startTuning} />
+      )}
     </div>
   );
 };

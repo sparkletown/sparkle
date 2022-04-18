@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { RefObject, useMemo } from "react";
 import { FieldError, RegisterOptions, UseFormRegister } from "react-hook-form";
 import classNames from "classnames";
 
@@ -24,6 +24,7 @@ type InputProps = React.HTMLProps<HTMLInputElement> & {
   rules?: RegisterOptions;
   border?: "borderless" | "border";
   variant?: "login" | "overlay";
+  forwardRef?: RefObject<HTMLInputElement>;
 };
 
 export const Input: React.ForwardRefRenderFunction<
@@ -39,6 +40,7 @@ export const Input: React.ForwardRefRenderFunction<
   name,
   border = "borderless",
   variant = "",
+  forwardRef,
   ...extraInputProps
 }) => {
   const inputId = useMemo(() => generateId("Input"), []);
@@ -67,6 +69,7 @@ export const Input: React.ForwardRefRenderFunction<
           className={inputClassNames}
           {...extraInputProps}
           onKeyDown={handleKeyPress}
+          ref={forwardRef}
         />
 
         {label && (
