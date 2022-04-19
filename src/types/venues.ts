@@ -95,6 +95,10 @@ export interface BaseVenue {
   // spaces such as poster pages and meeting room booths.
   managedBy?: SpaceId;
 
+  // The isHidden flag is used to indicate that a system managed space has
+  // been deleted by the system. We only hide it rather than delete it as
+  // it should still be accessible to people who have been there and references
+  // to spaces in things like analytics should still work.
   isHidden?: boolean;
 }
 
