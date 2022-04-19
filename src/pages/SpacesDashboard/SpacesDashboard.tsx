@@ -32,9 +32,12 @@ export const SpacesDashboard: React.FC<SpacesDashboardProps> = ({
   const isWorldAdmin = userId ? world?.owners.includes(userId) : undefined;
   const { spaces } = useWorldSpaces({ worldId: world.id });
 
+  const managedSpaces = spaces.filter(({ managedBy }) => !!managedBy);
+  const unmanagedSpaces = spaces.filter(({ managedBy }) => !managedBy);
+
   const renderedMapCards: JSX.Element[] | undefined = useMemo(
     () =>
-      spaces?.filter(isPartyMapVenue).map((space) => {
+      unmanagedSpaces?.filter(isPartyMapVenue).map((space) => {
         const isSpaceAdmin = userId
           ? space.owners?.includes(userId)
           : undefined;
@@ -48,12 +51,12 @@ export const SpacesDashboard: React.FC<SpacesDashboardProps> = ({
           />
         );
       }),
-    [spaces, userId, world, isWorldAdmin]
+    [unmanagedSpaces, userId, world, isWorldAdmin]
   );
 
   const renderedOtherSpacesCards: JSX.Element[] | undefined = useMemo(
     () =>
-      spaces?.filter(isNotPartyMapVenue).map((space) => {
+      unmanagedSpaces?.filter(isNotPartyMapVenue).map((space) => {
         const isSpaceAdmin = userId
           ? space.owners?.includes(userId)
           : undefined;
@@ -67,12 +70,32 @@ export const SpacesDashboard: React.FC<SpacesDashboardProps> = ({
           />
         );
       }),
-    [spaces, userId, world, isWorldAdmin]
+    [unmanagedSpaces, userId, world, isWorldAdmin]
+  );
+
+  const renderedManagedSpacesCards: JSX.Element[] | undefined = useMemo(
+    () =>
+      managedSpaces?.filter(isNotPartyMapVenue).map((space) => {
+        const isSpaceAdmin = userId
+          ? space.owners?.includes(userId)
+          : undefined;
+
+        return (
+          <SpaceCard
+            key={space.id}
+            space={space}
+            world={world}
+            isEditable={isWorldAdmin || isSpaceAdmin}
+          />
+        );
+      }),
+    [managedSpaces, userId, world, isWorldAdmin]
   );
 
   const hasSpaces = spaces?.length > 0;
   const hasMaps = renderedMapCards?.length > 0;
   const hasOtherSpaces = renderedOtherSpacesCards?.length > 0;
+  const hasManagedSpaces = renderedManagedSpacesCards?.length > 0;
 
   const createNewSpaceUrl = generateUrl({
     route: ADMIN_IA_SPACE_CREATE_PARAM_URL,
@@ -114,6 +137,13 @@ export const SpacesDashboard: React.FC<SpacesDashboardProps> = ({
               <Section>
                 <SectionSubtitle>Other spaces</SectionSubtitle>
                 <CardList>{renderedOtherSpacesCards}</CardList>
+              </Section>
+            )}
+
+            {hasManagedSpaces && (
+              <Section>
+                <SectionSubtitle>System managed spaces</SectionSubtitle>
+                <CardList>{renderedManagedSpacesCards}</CardList>
               </Section>
             )}
           </FullWidthLayout>

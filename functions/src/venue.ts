@@ -159,6 +159,7 @@ interface CreateVenueData2 {
   showGrid: boolean;
 
   columns?: number;
+  isHidden: boolean;
 }
 
 // @debt this should be de-duplicated + aligned with createVenueData to ensure they both cover all needed cases
@@ -188,6 +189,7 @@ const createVenueData_v2 = (data: VenueData2Payload, context: Object) => {
     parentId: data.parentId || "",
     worldId: data.worldId,
     slug: data.slug,
+    isHidden: false,
   };
 
   if (data.template === VenueTemplate.jazzbar) {

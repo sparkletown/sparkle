@@ -94,6 +94,8 @@ export interface BaseVenue {
   // Optional: The space that manages this one. This is used for system managed
   // spaces such as poster pages and meeting room booths.
   managedBy?: SpaceId;
+
+  isHidden?: boolean;
 }
 
 export interface GenericVenue extends BaseVenue {
