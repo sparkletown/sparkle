@@ -1213,3 +1213,92 @@ export const deleteChannel = functions.https.onCall(async (data, context) => {
 
   admin.firestore().collection("venues").doc(spaceId).update({ channels });
 });
+
+const generateNameForBooth = async (parentSpaceId: string) => {
+  // Finds a name for the booth that isn't already taken inside the parent
+  // space. Starts at 1 and keeps going until a free number is found
+  const collection = admin.firestore().collection("venues");
+  const existingBooths = (
+    await collection.where("parentId", "==", parentSpaceId).get()
+  ).docs;
+
+  for (let i = 1; i <= existingBooths.length; i++) {
+    const possibleName = `Booth ${i}`;
+    const matchingBooth = existingBooths.find(
+      (doc) => doc.data().name === possibleName
+    );
+    if (matchingBooth) {
+      continue;
+    }
+
+    return possibleName;
+  }
+
+  return `Booth ${existingBooths.length + 1}`;
+};
+
+interface CreateBoothOptions {
+  templateSpaceId: string;
+  parentSpaceId: string;
+}
+
+export const createBooth = functions.https.onCall(async (data, context) => {
+  assertValidAuth(context);
+
+  const options = data as CreateBoothOptions;
+
+  const batch = admin.firestore().batch();
+  const collection = admin.firestore().collection("venues");
+
+  const templateSpace = (
+    await collection.doc(options.templateSpaceId).get()
+  ).data();
+
+  if (!templateSpace) {
+    throw new HttpsError(
+      "not-found",
+      `The tremplate ${options.templateSpaceId} does not exist`
+    );
+  }
+
+  const name = await generateNameForBooth(options.parentSpaceId);
+  const venueRef = admin.firestore().collection("venues").doc();
+  const slug = `booth-${venueRef.id}`;
+
+  // TODO This code around creating venues should be refactored. There's a lot
+  // of debt in this area
+  const standardVenueData = createVenueData_v2(
+    {
+      name,
+      slug,
+      tables: [],
+      bannerImageUrl: templateSpace.config.landingPageConfig.coverImageUrl,
+      subtitle: templateSpace.config.landingPageConfig.subtitle,
+      description: templateSpace.config.landingPageConfig.description,
+      logoImageUrl: templateSpace.host.icon,
+      columns: 0,
+      template: "meetingroom",
+      parentId: options.parentSpaceId,
+      worldId: templateSpace.worldId,
+    },
+    context
+  );
+
+  const venueData = {
+    ...standardVenueData,
+    managedBy: options.parentSpaceId,
+    backgroundImageUrl: templateSpace.backgroundImageUrl || "",
+    // Set this to 1 so that it looks like the space is being used straight away
+    // rather than it not being visible until the cached count code is run
+    presentUserCachedCount: 1,
+    channels: templateSpace.channels,
+  };
+
+  batch.create(venueRef, venueData);
+
+  initializeVenueChatMessagesCounter(venueRef, batch);
+
+  await batch.commit();
+
+  return { id: venueRef.id, slug };
+});

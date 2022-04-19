@@ -38,11 +38,6 @@ export const Booth: React.FC<BoothProps> = ({ space }) => {
     spaceId: space.id,
   });
 
-  // @debt these numbers/samples aren't live. There's a bigger piece of work
-  // needed to build up a more live stream of where users are that is beyond
-  // the scope of this component. These constants are used here so that when
-  // that work is done the data should be able to be put into the constants with
-  // minimal rework.
   const usersInBoothCount = presentUsers.length;
   const usersInBooth = presentUsers;
 
@@ -57,9 +52,9 @@ export const Booth: React.FC<BoothProps> = ({ space }) => {
       return "Empty";
     }
     if (usersInBoothCount === 1) {
-      return "1 person here";
+      return "1 person inside";
     }
-    return `${usersInBoothCount} people here`;
+    return `${usersInBoothCount} people inside`;
   }, [usersInBoothCount]);
 
   return (

@@ -100,6 +100,15 @@ export interface BaseVenue {
   // it should still be accessible to people who have been there and references
   // to spaces in things like analytics should still work.
   isHidden?: boolean;
+
+  // Used by the empty booth tracker for understanding how long a booth has
+  // been empty for.
+  emptySince?: number;
+}
+
+export interface BoothProvider {
+  maxBooths?: number;
+  boothTemplateSpaceId?: SpaceId;
 }
 
 export interface GenericVenue extends BaseVenue {
@@ -113,7 +122,7 @@ export interface PartyMapVenue extends BaseVenue {
   template: VenueTemplate.partymap;
 }
 
-export interface JazzbarVenue extends BaseVenue {
+export interface JazzbarVenue extends BaseVenue, BoothProvider {
   template: VenueTemplate.jazzbar;
   iframeUrl: string;
   logoImageUrl: string;

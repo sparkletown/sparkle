@@ -3,6 +3,7 @@ import { where } from "firebase/firestore";
 
 import {
   ALWAYS_EMPTY_ARRAY,
+  FIELD_IS_HIDDEN,
   FIELD_MANAGED_BY_ID,
   FIELD_WORLD_ID,
   PATH,
@@ -31,6 +32,7 @@ export const useManagedSpaces: UseManagedSpaces = ({ worldId, spaceId }) => {
       constraints: [
         where(FIELD_WORLD_ID, "==", worldId),
         where(FIELD_MANAGED_BY_ID, "==", spaceId),
+        where(FIELD_IS_HIDDEN, "==", false),
       ],
     }),
     [worldId, spaceId]
