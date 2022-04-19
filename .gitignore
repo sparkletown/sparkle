@@ -25,6 +25,7 @@ src/components/templates/AnimateMap/bridges/DataProvider/Contructor/PlayerIO/Ser
 .DS_Store
 .env
 .env.*
+cypress.env.json
 
 
 npm-debug.log*

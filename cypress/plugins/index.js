@@ -8,8 +8,14 @@
 // https://on.cypress.io/plugins-guide
 // ***********************************************************
 
-// This function is called when a project is opened or re-opened (e.g. due to
-// the project's config changing)
+// @debt There should always only be .env, no other files for environment setup
+// @see https://github.com/motdotla/dotenv#should-i-have-multiple-env-files
+// @see https://12factor.net/config
+require("dotenv").config({ path: ".env.local" });
+require("dotenv").config({ path: ".env", override: true });
+
+// This function is called when a project is opened or re-opened
+// (e.g. due to the project's config changing)
 
 /**
  * @type {Cypress.PluginConfig}
@@ -18,4 +24,10 @@
 module.exports = (on, config) => {
   // `on` is used to hook into various events Cypress emits
   // `config` is the resolved Cypress config
+
+  const baseUrl = process.env.CYPRESS_BASE_URL;
+  console.log("Setting baseUrl to be", baseUrl, "instead of", config.baseUrl);
+  config.baseUrl = baseUrl;
+  
+  return config;
 };
