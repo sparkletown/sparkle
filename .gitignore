@@ -56,3 +56,4 @@ reporting/cookies.json
 *.result.txt
 /cypress/videos/
 /cypress/screenshots/
+/cypress/downloads/

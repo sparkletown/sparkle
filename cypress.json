@@ -1,6 +1,7 @@
 {
-  "baseUrl": "http://localhost:3000",
   "chromeWebSecurity": false,
+  "baseUrl": "http://localhost:3000",
+  "testFiles": "**/*.spec.ts",
   "viewportHeight": 666,
   "viewportWidth": 777
 }

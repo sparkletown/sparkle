@@ -1,8 +1,8 @@
 // Just a simple test to make sure Cypress is running correctly
 // For more info, @see https://on.cypress.io/introduction-to-cypress
 
-import { getBlankPage, getRoot } from "cypress/integration/util/get";
-import { visitAdmin } from "cypress/integration/util/visit";
+import { getBlankPage, getRoot } from "cypress/support/util/get";
+import { visitAdmin } from "cypress/support/util/visit";
 
 describe("initial test visiting plain /admin", () => {
   beforeEach(() => {
