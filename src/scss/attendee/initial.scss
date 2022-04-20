@@ -1,4 +1,8 @@
+@use './scrollbar.scss';
+
 * {
   box-sizing: border-box;
   -webkit-text-size-adjust: none;
+
+  @include scrollbar.colorEffect;
 }

@@ -27,6 +27,10 @@
   --overlay-fg: rgb(255, 255, 255);
   --overlay-bg: rgba(99, 42, 199, 0.7);
 
+  --scroll-bar-thumb: rgba(142, 142, 142, 0.7);
+  --scroll-bar-thumb-hover: rgba(142, 142, 142);
+  --scroll-bar-bg: rgb(0, 0, 0);
+
   --mask-bg: rgba(0, 0, 0, 0.5);
 
   --error-background: #fae7e7;
@@ -84,6 +88,10 @@ $c-overlay-bg: var(--overlay-bg);
 $c-mask-bg: var(--mask-bg);
 
 $sparkle-disabled: var(--disabled-color);
+
+$scrollbar-thumb: var(--scroll-bar-thumb);
+$scrollbar-thumb-hover: var(--scroll-bar-thumb-hover);
+$scrollbar-thumb-bg: var(--scroll-bar-bg);
 
 $error-background: var(--error-background);
 $error-border: var(--error-border);

@@ -1,0 +1,39 @@
+@use './theme.scss';
+@use './border.scss';
+@use './space.scss';
+@use './layout.scss';
+
+@mixin colorEffect {
+  // The standard properties
+  // @see https://developer.mozilla.org/en-US/docs/Web/CSS/scrollbar-color
+  // @see https://developer.mozilla.org/en-US/docs/Web/CSS/scrollbar-width
+  scrollbar-color: white;
+  scrollbar-width: thin;
+
+  // The webkit properties
+  // @see https: //developer.mozilla.org/en-US/docs/Web/CSS/::-webkit-scrollbar
+
+  &::-webkit-scrollbar-corner {
+    background-color: theme.$sparkle-disabled;
+  }
+
+  &::-webkit-scrollbar-track {
+    border-radius: border.$radius--xs;
+    background-color: transparent;
+    @include layout.square-size(0);
+  }
+
+  &::-webkit-scrollbar {
+    @include layout.square-size(space.gap(4));
+    background-color: theme.$scrollbar-thumb-bg;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: border.$radius--xs;
+    background-color: theme.$scrollbar-thumb;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: theme.$scrollbar-thumb-hover;
+  }
+}

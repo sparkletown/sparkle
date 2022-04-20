@@ -16,6 +16,13 @@
   @media (max-width: breakpoint.$xl) {
     margin: 0;
   }
+
+  * {
+    &::-webkit-scrollbar {
+      @include layout.square-size(space.gap(4));
+      background-color: transparent !important;
+    }
+  }
 }
 
 .scheduleOverlayHeader {
