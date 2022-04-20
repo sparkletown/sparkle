@@ -43,7 +43,7 @@ export const ATTENDEE_STEPPING_PARAM_URL = `${ENTRANCE_BASE_URL}/w/:worldSlug/s/
 
 // New Attendee URLs
 export const ATTENDEE_WORLD_URL = `/w/:worldSlug`;
-export const ATTENDEE_SPACE_URL = `${ATTENDEE_WORLD_URL}/:spaceSlug`;
+export const ATTENDEE_SPACE_URL = `${ATTENDEE_WORLD_URL}/s/:spaceSlug`;
 
 // Splash URLs
 export const ATTENDEE_WORLD_SPLASH_URL = `${ATTENDEE_WORLD_URL}/splash`;

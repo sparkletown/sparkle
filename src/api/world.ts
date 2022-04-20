@@ -42,6 +42,7 @@ export interface World {
       subtitle?: string;
     };
   };
+  defaultSpaceSlug: string;
   createdAt: Date;
   entrance?: EntranceStepConfig[];
   endTimeUnix?: number;

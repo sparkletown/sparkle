@@ -6,16 +6,16 @@ import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams"
 import { SplashWorld } from "./SplashWorld";
 
 export const SplashWorldHoc: React.FC = () => {
-  const { space, isLoading } = useWorldAndSpaceByParams();
+  const { isLoading, world } = useWorldAndSpaceByParams();
 
   if (isLoading) {
     // TODO: re-check if <LoadingPage /> might be more suitable than null
     return null;
   }
 
-  if (!space) {
+  if (!world) {
     return <NotFound />;
   }
 
-  return <SplashWorld space={space} />;
+  return <SplashWorld world={world} />;
 };

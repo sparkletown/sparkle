@@ -1,13 +1,68 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
+import { Button } from "components/attendee/Button";
 
-import { SpaceWithId } from "types/id";
+import {
+  ATTENDEE_WORLD_URL,
+  RETURN_URL_PARAM_NAME,
+  SIGN_IN_URL,
+  SIGN_UP_URL,
+} from "settings";
 
-// import styles from "./SplashWorld.module.scss";
+import { WorldWithId } from "types/id";
+
+import { generateUrl } from "utils/url";
+
+import { useLiveUser } from "hooks/user/useLiveUser";
+
+import styles from "./SplashWorld.module.scss";
 
 type SplashWorldProps = {
-  space: SpaceWithId;
+  world: WorldWithId;
 };
 
-export const SplashWorld: React.FC<SplashWorldProps> = ({ space }) => {
-  return <div>SplashWorld page!</div>;
+export const SplashWorld: React.FC<SplashWorldProps> = ({ world }) => {
+  const { userId } = useLiveUser();
+
+  const history = useHistory();
+
+  const navigateToSignIn = () => {
+    history.push({
+      pathname: SIGN_IN_URL,
+      search: `?${RETURN_URL_PARAM_NAME}=${history.location.pathname}`,
+    });
+  };
+
+  const navigateToWorld = () => {
+    const spaceUrl = generateUrl({
+      route: ATTENDEE_WORLD_URL,
+      required: ["worldSlug"],
+      params: { worldSlug: world.slug },
+    });
+
+    history.push(spaceUrl);
+  };
+
+  const navigateToSignUp = () => {
+    history.push({
+      pathname: SIGN_UP_URL,
+      search: `?${RETURN_URL_PARAM_NAME}=${history.location.pathname}`,
+    });
+  };
+  return (
+    <div className={styles.Container}>
+      <h1>World splash page!</h1>
+      <p>{world.name}</p>
+      <p>{world.config.landingPageConfig.description}</p>
+
+      {userId ? (
+        <Button onClick={navigateToWorld}>Join</Button>
+      ) : (
+        <div>
+          <Button onClick={navigateToSignIn}>Sign In</Button>
+          <Button onClick={navigateToSignUp}>Sign Up</Button>
+        </div>
+      )}
+    </div>
+  );
 };

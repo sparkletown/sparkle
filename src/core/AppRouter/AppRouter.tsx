@@ -86,6 +86,14 @@ const SplashSpace = lazy(() =>
   )
 );
 
+const WorldPage = lazy(() =>
+  tracePromise("AppRouter::lazy-import::WorldPage", () =>
+    import("components/attendee/WorldPage").then(({ WorldPage }) => ({
+      default: WorldPage,
+    }))
+  )
+);
+
 const SpaceEntrancePage = lazy(() =>
   tracePromise("AppRouter::lazy-import::SpaceEntrancePage", () =>
     import("components/attendee/SpaceEntrancePage").then(
@@ -159,7 +167,9 @@ export const AppRouter: React.FC = () => (
           </SplashGated>
         </Route>
         <Route path={ATTENDEE_WORLD_URL}>
-          <SplashGated>{/* Redirect to default world space*/}</SplashGated>
+          <SplashGated>
+            <WorldPage />
+          </SplashGated>
         </Route>
 
         <Route path={ATTENDEE_STEPPING_PARAM_URL}>
