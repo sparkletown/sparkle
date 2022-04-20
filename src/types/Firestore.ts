@@ -25,7 +25,6 @@ import { WithId } from "utils/id";
 
 import { AdminRole } from "hooks/user/useAdminRole";
 
-import { ArtCar, Firebarrel } from "./animateMap";
 import { PosterPageSpaceWithId, SpaceWithId } from "./id";
 
 // RE-EXPORT BEGIN
@@ -96,8 +95,6 @@ export interface FirestoreData {
   reactions?: Record<string, Reaction>;
   settings?: Settings;
   screeningRoomVideos: Record<string, ScreeningRoomVideo>;
-  animatemapFirebarrels: Partial<Record<string, Firebarrel>>;
-  animatemapArtcars: Partial<Record<string, ArtCar>>;
   venueChatMessages?: Record<string, VenueChatMessage>;
   venueJukeboxMessages?: Record<string, JukeboxMessage>;
   venueEvents?: Record<string, WorldEvent>;
@@ -117,8 +114,6 @@ export interface FirestoreOrdered {
   ownedVenues?: SpaceWithId[];
   reactions?: WithId<Reaction>[];
   screeningRoomVideos: WithId<ScreeningRoomVideo>[];
-  animatemapFirebarrels: WithId<Firebarrel>[];
-  animatemapArtcars: WithId<ArtCar>[];
   privateChatMessages?: WithId<PrivateChatMessage>[];
   posterVenues?: PosterPageSpaceWithId[];
   venueChatMessages?: WithId<VenueChatMessage>[];
