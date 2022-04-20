@@ -55,7 +55,7 @@ export const Tuner: React.FC<TunerProps> = ({
       });
     } else if (selectedSource === RetunableMediaSource.embed) {
       const value = embedUrlInputEl?.current?.value;
-      console.log(value);
+
       if (value) {
         setRetunableMediaSettings({
           spaceId: space.id,
