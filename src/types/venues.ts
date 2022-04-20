@@ -7,8 +7,6 @@ import { SpaceId, SpaceSlug, UserWithId } from "types/id";
 import { RoomVisibility } from "types/RoomVisibility";
 import { VenueTemplate } from "types/VenueTemplate";
 
-import { GameOptions } from "components/templates/AnimateMap/configs/GameConfig";
-
 import { Banner } from "./banner";
 import { Poster } from "./posters";
 import { Room } from "./rooms";
@@ -23,7 +21,6 @@ export type GenericVenueTemplates = Exclude<
   VenueTemplate,
   | VenueTemplate.embeddable
   | VenueTemplate.jazzbar
-  | VenueTemplate.animatemap
   | VenueTemplate.partymap
   | VenueTemplate.posterpage
   | VenueTemplate.auditorium
@@ -37,7 +34,6 @@ export type GenericVenueTemplates = Exclude<
 export type AnyVenue =
   | GenericVenue
   | AuditoriumVenue
-  | AnimateMapVenue
   | EmbeddableVenue
   | JazzbarVenue
   | PartyMapVenue
@@ -69,8 +65,6 @@ export interface BaseVenue {
   radioStations?: string[];
   radioTitle?: string;
   banner?: Banner;
-  playaIcon?: PlayaIcon;
-  playaIcon2?: PlayaIcon;
   samlAuthProviderId?: string;
   columns?: number;
   rows?: number;
@@ -101,13 +95,6 @@ export interface BaseVenue {
 
 export interface GenericVenue extends BaseVenue {
   template: GenericVenueTemplates;
-}
-
-export interface AnimateMapVenue extends BaseVenue {
-  id: string;
-  gameOptions: GameOptions;
-  relatedPartymapId: SpaceId;
-  template: VenueTemplate.animatemap;
 }
 
 // @debt which of these params are exactly the same as on Venue? Can we simplify this?
@@ -168,15 +155,6 @@ export interface AuditoriumVenue extends BaseVenue {
   title?: string;
 }
 
-export interface AnimateMapVenue extends BaseVenue {
-  template: VenueTemplate.animatemap;
-  playerioGameId: string;
-  playerioMaxPlayerPerRoom?: number;
-  playerioFrequencyUpdate?: number;
-  //@dept Right now advanced mode in develop, don't add this flag to venue!
-  playerioAdvancedMode?: boolean;
-}
-
 interface TermOfService {
   name: string;
   text: string;
@@ -216,30 +194,6 @@ export interface VenueLandingPageConfig {
   iframeUrl?: string;
   joinButtonText?: string;
 }
-
-export interface VenuePlacement {
-  x: number;
-  y: number;
-  addressText?: string;
-  state?: VenuePlacementState;
-}
-
-export enum VenuePlacementState {
-  SelfPlaced = "SELF_PLACED",
-  AdminPlaced = "ADMIN_PLACED",
-  Hidden = "HIDDEN",
-}
-
-export interface PlayaIcon {
-  x: number;
-  y: number;
-  fire: boolean;
-  visible: boolean;
-  className: string;
-  clickable: boolean;
-  venueId: string;
-}
-
 export interface WorldEvent {
   name: string;
   startUtcSeconds: number;

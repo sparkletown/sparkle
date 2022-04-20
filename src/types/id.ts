@@ -2,7 +2,6 @@ import { World } from "api/world";
 
 import { User } from "types/User";
 import {
-  AnimateMapVenue,
   AnyVenue,
   ArtPieceVenue,
   AuditoriumVenue,
@@ -51,7 +50,6 @@ export type MaybeWorldAndSpaceSlugLocation = Partial<WorldAndSpaceSlugLocation>;
 
 // Simplified versions to ease future move of WithId<> type from utils
 // please keep this list alphabetically sorted
-export type AnimateMapSpaceWithId = WithId<AnimateMapVenue, SpaceId>;
 export type ArtPieceSpaceWithId = WithId<ArtPieceVenue, SpaceId>;
 export type AuditoriumSpaceWithId = WithId<AuditoriumVenue, SpaceId>;
 export type ExperimentalSpaceWithId = WithId<ExperimentalVenue, SpaceId>;

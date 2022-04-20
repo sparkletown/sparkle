@@ -1,1 +1,0 @@
-export { ScheduleEventList } from "./ScheduleEventList";

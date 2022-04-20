@@ -1,1 +1,0 @@
-export { AnimateMap } from "./AnimateMap";
