@@ -1,8 +1,11 @@
 import { faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+import { DEFAULT_AVATAR_LIST } from "settings";
+
 import { SpaceWithId, UserId, UserWithId } from "types/id";
 
+import { useValidImage } from "hooks/image/useValidImage";
 import { useShowHide } from "hooks/useShowHide";
 
 import { Button } from "../Button";
@@ -15,6 +18,8 @@ export interface WorldUserCardProps {
   worldSpaces: SpaceWithId[];
   userId?: UserId;
 }
+
+const DEFAULT_AVATAR = DEFAULT_AVATAR_LIST?.[0];
 
 export const WorldUserCard: React.FC<WorldUserCardProps> = ({
   user,
@@ -44,14 +49,27 @@ export const WorldUserCard: React.FC<WorldUserCardProps> = ({
     showDeleteAdminModal();
   };
 
+  const { src: userAvatar, isLoading: isImageLoading } = useValidImage(
+    user?.pictureUrl,
+    DEFAULT_AVATAR
+  );
+
   return (
     <div className="px-6 py-4 w-full flex flex-row gap-x-4 items-center ">
       <div className=" whitespace-nowrap flex flex-row w-full">
-        <img
-          className="h-10 w-10 rounded-full"
-          src={user?.pictureUrl}
-          alt="profileUrl"
-        />
+        {!isImageLoading ? (
+          <img
+            className="h-10 w-10 rounded-full"
+            src={userAvatar}
+            alt="profileUrl"
+          />
+        ) : (
+          <img
+            className="h-10 w-10 rounded-full"
+            src={DEFAULT_AVATAR}
+            alt="profileUrl"
+          />
+        )}
         <div className="flex items-center ml-4">
           <div className="text-sm font-medium text-gray-900 hover:text-sparkle-darker">
             {user?.partyName}

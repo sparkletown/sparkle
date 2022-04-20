@@ -2,6 +2,8 @@ import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import { Hit } from "@algolia/client-search";
+import { faClose } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
 import { addWorldAdmins } from "api/world";
@@ -41,7 +43,7 @@ export const InviteAdminModal: React.FC<InviteAdminModalProps> = ({
     []
   );
 
-  const { register, watch } = useForm({
+  const { register, watch, setValue } = useForm({
     reValidateMode: "onChange",
     defaultValues,
   });
@@ -71,34 +73,43 @@ export const InviteAdminModal: React.FC<InviteAdminModalProps> = ({
 
       return selectedUsers.includes(user) ? newUsers : [...selectedUsers, user];
     });
+    setValue("userName", "");
   };
 
-  const checkAdminAccess = (user: User) => selectedUsers.includes(user);
+  const checkAdminAccess = (user: User) =>
+    selectedUsers.find(
+      (selectedUser) => selectedUser.objectID === user.objectID
+    );
 
   const hasFoundUsers = !!foundUsers?.length;
-  const hasSelectedUsers = selectedUsers?.length;
-
-  const pluralizedUser =
-    hasFoundUsers && foundUsers.length % 10 === 1 ? "user" : "users";
+  const hasSelectedUsers = !!selectedUsers?.length;
 
   return (
     <Modal show={show} onHide={onHide} autoHide>
-      {hasFoundUsers && (
-        <div className="flex justify-center">{`${foundUsers.length} ${pluralizedUser} found`}</div>
-      )}
+      <div className="text-xl font-medium text-gray-900">Invite admin</div>
 
       {!hasFoundUsers && searchQuery && (
         <div className="flex justify-center">No users found</div>
       )}
 
+      <div className="mt-4">Enter user name</div>
       <Input placeholder="Type user name" name="userName" register={register} />
 
       <div className="max-h-40 overflow-auto">
         {foundUsers?.map((user) => {
+          const isSelected = checkAdminAccess(user);
+
           const foundUserClasses = classNames(
             "flex flex-row py-4 px-2 border-y hover:bg-gray-200 cursor-pointer",
             {
-              "bg-blue-100 hover:bg-blue-200": checkAdminAccess(user),
+              "bg-blue-100 hover:bg-blue-200 cursor-not-allowed": isSelected,
+            }
+          );
+
+          const selectedClasses = classNames(
+            "px-2 flex self-center flex-end ml-1 self-center text-center align-center justify-center items-center cursor-pointer select-none inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-800 text-blue-100",
+            {
+              "cursor-not-allowed": isSelected,
             }
           );
 
@@ -106,7 +117,7 @@ export const InviteAdminModal: React.FC<InviteAdminModalProps> = ({
             <div
               key={user.objectID}
               className={foundUserClasses}
-              onClick={() => selectUser(user)}
+              onClick={() => (!isSelected ? selectUser(user) : null)}
             >
               <img
                 className="h-10 w-10 rounded-full"
@@ -114,9 +125,34 @@ export const InviteAdminModal: React.FC<InviteAdminModalProps> = ({
                 alt="profileUrl"
               />
               <div className="px-2 flex self-center">{user.partyName}</div>
+              {isSelected && (
+                <div className={selectedClasses}>Already added</div>
+              )}
             </div>
           );
         })}
+      </div>
+
+      <div className="mt-4 max-h-40 overflow-auto">
+        {selectedUsers.map((user) => (
+          <div
+            key={user.objectID}
+            className={
+              "px-2 cursor-pointer select-none inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-200 text-gray-800"
+            }
+            onClick={() => selectUser(user)}
+          >
+            <img
+              className="h-10 w-10 rounded-full"
+              src={user.pictureUrl}
+              alt="profileUrl"
+            />
+            <div className="px-2 flex self-center">{user.partyName}</div>
+            <div className="ml-1 w-4 h-4 self-center text-center align-center justify-center items-center cursor-pointer select-none inline-flex text-xs leading-5 font-semibold rounded-full bg-red-800 text-red-100">
+              <FontAwesomeIcon icon={faClose} />
+            </div>
+          </div>
+        ))}
       </div>
       <div className="flex flex-row">
         <Button variant="secondary" onClick={onHide}>

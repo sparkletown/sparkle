@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useAsyncFn } from "react-use";
+import { faAdd, faClose } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { addSpaceOwnerBulk } from "api/admin";
 
@@ -71,11 +73,14 @@ export const EditAdminModal: React.FC<EditAdminModalProps> = ({
         Manage user spaces
       </div>
       <div>
-        <div className="text-md font-medium text-gray-900">
-          Available spaces
+        <div className="mt-4 text-md font-medium text-gray-900">
+          Can not edit spaces
         </div>
         <div className="text-sm text-gray-500">
-          Select spaces to add the user as an owner.
+          These are the spaces the user can not edit.
+        </div>
+        <div className="text-sm text-gray-500">
+          Click to add the user as an editor.
         </div>
       </div>
       <div>
@@ -86,7 +91,10 @@ export const EditAdminModal: React.FC<EditAdminModalProps> = ({
               className="px-2 cursor-pointer select-none inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800"
               onClick={() => addOwner(space)}
             >
-              {space.name}
+              {space.name}{" "}
+              <div className="ml-1 w-4 h-4 self-center text-center align-center justify-center items-center cursor-pointer select-none inline-flex text-xs leading-5 font-semibold rounded-full bg-green-800 text-green-100">
+                <FontAwesomeIcon icon={faAdd} />
+              </div>
             </div>
           ))}
         {!hasRemainingSpaces && (
@@ -96,9 +104,14 @@ export const EditAdminModal: React.FC<EditAdminModalProps> = ({
         )}
       </div>
       <div>
-        <div className="text-md font-medium text-gray-900">Owned spaces</div>
+        <div className="mt-4 text-md font-medium text-gray-900">
+          Can edit spaces
+        </div>
         <div className="text-sm text-gray-500">
-          Select spaces to remove the user from the owners.
+          These are the spaces the user can edit.
+        </div>
+        <div className="text-sm text-gray-500">
+          Click to remove the user as an editor.
         </div>
       </div>
       <div>
@@ -109,7 +122,10 @@ export const EditAdminModal: React.FC<EditAdminModalProps> = ({
               className="px-2 cursor-pointer select-none inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800"
               onClick={() => removeOwner(space)}
             >
-              {space.name}
+              {space.name}{" "}
+              <div className="ml-1 w-4 h-4 self-center text-center align-center justify-center items-center cursor-pointer select-none inline-flex text-xs leading-5 font-semibold rounded-full bg-red-800 text-red-100">
+                <FontAwesomeIcon icon={faClose} />
+              </div>
             </div>
           ))}
         {!hasSelectedSpaces && (
