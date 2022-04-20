@@ -104,9 +104,9 @@ export interface BaseVenue {
   // Used by the empty booth tracker for understanding how long a booth has
   // been empty for.
   emptySince?: number;
-}
 
-export interface BoothProvider {
+  // Fields for implementing "booths" inside a jazzbar
+  boothsEnabled?: boolean;
   maxBooths?: number;
   boothTemplateSpaceId?: SpaceId;
 }
@@ -122,7 +122,7 @@ export interface PartyMapVenue extends BaseVenue {
   template: VenueTemplate.partymap;
 }
 
-export interface JazzbarVenue extends BaseVenue, BoothProvider {
+export interface JazzbarVenue extends BaseVenue {
   template: VenueTemplate.jazzbar;
   iframeUrl: string;
   logoImageUrl: string;

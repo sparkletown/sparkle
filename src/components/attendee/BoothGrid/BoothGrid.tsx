@@ -2,7 +2,6 @@ import React, { useMemo } from "react";
 
 import { SpaceId, SpaceWithId, WorldId } from "types/id";
 import { User } from "types/User";
-import { BoothProvider } from "types/venues";
 
 import { WithId } from "utils/id";
 
@@ -16,7 +15,7 @@ import { BoothCreateCard } from "./BoothCreateCard";
 import styles from "./BoothGrid.module.scss";
 
 interface BoothGridProps {
-  space: SpaceWithId & BoothProvider;
+  space: SpaceWithId;
   // Whether to allow more booths to be created, and if so, how many
   maxBooths?: number;
   user: WithId<User>;

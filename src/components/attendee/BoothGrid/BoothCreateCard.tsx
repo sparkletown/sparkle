@@ -7,7 +7,6 @@ import { ATTENDEE_INSIDE_URL } from "settings";
 import * as api from "api/venue";
 
 import { SpaceWithId } from "types/id";
-import { BoothProvider } from "types/venues";
 
 import { generateUrl } from "utils/url";
 
@@ -16,7 +15,7 @@ import { useWorldParams } from "hooks/worlds/useWorldParams";
 import styles from "./Booth.module.scss";
 
 interface BoothProps {
-  parentSpace: SpaceWithId & BoothProvider;
+  parentSpace: SpaceWithId;
 }
 export const BoothCreateCard: React.FC<BoothProps> = ({ parentSpace }) => {
   const { worldSlug } = useWorldParams();

@@ -160,6 +160,8 @@ interface CreateVenueData2 {
 
   columns?: number;
   isHidden: boolean;
+  boothsEnabled: boolean;
+  maxBooths: number;
 }
 
 // @debt this should be de-duplicated + aligned with createVenueData to ensure they both cover all needed cases
@@ -190,6 +192,8 @@ const createVenueData_v2 = (data: VenueData2Payload, context: Object) => {
     worldId: data.worldId,
     slug: data.slug,
     isHidden: false,
+    boothsEnabled: false,
+    maxBooths: 1,
   };
 
   if (data.template === VenueTemplate.jazzbar) {
@@ -259,6 +263,9 @@ interface Venue {
   auditoriumRows?: number;
   showRangers?: boolean;
   isReactionsMuted?: boolean;
+  boothsEnabled?: boolean;
+  maxBooths?: number;
+  boothTemplateSpaceId?: string;
 
   config: {
     landingPageConfig: LandingPageConfig;
@@ -857,6 +864,21 @@ export const updateVenueNG = functions.https.onCall(async (data, context) => {
 
   if (typeof data.showContent === "boolean") {
     updated.showContent = data.showContent;
+  }
+
+  if (typeof data.boothsEnabled === "boolean") {
+    updated.boothsEnabled = data.boothsEnabled;
+  }
+
+  if (typeof data.maxBooths === "number") {
+    updated.maxBooths = data.maxBooths;
+  }
+
+  if (
+    typeof data.boothTemplateSpaceId === "string" ||
+    data.boothTemplateSpaceId === null
+  ) {
+    updated.boothTemplateSpaceId = data.boothTemplateSpaceId;
   }
 
   if (data.userStatuses) {
