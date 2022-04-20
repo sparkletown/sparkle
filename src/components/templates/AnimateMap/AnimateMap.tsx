@@ -1,14 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useStore } from "react-redux";
-import { useAsyncFn } from "react-use";
-import Bugsnag from "@bugsnag/js";
+// import { useAsyncFn } from "react-use";
+// import Bugsnag from "@bugsnag/js";
+import { subscribeActionAfter } from "redux-subscribe-action";
 
-import { AnimateMapSpaceWithId } from "types/id";
+import { useDispatch } from "hooks/useDispatch";
 
-import { AnimateMapErrorPrompt } from "components/templates/AnimateMap/components/AnimateMapErrorPrompt";
-
-import { LoadingSpinner } from "components/atoms/LoadingSpinner";
-
+// import { AnimateMapErrorPrompt } from "components/templates/AnimateMap/components/AnimateMapErrorPrompt";
+// import { LoadingSpinner } from "components/atoms/LoadingSpinner";
+import {
+  AnimateMapRoom,
+  AnimateMapSpace,
+  setAnimateMapRoom,
+  setAnimateMapZoom,
+} from "../AnimateMapCommon";
 import { AnimateMapGameConfig } from "../AnimateMapConfig";
 import { AnimateMapUI } from "../AnimateMapUI";
 
@@ -18,12 +23,12 @@ import { GameConfig, GameControls } from "./game/common";
 import { GameInstance } from "./game/GameInstance";
 import { PlaygroundMap } from "./game/utils/PlaygroundMap";
 import { useRelatedPartymapRooms } from "./hooks/useRelatedPartymapRooms";
-import { UIOverlay, UIOverlayGrid } from "./components";
 
+// import { UIOverlay, UIOverlayGrid } from "./components";
 import "./AnimateMap.scss";
 
 export interface AnimateMapProps {
-  space: AnimateMapSpaceWithId;
+  space: AnimateMapSpace;
 }
 
 export const AnimateMap: React.FC<AnimateMapProps> = (props) => {
@@ -32,6 +37,7 @@ export const AnimateMap: React.FC<AnimateMapProps> = (props) => {
   );
   const gameAreaRef = useRef<HTMLDivElement>(null);
   const store = useStore();
+  const dispatch = useDispatch();
 
   const relatedRooms = useRelatedPartymapRooms({ venue: props.space });
 
@@ -78,9 +84,23 @@ export const AnimateMap: React.FC<AnimateMapProps> = (props) => {
     }
   }, [gameAreaRef, store, dataProvider, props.space.gameOptions]);
 
+  const onSetAnimateMapZoom = (zoom: number) => {
+    dispatch(setAnimateMapZoom(zoom));
+  };
+
+  const onSetAnimateMapRoom = (room: AnimateMapRoom) => {
+    dispatch(setAnimateMapRoom(room));
+  };
+
   return (
     <>
-      <AnimateMapUI gameAreaRef={gameAreaRef} />
+      <AnimateMapUI
+        gameAreaRef={gameAreaRef}
+        space={props.space}
+        subscribeActionAfter={subscribeActionAfter}
+        onSetAnimateMapZoom={onSetAnimateMapZoom}
+        onSetAnimateMapRoom={onSetAnimateMapRoom}
+      />
       <CloudDataProviderWrapper
         venue={props.space}
         newDataProviderCreate={setDataProvider}
@@ -91,91 +111,91 @@ export const AnimateMap: React.FC<AnimateMapProps> = (props) => {
   );
 };
 
-export const AnimateMapOld: React.FC<AnimateMapProps> = ({ space }) => {
-  const [dataProvider, setDataProvider] = useState<CloudDataProvider | null>(
-    null
-  );
-  const [app, setApp] = useState<GameInstance | null>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const store = useStore();
+// export const AnimateMapOld: React.FC<AnimateMapProps> = ({ space }) => {
+//   const [dataProvider, setDataProvider] = useState<CloudDataProvider | null>(
+//     null
+//   );
+//   const [app, setApp] = useState<GameInstance | null>(null);
+//   const containerRef = useRef<HTMLDivElement>(null);
+//   const store = useStore();
 
-  const [
-    { loading: isInitializing, error: errorInitializing },
-    initialize,
-  ] = useAsyncFn(async () => {
-    if (app || !dataProvider || !containerRef || !containerRef.current) {
-      return;
-    }
+//   const [
+//     { loading: isInitializing, error: errorInitializing },
+//     initialize,
+//   ] = useAsyncFn(async () => {
+//     if (app || !dataProvider || !containerRef || !containerRef.current) {
+//       return;
+//     }
 
-    const config = space.gameOptions;
+//     const config = space.gameOptions;
 
-    console.log("old setApp", setApp);
-    console.log("old config", config);
-    console.log("old store", store);
+//     console.log("old setApp", setApp);
+//     console.log("old config", config);
+//     console.log("old store", store);
 
-    // const game = new GameInstance(
-    //   config as unknown as GameConfigOld,
-    //   store,
-    //   dataProvider,
-    //   containerRef.current as HTMLDivElement,
-    //   null as unknown as PlaygroundMap,
-    // );
+//     // const game = new GameInstance(
+//     //   config as unknown as GameConfigOld,
+//     //   store,
+//     //   dataProvider,
+//     //   containerRef.current as HTMLDivElement,
+//     //   null as unknown as PlaygroundMap,
+//     // );
 
-    // await game.init();
-    // await game.start();
-    //
-    // setApp(game);
-  }, [containerRef, app, dataProvider, store, space]);
+//     // await game.init();
+//     // await game.start();
+//     //
+//     // setApp(game);
+//   }, [containerRef, app, dataProvider, store, space]);
 
-  useEffect(() => void initialize(), [initialize]);
-  useEffect(() => () => void app?.release(), [app]);
+//   useEffect(() => void initialize(), [initialize]);
+//   useEffect(() => () => void app?.release(), [app]);
 
-  const relatedRooms = useRelatedPartymapRooms({ venue: space });
+//   const relatedRooms = useRelatedPartymapRooms({ venue: space });
 
-  if (isInitializing) {
-    return <LoadingSpinner />;
-  }
+//   if (isInitializing) {
+//     return <LoadingSpinner />;
+//   }
 
-  // NOTE: this is a good to have check for error inside animatemap (and infinite retries due to it)
-  if (errorInitializing) {
-    console.error("AnimateMap error initializing:", errorInitializing);
-    Bugsnag.notify(errorInitializing, (event) => {
-      event.addMetadata("context", {
-        location: "src/components/templates/AnimateMap::AnimateMap",
-        errorInitializing,
-        space,
-      });
-    });
+//   // NOTE: this is a good to have check for error inside animatemap (and infinite retries due to it)
+//   if (errorInitializing) {
+//     console.error("AnimateMap error initializing:", errorInitializing);
+//     Bugsnag.notify(errorInitializing, (event) => {
+//       event.addMetadata("context", {
+//         location: "src/components/templates/AnimateMap::AnimateMap",
+//         errorInitializing,
+//         space,
+//       });
+//     });
 
-    return (
-      <AnimateMapErrorPrompt variant="unknown">
-        {errorInitializing.message}
-      </AnimateMapErrorPrompt>
-    );
-  }
+//     return (
+//       <AnimateMapErrorPrompt variant="unknown">
+//         {errorInitializing.message}
+//       </AnimateMapErrorPrompt>
+//     );
+//   }
 
-  return (
-    <div
-      data-bem="AnimateMap"
-      data-block="AnimateMap"
-      data-side="att"
-      className="AnimateMap"
-    >
-      <div className="AnimateMap__ui-wrapper">
-        <UIOverlay venue={space}>
-          <div className="UIOverlay__main">
-            <UIOverlayGrid venue={space} />
-          </div>
-          <div className={"UIOverlay__bottom-panel"} />
-        </UIOverlay>
-      </div>
-      <div ref={containerRef} className="AnimateMap__app-wrapper" />
-      <CloudDataProviderWrapper
-        venue={space}
-        newDataProviderCreate={setDataProvider}
-        relatedRooms={relatedRooms}
-        reInitOnError={!errorInitializing}
-      />
-    </div>
-  );
-};
+//   return (
+//     <div
+//       data-bem="AnimateMap"
+//       data-block="AnimateMap"
+//       data-side="att"
+//       className="AnimateMap"
+//     >
+//       <div className="AnimateMap__ui-wrapper">
+//         <UIOverlay venue={space}>
+//           <div className="UIOverlay__main">
+//             <UIOverlayGrid venue={space} />
+//           </div>
+//           <div className={"UIOverlay__bottom-panel"} />
+//         </UIOverlay>
+//       </div>
+//       <div ref={containerRef} className="AnimateMap__app-wrapper" />
+//       <CloudDataProviderWrapper
+//         venue={space}
+//         newDataProviderCreate={setDataProvider}
+//         relatedRooms={relatedRooms}
+//         reInitOnError={!errorInitializing}
+//       />
+//     </div>
+//   );
+// };

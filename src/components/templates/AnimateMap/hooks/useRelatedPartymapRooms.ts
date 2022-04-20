@@ -1,6 +1,5 @@
 import { useMemo } from "react";
 
-import { AnimateMapSpaceWithId, SpaceId } from "types/id";
 import { Room } from "types/rooms";
 
 import { isTruthy } from "utils/types";
@@ -9,8 +8,13 @@ import { WithVenue, withVenue } from "utils/venue";
 
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 
+import {
+  AnimateMapSpace,
+  SpaceId,
+} from "components/templates/AnimateMapCommon";
+
 interface UseRelatedPartymapRoomsOptions {
-  venue: AnimateMapSpaceWithId;
+  venue: AnimateMapSpace;
 }
 
 export type UseRelatedPartymapRoomsResult =

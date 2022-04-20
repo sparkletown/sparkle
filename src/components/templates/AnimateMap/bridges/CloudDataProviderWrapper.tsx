@@ -3,7 +3,7 @@ import firebase from "firebase/compat/app";
 
 import { ALWAYS_EMPTY_ARRAY } from "settings";
 
-import { AnimateMapSpaceWithId, SpaceWithId } from "types/id";
+import { SpaceWithId } from "types/id";
 import { Room } from "types/rooms";
 
 import { isEventLive } from "utils/event";
@@ -12,6 +12,8 @@ import { WithVenue } from "utils/venue";
 
 import { useSpaceEvents } from "hooks/events";
 import { useLiveUser } from "hooks/user/useLiveUser";
+
+import { AnimateMapSpace } from "components/templates/AnimateMapCommon";
 
 import { useFirebarrels } from "../hooks/useFirebarrels";
 import { useRecentLocationsUsers } from "../hooks/useRecentLocationsUsers";
@@ -26,7 +28,7 @@ const EMPTY_WORLD_USERS = {
 };
 
 export interface CloudDataProviderWrapperProps {
-  venue: AnimateMapSpaceWithId;
+  venue: AnimateMapSpace;
   newDataProviderCreate: (dataProvider: CloudDataProvider) => void;
   relatedRooms: UseRelatedPartymapRoomsResult;
   reInitOnError?: boolean;
