@@ -55,6 +55,7 @@ export const Tuner: React.FC<TunerProps> = ({
       });
     } else if (selectedSource === RetunableMediaSource.embed) {
       const value = embedUrlInputEl?.current?.value;
+
       if (value) {
         setRetunableMediaSettings({
           spaceId: space.id,
@@ -152,7 +153,7 @@ export const Tuner: React.FC<TunerProps> = ({
             <Input
               type="url"
               name="URL"
-              ref={embedUrlInputEl}
+              forwardRef={embedUrlInputEl}
               defaultValue={previousEmbedUrl}
               onChange={(ev) => {
                 // Propagation must be stopped, otherwise, the radio box change
