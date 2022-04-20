@@ -4,6 +4,7 @@ export const useShowHide = (isShownByDefault: boolean = false) => {
   const [isShown, setShown] = useState<boolean>(isShownByDefault);
 
   const show = useCallback(() => {
+    console.log("show");
     setShown(true);
   }, []);
 
@@ -12,6 +13,7 @@ export const useShowHide = (isShownByDefault: boolean = false) => {
   }, []);
 
   const toggle = useCallback(() => {
+    console.log("toggle");
     setShown((prev) => !prev);
   }, []);
 
