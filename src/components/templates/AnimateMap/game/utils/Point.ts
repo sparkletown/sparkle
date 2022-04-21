@@ -1,8 +1,8 @@
-import { Point } from "types/utility";
+import { GamePoint } from "../common";
 
-export const StartPoint = (): Point => {
+export const StartPoint = (): GamePoint => {
   return { x: 4500, y: 4600 };
 };
-export const ZeroPoint = (): Point => {
+export const ZeroPoint = (): GamePoint => {
   return { x: 0, y: 0 };
 };

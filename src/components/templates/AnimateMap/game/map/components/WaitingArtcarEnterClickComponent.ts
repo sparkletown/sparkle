@@ -1,5 +1,5 @@
-import { ReplicatedArtcar } from "store/reducers/AnimateMap";
+import { GameArtcar } from "../../common";
 
 export class WaitingArtcarEnterClickComponent {
-  constructor(public venue: ReplicatedArtcar) {}
+  constructor(public venue: GameArtcar) {}
 }

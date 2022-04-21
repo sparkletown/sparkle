@@ -1,8 +1,7 @@
 import { Engine, NodeList, System } from "@ash.ts/ash";
 import { subscribeActionAfter } from "redux-subscribe-action";
 
-import { AnimateMapActionTypes } from "../../../../../../store/actions/AnimateMap";
-import { GameControls } from "../../common";
+import { GameActionTypes, GameControls } from "../../common";
 import EntityFactory from "../entities/EntityFactory";
 import { FirebarrelCamIcon } from "../graphics/FirebarrelCamIcon";
 import { FirebarrelNode } from "../nodes/FirebarrelNode";
@@ -36,7 +35,7 @@ export class FirebarrelSystem extends System {
     this.viewport.nodeAdded.add(this.handleViewportAdded);
 
     this._unsubscribeFirebarrelEnter = subscribeActionAfter(
-      AnimateMapActionTypes.ENTER_FIREBARREL,
+      GameActionTypes.ENTER_FIREBARREL,
       () => {
         if (this.waitingEnterFirebarrelId) {
           clearTimeout(this.waitingEnterFirebarrelId);
@@ -45,7 +44,7 @@ export class FirebarrelSystem extends System {
       }
     );
     this._unsubscribeFirebarrelSet = subscribeActionAfter(
-      AnimateMapActionTypes.SET_FIREBARREL,
+      GameActionTypes.SET_FIREBARREL,
       () => {
         this.waitingEnterFirebarrelId = window.setTimeout(() => {
           if (this.player) {
@@ -56,7 +55,7 @@ export class FirebarrelSystem extends System {
       }
     );
     this._unsubscribeFirebarrelExit = subscribeActionAfter(
-      AnimateMapActionTypes.EXIT_FIREBARREL,
+      GameActionTypes.EXIT_FIREBARREL,
       () => {
         this.creator.exitFirebarrel();
         console.log("exit firebarrel 1");

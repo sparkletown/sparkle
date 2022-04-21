@@ -1,5 +1,4 @@
-import { ReplicatedVenue } from "store/reducers/AnimateMap";
-
+import { GameVenue } from "../../common";
 import { FSMBase } from "../finalStateMachines/FSMBase";
 
 export class VenueComponent {
@@ -12,5 +11,5 @@ export class VenueComponent {
   get HALO_ANIMATED(): string {
     return "haloAnimated";
   }
-  constructor(public model: ReplicatedVenue, public fsm: FSMBase) {}
+  constructor(public model: GameVenue, public fsm: FSMBase) {}
 }

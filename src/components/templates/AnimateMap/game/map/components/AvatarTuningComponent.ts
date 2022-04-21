@@ -1,5 +1,5 @@
-import { ReplicatedUser } from "store/reducers/AnimateMap";
+import { GameUser } from "../../common";
 
 export class AvatarTuningComponent {
-  constructor(public user: ReplicatedUser) {}
+  constructor(public user: GameUser) {}
 }

@@ -1,11 +1,8 @@
 import { Entity } from "@ash.ts/ash";
 import { Sprite } from "pixi.js";
 
-import { DEFAULT_PORTAL_BOX } from "settings";
-
 import { setAnimateMapRoom } from "../../../../../../store/actions/AnimateMap";
-import { ReplicatedArtcar } from "../../../../../../store/reducers/AnimateMap";
-import { Point } from "../../../../../../types/utility";
+import { DEFAULT_PORTAL_BOX, GameArtcar, GamePoint } from "../../common";
 import { ArtcarComponent } from "../components/ArtcarComponent";
 import { ClickableSpriteComponent } from "../components/ClickableSpriteComponent";
 import { CollisionComponent } from "../components/CollisionComponent";
@@ -21,7 +18,7 @@ import EntityFactory from "./EntityFactory";
 // const TOOLTIP_COLOR_DEFAULT = 0x655a4d;
 const TOOLTIP_COLOR_ISLIVE = 0x8e5ffe;
 
-const addArtcarTooltip = (artcar: ReplicatedArtcar, entity: Entity) => {
+const addArtcarTooltip = (artcar: GameArtcar, entity: Entity) => {
   if (entity.get(TooltipComponent)) {
     return;
   }
@@ -31,9 +28,7 @@ const addArtcarTooltip = (artcar: ReplicatedArtcar, entity: Entity) => {
   entity.add(tooltip);
 };
 
-const getCurrentArtcar = (
-  artcarComponent: ArtcarComponent
-): ReplicatedArtcar => {
+const getCurrentArtcar = (artcarComponent: ArtcarComponent): GameArtcar => {
   return artcarComponent.artcar;
 };
 
@@ -47,13 +42,13 @@ https://burn.sparklever.se/in/wheelyfishsticks
  */
 
 export const createArtcarEntity = (
-  user: ReplicatedArtcar,
+  user: GameArtcar,
   creator: EntityFactory
 ): Entity => {
   const scale = 0.3;
   // const innerRadius = config.venuesMainCircleOuterRadius;
   // const outerRadius = config.borderRadius;
-  const worldCenter: Point = creator.controls.getConfig().worldCenter;
+  const worldCenter: GamePoint = creator.controls.getConfig().worldCenter;
   //
   // const angle = creator.getRandomNumber(0, 360) * (Math.PI / 180);
   // const radiusX = creator.getRandomNumber(innerRadius, outerRadius);

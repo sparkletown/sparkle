@@ -2,17 +2,17 @@ import { Engine } from "@ash.ts/ash";
 import { Application, Container } from "pixi.js";
 import { Viewport } from "pixi-viewport";
 
-import { setAnimateMapPointer } from "store/actions/AnimateMap";
-import { ReplicatedUser } from "store/reducers/AnimateMap";
-
-import { Point } from "types/utility";
-
-import playerModel from "../../bridges/DataProvider/Structures/PlayerModel";
 import EventProvider, {
   EventType,
 } from "../../bridges/EventProvider/EventProvider";
 import { TimeoutCommand } from "../commands/TimeoutCommand";
-import { GameControls } from "../common";
+import {
+  GameControls,
+  GamePoint,
+  GameUser,
+  playerModel,
+  setAnimateMapPointer,
+} from "../common";
 import { MAP_JSON, sounds } from "../constants/AssetConstants";
 import { stubArtcarsData } from "../constants/StubData";
 import { GameInstance } from "../GameInstance";
@@ -64,7 +64,7 @@ export class MapContainer extends Container {
 
   private _debugContainer?: Container;
 
-  private _player: ReplicatedUser | undefined;
+  private _player: GameUser | undefined;
 
   constructor(app: Application, controls: GameControls) {
     super();
@@ -79,7 +79,7 @@ export class MapContainer extends Container {
     ) {
       this._player = playerModel;
     } else {
-      const clbck = (player: ReplicatedUser) => {
+      const clbck = (player: GameUser) => {
         this._player = player;
         EventProvider.off(EventType.PLAYER_MODEL_READY, clbck);
       };
@@ -101,7 +101,7 @@ export class MapContainer extends Container {
     this.initSystems();
     this.initMap(MAP_JSON);
 
-    this._viewport?.on("clicked", (e: { world: Point }) =>
+    this._viewport?.on("clicked", (e: { world: GamePoint }) =>
       this._controls.dispatch(
         setAnimateMapPointer({
           x: e.world.x,
@@ -333,16 +333,16 @@ export class MapContainer extends Container {
           if (this.entityFactory) {
             const map = this._controls.playgroundMap;
             const bots = this._controls.getUsers();
-            const itrb: IterableIterator<ReplicatedUser> = bots.values();
+            const itrb: IterableIterator<GameUser> = bots.values();
             const self: MapContainer = this;
             const loop = async () => {
               for (
-                let bot: ReplicatedUser = itrb.next().value;
+                let bot: GameUser = itrb.next().value;
                 bot;
                 bot = itrb.next().value
               ) {
                 await new Promise((resolve) => {
-                  const point: Point = map.getRandomPointOnThePlayground();
+                  const point: GamePoint = map.getRandomPointOnThePlayground();
                   bot.x = point.x;
                   bot.y = point.y;
                   self.entityFactory?.createBot(bot);

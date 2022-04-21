@@ -2,11 +2,9 @@ import { Engine, NodeList, System } from "@ash.ts/ash";
 import { Container, DisplayObject, Graphics, Sprite } from "pixi.js";
 import { Viewport } from "pixi-viewport";
 
-import { Point } from "types/utility";
-
 import { RoomPointNode } from "../../../bridges/DataProvider/Structures/RoomsModel";
 import { EventType } from "../../../bridges/EventProvider/EventProvider";
-import { GameControls } from "../../common";
+import { GameControls, GamePoint } from "../../common";
 import { GameInstance } from "../../GameInstance";
 import EntityFactory from "../entities/EntityFactory";
 import { BotNode } from "../nodes/BotNode";
@@ -136,7 +134,7 @@ export class DebugSystem extends System {
     const config = this._controls.getConfig();
     const currentZoomLevel = config.zoomViewportToLevel(this.viewport.scale.y);
     if (this.player && this.player.head) {
-      const center: Point = this.player?.head
+      const center: GamePoint = this.player?.head
         ? { x: this.player.head.position.x, y: this.player.head.position.y }
         : this.viewport.center;
       const lineOfSight = config.getAvatarLineOfSightByZoomLevel(1);
@@ -219,7 +217,7 @@ export class DebugSystem extends System {
 
   private drawVenuesInnerCircle() {
     const config = this._controls.getConfig();
-    const center: Point = config.worldCenter;
+    const center: GamePoint = config.worldCenter;
     const radius = config.worldWidth * 0.073;
 
     const g: Graphics = new Graphics();
@@ -232,7 +230,7 @@ export class DebugSystem extends System {
 
   private drawVenuesOuterCircle() {
     const config = this._controls.getConfig();
-    const center: Point = config.worldCenter;
+    const center: GamePoint = config.worldCenter;
     const radius = config.worldWidth * 0.1713;
 
     const g: Graphics = new Graphics();
@@ -245,7 +243,7 @@ export class DebugSystem extends System {
 
   private drawPlayaBorderCircle() {
     const config = this._controls.getConfig();
-    const center: Point = config.worldCenter;
+    const center: GamePoint = config.worldCenter;
     const radius = config.worldWidth * 0.4;
 
     const g: Graphics = new Graphics();

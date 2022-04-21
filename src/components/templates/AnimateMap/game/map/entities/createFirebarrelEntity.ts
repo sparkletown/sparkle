@@ -1,11 +1,9 @@
 import { Entity } from "@ash.ts/ash";
 import { Sprite } from "pixi.js";
 
-import { ReplicatedFirebarrel } from "store/reducers/AnimateMap";
-
 import { ImageToCanvas } from "../../commands/ImageToCanvas";
 import { LoadImage } from "../../commands/LoadImage";
-import { GameConfig } from "../../common";
+import { GameConfig, GameFirebarell } from "../../common";
 import { barrels } from "../../constants/AssetConstants";
 import { AnimationComponent } from "../components/AnimationComponent";
 import { ClickableSpriteComponent } from "../components/ClickableSpriteComponent";
@@ -45,12 +43,12 @@ const removeTooltip = (entity: Entity) => {
 
 const getCurrentReplicatedFirebarrel = (
   firebarrelComponent: FirebarrelComponent
-): ReplicatedFirebarrel => {
+): GameFirebarell => {
   return firebarrelComponent.model;
 };
 
 const updateBarrelImage = (
-  barrel: ReplicatedFirebarrel,
+  barrel: GameFirebarell,
   spriteComponent: SpriteComponent,
   positionComponent: PositionComponent,
   config: GameConfig
@@ -93,7 +91,7 @@ const updateBarrelImage = (
 };
 
 export const updateFirebarrelEntity = (
-  barrel: ReplicatedFirebarrel,
+  barrel: GameFirebarell,
   creator: EntityFactory
 ) => {
   const node = creator.getFirebarrelNode(barrel.data.id);
@@ -118,7 +116,7 @@ export const updateFirebarrelEntity = (
 };
 
 export const createFirebarrelEntity = (
-  barrel: ReplicatedFirebarrel,
+  barrel: GameFirebarell,
   creator: EntityFactory
 ): Entity => {
   const engine = creator.engine;

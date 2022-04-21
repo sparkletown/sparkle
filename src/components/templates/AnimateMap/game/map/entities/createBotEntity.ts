@@ -1,12 +1,9 @@
 import { Entity } from "@ash.ts/ash";
 import { Sprite } from "pixi.js";
 
-import { ReplicatedUser } from "store/reducers/AnimateMap";
-
-import { Point } from "types/utility";
-
 import { EventType } from "../../../bridges/EventProvider/EventProvider";
 import { RoundAvatar } from "../../commands/RoundAvatar";
+import { GamePoint, GameUser } from "../../common";
 import { GameInstance } from "../../GameInstance";
 import { BotComponent } from "../components/BotComponent";
 import { ClickableSpriteComponent } from "../components/ClickableSpriteComponent";
@@ -23,11 +20,11 @@ import { Avatar } from "../graphics/Avatar";
 import EntityFactory from "./EntityFactory";
 
 export const createBotEntity = (
-  user: ReplicatedUser,
+  user: GameUser,
   creator: EntityFactory,
   realUser = false
 ) => {
-  const point: Point = creator.controls.playgroundMap.getRandomPointInTheCentralCircle();
+  const point: GamePoint = creator.controls.playgroundMap.getRandomPointInTheCentralCircle();
 
   if (!realUser) {
     user.x = point.x;

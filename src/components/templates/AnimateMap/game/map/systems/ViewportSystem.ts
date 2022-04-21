@@ -5,18 +5,17 @@ import { Application, InteractionEvent, Point } from "pixi.js";
 import { MovedEventData, Viewport, ZoomedEventData } from "pixi-viewport";
 import { subscribeActionAfter } from "redux-subscribe-action";
 
+import { EventType } from "components/templates/AnimateMap/bridges/EventProvider/EventProvider";
+
+import { TimeoutCommand } from "../../commands/TimeoutCommand";
 import {
-  AnimateMapActionTypes,
+  GameActionTypes,
+  GameControls,
   setAnimateMapEnvironmentSoundAction,
   setAnimateMapLastZoom,
   setAnimateMapZoom,
   setAnimateMapZoomAction,
-} from "store/actions/AnimateMap";
-
-import { EventType } from "components/templates/AnimateMap/bridges/EventProvider/EventProvider";
-
-import { TimeoutCommand } from "../../commands/TimeoutCommand";
-import { GameControls } from "../../common";
+} from "../../common";
 import { GameInstance } from "../../GameInstance";
 import { easeInOutQuad, Easing } from "../../utils/Easing";
 import { ViewportComponent } from "../components/ViewportComponent";
@@ -85,7 +84,7 @@ export class ViewportSystem extends System {
     this._viewport.on("drag-start", this._viewportDragStartHandler, this);
 
     this._unsubscribeSetZoom = subscribeActionAfter(
-      AnimateMapActionTypes.SET_ZOOM_LEVEL,
+      GameActionTypes.SET_ZOOM_LEVEL,
       (action) =>
         this.handleSetZoom(
           (action as setAnimateMapZoomAction).payload.zoomLevel
@@ -93,7 +92,7 @@ export class ViewportSystem extends System {
     );
 
     this._unsubscribeSetEnvironmentSound = subscribeActionAfter(
-      AnimateMapActionTypes.SET_ENVIRONMENT_SOUND,
+      GameActionTypes.SET_ENVIRONMENT_SOUND,
       (action) => {
         Howler.mute(
           !(action as setAnimateMapEnvironmentSoundAction).payload

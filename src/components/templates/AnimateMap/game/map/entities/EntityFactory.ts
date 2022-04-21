@@ -2,17 +2,17 @@ import { Engine, Entity, NodeList } from "@ash.ts/ash";
 import { Sprite } from "pixi.js";
 
 import { setAnimateMapFireBarrel } from "store/actions/AnimateMap";
-import {
-  ReplicatedArtcar,
-  ReplicatedFirebarrel,
-  ReplicatedUser,
-  ReplicatedVenue,
-} from "store/reducers/AnimateMap";
 
 import { ImageToCanvas } from "../../commands/ImageToCanvas";
 import { LoadImage } from "../../commands/LoadImage";
 import { RoundAvatar } from "../../commands/RoundAvatar";
-import { GameControls } from "../../common";
+import {
+  GameArtcar,
+  GameControls,
+  GameFirebarell,
+  GameUser,
+  GameVenue,
+} from "../../common";
 import { avatarCycles } from "../../constants/AssetConstants";
 import { AvatarTuningComponent } from "../components/AvatarTuningComponent";
 import { BubbleComponent } from "../components/BubbleComponent";
@@ -66,9 +66,7 @@ export default class EntityFactory {
     this.engine = engine;
   }
 
-  public createWaitingArtcarClick(
-    artcar: ReplicatedArtcar
-  ): Entity | undefined {
+  public createWaitingArtcarClick(artcar: GameArtcar): Entity | undefined {
     const nodes = this.engine.getNodeList(WaitingVenueClickNode);
     while (nodes.head) {
       this.engine.removeEntity(nodes.head.entity);
@@ -103,7 +101,7 @@ export default class EntityFactory {
     return entity;
   }
 
-  public createWaitingVenueClick(venue: ReplicatedVenue): Entity | undefined {
+  public createWaitingVenueClick(venue: GameVenue): Entity | undefined {
     const nodes = this.engine.getNodeList(WaitingVenueClickNode);
     while (nodes.head) {
       this.engine.removeEntity(nodes.head.entity);
@@ -138,7 +136,7 @@ export default class EntityFactory {
     return entity;
   }
 
-  public getWaitingVenueClick(): ReplicatedVenue | undefined {
+  public getWaitingVenueClick(): GameVenue | undefined {
     return this.engine.getNodeList(WaitingVenueClickNode).head?.venue.venue;
   }
 
@@ -146,7 +144,7 @@ export default class EntityFactory {
     return this.engine.getNodeList(PlayerNode).head;
   }
 
-  public getRandomBot(): ReplicatedUser | undefined {
+  public getRandomBot(): GameUser | undefined {
     const bots = this.controls.getUsers();
     console.log("bots => ", bots);
     const botIndex = Math.floor(Math.random() * bots.size);
@@ -268,7 +266,7 @@ export default class EntityFactory {
     entity.remove(BubbleComponent);
   }
 
-  public createPlayer(user: ReplicatedUser): Entity {
+  public createPlayer(user: GameUser): Entity {
     // HACK
     user.data.cycle = avatarCycles[0];
 
@@ -372,7 +370,7 @@ export default class EntityFactory {
     return entity;
   }
 
-  public createArtcar(user: ReplicatedArtcar): Entity {
+  public createArtcar(user: GameArtcar): Entity {
     return createArtcarEntity(user, this);
   }
 
@@ -402,7 +400,7 @@ export default class EntityFactory {
     node.entity.remove(AvatarTuningComponent);
   }
 
-  public createBot(user: ReplicatedUser, realUser = false): Entity {
+  public createBot(user: GameUser, realUser = false): Entity {
     return createBotEntity(user, this, realUser);
   }
 
@@ -420,7 +418,7 @@ export default class EntityFactory {
     }
   }
 
-  public updateBotPosition(user: ReplicatedUser, x: number, y: number) {
+  public updateBotPosition(user: GameUser, x: number, y: number) {
     const list: NodeList<BotNode> = this.engine.getNodeList(BotNode);
     for (let bot = list.head; bot; bot = bot.next) {
       if (bot.bot.data.data.id === user.data.id) {
@@ -436,7 +434,7 @@ export default class EntityFactory {
     }
   }
 
-  public updateUserPositionById(user: ReplicatedUser) {
+  public updateUserPositionById(user: GameUser) {
     let bot: BotNode | null = this.getBotNode(user.data.id);
     if (!bot) {
       // const player: PlayerModel = new PlayerModel(user, -1, "", x, y);
@@ -458,7 +456,7 @@ export default class EntityFactory {
     }
   }
 
-  public createUser(hero: ReplicatedUser): Entity {
+  public createUser(hero: GameUser): Entity {
     const entity: Entity = new Entity().add(
       new PositionComponent(hero.x, hero.y)
     );
@@ -467,7 +465,7 @@ export default class EntityFactory {
     return entity;
   }
 
-  public createFireBarrel(barrel: ReplicatedFirebarrel): Entity {
+  public createFireBarrel(barrel: GameFirebarell): Entity {
     const node = this.getFirebarrelNode(barrel.data.id);
     if (node) return node.entity;
     return createFirebarrelEntity(barrel, this);
@@ -534,22 +532,22 @@ export default class EntityFactory {
     }
   }
 
-  public createVenue(venue: ReplicatedVenue): Entity {
+  public createVenue(venue: GameVenue): Entity {
     const node = this.getVenueNode(venue);
     if (node) return node.entity;
     return createVenueEntity(venue, this);
   }
 
-  public removeVenue(venue: ReplicatedVenue) {
+  public removeVenue(venue: GameVenue) {
     const node = this.getVenueNode(venue);
     if (node) this.engine.removeEntity(node.entity);
   }
 
-  public updateVenue(venue: ReplicatedVenue) {
+  public updateVenue(venue: GameVenue) {
     updateVenueEntity(venue, this);
   }
 
-  public getVenueNode(venue: ReplicatedVenue): VenueNode | undefined {
+  public getVenueNode(venue: GameVenue): VenueNode | undefined {
     const nodes: NodeList<VenueNode> = this.engine.getNodeList(VenueNode);
     for (let node = nodes.head; node; node = node.next) {
       if (node.venue.model.data.id === venue.data.id) {
@@ -603,12 +601,12 @@ export default class EntityFactory {
     return undefined;
   }
 
-  public removeBarrel(firebarrel: ReplicatedFirebarrel) {
+  public removeBarrel(firebarrel: GameFirebarell) {
     const node = this.getFirebarrelNode(firebarrel.data.id);
     if (node) this.engine.removeEntity(node.entity);
   }
 
-  public updateBarrel(firebarrel: ReplicatedFirebarrel) {
+  public updateBarrel(firebarrel: GameFirebarell) {
     const node = this.getFirebarrelNode(firebarrel.data.id);
     if (!node) {
       return;

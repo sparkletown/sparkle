@@ -1,15 +1,15 @@
 import { v4 as uuid } from "uuid";
 
-import { DEFAULT_AVATAR_LIST } from "settings";
-
-import { ReplicatedArtcar, ReplicatedUser } from "store/reducers/AnimateMap";
-
-import { getRandomInt } from "utils/getRandomInt";
-import { determineAvatar } from "utils/image";
-
-import { Point } from "../../../../../types/utility";
-import { getIntByHash } from "../../bridges/DataProvider/Contructor/PlayerIO/utils/getIntByHash";
-import { GameConfig } from "../common";
+import {
+  DEFAULT_AVATAR_LIST,
+  determineAvatar,
+  GameArtcar,
+  GameConfig,
+  GamePoint,
+  GameUser,
+  getIntByHash,
+  getRandomInt,
+} from "../common";
 
 import {
   artcars13,
@@ -19,7 +19,7 @@ import {
 } from "./AssetConstants";
 
 export const stubArtcarsData = (config: GameConfig) => {
-  const users: Array<ReplicatedArtcar> = [];
+  const users: Array<GameArtcar> = [];
   const arr = [
     {
       name: "Darth Paul Art Car",
@@ -124,7 +124,7 @@ export const stubArtcarsData = (config: GameConfig) => {
 
   const innerRadius = config.venuesMainCircleOuterRadius;
   const outerRadius = config.borderRadius;
-  const worldCenter: Point = config.worldCenter;
+  const worldCenter: GamePoint = config.worldCenter;
   const sector = 360 / arr.length + 2;
   for (let i = 0; i < arr.length; i++) {
     let angle = sector * i;
@@ -165,7 +165,7 @@ export const stubArtcarsData = (config: GameConfig) => {
 };
 
 export const stubUsersData = (config: GameConfig) => {
-  const users: Map<string, ReplicatedUser> = new Map();
+  const users: Map<string, GameUser> = new Map();
   const len = config.QA_BOTS_NUMBER;
   const paddingH = config.worldWidth * 0.1;
   const paddingV = config.worldHeight * 0.1;
@@ -189,7 +189,7 @@ export const stubUsersData = (config: GameConfig) => {
         accessories: avatarAccessories[y % avatarAccessories.length],
         cycle: avatarCycles[x % avatarCycles.length],
       },
-    } as ReplicatedUser);
+    } as GameUser);
   }
   return users;
 };

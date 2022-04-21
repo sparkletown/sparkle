@@ -1,13 +1,10 @@
 import { Entity } from "@ash.ts/ash";
 import { Sprite } from "pixi.js";
 
-import { DEFAULT_PORTAL_BOX } from "settings";
-
 import { setAnimateMapRoom } from "store/actions/AnimateMap";
-import { ReplicatedVenue } from "store/reducers/AnimateMap";
 
 import { CropVenue } from "../../commands/CropVenue";
-import { GameConfig } from "../../common";
+import { DEFAULT_PORTAL_BOX, GameConfig, GameVenue } from "../../common";
 import { AnimationComponent } from "../components/AnimationComponent";
 import { ClickableSpriteComponent } from "../components/ClickableSpriteComponent";
 import { CollisionComponent } from "../components/CollisionComponent";
@@ -30,7 +27,7 @@ const TOOLTIP_COLOR_DEFAULT = 0x655a4d;
 const TOOLTIP_COLOR_ISLIVE = 0x8e5ffe;
 const TOOLTIP_TEXT_LENGTH_MAX = 18;
 
-const addVenueTooltip = (venue: ReplicatedVenue, entity: Entity) => {
+const addVenueTooltip = (venue: GameVenue, entity: Entity) => {
   if (entity.get(TooltipComponent)) {
     return;
   }
@@ -47,7 +44,7 @@ const addVenueTooltip = (venue: ReplicatedVenue, entity: Entity) => {
 };
 
 const updateVenueImage = (
-  replicatedVenue: ReplicatedVenue,
+  replicatedVenue: GameVenue,
   spriteComponent: SpriteComponent,
   positionComponent: PositionComponent,
   config: GameConfig
@@ -91,14 +88,11 @@ const updateVenueImage = (
 
 const getCurrentReplicatedVenue = (
   venueComponent: VenueComponent
-): ReplicatedVenue => {
+): GameVenue => {
   return venueComponent.model;
 };
 
-export const updateVenueEntity = (
-  venue: ReplicatedVenue,
-  creator: EntityFactory
-) => {
+export const updateVenueEntity = (venue: GameVenue, creator: EntityFactory) => {
   const node = creator.getVenueNode(venue);
   if (!node) {
     return;
@@ -114,10 +108,7 @@ export const updateVenueEntity = (
   updateVenueImage(venue, sprite, node.position, creator.controls.getConfig());
 };
 
-export const createVenueEntity = (
-  venue: ReplicatedVenue,
-  creator: EntityFactory
-) => {
+export const createVenueEntity = (venue: GameVenue, creator: EntityFactory) => {
   const config = creator.controls.getConfig();
   const engine = creator.engine;
   const entity: Entity = new Entity();

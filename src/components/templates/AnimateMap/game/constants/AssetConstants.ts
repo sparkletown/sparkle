@@ -1,4 +1,4 @@
-import MAP_JSON from "components/templates/AnimateMap/configs/TiledEditorPlaya.json";
+import MAP_JSON from "../common/TiledEditorPlaya.json";
 
 import ARTCAR_0 from "assets/images/AnimateMap/artcars/6.1.png";
 import ARTCAR_1 from "assets/images/AnimateMap/artcars/7.1.png";

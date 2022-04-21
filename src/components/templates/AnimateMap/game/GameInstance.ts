@@ -9,21 +9,6 @@ import {
 import { Store } from "redux";
 import { subscribeActionAfter } from "redux-subscribe-action";
 
-import {
-  AnimateMapActionTypes,
-  setAnimateMapEnvironmentSoundAction,
-  setAnimateMapFirstEntrance,
-  setAnimateMapUsers,
-} from "store/actions/AnimateMap";
-import {
-  AnimateMapState,
-  ReplicatedFirebarrel,
-  ReplicatedUser,
-  ReplicatedVenue,
-} from "store/reducers/AnimateMap";
-
-import { Point } from "types/utility";
-
 import { CloudDataProvider } from "../bridges/DataProvider/CloudDataProvider";
 import { DataProviderEvent } from "../bridges/DataProvider/Providers/DataProviderEvent";
 import EventProvider, {
@@ -37,7 +22,19 @@ import { stubUsersData } from "./constants/StubData";
 import { MapContainer } from "./map/MapContainer";
 import { PlaygroundMap } from "./utils/PlaygroundMap";
 import { StartPoint } from "./utils/Point";
-import { GameConfig, GameControls } from "./common";
+import {
+  GameActionTypes,
+  GameConfig,
+  GameControls,
+  GameFirebarell,
+  GamePoint,
+  GameState,
+  GameUser,
+  GameVenue,
+  setAnimateMapEnvironmentSoundAction,
+  setAnimateMapFirstEntrance,
+  setAnimateMapUsers,
+} from "./common";
 
 // @debt do not create objects on load time, but only in the constructor.
 // Globals (or module level) constants like mapLightningShader and mapStaticLightningShader
@@ -156,7 +153,7 @@ export class GameInstance {
     }
   }
 
-  private async _play(position: Point = StartPoint()): Promise<void> {
+  private async _play(position: GamePoint = StartPoint()): Promise<void> {
     // this.fillPlayerData(position).catch((error) => console.log(error));
     await this._mapContainer?.start();
   }
@@ -212,7 +209,7 @@ export class GameInstance {
     return this._store;
   }
 
-  public getState(): AnimateMapState {
+  public getState(): GameState {
     return this._store.getState().animatemap;
   }
 
@@ -233,38 +230,35 @@ export class GameInstance {
   private _subscribes() {
     //TODO: refactor all subscribes to separate class? An example, rework eventProvider for this.
 
-    EventProvider.on(EventType.USER_JOINED, (user: ReplicatedUser) => {
+    EventProvider.on(EventType.USER_JOINED, (user: GameUser) => {
       console.log(`- ${user} join to room`);
       this._mapContainer?.entityFactory?.updateUserPositionById(user);
     });
 
-    EventProvider.on(EventType.USER_LEFT, (user: ReplicatedUser) => {
+    EventProvider.on(EventType.USER_LEFT, (user: GameUser) => {
       console.log(`- ${user} left from room`);
       this._mapContainer?.entityFactory?.removeUserById(user.toString());
     });
 
-    EventProvider.on(EventType.USER_MOVED, (user: ReplicatedUser) => {
+    EventProvider.on(EventType.USER_MOVED, (user: GameUser) => {
       this._mapContainer?.entityFactory?.updateUserPositionById(user);
     });
 
     // Venues
-    this.dataProvider.on(
-      DataProviderEvent.VENUE_ADDED,
-      (venue: ReplicatedVenue) => {
-        this._mapContainer?.entityFactory?.createVenue(venue);
-      }
-    );
+    this.dataProvider.on(DataProviderEvent.VENUE_ADDED, (venue: GameVenue) => {
+      this._mapContainer?.entityFactory?.createVenue(venue);
+    });
 
     this.dataProvider.on(
       DataProviderEvent.VENUE_REMOVED,
-      (venue: ReplicatedVenue) => {
+      (venue: GameVenue) => {
         this._mapContainer?.entityFactory?.removeVenue(venue);
       }
     );
 
     this.dataProvider.on(
       DataProviderEvent.VENUE_UPDATED,
-      (venue: ReplicatedVenue) => {
+      (venue: GameVenue) => {
         this._mapContainer?.entityFactory?.updateVenue(venue);
       }
     );
@@ -272,21 +266,21 @@ export class GameInstance {
     // Firebarrels
     this.dataProvider.on(
       DataProviderEvent.FIREBARREL_ADDED,
-      (firebarrel: ReplicatedFirebarrel) => {
+      (firebarrel: GameFirebarell) => {
         this._mapContainer?.entityFactory?.createFireBarrel(firebarrel);
       }
     );
 
     this.dataProvider.on(
       DataProviderEvent.FIREBARREL_REMOVED,
-      (firebarrel: ReplicatedFirebarrel) => {
+      (firebarrel: GameFirebarell) => {
         this._mapContainer?.entityFactory?.removeBarrel(firebarrel);
       }
     );
 
     this.dataProvider.on(
       DataProviderEvent.FIREBARREL_UPDATED,
-      (firebarrel: ReplicatedFirebarrel) => {
+      (firebarrel: GameFirebarell) => {
         this._mapContainer?.entityFactory?.updateBarrel(firebarrel);
       }
     );
@@ -298,7 +292,7 @@ export class GameInstance {
     );
 
     this._unsubscribeSetEnvironmentSound = subscribeActionAfter(
-      AnimateMapActionTypes.SET_ENVIRONMENT_SOUND,
+      GameActionTypes.SET_ENVIRONMENT_SOUND,
       (action) => {
         console.log("environment sound is ");
         console.log(

@@ -1,5 +1,4 @@
-import { ReplicatedUser } from "store/reducers/AnimateMap";
-
+import { GameUser } from "../../common";
 import { FSMBase } from "../finalStateMachines/FSMBase";
 
 export class PlayerComponent {
@@ -16,5 +15,5 @@ export class PlayerComponent {
     return "immobilized";
   }
 
-  constructor(public data: ReplicatedUser, public fsm: FSMBase) {}
+  constructor(public data: GameUser, public fsm: FSMBase) {}
 }

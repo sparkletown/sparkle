@@ -1,8 +1,6 @@
 import { Engine, Entity, NodeList, System } from "@ash.ts/ash";
 
-import { Point } from "types/utility";
-
-import { GameControls } from "../../common";
+import { GameControls, GamePoint } from "../../common";
 import { MotionClickControlComponent } from "../components/MotionClickControlComponent";
 import { MotionJoystickControlComponent } from "../components/MotionJoystickControlComponent";
 import { MotionKeyboardControlComponent } from "../components/MotionKeyboardControlComponent";
@@ -127,7 +125,7 @@ export class MotionControlSwitchSystem extends System {
     this.followThePlayer();
   };
 
-  private setPlayerTweenControl(e: Point) {
+  private setPlayerTweenControl(e: GamePoint) {
     const x = e.x;
     const y = e.y;
     if (!this._controls.playgroundMap.pointIsOnThePlayground(x, y)) {
@@ -148,7 +146,7 @@ export class MotionControlSwitchSystem extends System {
     }
   }
 
-  private setPlayerClickControl(e: Point) {
+  private setPlayerClickControl(e: GamePoint) {
     const x = e.x;
     const y = e.y;
 

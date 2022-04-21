@@ -1,5 +1,4 @@
-import { ReplicatedUser } from "store/reducers/AnimateMap";
-
+import { GameUser } from "../../common";
 import { FSMBase } from "../finalStateMachines/FSMBase";
 
 export class BotComponent {
@@ -14,7 +13,7 @@ export class BotComponent {
   }
 
   constructor(
-    public data: ReplicatedUser,
+    public data: GameUser,
     public fsm: FSMBase,
     public realUser = false
   ) {}

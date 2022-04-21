@@ -1,9 +1,7 @@
 import { Engine, NodeList, System } from "@ash.ts/ash";
 
-import { ReplicatedVenue } from "store/reducers/AnimateMap";
-
 import { EventType } from "../../../bridges/EventProvider/EventProvider";
-import { GameControls } from "../../common";
+import { GameArtcar, GameControls } from "../../common";
 import { GameInstance } from "../../GameInstance";
 import { CollisionComponent } from "../components/CollisionComponent";
 import { MovementComponent } from "../components/MovementComponent";
@@ -57,7 +55,7 @@ export class MotionCollisionSystem extends System {
 
           GameInstance.instance.eventProvider.emit(
             EventType.ON_VENUE_COLLISION,
-            node.artcar.artcar as ReplicatedVenue
+            node.artcar.artcar as GameArtcar
           );
 
           break;
