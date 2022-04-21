@@ -48,10 +48,8 @@
   }
 
   &__fullWidth {
-    // This will change as soon as the design team decide what "full width"
-    // actually means
-    max-width: 30vw;
-    margin-right: space.empty(2);
+    max-width: 100%;
+    margin: space.empty(1);
   }
 }
 
