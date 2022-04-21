@@ -32,7 +32,6 @@ export const VideoCommsParticipant: React.FC<VideoCommsParticipantProps> = ({
     stopVideo,
     isTransmittingAudio,
     isTransmittingVideo,
-    stopShareScreen,
   } = useVideoComms();
 
   const { profile, isLoading } = useProfileById({
@@ -47,13 +46,6 @@ export const VideoCommsParticipant: React.FC<VideoCommsParticipantProps> = ({
     () =>
       participant.videoTracks.find(
         ({ sourceType }) => sourceType === VideoSource.Webcam
-      ),
-    [participant.videoTracks]
-  );
-  const screenshareTrack = useMemo(
-    () =>
-      participant.videoTracks.find(
-        ({ sourceType }) => sourceType === VideoSource.Screenshare
       ),
     [participant.videoTracks]
   );
@@ -105,20 +97,6 @@ export const VideoCommsParticipant: React.FC<VideoCommsParticipantProps> = ({
           )}
         </div>
       </div>
-      {screenshareTrack?.enabled && (
-        <div className={styles.trackContainer}>
-          <VideoTrackDisplay track={screenshareTrack} />
-          {isLocal && (
-            <div className={styles.videoCommsControlsContainer}>
-              <VideoCommsControls
-                stopVideo={stopShareScreen}
-                videoEnabled={true}
-                sourceType={VideoSource.Screenshare}
-              />
-            </div>
-          )}
-        </div>
-      )}
 
       {!isLocal && <AudioTrackPlayer track={audioStream} />}
     </div>

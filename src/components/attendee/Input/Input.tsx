@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { RefObject, useMemo } from "react";
 import { FieldError, RegisterOptions, UseFormRegister } from "react-hook-form";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -49,6 +49,7 @@ type InputProps = React.HTMLProps<HTMLInputElement> & {
   icon?: IconProp | JSX.Element;
   iconClassName?: string;
   onIconClick?: () => void;
+  forwardRef?: RefObject<HTMLInputElement>;
 };
 
 export const Input: React.ForwardRefRenderFunction<
@@ -67,6 +68,7 @@ export const Input: React.ForwardRefRenderFunction<
   icon,
   iconClassName,
   onIconClick,
+  forwardRef,
   ...extraInputProps
 }) => {
   const inputId = useMemo(() => generateId("Input"), []);
@@ -100,6 +102,7 @@ export const Input: React.ForwardRefRenderFunction<
           className={inputClassNames}
           {...extraInputProps}
           onKeyDown={handleKeyPress}
+          ref={forwardRef}
         />
 
         {icon && renderIcon(icon, onIconClick)}
