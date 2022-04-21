@@ -2,7 +2,6 @@ import { PortalBox, PortalInput } from "types/rooms";
 import { PortalTemplate } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
 
-import IconAnimateMap from "assets/icons/icon-room-animatemap.svg";
 import IconArtPiece from "assets/icons/icon-room-artpiece.svg";
 import IconAuditorium from "assets/icons/icon-room-auditorium.svg";
 import IconBurnBarrel from "assets/icons/icon-room-burnbarrel.svg";
@@ -52,7 +51,6 @@ const LEGACY_SPACE_INFO_ITEM: SpaceInfoItem = {
 Object.freeze(LEGACY_SPACE_INFO_ITEM);
 
 export const SPACE_INFO_MAP: Record<VenueTemplate, SpaceInfoItem> = {
-  [VenueTemplate.playa]: LEGACY_SPACE_INFO_ITEM,
   [VenueTemplate.posterhall]: {
     text: "Poster hall",
     poster: "",
@@ -67,14 +65,6 @@ export const SPACE_INFO_MAP: Record<VenueTemplate, SpaceInfoItem> = {
     description: "",
     icon: IconPosterHall,
     template: VenueTemplate.posterpage,
-    hidden: true,
-  },
-  [VenueTemplate.animatemap]: {
-    text: "Animated map",
-    poster: "",
-    description: "",
-    icon: IconAnimateMap,
-    template: VenueTemplate.animatemap,
     hidden: true,
   },
   [VenueTemplate.conversationspace]: {
@@ -186,7 +176,6 @@ export const SPACE_INFO_LIST: SpaceInfoItem[] = [
   SPACE_INFO_MAP[VenueTemplate.screeningroom],
   SPACE_INFO_MAP[VenueTemplate.posterhall],
   SPACE_INFO_MAP[VenueTemplate.posterpage],
-  SPACE_INFO_MAP[VenueTemplate.animatemap],
   SPACE_INFO_MAP[VenueTemplate.meetingroom],
 ];
 

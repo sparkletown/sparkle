@@ -20,7 +20,6 @@ export * from "./imageSettings";
 export * from "./interpolationSettings";
 export * from "./mapBackgrounds";
 export * from "./placeholderSettings";
-export * from "./playaSettings";
 export * from "./portalSettings";
 export * from "./sectionSettings";
 export * from "./spacePortalsSettings";
@@ -40,8 +39,6 @@ export const BASE_PORTAL_ICON_PATH = "static/media";
 
 export const DEFAULT_PARTY_NAME = "Anon";
 export const DISPLAY_NAME_MAX_CHAR_COUNT = 40;
-export const PLAYA_VENUE_NAME = "Jam";
-export const PLAYA_VENUE_ID = "jamonline";
 export const GIF_RESIZER_URL = "https://gifgifs.com/resizer/";
 
 // How often to refresh events schedule
@@ -103,16 +100,10 @@ export const EMBEDDABLE_CONTENT_TEMPLATES = Object.freeze([
 ]);
 
 // @debt Refactor this constant into types/venues + create an actual custom type grouping for it
-export const BACKGROUND_IMG_TEMPLATES = [
-  VenueTemplate.partymap,
-  VenueTemplate.animatemap,
-];
+export const BACKGROUND_IMG_TEMPLATES = [VenueTemplate.partymap];
 
 // @debt Refactor this constant into types/venues + create an actual custom type grouping for it
-export const SUBVENUE_TEMPLATES = [
-  VenueTemplate.partymap,
-  VenueTemplate.animatemap,
-];
+export const SUBVENUE_TEMPLATES = [VenueTemplate.partymap];
 
 export const COVERT_ROOM_TYPES: RoomType[] = [
   RoomType.unclickable,
@@ -129,14 +120,11 @@ export interface Template {
 // @debt Refactor this constant into types/templates + create an actual custom type grouping for it
 export const HAS_ROOMS_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.partymap,
-  VenueTemplate.animatemap,
-  VenueTemplate.playa,
 ];
 
 // @debt Refactor this constant into types/templates + create an actual custom type grouping for it
 export const HAS_GRID_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.partymap,
-  VenueTemplate.animatemap,
 ];
 
 // @debt Refactor this constant into types/templates + create an actual custom type grouping for it

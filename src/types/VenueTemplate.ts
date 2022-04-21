@@ -6,7 +6,6 @@ export enum VenueTemplate {
   firebarrel = "firebarrel",
   jazzbar = "jazzbar",
   partymap = "partymap",
-  animatemap = "animatemap",
   posterhall = "posterhall",
   posterpage = "posterpage",
   screeningroom = "screeningroom",
@@ -17,8 +16,4 @@ export enum VenueTemplate {
   artpiece = "artpiece",
   meetingroom = "meetingroom",
   embeddable = "embeddable",
-  /**
-   * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
-   */
-  playa = "playa",
 }

@@ -46,7 +46,6 @@ export const Spaces: React.FC<SpacesProps> = ({ space, world }) => (
             <>
               <MapPreview
                 isEditing
-                worldId={space.worldId}
                 venueId={space.id}
                 venueName={space.name}
                 mapBackground={space.mapBackgroundImageUrl}

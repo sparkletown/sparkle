@@ -27,7 +27,6 @@ const VenueTemplate = {
   friendship: "friendship",
   jazzbar: "jazzbar",
   partymap: "partymap",
-  animatemap: "animatemap",
   performancevenue: "performancevenue",
   posterhall: "posterhall",
   posterpage: "posterpage",
@@ -40,16 +39,6 @@ const VenueTemplate = {
    * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
    */
   avatargrid: "avatargrid",
-
-  /**
-   * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
-   */
-  preplaya: "preplaya",
-
-  /**
-   * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
-   */
-  playa: "playa",
 };
 
 // @debt unify this with HAS_REACTIONS_TEMPLATES in src/settings.ts + share the same code between frontend/backend

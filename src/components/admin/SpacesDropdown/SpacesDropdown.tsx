@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { FieldError, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import classNames from "classnames";
 import { Dropdown } from "components/admin/Dropdown";
-import { omit, omitBy } from "lodash";
+import { omitBy } from "lodash";
 
 import { ALWAYS_EMPTY_ARRAY, PORTAL_INFO_ICON_MAPPING } from "settings";
 
@@ -54,14 +54,11 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
   // It should be getting the value from the form values instead.
   const [selected, setSelected] = useState(parentSpace);
 
-  // @debt: Probably need to omit returning playa from the useOwnedVenues as it's deprecated and
-  // doesn't exist on SPACE_PORTALS_ICONS_MAPPING
-  const spacesWithoutPlaya = omit(spaces, VenueTemplate.playa);
   // @debt Filter out all the poster pages as poster hall currently uses (abuses?)
   // spaces by creating a space for every single poster page. They aren't
   // proper spaces though. We should make a better way of handling this.
   const filteredSpaces = omitBy(
-    spacesWithoutPlaya,
+    spaces,
     (s) => s.template === VenueTemplate.posterpage
   );
   const sortedSpaces = useMemo(

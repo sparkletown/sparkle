@@ -100,11 +100,16 @@
   margin-bottom: space.empty(3);
 
   @media (min-width: breakpoint.$md) {
-    min-height: 90vh;
+    // height: 100vh - height-of-chat-controls - margin-top - margin-bottom
+    min-height: calc(100vh - layout.$h-chat-controls - 2 * space.empty(1));
     margin: 0 space.empty(1) 0 auto;
   }
 }
 
 .sidebarHidden {
   display: none;
+}
+
+.selectedTab {
+  font-variation-settings: "wght" 700, "ital" 0, "SRFF" 20;
 }

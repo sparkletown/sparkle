@@ -8,9 +8,10 @@ import { PartyMapSpaceWithId } from "types/id";
 import { PortalWithBounds, Room } from "types/rooms";
 import { Dimensions, Position } from "types/utility";
 
+import { captureAssertError } from "utils/error";
 import { calculateImageDimensions } from "utils/mapPositioning";
 
-import { useValidImage } from "hooks/useCheckImage";
+import { useValidImage } from "hooks/image/useValidImage";
 
 import { MapPortal } from "./MapPortal";
 
@@ -83,10 +84,13 @@ export const Map: React.FC<MapProps> = ({
   portalRef,
   selectedPortal,
 }) => {
-  const [
-    mapBackground,
-    { width: imageWidth, height: imageHeight, isLoading: isImageLoading },
-  ] = useValidImage(venue?.mapBackgroundImageUrl, DEFAULT_MAP_BACKGROUND);
+  const url = venue?.mapBackgroundImageUrl;
+  const {
+    src: mapBackground,
+    width: imageWidth,
+    height: imageHeight,
+    isLoading: isImageLoading,
+  } = useValidImage(url, DEFAULT_MAP_BACKGROUND);
 
   const { width: windowWidth, height: browserHeight } = useWindowSize();
 
@@ -97,13 +101,34 @@ export const Map: React.FC<MapProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [windowWidth]);
 
+  // this Map might get re-rendered several times, no need for the extra noise
+  useMemo(() => {
+    if (isImageLoading) return null;
+    if (imageWidth && imageHeight) {
+      return null;
+    }
+
+    // @debt: figure out a way to incorporate this into useValidImage for all uses of the hook
+    return captureAssertError({
+      message: "Failed to determine image width or height",
+      where: "Map",
+      consoleLevel: "log",
+      args: {
+        imageWidth,
+        imageHeight,
+        mapBackground,
+        url,
+        DEFAULT_MAP_BACKGROUND,
+      },
+    });
+  }, [imageWidth, imageHeight, isImageLoading, mapBackground, url]);
+
   if (!user || !venue || isImageLoading) {
     return <>Loading map...</>;
   }
 
   if (!imageWidth || !imageHeight) {
-    console.error("Failed to get image width/height");
-    return <>Failed to get image width/height</>;
+    return null;
   }
 
   const {
