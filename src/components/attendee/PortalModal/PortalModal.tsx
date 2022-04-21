@@ -5,13 +5,12 @@ import { Button } from "components/attendee/Button";
 
 import {
   COVERT_ROOM_TYPES,
-  SCSS_SPACE_EMPTY,
   SCSS_SPACE_PORTAL_EVENT_WIDTH,
   STRING_DASH_SPACE,
   STRING_SPACE,
 } from "settings";
 
-import { RoomType, RoomWithBounds } from "types/rooms";
+import { PortalWithBounds, RoomType } from "types/rooms";
 import { RoomVisibility } from "types/RoomVisibility";
 import { WorldEvent } from "types/venues";
 
@@ -24,12 +23,12 @@ import CN from "./PortalModal.module.scss";
 
 interface PortalModalProps {
   onEnter?: MouseEventHandler<HTMLButtonElement>;
-  portal: RoomWithBounds;
+  portal: PortalWithBounds;
   event?: WorldEvent;
   portalRef: RefObject<HTMLDivElement> | null;
 }
 
-const topOffsetMultiplier = 5.5;
+const topOffset = 66;
 const leftOffsetDivider = 2;
 
 export const PortalModal: React.FC<PortalModalProps> = ({
@@ -47,7 +46,7 @@ export const PortalModal: React.FC<PortalModalProps> = ({
     portalRef?.current?.getBoundingClientRect() ?? {};
 
   const popoverStyle = useCss({
-    top: `${top + (height + SCSS_SPACE_EMPTY * topOffsetMultiplier)}px`,
+    top: `${top + (height + topOffset)}px`,
     left: `${
       left - (SCSS_SPACE_PORTAL_EVENT_WIDTH - width) / leftOffsetDivider
     }px`,

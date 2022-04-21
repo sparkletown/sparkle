@@ -37,14 +37,14 @@ export interface Room extends PortalBox {
   spaceId?: SpaceId;
 }
 
-export interface RoomBounds {
+export interface PortalBounds {
   top: number;
   left: number;
   height: number;
   width: number;
 }
-export interface RoomWithBounds extends Room {
-  bounds: RoomBounds;
+export interface PortalWithBounds extends Room {
+  bounds: PortalBounds;
 }
 
 export type ParticipantWithUser<T extends Participant = Participant> = {

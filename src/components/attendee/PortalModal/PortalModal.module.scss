@@ -3,12 +3,14 @@
 @use "scss/attendee/effects/rounded";
 @use "scss/attendee/space";
 @use "scss/attendee/layout";
+@use "scss/attendee/layer";
 @use "scss/attendee/effects/sparkle";
 @use "scss/attendee/theme";
 
 .modalWrapper {
   position: absolute;
   min-width: layout.$w-space-portal-event-modal;
+  z-index: layer.$z-index--portal-modal;
 }
 
 .PortalPopupInfo {

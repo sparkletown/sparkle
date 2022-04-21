@@ -36,7 +36,7 @@ export const DEFAULT_LANDING_BANNER = "/assets/Default_Venue_Banner.png";
 export const DEFAULT_VENUE_BANNER_COLOR = "#000000";
 export const DEFAULT_VENUE_LOGO = "/assets/Default_Venue_Logo.png";
 export const DEFAULT_VENUE_AUTOPLAY = false;
-export const DEFAULT_PORTAL_ICON_PATH = "static/media";
+export const BASE_PORTAL_ICON_PATH = "static/media";
 
 export const DEFAULT_PARTY_NAME = "Anon";
 export const DISPLAY_NAME_MAX_CHAR_COUNT = 40;
@@ -261,7 +261,5 @@ Object.freeze(DEFAULT_SAFE_ZONE);
 export const PARTY_MAP_VERTICAL_PAD = 140;
 
 // JS constants derived and in sync with their SCSS constants
-// "scss/attendee/space";
-export const SCSS_SPACE_EMPTY = 12;
 // "scss/attendee/layout";
 export const SCSS_SPACE_PORTAL_EVENT_WIDTH = 180;

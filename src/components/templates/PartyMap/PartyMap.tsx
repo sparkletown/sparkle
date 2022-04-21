@@ -4,7 +4,7 @@ import { PortalModal } from "components/attendee/PortalModal";
 import { COVERT_ROOM_TYPES } from "settings";
 
 import { PartyMapSpaceWithId } from "types/id";
-import { RoomType, RoomWithBounds } from "types/rooms";
+import { PortalWithBounds, RoomType } from "types/rooms";
 import { RoomVisibility } from "types/RoomVisibility";
 
 import { eventTimeAndOrderComparator, isEventLiveOrFuture } from "utils/event";
@@ -29,7 +29,7 @@ export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
 
   const portalRef = useRef<HTMLDivElement | null>(null);
   const [selectedPortal, setSelectedPortal] = useState<
-    RoomWithBounds | undefined
+    PortalWithBounds | undefined
   >();
 
   const { events: selfAndChildVenueEvents } = useSpaceEvents({
@@ -48,7 +48,7 @@ export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
       .sort(eventTimeAndOrderComparator);
   }, [selfAndChildVenueEvents, selectedPortal]);
 
-  const selectPortal = useCallback((portal: RoomWithBounds) => {
+  const selectPortal = useCallback((portal: PortalWithBounds) => {
     setSelectedPortal(portal);
   }, []);
 

@@ -16,7 +16,7 @@ import {
   optionWrapper,
 } from "./Dropdown.tailwind";
 
-import "./Dropdown.module.scss";
+import CN from "./Dropdown.module.scss";
 
 // if these are undefined, the 3rd party library will provide own defaults
 const NO_INLINE_STYLES_PLEASE = {
@@ -125,13 +125,13 @@ export const Dropdown: React.FC<DropdownProps> = ({
               ? "font-semibold select-none relative py-2 pl-3 pr-9"
               : "select-none relative py-2 pl-3 pr-9";
             const checkmarkClasses = isSelected
-              ? checkmarkSelected
-              : checkmarkTailwind;
+              ? `${CN.dropdownSelected} ${checkmarkSelected}`
+              : `${CN.dropdownSelected} ${checkmarkTailwind}`;
 
             return (
               <li
                 key={`${index}-${option.value}`}
-                className={listItem}
+                className={`${CN.optionContainer} ${listItem}`}
                 onClick={() => selectOption(option)}
               >
                 <div className={textContainerClasses}>{option.label}</div>

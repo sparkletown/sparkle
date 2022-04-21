@@ -34,6 +34,7 @@
 // Major application or page wide z-index values should follow here
 // Minor ones constrained to their own component can be provided in separate files
 $-z-index--baseline: 1000;
+$z-index--portal-modal: level($-z-index--baseline);
 $z-index--header: above($-z-index--baseline);
 $z-index--chatbox: above($z-index--header);
 $z-index--space: level($z-index--chatbox);

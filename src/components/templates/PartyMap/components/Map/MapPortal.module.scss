@@ -132,18 +132,18 @@ $-title-height: 42px;
   }
 }
 
-.externalIcon {
+.externalIconWrapper {
   cursor: pointer;
   @include atom.button;
   height: space.button(1) - space.gap(8);
   margin: space.gap(4) 0 space.gap(4) space.empty(0.3);
   padding: 0;
+}
 
-  span {
-    @include atom.icon;
-    background-image: url(/assets/icons/icon-room-externallink.svg);
-    position: relative;
-  }
+.externalIcon {
+  @include atom.icon;
+  background-image: url(/assets/icons/icon-room-externallink.svg);
+  position: relative;
 }
 
 .linkHidden {

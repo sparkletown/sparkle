@@ -5,7 +5,7 @@ import { DEFAULT_MAP_BACKGROUND } from "settings";
 
 import { RefiAuthUser } from "types/fire";
 import { PartyMapSpaceWithId } from "types/id";
-import { Room, RoomWithBounds } from "types/rooms";
+import { PortalWithBounds, Room } from "types/rooms";
 import { Dimensions, Position } from "types/utility";
 
 import { calculateImageDimensions } from "utils/mapPositioning";
@@ -69,7 +69,7 @@ const Portals: React.FC<PortalsProps> = ({
 interface MapProps {
   user: RefiAuthUser;
   venue: PartyMapSpaceWithId;
-  selectPortal: (portal: RoomWithBounds) => void;
+  selectPortal: (portal: PortalWithBounds) => void;
   portalRef: RefObject<HTMLDivElement> | null;
   selectedPortal?: Room;
   unselectPortal: () => void;
