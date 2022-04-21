@@ -1,5 +1,7 @@
 import React, { RefObject, useMemo } from "react";
 import { FieldError, RegisterOptions, UseFormRegister } from "react-hook-form";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
 import { ALWAYS_NOOP_FUNCTION } from "settings";
@@ -7,10 +9,30 @@ import { ALWAYS_NOOP_FUNCTION } from "settings";
 import { AnyForm } from "types/utility";
 
 import { generateId } from "utils/string";
+import { isTruthy } from "utils/types";
 
 import { useKeyPress } from "hooks/useKeyPress";
 
 import CN from "./Input.module.scss";
+
+const isJsxElement = (
+  component: IconProp | JSX.Element
+): component is JSX.Element => {
+  return isTruthy(component?.hasOwnProperty("props"));
+};
+
+const renderIcon = (
+  icon: IconProp | JSX.Element,
+  onIconClick: undefined | (() => void)
+): JSX.Element => {
+  const iconComponent = isJsxElement(icon) ? (
+    icon
+  ) : (
+    <FontAwesomeIcon icon={icon} />
+  );
+
+  return <div onClick={onIconClick}>{iconComponent}</div>;
+};
 
 const HANDLED_KEY_PRESSES = ["Enter"];
 
@@ -23,7 +45,10 @@ type InputProps = React.HTMLProps<HTMLInputElement> & {
   register?: UseFormRegister<AnyForm> | (() => void);
   rules?: RegisterOptions;
   border?: "borderless" | "border";
-  variant?: "login" | "overlay";
+  variant?: "login" | "overlay" | "chat";
+  icon?: IconProp | JSX.Element;
+  iconClassName?: string;
+  onIconClick?: () => void;
   forwardRef?: RefObject<HTMLInputElement>;
 };
 
@@ -40,13 +65,16 @@ export const Input: React.ForwardRefRenderFunction<
   name,
   border = "borderless",
   variant = "",
+  icon,
+  iconClassName,
+  onIconClick,
   forwardRef,
   ...extraInputProps
 }) => {
   const inputId = useMemo(() => generateId("Input"), []);
 
   const inputClassNames = classNames(
-    CN.inputField,
+    CN.input,
     CN[`border-${border}`],
     CN[`variant-${variant}`],
     {
@@ -61,8 +89,13 @@ export const Input: React.ForwardRefRenderFunction<
   });
 
   return (
-    <div data-bem="Input" className={CN.input}>
-      <div className={CN.inputWrapper}>
+    <div data-bem="Input" className={CN.inputContainer}>
+      <div
+        className={classNames(
+          CN.inputWrapper,
+          CN[`variant-${variant}--wrapper`]
+        )}
+      >
         <input
           id={inputId}
           {...registerProps}
@@ -71,6 +104,8 @@ export const Input: React.ForwardRefRenderFunction<
           onKeyDown={handleKeyPress}
           ref={forwardRef}
         />
+
+        {icon && renderIcon(icon, onIconClick)}
 
         {label && (
           <label htmlFor={inputId} className={CN.label} onClick={onLabelClick}>
