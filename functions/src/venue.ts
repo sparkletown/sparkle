@@ -1313,7 +1313,7 @@ export const createBooth = functions.https.onCall(async (data, context) => {
     // Set this to 1 so that it looks like the space is being used straight away
     // rather than it not being visible until the cached count code is run
     presentUserCachedCount: 1,
-    channels: templateSpace.channels,
+    channels: templateSpace.channels || [],
   };
 
   batch.create(venueRef, venueData);
