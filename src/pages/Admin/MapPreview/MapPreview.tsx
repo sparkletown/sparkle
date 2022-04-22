@@ -19,8 +19,8 @@ import { updateRoom } from "api/admin";
 import { PortalInput, Room } from "types/rooms";
 import { SafeZone } from "types/venues";
 
-import { useCheckImage } from "hooks/useCheckImage";
-import { useUser } from "hooks/useUser";
+import { useCheckImage } from "hooks/image/useCheckImage";
+import { useLiveUser } from "hooks/user/useLiveUser";
 
 import {
   Container,
@@ -31,9 +31,8 @@ import { Legend } from "components/atoms/Legend";
 
 import "./MapPreview.scss";
 
-export interface MapPreviewProps {
+interface MapPreviewProps {
   venueName: string;
-  worldId: string;
   mapBackground?: string;
   rooms: Room[];
   venueId: string;
@@ -44,7 +43,6 @@ export interface MapPreviewProps {
 
 export const MapPreview: React.FC<MapPreviewProps> = ({
   venueName,
-  worldId,
   mapBackground,
   rooms,
   venueId,
@@ -52,7 +50,7 @@ export const MapPreview: React.FC<MapPreviewProps> = ({
   onRoomChange,
   safeZone,
 }) => {
-  const { user } = useUser();
+  const { user } = useLiveUser();
   const [mapRooms, setMapRooms] = useState<Room[]>([]);
 
   useEffect(() => {
@@ -159,7 +157,7 @@ export const MapPreview: React.FC<MapPreviewProps> = ({
     }
   }, [rooms, user, venueId]);
 
-  const { isValid: hasMapBackground } = useCheckImage(mapBackground ?? "");
+  const { isValid: hasMapBackground } = useCheckImage(mapBackground);
 
   if (!hasMapBackground) {
     return <MapBackgroundPlaceholder />;

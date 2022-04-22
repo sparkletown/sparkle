@@ -4,10 +4,7 @@ import { where } from "firebase/firestore";
 import { ALWAYS_EMPTY_ARRAY, COLLECTION_SPACES } from "settings";
 
 import { LoadStatus } from "types/fire";
-import { UserId } from "types/id";
-import { AnyVenue } from "types/venues";
-
-import { WithId } from "utils/id";
+import { SpaceWithId, UserId } from "types/id";
 
 import { useRefiCollection } from "hooks/fire/useRefiCollection";
 
@@ -17,7 +14,7 @@ export interface UseOwnedVenuesOptions {
 }
 
 type UseOwnedVenuesResult = LoadStatus & {
-  ownedVenues: WithId<AnyVenue>[];
+  ownedVenues: SpaceWithId[];
 };
 
 type UseOwnedVenues = (options: UseOwnedVenuesOptions) => UseOwnedVenuesResult;
@@ -29,12 +26,16 @@ export const useOwnedVenues: UseOwnedVenues = ({ worldId, userId }) => {
         ? [
             where("worldId", "==", worldId),
             where("owners", "array-contains", userId),
+            where("isHidden", "==", false),
           ]
-        : [where("owners", "array-contains", userId)],
+        : [
+            where("owners", "array-contains", userId),
+            where("isHidden", "==", false),
+          ],
     [worldId, userId]
   );
 
-  const { data, isLoading } = useRefiCollection<AnyVenue>({
+  const { data, isLoading } = useRefiCollection<SpaceWithId>({
     path: [COLLECTION_SPACES],
     constraints,
   });

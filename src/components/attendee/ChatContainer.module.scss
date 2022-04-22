@@ -41,6 +41,14 @@
   }
 }
 
+.relativeContainer {
+  margin-bottom: space.empty(3);
+
+  @media (min-width: breakpoint.$md) {
+    margin: 0 space.empty(1) space.empty(2) auto;
+  }
+}
+
 .chatContainerExpanded {
   @media (min-width: breakpoint.$md) {
     @include rounded.bottom;
@@ -77,6 +85,7 @@
   @media (min-width: breakpoint.$md) {
     max-width: layout.$w-sidebar;
     width: 100%;
+    height: layout.$h-mobile-chat-bar;
     margin: 0 space.empty(1) 0 auto;
     order: 3;
     max-height: 100%;
@@ -85,6 +94,22 @@
   }
 }
 
+.relativeSideBar {
+  min-height: layout.$h-mobile-chat-bar;
+  margin-top: space.empty(-3);
+  margin-bottom: space.empty(3);
+
+  @media (min-width: breakpoint.$md) {
+    // height: 100vh - height-of-chat-controls - margin-top - margin-bottom
+    min-height: calc(100vh - layout.$h-chat-controls - 2 * space.empty(1));
+    margin: 0 space.empty(1) 0 auto;
+  }
+}
+
 .sidebarHidden {
   display: none;
+}
+
+.selectedTab {
+  font-variation-settings: "wght" 700, "ital" 0, "SRFF" 20;
 }

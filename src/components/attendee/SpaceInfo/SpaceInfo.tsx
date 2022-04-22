@@ -1,3 +1,4 @@
+import React from "react";
 import { Link } from "react-router-dom";
 import { useCss } from "react-use";
 
@@ -5,14 +6,14 @@ import { ATTENDEE_INSIDE_URL, DEFAULT_MAP_BACKGROUND } from "settings";
 
 import { generateUrl } from "utils/url";
 
+import { useValidImage } from "hooks/image/useValidImage";
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
-import { useValidImage } from "hooks/useCheckImage";
 
 import CN from "./SpaceInfo.module.scss";
 
 export const SpaceInfo: React.FC = () => {
   const { world, space } = useWorldAndSpaceByParams();
-  const [mapBackground] = useValidImage(
+  const { src: mapBackground } = useValidImage(
     space?.host?.icon,
     DEFAULT_MAP_BACKGROUND
   );
@@ -29,7 +30,7 @@ export const SpaceInfo: React.FC = () => {
 
   return (
     <div className={CN.spaceWrapper}>
-      <div className={`${CN.spaceImage} ${mapStyles}`}></div>
+      <div className={`${CN.spaceImage} ${mapStyles}`} />
       <div>About {space?.name || "Space"}</div>
       <div className={CN.spaceDescription}>
         {space?.config?.landingPageConfig?.description ?? ""}

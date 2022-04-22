@@ -5,7 +5,7 @@ import LogRocket from "logrocket";
 import { BUILD_SHA1, LOGROCKET_APP_ID } from "secrets";
 
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
-import { useUser } from "hooks/user/useUser";
+import { useLiveUser } from "hooks/user/useLiveUser";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
@@ -22,7 +22,7 @@ if (LOGROCKET_APP_ID) {
 }
 
 export const AnalyticsCheck: React.FC = ({ children }) => {
-  const { auth, userId, profile, isLoading: isUserLoading } = useUser();
+  const { auth, userId, profile, isLoading: isUserLoading } = useLiveUser();
   const { space, isLoading: isSpaceLoading } = useWorldAndSpaceByParams();
 
   if (isUserLoading || isSpaceLoading) {

@@ -41,7 +41,7 @@ export interface UserAvatarProps extends ContainerClassName {
 
 // @debt The avatar sizes are a duplicate of $avatar-sizes-map inside UserAvatar.module.scss
 const AVATAR_SIZE_MAP: { [key in UserAvatarSize]: number | null } = {
-  small: 25,
+  small: 30,
   medium: 42,
   large: 54,
   xlarge: 100,
@@ -49,10 +49,10 @@ const AVATAR_SIZE_MAP: { [key in UserAvatarSize]: number | null } = {
 };
 
 // @debt the UserProfilePicture component serves a very similar purpose to this, we should unify them as much as possible
-export const _UserAvatar: React.FC<UserAvatarProps> = ({
+const _UserAvatar: React.FC<UserAvatarProps> = ({
   user,
-  containerClassName,
-  imageClassName,
+  containerClassName, // @debt remove injected classes in favor of variance props
+  imageClassName, // @debt remove injected classes in favor of variance props
   clickable = true,
   showStatus,
   size,

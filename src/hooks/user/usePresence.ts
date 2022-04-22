@@ -9,8 +9,7 @@ import { SpaceId } from "types/id";
 import { UserPresenceDocument } from "types/userPresence";
 
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
-
-import { useUser } from "./useUser";
+import { useLiveUser } from "hooks/user/useLiveUser";
 
 /*
  * Presence is tracked in a dedicated collection. This allows for subscribing
@@ -33,7 +32,7 @@ import { useUser } from "./useUser";
  */
 
 interface usePresenceDataOptions {
-  spaceId: SpaceId;
+  spaceIds: SpaceId[];
   limit?: number;
   debounceInterval?: number;
 }
@@ -42,15 +41,17 @@ interface usePresenceDataOptions {
  * Hook for listening to (debounced) presence data
  */
 export const usePresenceData = ({
-  spaceId,
+  spaceIds,
   limit,
   debounceInterval,
 }: usePresenceDataOptions) => {
-  const [presentUsers, setPresentUsers] = useState<UserPresenceDocument[]>();
+  const [presentUsersBySpace, setPresentUsers] = useState<{
+    [spaceId: SpaceId]: UserPresenceDocument[];
+  }>();
 
   useEffect(() => {
     const unsubscribe = subscribeToCheckIns({
-      spaceId,
+      spaceIds,
       limit,
       debounceInterval,
       callback: setPresentUsers,
@@ -58,11 +59,11 @@ export const usePresenceData = ({
     return () => {
       unsubscribe();
     };
-  }, [debounceInterval, limit, spaceId]);
+  }, [debounceInterval, limit, spaceIds]);
 
   return {
-    isLoading: presentUsers === undefined,
-    presentUsers: presentUsers || [],
+    isLoading: presentUsersBySpace === undefined,
+    presentUsersBySpace: presentUsersBySpace || {},
   };
 };
 
@@ -75,7 +76,7 @@ export const usePresenceData = ({
 export const useTrackPresence = () => {
   const [checkInId, setCheckInId] = useState<string>();
   const { space, isLoading } = useWorldAndSpaceByParams();
-  const { userId, profile, isLoading: userIsLoading } = useUser();
+  const { userId, profile, isLoading: userIsLoading } = useLiveUser();
 
   const performCheckIn = useCallback(() => {
     if (userId && space) {

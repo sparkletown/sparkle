@@ -1,8 +1,5 @@
-import { useCallback, useState } from "react";
-import {
-  faCompressArrowsAlt,
-  faExpandArrowsAlt,
-} from "@fortawesome/free-solid-svg-icons";
+import React, { useCallback, useState } from "react";
+import { faCompress, faExpand } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
@@ -19,8 +16,7 @@ interface MediaElementProps {
   track?: VideoTrack;
   url?: string;
   autoPlay: boolean;
-  // Used in various templates to create a "full width" non-resizable media
-  // element
+  // Used in various templates to create a "full width" non-resizable media element
   fullWidth?: boolean;
 }
 
@@ -50,7 +46,12 @@ export const MediaElement: React.FC<MediaElementProps> = ({
   });
 
   return (
-    <div className={containerClassnames}>
+    <div
+      data-bem="MediaElement"
+      data-block="MediaElement"
+      data-side="att"
+      className={containerClassnames}
+    >
       <div className={videoClassnames}>
         {embedIframeUrl && (
           <iframe
@@ -70,8 +71,9 @@ export const MediaElement: React.FC<MediaElementProps> = ({
       {!fullWidth && (
         <div className={styles.mediaControls}>
           <FontAwesomeIcon
-            icon={expandedIframe ? faCompressArrowsAlt : faExpandArrowsAlt}
+            icon={expandedIframe ? faCompress : faExpand}
             onClick={toggleExpandedIframe}
+            title={expandedIframe ? "Compress media" : "Expand media"}
           />
         </div>
       )}

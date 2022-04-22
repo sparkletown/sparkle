@@ -5,6 +5,7 @@ import {
   useForm,
   useFormState,
 } from "react-hook-form";
+import { useHistory } from "react-router-dom";
 import { useAsyncFn } from "react-use";
 import { ProfileModalEditBasicInfo } from "components/attendee/BasicInfo/ProfileModalEditBasicInfo";
 import { Button } from "components/attendee/Button/Button";
@@ -13,15 +14,19 @@ import { ProfileModalEditLinks } from "components/attendee/ProfileModalEditLinks
 import firebase from "firebase/compat/app";
 import { omit, pick, uniq } from "lodash";
 
+import { ATTENDEE_LANDING_URL } from "settings";
+
+import { UserWithId } from "types/id";
 import {
   UserProfileModalFormData,
   UserProfileModalFormDataPasswords,
 } from "types/profileModal";
-import { ProfileLink, User } from "types/User";
+import { ProfileLink } from "types/User";
 
-import { WithId } from "utils/id";
 import { isShallowEqual } from "utils/object";
+import { generateUrl } from "utils/url";
 
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useCheckOldPassword } from "hooks/useCheckOldPassword";
 import { useProfileModalFormDefaultValues } from "hooks/useProfileModalFormDefaultValues";
 
@@ -37,10 +42,14 @@ const PASSWORD_FIELDS: (keyof UserProfileModalFormDataPasswords)[] = [
 ];
 Object.freeze(PASSWORD_FIELDS);
 
-type ProfileOverlayProps = {
-  profile: WithId<User>;
+export type ProfileOverlayProps = {
+  profile: UserWithId;
+  onOverlayClose: () => void;
 };
-export const ProfileOverlay: React.FC<ProfileOverlayProps> = ({ profile }) => {
+export const ProfileOverlay: React.FC<ProfileOverlayProps> = ({
+  profile,
+  onOverlayClose,
+}) => {
   const [isSuccess, setSuccess] = useState(false);
   const checkOldPassword = useCheckOldPassword();
   const firebaseUser = firebase.auth()?.currentUser;
@@ -162,6 +171,22 @@ export const ProfileOverlay: React.FC<ProfileOverlayProps> = ({ profile }) => {
     ]
   );
 
+  const history = useHistory();
+  const { worldSlug, spaceSlug } = useSpaceParams();
+
+  const [{ loading: isLoggingOut }, logout] = useAsyncFn(async () => {
+    await firebase.auth().signOut();
+    onOverlayClose();
+
+    history.push(
+      generateUrl({
+        route: ATTENDEE_LANDING_URL,
+        required: ["worldSlug", "spaceSlug"],
+        params: { worldSlug, spaceSlug },
+      })
+    );
+  }, [onOverlayClose, history, worldSlug, spaceSlug]);
+
   return (
     <div className={styles.ProfileOverlay__wrapper}>
       <div className={styles.ProfileOverlay__header}>Your profile settings</div>
@@ -181,6 +206,8 @@ export const ProfileOverlay: React.FC<ProfileOverlayProps> = ({ profile }) => {
             links={links}
             errors={errors?.profileLinks}
             onAddLink={addLinkHandler}
+            watch={watch}
+            setValue={setValue}
           />
           <ProfileModalChangePassword
             register={register}
@@ -198,12 +225,21 @@ export const ProfileOverlay: React.FC<ProfileOverlayProps> = ({ profile }) => {
               variant="alternative"
               border="alternative"
             >
-              {isSubmitting ? "Saving..." : "Save changes"}
+              Save changes
             </Button>
-            <Button disabled={isSubmitting} variant="alternative">
+            <Button
+              disabled={isSubmitting}
+              variant="alternative"
+              onClick={onOverlayClose}
+            >
               Cancel
             </Button>
             {isSuccess ? <span>✓ Saved</span> : ""}
+          </div>
+          <div className={styles.logOut}>
+            <Button large variant="alternative" onClick={logout} paddingless>
+              {isLoggingOut ? "Logging Out..." : "Log Out"}
+            </Button>
           </div>
         </div>
       </div>

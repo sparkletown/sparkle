@@ -27,7 +27,6 @@ const VenueTemplate = {
   friendship: "friendship",
   jazzbar: "jazzbar",
   partymap: "partymap",
-  animatemap: "animatemap",
   performancevenue: "performancevenue",
   posterhall: "posterhall",
   posterpage: "posterpage",
@@ -40,16 +39,6 @@ const VenueTemplate = {
    * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
    */
   avatargrid: "avatargrid",
-
-  /**
-   * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
-   */
-  preplaya: "preplaya",
-
-  /**
-   * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
-   */
-  playa: "playa",
 };
 
 // @debt unify this with HAS_REACTIONS_TEMPLATES in src/settings.ts + share the same code between frontend/backend
@@ -170,6 +159,9 @@ interface CreateVenueData2 {
   showGrid: boolean;
 
   columns?: number;
+  isHidden: boolean;
+  boothsEnabled: boolean;
+  maxBooths: number;
 }
 
 // @debt this should be de-duplicated + aligned with createVenueData to ensure they both cover all needed cases
@@ -199,6 +191,9 @@ const createVenueData_v2 = (data: VenueData2Payload, context: Object) => {
     parentId: data.parentId || "",
     worldId: data.worldId,
     slug: data.slug,
+    isHidden: false,
+    boothsEnabled: false,
+    maxBooths: 1,
   };
 
   if (data.template === VenueTemplate.jazzbar) {
@@ -268,6 +263,9 @@ interface Venue {
   auditoriumRows?: number;
   showRangers?: boolean;
   isReactionsMuted?: boolean;
+  boothsEnabled?: boolean;
+  maxBooths?: number;
+  boothTemplateSpaceId?: string;
 
   config: {
     landingPageConfig: LandingPageConfig;
@@ -572,9 +570,7 @@ export const upsertRoom = functions.https.onCall(async (data, context) => {
   await throwErrorIfNeitherWorldNorSpaceOwner({
     spaceId: venueId,
     worldId: space.worldId,
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    userId: context.auth.token.user_id,
+    userId: context.auth?.token.user_id,
   });
 
   const doc = await admin.firestore().collection("venues").doc(venueId).get();
@@ -598,36 +594,34 @@ export const upsertRoom = functions.https.onCall(async (data, context) => {
   admin.firestore().collection("venues").doc(venueId).update({ rooms });
 });
 
-export const deleteRoom = functions.https.onCall(async (data, context) => {
+export const deletePortal = functions.https.onCall(async (data, context) => {
   assertValidAuth(context);
 
-  const { venueId, room } = data;
+  const { spaceId, portal } = data;
 
-  const space = await getSpaceById(venueId);
+  const space = await getSpaceById(spaceId);
 
   await throwErrorIfNeitherWorldNorSpaceOwner({
-    spaceId: venueId,
+    spaceId,
     worldId: space.worldId,
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    userId: context.auth.token.user_id,
+    userId: context.auth?.token.user_id,
   });
 
-  const doc = await admin.firestore().collection("venues").doc(venueId).get();
+  const doc = await admin.firestore().collection("venues").doc(spaceId).get();
 
   if (!doc || !doc.exists) {
-    throw new HttpsError("not-found", `Venue ${venueId} not found`);
+    throw new HttpsError("not-found", `Venue ${spaceId} not found`);
   }
   const docData = doc.data();
   if (!docData) {
-    throw new HttpsError("internal", `Data not found`);
+    throw new HttpsError("not-found", "Data not found");
   }
 
-  const rooms = docData.rooms;
+  const portals = docData.rooms;
 
   //if the room exists under the same name, find it
-  const index = rooms.findIndex(
-    (val: { title: string }) => val.title === room.title
+  const index = portals.findIndex(
+    (val: { title: string }) => val.title === portal.title
   );
 
   if (index === -1) {
@@ -636,7 +630,7 @@ export const deleteRoom = functions.https.onCall(async (data, context) => {
     docData.rooms.splice(index, 1);
   }
 
-  admin.firestore().collection("venues").doc(venueId).update(docData);
+  doc.ref.update(docData);
 });
 
 // @debt this is almost a line for line duplicate of exports.updateVenue, we should de-duplicate/DRY these up
@@ -870,6 +864,21 @@ export const updateVenueNG = functions.https.onCall(async (data, context) => {
 
   if (typeof data.showContent === "boolean") {
     updated.showContent = data.showContent;
+  }
+
+  if (typeof data.boothsEnabled === "boolean") {
+    updated.boothsEnabled = data.boothsEnabled;
+  }
+
+  if (typeof data.maxBooths === "number") {
+    updated.maxBooths = data.maxBooths;
+  }
+
+  if (
+    typeof data.boothTemplateSpaceId === "string" ||
+    data.boothTemplateSpaceId === null
+  ) {
+    updated.boothTemplateSpaceId = data.boothTemplateSpaceId;
   }
 
   if (data.userStatuses) {
@@ -1225,4 +1234,93 @@ export const deleteChannel = functions.https.onCall(async (data, context) => {
   channels.splice(channelIndex, 1);
 
   admin.firestore().collection("venues").doc(spaceId).update({ channels });
+});
+
+const generateNameForBooth = async (parentSpaceId: string) => {
+  // Finds a name for the booth that isn't already taken inside the parent
+  // space. Starts at 1 and keeps going until a free number is found
+  const collection = admin.firestore().collection("venues");
+  const existingBooths = (
+    await collection
+      .where("parentId", "==", parentSpaceId)
+      .where("isHidden", "==", false)
+      .get()
+  ).docs;
+
+  for (let i = 1; i <= existingBooths.length; i++) {
+    const possibleName = `Meeting Room ${i}`;
+    const matchingBooth = existingBooths.find(
+      (doc) => doc.data().name === possibleName
+    );
+    if (matchingBooth) {
+      continue;
+    }
+
+    return possibleName;
+  }
+
+  return `Booth ${existingBooths.length + 1}`;
+};
+
+interface CreateBoothOptions {
+  templateSpaceId: string;
+  parentSpaceId: string;
+}
+
+export const createBooth = functions.https.onCall(async (data, context) => {
+  assertValidAuth(context);
+
+  const options = data as CreateBoothOptions;
+
+  const batch = admin.firestore().batch();
+  const collection = admin.firestore().collection("venues");
+
+  const templateSpace = (
+    await collection.doc(options.templateSpaceId).get()
+  ).data();
+
+  if (!templateSpace) {
+    throw new HttpsError(
+      "not-found",
+      `The template ${options.templateSpaceId} does not exist`
+    );
+  }
+
+  const name = await generateNameForBooth(options.parentSpaceId);
+  const venueRef = admin.firestore().collection("venues").doc();
+  const slug = `booth-${venueRef.id}`;
+
+  // TODO This code around creating venues should be refactored. There's a lot
+  // of debt in this area
+  const standardVenueData = createVenueData_v2(
+    {
+      name,
+      slug,
+      tables: [],
+      bannerImageUrl: templateSpace.config.landingPageConfig.coverImageUrl,
+      subtitle: templateSpace.config.landingPageConfig.subtitle,
+      description: templateSpace.config.landingPageConfig.description,
+      logoImageUrl: templateSpace.host.icon,
+      columns: 0,
+      template: "meetingroom",
+      parentId: options.parentSpaceId,
+      worldId: templateSpace.worldId,
+    },
+    context
+  );
+
+  const venueData = {
+    ...standardVenueData,
+    managedBy: options.parentSpaceId,
+    backgroundImageUrl: templateSpace.backgroundImageUrl || "",
+    channels: templateSpace.channels || [],
+  };
+
+  batch.create(venueRef, venueData);
+
+  initializeVenueChatMessagesCounter(venueRef, batch);
+
+  await batch.commit();
+
+  return { id: venueRef.id, slug };
 });

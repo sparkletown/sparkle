@@ -122,8 +122,8 @@ export const RunTabView: React.FC<RunTabViewProps> = ({ space }) => {
             >
               Cancel
             </Button>
-            <Button loading={isUpdating} type="submit">
-              Save
+            <Button disabled={isUpdating} loading={isUpdating} type="submit">
+              {isUpdating ? "Saving..." : "Save"}
             </Button>
           </div>
         </form>

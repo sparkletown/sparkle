@@ -5,5 +5,3 @@ export interface SeatPosition {
 export interface SectionPositionData extends SeatPosition {
   sectionId: string;
 }
-
-export type AnyGridData = SeatPosition | SectionPositionData;

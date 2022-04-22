@@ -3,27 +3,23 @@ import { TableGrid } from "components/attendee/TableGrid";
 
 import { CONVERSATION_TABLES } from "settings";
 
-import { GenericVenue } from "types/venues";
+import { GenericSpaceWithId } from "types/id";
 
-import { WithId } from "utils/id";
-
-import { useUser } from "hooks/useUser";
+import { useLiveUser } from "hooks/user/useLiveUser";
 
 import { Loading } from "components/molecules/Loading";
 import { SpaceInfoText } from "components/molecules/SpaceInfoText";
 
 export interface ConversationSpaceProps {
-  space: WithId<GenericVenue>;
-  userId: string;
+  space: GenericSpaceWithId;
 }
 
 export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
   space,
-  userId,
 }) => {
   const tables = space?.config?.tables ?? CONVERSATION_TABLES;
 
-  const { userWithId } = useUser();
+  const { userWithId } = useLiveUser();
 
   if (!userWithId) {
     return <Loading />;

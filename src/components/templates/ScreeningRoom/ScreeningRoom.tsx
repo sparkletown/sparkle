@@ -9,8 +9,8 @@ import {
   SCREENING_ROOM_TAXON,
 } from "settings";
 
+import { GenericSpaceWithId } from "types/id";
 import { ScreeningRoomVideo } from "types/screeningRoom";
-import { GenericVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
@@ -22,8 +22,8 @@ import { useScreeningRoom } from "./useScreeningRoom";
 
 import "./ScreeningRoom.scss";
 
-export interface ScreeningRoomProps {
-  venue: WithId<GenericVenue>;
+interface ScreeningRoomProps {
+  venue: GenericSpaceWithId;
 }
 
 export const ScreeningRoom: React.FC<ScreeningRoomProps> = ({ venue }) => {
@@ -120,7 +120,12 @@ export const ScreeningRoom: React.FC<ScreeningRoomProps> = ({ venue }) => {
   );
 
   return (
-    <div className="ScreeningRoom">
+    <div
+      data-bem="ScreeningRoom"
+      data-block="ScreeningRoom"
+      data-side="att"
+      className="ScreeningRoom"
+    >
       <p className="ScreeningRoom__title">{SCREENING_ROOM_TAXON.capital}</p>
       {selectedVideo && (
         <div className="ScreeningRoom__video-container">

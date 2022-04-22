@@ -1,9 +1,10 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import { faSmile } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { InputField } from "components/attendee/InputField";
+import { Input } from "components/attendee/Input";
+import { Popover } from "components/attendee/Popover";
 import { EmojiData } from "emoji-mart";
 
 import { ChatTypes, SendChatMessage, SendThreadMessageProps } from "types/chat";
@@ -49,8 +50,8 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
   const hasChosenThread = Boolean(selectedThreadId);
 
   const {
-    register,
     handleSubmit,
+    register,
     watch,
     reset,
     setValue,
@@ -115,45 +116,52 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
       ? chatSettings.recipient?.partyName
       : undefined
   );
+  const [referenceElement, setReferenceElement] = useState<HTMLElement | null>(
+    null
+  );
+
+  const onSendClick = useCallback(() => {
+    if (isReplying || isSendingMessage) return;
+
+    return hasChosenThread
+      ? sendReplyToThread({ message: chatValue })
+      : sendMessageToChat({ message: chatValue });
+  }, [
+    chatValue,
+    hasChosenThread,
+    isReplying,
+    isSendingMessage,
+    sendMessageToChat,
+    sendReplyToThread,
+  ]);
 
   return (
     <>
       <form
+        ref={setReferenceElement}
         className={styles.chatMessageBoxForm}
-        onSubmit={handleSubmit(
-          hasChosenThread ? sendReplyToThread : sendMessageToChat
-        )}
+        onSubmit={handleSubmit(onSendClick)}
       >
-        <InputField
+        <Input
           register={register}
           name="message"
           rules={{ required: true }}
           placeholder={placeholder}
+          variant="chat"
           autoComplete="off"
-          iconEnd={
-            <FontAwesomeIcon
-              className={styles.emojiPickerIcon}
-              icon={faSmile}
-              size="lg"
-            />
+          label="Send"
+          onLabelClick={onSendClick}
+          icon={
+            <FontAwesomeIcon className={styles.icon} icon={faSmile} size="lg" />
           }
-          iconEndClassName={styles.inputIconEnd}
-          onIconEndClick={toggleEmojiPicker}
+          onIconClick={toggleEmojiPicker}
         />
-        <div className={styles.separator} />
-        <button
-          aria-label="Send message"
-          type="submit"
-          disabled={!chatValue || isSendingMessage || isReplying}
-        >
-          Send
-        </button>
       </form>
 
       {isEmojiPickerVisible && (
-        <div>
+        <Popover referenceElement={referenceElement} placement="top-start">
           <EmojiPicker onSelect={addEmoji} />
-        </div>
+        </Popover>
       )}
     </>
   );

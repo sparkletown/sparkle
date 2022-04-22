@@ -1,20 +1,55 @@
-import React from "react";
+import React, { RefObject, useMemo } from "react";
 import { FieldError, RegisterOptions, UseFormRegister } from "react-hook-form";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
+
+import { ALWAYS_NOOP_FUNCTION } from "settings";
 
 import { AnyForm } from "types/utility";
 
+import { generateId } from "utils/string";
+import { isTruthy } from "utils/types";
+
+import { useKeyPress } from "hooks/useKeyPress";
+
 import CN from "./Input.module.scss";
+
+const isJsxElement = (
+  component: IconProp | JSX.Element
+): component is JSX.Element => {
+  return isTruthy(component?.hasOwnProperty("props"));
+};
+
+const renderIcon = (
+  icon: IconProp | JSX.Element,
+  onIconClick: undefined | (() => void)
+): JSX.Element => {
+  const iconComponent = isJsxElement(icon) ? (
+    icon
+  ) : (
+    <FontAwesomeIcon icon={icon} />
+  );
+
+  return <div onClick={onIconClick}>{iconComponent}</div>;
+};
+
+const HANDLED_KEY_PRESSES = ["Enter"];
 
 type InputProps = React.HTMLProps<HTMLInputElement> & {
   error?: FieldError;
   onLabelClick?: () => void;
+  onEnter?: () => void;
   label?: string;
   name?: string;
   register?: UseFormRegister<AnyForm> | (() => void);
   rules?: RegisterOptions;
   border?: "borderless" | "border";
-  variant?: "login" | "overlay" | "overlay-profile" | "overlay-search"; // @debt: there should be a single "overlay" variant
+  variant?: "login" | "overlay" | "chat";
+  icon?: IconProp | JSX.Element;
+  iconClassName?: string;
+  onIconClick?: () => void;
+  forwardRef?: RefObject<HTMLInputElement>;
 };
 
 export const Input: React.ForwardRefRenderFunction<
@@ -22,6 +57,7 @@ export const Input: React.ForwardRefRenderFunction<
   InputProps
 > = ({
   onLabelClick,
+  onEnter = ALWAYS_NOOP_FUNCTION,
   error,
   label,
   register,
@@ -29,10 +65,16 @@ export const Input: React.ForwardRefRenderFunction<
   name,
   border = "borderless",
   variant = "",
+  icon,
+  iconClassName,
+  onIconClick,
+  forwardRef,
   ...extraInputProps
 }) => {
+  const inputId = useMemo(() => generateId("Input"), []);
+
   const inputClassNames = classNames(
-    CN.inputField,
+    CN.input,
     CN[`border-${border}`],
     CN[`variant-${variant}`],
     {
@@ -41,29 +83,39 @@ export const Input: React.ForwardRefRenderFunction<
   );
   const registerProps = name && register ? register(name, rules) : {};
 
+  const handleKeyPress = useKeyPress({
+    keys: HANDLED_KEY_PRESSES,
+    onPress: onEnter,
+  });
+
   return (
-    <div data-bem="Input" className={CN.input}>
-      {label ? (
-        <div className={CN.inputWrapper}>
-          <label data-label={label} onClick={onLabelClick}>
-            <input
-              {...registerProps}
-              className={inputClassNames}
-              {...extraInputProps}
-            />
-            {error && <span className={CN.errorIcon} />}
+    <div data-bem="Input" className={CN.inputContainer}>
+      <div
+        className={classNames(
+          CN.inputWrapper,
+          CN[`variant-${variant}--wrapper`]
+        )}
+      >
+        <input
+          id={inputId}
+          {...registerProps}
+          className={inputClassNames}
+          {...extraInputProps}
+          onKeyDown={handleKeyPress}
+          ref={forwardRef}
+        />
+
+        {icon && renderIcon(icon, onIconClick)}
+
+        {label && (
+          <label htmlFor={inputId} className={CN.label} onClick={onLabelClick}>
+            {label}
           </label>
-        </div>
-      ) : (
-        <div className={CN.inputWrapper}>
-          <input
-            {...registerProps}
-            className={inputClassNames}
-            {...extraInputProps}
-          />
-          {error && <span className={CN.errorIcon} />}
-        </div>
-      )}
+        )}
+
+        {error && <span className={CN.errorIcon} />}
+      </div>
+
       {error && <span className={CN.inputError}>{error.message}</span>}
     </div>
   );

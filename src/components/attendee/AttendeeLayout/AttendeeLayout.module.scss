@@ -3,6 +3,7 @@
 @use "scss/attendee/font";
 @use "scss/attendee/layout";
 @use "scss/attendee/layer";
+@use "scss/attendee/theme";
 @use "scss/attendee/breakpoint";
 
 $-z-index--ui: layer.level(layer.$z-index--space);
@@ -14,20 +15,9 @@ $-z-index--popover: layer.level($-z-index--ui);
   @include font.sparkle;
 }
 
-.Space {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  transition: padding-right 0.2s ease;
-  padding-right: 0;
-  z-index: layer.$z-index--space;
-  transition: filter 2s ease;
-}
-
 .LayerUi {
   position: fixed;
-  top: space.empty(1);
+  top: 0;
   height: 100%;
   width: 100%;
   z-index: $-z-index--ui;
@@ -40,7 +30,6 @@ $-z-index--popover: layer.level($-z-index--ui);
   transition: filter 2s ease;
 
   @media (min-width: breakpoint.$md) {
-    border-radius: 0;
     top: space.empty(1);
   }
 
@@ -53,9 +42,10 @@ $-z-index--popover: layer.level($-z-index--ui);
   }
 }
 
-.LayerUiAbsolute {
-  position: absolute;
-  top: 0px;
+.relative {
+  position: relative;
+  top: space.empty(3);
+  height: 0px;
 
   @media (min-width: breakpoint.$md) {
     top: space.empty(1);

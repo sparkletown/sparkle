@@ -1,6 +1,8 @@
 @use "scss/attendee/font";
 @use "scss/attendee/layout";
+@use "scss/attendee/opacity";
 @use "scss/attendee/space";
+@use "scss/attendee/theme";
 
 .spaceInfo {
   text-align: center;
@@ -11,13 +13,19 @@
   h1 {
     font-size: font.$size--xl;
     font-weight: font.$weight--md;
+    margin-bottom: 0;
   }
 }
 
 .moreLessSpan {
-  color: #707070;
+  color: theme.$c-default-text;
+  opacity: opacity.$md;
 }
 
 .showMoreLessAnchor {
   text-decoration: none;
+}
+
+.description {
+  margin: space.empty(1) 0;
 }

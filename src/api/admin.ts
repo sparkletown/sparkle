@@ -20,18 +20,15 @@ import { findSpaceBySlug } from "api/space";
 
 import { SpaceId, SpaceSlug, UserId, WorldId } from "types/id";
 import { PortalInput, Room, RoomInput } from "types/rooms";
+import { RoomVisibility } from "types/RoomVisibility";
 import { ScreeningRoomVideo } from "types/screeningRoom";
 import { SpaceType } from "types/spaces";
 import { Table } from "types/Table";
-import { User } from "types/User";
-import {
-  Channel,
-  VenueAdvancedConfig,
-  VenuePlacement,
-  WorldEvent,
-} from "types/venues";
+import { User, UserStatus } from "types/User";
+import { Channel, WorldEvent } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
 
+import { createErrorRethrow } from "utils/error";
 import { WithId, withId, WithoutId, WithWorldId } from "utils/id";
 import { generateAttendeeInsideUrl } from "utils/url";
 
@@ -63,6 +60,19 @@ type RoomImageFileKeys = "image_file";
 type RoomImageUrlKeys = "image_url";
 
 type RoomImageUrls = Partial<Record<RoomImageUrlKeys, string>>;
+
+// @debt remove this old interface, most/all of these fields were moved to the world
+interface VenueAdvancedConfig {
+  columns?: number;
+  radioStations?: string | string[]; // single string on form, array in DB
+  roomVisibility?: RoomVisibility;
+  showGrid?: boolean;
+  showRadio?: boolean;
+  parentId?: SpaceId;
+  showUserStatus?: boolean;
+  userStatuses?: UserStatus[];
+  enableJukebox?: boolean;
+}
 
 export interface VenueInput_v2 extends WithId<VenueAdvancedConfig> {
   name: string;
@@ -99,14 +109,6 @@ type FirestoreRoomInput_v2 = Omit<PortalInput, RoomImageFileKeys> &
   RoomImageUrls & {
     url?: string;
   };
-
-export type PlacementInput = {
-  addressText?: string;
-  notes?: string;
-  placement?: Omit<VenuePlacement, "state">;
-  width: number;
-  height: number;
-};
 
 export const createSlug = (name: string | unknown) =>
   String(name ?? "")
@@ -217,26 +219,40 @@ export const createVenue_v2 = async (
   input: WithWorldId<Omit<VenueInput_v2, "id">>,
   userId: UserId
 ) => {
+  const inputOptions = {
+    ...input,
+    showShoutouts: input.showShoutouts ?? DEFAULT_SHOW_SHOUTOUTS,
+    showReactions: input.showReactions ?? DEFAULT_SHOW_REACTIONS,
+    rooms: [],
+  };
   const firestoreVenueInput = await createFirestoreVenueInputWithoutId_v2(
-    {
-      ...input,
-      showShoutouts: input.showShoutouts ?? DEFAULT_SHOW_SHOUTOUTS,
-      showReactions: input.showReactions ?? DEFAULT_SHOW_REACTIONS,
-      rooms: [],
-    },
+    inputOptions,
     userId
+  ).catch(
+    createErrorRethrow({
+      where: "createVenue_v2",
+      message: "Unable to create the proper input",
+      args: inputOptions,
+    })
   );
 
   const worldId = input.worldId;
   const spaceSlug = firestoreVenueInput.slug;
 
+  const venueOptions = {
+    ...firestoreVenueInput,
+    worldId,
+  };
   const venueResponse = httpsCallable(
     FIREBASE.functions,
     "venue-createVenue_v2"
-  )({
-    ...firestoreVenueInput,
-    worldId,
-  });
+  )(venueOptions).catch(
+    createErrorRethrow({
+      where: "createVenue_v2",
+      message: "Unable to create the space",
+      args: venueOptions,
+    })
+  );
 
   const space = await findSpaceBySlug({
     spaceSlug,
@@ -244,13 +260,20 @@ export const createVenue_v2 = async (
   });
 
   if (input.template === VenueTemplate.auditorium) {
+    const auditoriumOptions = {
+      venueId: space?.id,
+      numberOfSections: DEFAULT_SECTIONS_AMOUNT,
+    };
     await httpsCallable(
       FIREBASE.functions,
       "venue-setAuditoriumSections"
-    )({
-      venueId: space?.id,
-      numberOfSections: DEFAULT_SECTIONS_AMOUNT,
-    });
+    )(auditoriumOptions).catch(
+      createErrorRethrow({
+        where: "createVenue_v2",
+        message: "Problem updating the auditorium sections",
+        args: auditoriumOptions,
+      })
+    );
   }
 
   return venueResponse;
@@ -426,18 +449,18 @@ export const upsertRoom = async (
   });
 };
 
-export const deleteRoom = async (venueId: string, room: Room) => {
+export const deletePortal = async (spaceId: string, portal: Room) => {
   return await httpsCallable(
     FIREBASE.functions,
-    "venue-deleteRoom"
+    "venue-deletePortal"
   )({
-    venueId,
-    room,
+    spaceId,
+    portal,
   }).catch((e) => {
     Bugsnag.notify(e, (event) => {
-      event.addMetadata("api/admin::deleteRoom", {
-        venueId,
-        room,
+      event.addMetadata("api/admin::deletePortal", {
+        spaceId,
+        portal,
       });
     });
     throw e;

@@ -8,9 +8,8 @@ import { TablePanel } from "components/admin/TablePanel";
 
 import { ALWAYS_EMPTY_ARRAY } from "settings";
 
-import { AnyVenue, isVenueWithRooms } from "types/venues";
-
-import { WithId } from "utils/id";
+import { SpaceWithId } from "types/id";
+import { isVenueWithRooms } from "types/venues";
 
 import { useCheckImage } from "hooks/useCheckImage";
 import { useShowHide } from "hooks/useShowHide";
@@ -20,7 +19,7 @@ import { Loading } from "components/molecules/Loading";
 import { PortalAddEditModal } from "../PortalAddEditModal";
 
 interface PortalsTableProps {
-  space: WithId<AnyVenue>;
+  space: SpaceWithId;
 }
 
 export const PortalsTable: React.FC<PortalsTableProps> = ({ space }) => {

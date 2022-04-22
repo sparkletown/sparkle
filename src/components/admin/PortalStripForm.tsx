@@ -16,8 +16,8 @@ import {
   convertPortalTypeToClickability,
 } from "utils/portal";
 
+import { useLiveUser } from "hooks/user/useLiveUser";
 import { useShowHide } from "hooks/useShowHide";
-import { useUser } from "hooks/useUser";
 
 import { FormErrors } from "components/molecules/FormErrors";
 import { Loading } from "components/molecules/Loading";
@@ -49,7 +49,7 @@ export const PortalStripForm: React.FC<PortalStripFormProps> = ({
 }) => {
   const { image_url: iconUrl, title, spaceId: targetSpaceId } = portal;
 
-  const { user } = useUser();
+  const { user } = useLiveUser();
   const [updatingClickable, setUpdatingClickable] = useState(false);
   const [updatingEnabled, setUpdatingEnabled] = useState(false);
   const {

@@ -31,7 +31,9 @@ import {
   HAS_GRID_TEMPLATES,
   HAS_REACTIONS_TEMPLATES,
   IFRAME_TEMPLATES,
+  MAX_MAX_BOOTHS,
   MAX_SECTIONS_AMOUNT,
+  MIN_MAX_BOOTHS,
   MIN_SECTIONS_AMOUNT,
   PORTAL_INFO_ICON_MAPPING,
   SUBVENUE_TEMPLATES,
@@ -42,12 +44,10 @@ import { createSlug } from "api/admin";
 import { updateVenueNG } from "api/venue";
 import { World } from "api/world";
 
-import { SpaceId, WorldId } from "types/id";
-import { AnyVenue } from "types/venues";
+import { SpaceId, SpaceWithId, WorldId } from "types/id";
 import { VenueTemplate } from "types/VenueTemplate";
 
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
-import { WithId } from "utils/id";
 import { generateUrl } from "utils/url";
 
 import { spaceEditSchema } from "forms/spaceEditSchema";
@@ -76,7 +76,7 @@ const HANDLED_ERRORS = [
 ];
 
 export interface SpaceEditFormProps {
-  space: WithId<AnyVenue>;
+  space: SpaceWithId;
   world: World;
 }
 
@@ -112,6 +112,10 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
       showContent: space.showContent ?? DEFAULT_SHOW_CONTENT,
       backgroundImage: undefined,
       backgroundImageUrl: space.backgroundImageUrl,
+      boothsEnabled: space.boothsEnabled,
+      maxBooths: space.maxBooths || 1,
+      // @debt should use SpaceId type here, resolve error with form typing
+      boothTemplateSpaceId: space.boothTemplateSpaceId as string,
     }),
     [
       space.name,
@@ -132,6 +136,9 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
       space?.host?.icon,
       space.showContent,
       space.backgroundImageUrl,
+      space.boothsEnabled,
+      space.maxBooths,
+      space.boothTemplateSpaceId,
       spaceLogoImage,
     ]
   );
@@ -204,12 +211,36 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
     [relatedVenues, space.worldId, space.id]
   );
 
+  const boothTemplateOptionList = useMemo(
+    () =>
+      Object.fromEntries(
+        relatedVenues
+          .filter(
+            ({ id, worldId, template, managedBy }) =>
+              space.worldId === worldId &&
+              id !== space.id &&
+              template === VenueTemplate.meetingroom &&
+              managedBy === undefined
+          )
+          .map((venue) => [venue.id, venue])
+      ),
+    [relatedVenues, space.worldId, space.id]
+  );
+
   const parentSpace = useMemo(
     () =>
       space.parentId
         ? relatedVenues.find(({ id }) => id === space.parentId)
         : { name: "" },
     [relatedVenues, space.parentId]
+  );
+
+  const boothTemplateSpace = useMemo(
+    () =>
+      space.boothTemplateSpaceId
+        ? relatedVenues.find(({ id }) => id === space.boothTemplateSpaceId)
+        : { name: "" },
+    [relatedVenues, space.boothTemplateSpaceId]
   );
 
   const { name: watchedName } = watch();
@@ -503,6 +534,45 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
               </InputGroup>
             </>
           )}
+
+          {space.template === VenueTemplate.jazzbar && (
+            <>
+              <SidebarHeader>Extras</SidebarHeader>
+
+              <Toggle
+                label="Enable booths with screen-sharing"
+                register={register}
+                name="boothsEnabled"
+                checked={values.boothsEnabled}
+              />
+
+              <InputGroup title="Maximum number of booths">
+                <Input
+                  register={register}
+                  name="maxBooths"
+                  type="number"
+                  min={MIN_MAX_BOOTHS}
+                  max={MAX_MAX_BOOTHS}
+                  disabled={!values.boothsEnabled}
+                  error={errors.maxBooths}
+                />
+              </InputGroup>
+
+              <SpacesDropdown
+                spaces={boothTemplateOptionList}
+                setValue={setValue}
+                register={register}
+                fieldName="boothTemplateSpaceId"
+                parentSpace={boothTemplateSpace}
+                error={errors?.boothTemplateSpaceId}
+                label={"Meeting Room space to copy"}
+                disabled={!values.boothsEnabled}
+                subtext={
+                  'Title, slug and "back" button destination will be updated for all new booths'
+                }
+              />
+            </>
+          )}
           <FormErrors errors={errors} omitted={HANDLED_ERRORS} />
           <SubmitError error={updateError} />
         </div>
@@ -514,7 +584,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
             loading={isUpdating}
             disabled={isUpdating}
           >
-            Save changes
+            {isUpdating ? "Saving changes..." : "Save changes"}
           </Button>
         </AdminSidebarButtons>
       </form>

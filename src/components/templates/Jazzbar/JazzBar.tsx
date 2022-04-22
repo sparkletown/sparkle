@@ -1,21 +1,21 @@
 import React, { useEffect } from "react";
+import { BoothGrid } from "components/attendee/BoothGrid";
 import { MediaElement } from "components/attendee/MediaElement";
+import { StaticInfoBlock } from "components/attendee/StaticInfoBlock";
 import { TableGrid } from "components/attendee/TableGrid";
 
 import { JAZZBAR_TABLES } from "settings";
 
-import { JazzbarVenue } from "types/venues";
-
-import { WithId } from "utils/id";
+import { JazzBarSpaceWithId } from "types/id";
 
 import { useAnalytics } from "hooks/useAnalytics";
-import { useUser } from "hooks/useUser";
+import { useLiveUser } from "hooks/user/useLiveUser";
 
 import { Loading } from "components/molecules/Loading";
 import { SpaceInfoText } from "components/molecules/SpaceInfoText";
 
 interface JazzProps {
-  space: WithId<JazzbarVenue>;
+  space: JazzBarSpaceWithId;
 }
 
 export const JazzBar: React.FC<JazzProps> = ({ space }) => {
@@ -23,7 +23,7 @@ export const JazzBar: React.FC<JazzProps> = ({ space }) => {
 
   const jazzbarTables = space.config?.tables ?? JAZZBAR_TABLES;
 
-  const { userWithId } = useUser();
+  const { userWithId } = useLiveUser();
 
   useEffect(() => {
     analytics.trackEnterJazzBarEvent();
@@ -50,6 +50,16 @@ export const JazzBar: React.FC<JazzProps> = ({ space }) => {
         defaultTables={JAZZBAR_TABLES}
         user={userWithId}
       />
+
+      {space.boothsEnabled && (
+        <>
+          <StaticInfoBlock
+            title="Meeting Rooms"
+            subtitle="Have meetings with video chat and screen sharing."
+          />
+          <BoothGrid space={space} user={userWithId} />
+        </>
+      )}
     </>
   );
 };

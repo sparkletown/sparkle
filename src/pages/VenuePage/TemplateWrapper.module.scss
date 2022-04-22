@@ -1,5 +1,6 @@
 @use "scss/attendee/layout";
 @use "scss/attendee/breakpoint";
+@use "scss/attendee/space";
 
 .templateContainer {
   width: 100%;
@@ -7,6 +8,12 @@
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
+  background-attachment: fixed;
+
+  > div {
+    // space between template content and chat bar to compensate LayerUI height: 0px
+    margin-bottom: layout.$h-chat-controls + space.empty(2);
+  }
 }
 
 .shrunk {

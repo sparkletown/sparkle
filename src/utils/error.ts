@@ -1,22 +1,65 @@
 import { NotifiableError } from "@bugsnag/js";
 import { HttpResponse } from "firebase-admin/lib/utils/api-request";
 
+// must be a valid console method so errors aren't ignored totally
+type ConsoleLevel = "error" | "warn" | "log";
+type CauseInMessage = "ignore" | "append" | "replace";
+
 type SparkleErrorOptions = {
   message?: string;
   where?: string;
   args?: unknown;
+  cause?: Error | string;
+  causeInMessage?: CauseInMessage;
+  consoleLevel?: ConsoleLevel;
+};
+
+type GenerateMessage = (options: {
+  causeInMessage: CauseInMessage;
+  message: string | undefined;
+  cause: Error | string | undefined;
+}) => string;
+
+const generateMessage: GenerateMessage = ({
+  message,
+  causeInMessage,
+  cause,
+}) => {
+  if (!cause || causeInMessage === "ignore") {
+    return message ?? "";
+  }
+
+  if (!message || causeInMessage === "replace") {
+    return String(cause);
+  }
+
+  return message + ". Due to: " + cause;
 };
 
 // NOTE: keep this one private as to only create subclasses for specific uses
 class SparkleError extends Error {
   readonly where?: string;
   readonly args?: unknown;
+  readonly cause?: unknown;
+  readonly consoleLevel?: ConsoleLevel;
 
-  constructor(name?: string, options?: SparkleErrorOptions) {
-    super(options?.message);
+  constructor(
+    name?: string,
+    {
+      args,
+      cause,
+      message,
+      where,
+      causeInMessage = "append",
+      consoleLevel = "warn",
+    }: SparkleErrorOptions = {}
+  ) {
+    super(generateMessage({ causeInMessage, message, cause }));
     this.name = name || "SparkleError";
-    this.where = options?.where;
-    this.args = options?.args;
+    this.where = where;
+    this.args = args;
+    this.cause = cause;
+    this.consoleLevel = consoleLevel;
   }
 }
 
@@ -93,14 +136,21 @@ type CaptureError = <T = unknown>(error: T) => T;
 /**
  * A convenience function to capture errors or promise rejections
  */
-export const captureError: CaptureError = (error) => {
+const captureError: CaptureError = (error) => {
   // TODO: add more logic here, distinguish errors by type and extra info in them, write to Bugsnag etc.
-  // NOTE: at least write the error to the console so it is "captured" and not ignored
-  console.warn("Captured", error);
+
+  // NOTE: at least write the error to the console, so it is "captured" and not ignored
+  const consoleLevel: ConsoleLevel =
+    ((error as unknown) as SparkleError).consoleLevel || "warn";
+
+  console[consoleLevel]("Captured", error);
 
   // just helps with chain-ability, if needed by promises or other function compositions
   return error;
 };
+type CaptureAssertError = (options?: SparkleErrorOptions) => SparkleAssertError;
+export const captureAssertError: CaptureAssertError = (options) =>
+  captureError(new SparkleAssertError(options));
 
 type CreateErrorCapture = (
   options: SparkleErrorOptions
@@ -114,3 +164,25 @@ export const createErrorCapture: CreateErrorCapture = (
   error instanceof Error
     ? captureError(error)
     : captureError(new SparkleError("", options));
+
+type CreateErrorRethrow = <T>(
+  options: SparkleErrorOptions
+) => (error: unknown) => T;
+/**
+ * A convenience function to generate error capture function for promise rejections that need extra info
+ *
+ * Works like @see createErrorCapture but uses throw instead of return
+ *
+ * NOTE: the return type should be void, but T is used so that TS can allow constructs like
+ *   await someAsyncFunction().catch(createErrorRethrow())
+ * that just re-packages the rejection and doesn't touch the result
+ */
+export const createErrorRethrow: CreateErrorRethrow = (
+  options: SparkleErrorOptions
+) => (error: unknown) => {
+  options ??= {};
+
+  const cause = error instanceof Error ? error : String(error);
+
+  throw captureError(new SparkleError("", { ...options, cause }));
+};

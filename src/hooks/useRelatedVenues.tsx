@@ -4,6 +4,7 @@ import { where } from "firebase/firestore";
 import {
   ALWAYS_EMPTY_ARRAY,
   COLLECTION_SPACES,
+  FIELD_IS_HIDDEN,
   FIELD_WORLD_ID,
 } from "settings";
 
@@ -14,9 +15,8 @@ import {
   WorldAndSpaceIdLocation,
   WorldIdLocation,
 } from "types/id";
-import { AnyVenue } from "types/venues";
 
-import { convertToFirestoreKey, WithId } from "utils/id";
+import { convertToFirestoreKey } from "utils/id";
 import { isDefined } from "utils/types";
 import { findSovereignVenue } from "utils/venue";
 
@@ -31,17 +31,17 @@ export type FindVenueInRelatedVenuesOptions = {
 export interface RelatedVenuesContextState {
   isLoading: boolean;
 
-  sovereignVenue?: WithId<AnyVenue>;
+  sovereignVenue?: SpaceWithId;
   sovereignVenueId?: string;
   sovereignVenueDescendantIds?: readonly string[];
 
-  relatedVenues: WithId<AnyVenue>[];
-  descendantVenues: WithId<AnyVenue>[];
+  relatedVenues: SpaceWithId[];
+  descendantVenues: SpaceWithId[];
   relatedVenueIds: string[];
 
   findVenueInRelatedVenues: (
     searchOptions: FindVenueInRelatedVenuesOptions
-  ) => WithId<AnyVenue> | undefined;
+  ) => SpaceWithId | undefined;
 }
 
 const RelatedVenuesContext = createContext<
@@ -55,7 +55,10 @@ const LegacyRelatedVenuesProvider: React.FC<WorldAndSpaceIdLocation> = ({
 }) => {
   const { data, isLoading } = useRefiCollection<SpaceWithId>({
     path: [COLLECTION_SPACES],
-    constraints: [where(FIELD_WORLD_ID, "==", convertToFirestoreKey(worldId))],
+    constraints: [
+      where(FIELD_WORLD_ID, "==", convertToFirestoreKey(worldId)),
+      where(FIELD_IS_HIDDEN, "==", false),
+    ],
   });
 
   const relatedVenues = data ?? ALWAYS_EMPTY_ARRAY;
@@ -86,7 +89,7 @@ const LegacyRelatedVenuesProvider: React.FC<WorldAndSpaceIdLocation> = ({
   const findVenueInRelatedVenues = useCallback(
     (
       searchOptions: FindVenueInRelatedVenuesOptions
-    ): WithId<AnyVenue> | undefined => {
+    ): SpaceWithId | undefined => {
       if (!searchOptions) return;
 
       if (searchOptions.spaceSlug) {
@@ -152,7 +155,10 @@ const WorldSpacesProvider: React.FC<WorldIdLocation> = ({
 }) => {
   const { data, isLoading } = useRefiCollection<SpaceWithId>({
     path: [COLLECTION_SPACES],
-    constraints: [where(FIELD_WORLD_ID, "==", convertToFirestoreKey(worldId))],
+    constraints: [
+      where(FIELD_WORLD_ID, "==", convertToFirestoreKey(worldId)),
+      where(FIELD_IS_HIDDEN, "==", false),
+    ],
   });
 
   const relatedVenues = data?.filter(isDefined) ?? ALWAYS_EMPTY_ARRAY;
@@ -172,7 +178,7 @@ const WorldSpacesProvider: React.FC<WorldIdLocation> = ({
   const findVenueInRelatedVenues = useCallback(
     (
       searchOptions: FindVenueInRelatedVenuesOptions
-    ): WithId<AnyVenue> | undefined => {
+    ): SpaceWithId | undefined => {
       if (!searchOptions) return;
 
       if (searchOptions.spaceSlug) {
@@ -274,7 +280,7 @@ export interface RelatedVenuesProps {
 
 export interface RelatedVenuesData extends RelatedVenuesContextState {
   parentVenue?: SpaceWithId;
-  currentVenue?: WithId<AnyVenue>;
+  currentVenue?: SpaceWithId;
   parentVenueId?: SpaceId;
 }
 
@@ -288,11 +294,11 @@ export function useRelatedVenues(props?: RelatedVenuesProps) {
 
   const { findVenueInRelatedVenues } = relatedVenuesState;
 
-  const currentVenue: WithId<AnyVenue> | undefined = useMemo(() => {
+  const currentVenue: SpaceWithId | undefined = useMemo(() => {
     return findVenueInRelatedVenues({ spaceId: currentVenueId });
   }, [currentVenueId, findVenueInRelatedVenues]);
 
-  const parentVenue: WithId<AnyVenue> | undefined = useMemo(() => {
+  const parentVenue: SpaceWithId | undefined = useMemo(() => {
     if (!currentVenue) return;
 
     return findVenueInRelatedVenues({ spaceId: currentVenue.parentId });

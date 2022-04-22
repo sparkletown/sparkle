@@ -1,0 +1,98 @@
+@use "scss/attendee/effects/atom";
+@use "scss/attendee/effects/sparkle";
+@use "scss/attendee/border";
+@use "scss/attendee/breakpoint";
+@use "scss/attendee/space";
+@use "scss/attendee/font";
+
+$-main-width: 200px;
+
+.general {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.infoContainer {
+  text-align: center;
+  display: flex;
+  background: rgba(255, 255, 255, 0.3);
+  border: thin solid #8282824d;
+  border-radius: border.$radius--xs;
+  padding: space.empty(1);
+  backdrop-filter: blur(sparkle.$blur--lg);
+
+  @media (max-width: breakpoint.$md) {
+    flex-direction: column;
+    margin: space.$l3;
+  }
+}
+
+.mainInfo {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  padding: space.$lg;
+  padding-left: 0;
+  border-right: thin solid #8282824d;
+  max-width: $-main-width;
+
+  @media (max-width: breakpoint.$md) {
+    border-right: none;
+    border-bottom: thin solid #8282824d;
+    text-align: left;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 0;
+    padding-bottom: space.empty(0.83);
+    max-width: none;
+  }
+}
+
+.venueName {
+  font-size: font.$size--xl;
+  @include atom.line-clamp(1);
+
+  @media (max-width: breakpoint.$md) {
+    margin-bottom: 0;
+  }
+}
+
+.venueDescription {
+  font-size: font.$size--md;
+  margin-top: 0;
+  @include atom.line-clamp(5);
+
+  span {
+    display: block;
+  }
+
+  @media (max-width: breakpoint.$md) {
+    &::before {
+      content: "";
+      display: block;
+      border-top: thin solid #8282824d;
+      margin-bottom: space.empty(2);
+      margin-top: space.empty(2);
+    }
+  }
+}
+
+.venueIcon {
+  margin-bottom: space.$md;
+}
+
+.secondaryInfo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: space.$l3;
+}
+
+.redirectText {
+  text-align: center;
+  justify-self: flex-end;
+}

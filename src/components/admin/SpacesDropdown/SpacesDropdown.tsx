@@ -1,15 +1,14 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { FieldError, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import { Dropdown } from "components/admin/Dropdown";
-import { omit, omitBy } from "lodash";
+import { omitBy } from "lodash";
 
 import { ALWAYS_EMPTY_ARRAY, PORTAL_INFO_ICON_MAPPING } from "settings";
 
+import { SpaceWithId } from "types/id";
 import { AnyForm } from "types/utility";
-import { AnyVenue, PortalTemplate } from "types/venues";
+import { PortalTemplate } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
-
-import { WithId } from "utils/id";
 
 import "./SpacesDropdown.scss";
 
@@ -37,7 +36,10 @@ interface SpacesDropdownProps {
   register: UseFormRegister<AnyForm>;
   fieldName: string;
   error?: FieldError;
-  spaces: Record<string, WithId<AnyVenue>>;
+  spaces: Record<string, SpaceWithId>;
+  label?: string;
+  subtext?: string;
+  disabled?: boolean;
 }
 
 export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
@@ -47,19 +49,19 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
   register,
   fieldName,
   error,
+  subtext,
+  label,
+  disabled = false,
 }) => {
   // @debt SpacesDropdown should not know about the concept of parent spaces
   // It should be getting the value from the form values instead.
   const [selected, setSelected] = useState(parentSpace);
 
-  // @debt: Probably need to omit returning playa from the useOwnedVenues as it's deprecated and
-  // doesn't exist on SPACE_PORTALS_ICONS_MAPPING
-  const spacesWithoutPlaya = omit(spaces, VenueTemplate.playa);
   // @debt Filter out all the poster pages as poster hall currently uses (abuses?)
   // spaces by creating a space for every single poster page. They aren't
   // proper spaces though. We should make a better way of handling this.
   const filteredSpaces = omitBy(
-    spacesWithoutPlaya,
+    spaces,
     (s) => s.template === VenueTemplate.posterpage
   );
   const sortedSpaces = useMemo(
@@ -136,11 +138,15 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
     <>
       <div data-bem="SpacesDropdown" className="mb-2">
         <label className="block text-sm font-medium text-gray-700 mb-1">
-          Link portal to a space
+          {label ? label : "Link portal to a space"}
         </label>
-        <Dropdown title={renderedTitle}>{renderedOptions}</Dropdown>
+        <Dropdown title={renderedTitle} disabled={disabled}>
+          {renderedOptions}
+        </Dropdown>
         <input type="hidden" {...register} name={fieldName} />
       </div>
+      {subtext && <span className="mt-2 text-sm text-gray-500">{subtext}</span>}
+
       {error && <span className="input-error">{error.message}</span>}
     </>
   );

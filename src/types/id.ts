@@ -1,7 +1,19 @@
 import { World } from "api/world";
 
 import { User } from "types/User";
-import { AnyVenue, Channel, WorldEvent } from "types/venues";
+import {
+  AnyVenue,
+  ArtPieceVenue,
+  AuditoriumVenue,
+  Channel,
+  ExperimentalVenue,
+  GenericVenue,
+  JazzbarVenue,
+  MeetingRoomVenue,
+  PartyMapVenue,
+  PosterPageVenue,
+  WorldEvent,
+} from "types/venues";
 
 import { WithId } from "utils/id";
 import { Branded } from "utils/types";
@@ -37,9 +49,17 @@ export type MaybeWorldAndSpaceIdLocation = Partial<WorldAndSpaceIdLocation>;
 export type MaybeWorldAndSpaceSlugLocation = Partial<WorldAndSpaceSlugLocation>;
 
 // Simplified versions to ease future move of WithId<> type from utils
-export type SpaceWithoutId = AnyVenue;
+// please keep this list alphabetically sorted
+export type ArtPieceSpaceWithId = WithId<ArtPieceVenue, SpaceId>;
+export type AuditoriumSpaceWithId = WithId<AuditoriumVenue, SpaceId>;
+export type ExperimentalSpaceWithId = WithId<ExperimentalVenue, SpaceId>;
+export type GenericSpaceWithId = WithId<GenericVenue, SpaceId>;
+export type JazzBarSpaceWithId = WithId<JazzbarVenue, SpaceId>;
+export type MeetingRoomSpaceWithId = WithId<MeetingRoomVenue, SpaceId>;
+export type PartyMapSpaceWithId = WithId<PartyMapVenue, SpaceId>;
+export type PosterPageSpaceWithId = WithId<PosterPageVenue, SpaceId>;
 export type SpaceWithId = WithId<AnyVenue, SpaceId>;
-export type Spaces = WithId<AnyVenue>[];
+export type SpaceWithoutId = AnyVenue;
 
 export type WorldWithoutId = World;
 export type WorldWithId = WithId<World, WorldId>;

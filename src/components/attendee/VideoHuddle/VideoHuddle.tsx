@@ -1,13 +1,17 @@
 import React from "react";
 import { faTimesCircle } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 
 import { HuddleParticipant } from "./internal/HuddleParticipant";
 import { useVideoHuddle } from "./useVideoHuddle";
 
 import styles from "./VideoHuddle.module.scss";
 
-export const VideoHuddle: React.FC = () => {
+type VideoHuddleProps = {
+  isFixed?: boolean;
+};
+export const VideoHuddle: React.FC<VideoHuddleProps> = ({ isFixed }) => {
   const {
     inHuddle,
     localParticipant,
@@ -19,8 +23,12 @@ export const VideoHuddle: React.FC = () => {
     return <></>;
   }
 
+  const videoHuddleClasses = classNames(styles.VideoHuddle, {
+    [styles.huddleFixed]: isFixed,
+  });
+
   return (
-    <div className={styles.VideoHuddle}>
+    <div className={videoHuddleClasses}>
       <div className={styles.VideoHuddleControls}>
         <span onClick={leaveHuddle}>
           <FontAwesomeIcon icon={faTimesCircle} />

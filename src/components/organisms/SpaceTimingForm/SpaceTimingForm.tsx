@@ -7,9 +7,8 @@ import { TestFunction } from "yup";
 
 import { updateVenue_v2 } from "api/admin";
 
-import { AnyVenue } from "types/venues";
+import { SpaceWithId } from "types/id";
 
-import { WithId } from "utils/id";
 import {
   convertDateFromUtcSeconds,
   convertUtcSecondsFromInputDateAndTime,
@@ -96,7 +95,7 @@ const validationSchema = Yup.object().shape({
 });
 
 export interface SpaceTimingFormProps {
-  venue: WithId<AnyVenue>;
+  venue: SpaceWithId;
 }
 
 export const SpaceTimingForm: React.FC<SpaceTimingFormProps> = ({ venue }) => {

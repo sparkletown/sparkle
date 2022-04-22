@@ -2,7 +2,7 @@
 @use "scss/attendee/space";
 @use "scss/attendee/font";
 @use "scss/attendee/border";
-@use "scss/attendee/icon";
+@use "scss/attendee/layout";
 @use "scss/attendee/effects/error";
 
 .wrapper {
@@ -10,34 +10,25 @@
   display: flex;
   width: 100%;
   align-items: flex-start;
-  width: 100%;
   padding: space.empty(0.33) 0px;
+  margin: space.empty(1) 0;
 }
 
 .input {
   height: space.item(1);
-  padding: space.empty(0.33) 5em space.empty(0.33) space.empty(1);
+  padding: space.empty(0.33) space.empty(1) space.empty(0.33);
   border-radius: space.empty(0.33) 0px 0px space.empty(0.33);
   box-sizing: border-box;
   width: 100%;
   border: none;
-  border-right: border.$width--slim solid theme.$c-glass-panel-background;
-}
-
-.select {
-  height: space.item(1);
-  padding: space.empty(0.33) space.empty(0.33) space.empty(0.33) 16px;
-  border-radius: 0px space.empty(0.33) space.empty(0.33) 0px;
-  box-sizing: border-box;
-  width: 100%;
-  border: none;
-  border-right: border.$radius--xs solid transparent;
+  border-right: border.$width--slim solid theme.$sparkle-disabled;
 }
 
 .errorIcon {
   background-image: url(/assets/icons/input-error-icon.svg);
-  height: icon.$size--input-error-icon;
-  width: icon.$size--input-error-icon;
+
+  height: layout.$sz-input-error-icon;
+  width: layout.$sz-input-error-icon;
   // pull icon inside input field
   margin-left: space.empty(-2);
 }
@@ -48,16 +39,14 @@
   align-items: center;
 }
 
-.selectWrapper {
-  width: 20%;
+.inputContainer {
   display: flex;
   flex-direction: column;
-  align-self: flex-end;
+  width: 100%;
 }
 
 .invalid {
-  input,
-  select {
+  input {
     @include error.input-error;
   }
 }

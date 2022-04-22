@@ -15,7 +15,10 @@ type ButtonVariant =
   | "login"
   | "login-primary"
   | "intensive"
-  | "danger";
+  | "danger"
+  // A variant that pins the button to the bottom of the container and makes
+  // it full width
+  | "panel-primary";
 type BorderVariant = ButtonVariant;
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -25,6 +28,8 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   border?: BorderVariant;
   unrounded?: boolean;
   marginless?: boolean;
+  paddingless?: boolean;
+  large?: boolean;
   className?: string;
   forwardRef?: RefObject<HTMLButtonElement> | null;
 }
@@ -39,6 +44,8 @@ export const Button: React.FC<ButtonProps> = ({
   border = "",
   unrounded = false,
   marginless = false,
+  paddingless = false,
+  large = false,
   disabled,
   ...rest
 }) => {
@@ -51,7 +58,9 @@ export const Button: React.FC<ButtonProps> = ({
       [CN.transparent]: transparent,
       [CN.borderRadiusNone]: unrounded,
       [CN.buttonMarginNone]: marginless,
+      [CN.buttonPaddingNone]: paddingless,
       [CN.disabled]: disabled,
+      [CN.large]: large,
     }
   );
 
