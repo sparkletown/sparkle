@@ -4,10 +4,10 @@ import { useHistory } from "react-router-dom";
 import { ATTENDEE_INSIDE_URL } from "settings";
 
 import { SpaceWithId } from "types/id";
+import { UserPresenceDocument } from "types/userPresence";
 
 import { generateUrl } from "utils/url";
 
-import { usePresenceData } from "hooks/user/usePresence";
 import { useWorldParams } from "hooks/worlds/useWorldParams";
 
 import { UserAvatar } from "components/atoms/UserAvatar";
@@ -18,9 +18,10 @@ import styles from "./BoothCard.module.scss";
 
 interface BoothProps {
   space: SpaceWithId;
+  presentUsers: UserPresenceDocument[];
 }
 
-export const Booth: React.FC<BoothProps> = ({ space }) => {
+export const Booth: React.FC<BoothProps> = ({ space, presentUsers }) => {
   const { worldSlug } = useWorldParams();
   const history = useHistory();
 
@@ -35,10 +36,6 @@ export const Booth: React.FC<BoothProps> = ({ space }) => {
     });
     history.push(url);
   }, [history, space.slug, worldSlug]);
-
-  const { presentUsers, isLoading: presentUsersLoading } = usePresenceData({
-    spaceIds: [space.id],
-  });
 
   const usersInBoothCount = presentUsers.length;
   const usersInBooth = presentUsers;
@@ -61,12 +58,10 @@ export const Booth: React.FC<BoothProps> = ({ space }) => {
 
   return (
     <BoothCard title={space.name} buttonText="Join" onButtonClick={goToSpace}>
-      {!presentUsersLoading && (
-        <div className={styles.presenceContainer}>
-          <span className={styles.presenceCount}>{countText}</span>
-          <span className={styles.presenceUsers}>{presenceUsers}</span>
-        </div>
-      )}
+      <div className={styles.presenceContainer}>
+        <span className={styles.presenceCount}>{countText}</span>
+        <span className={styles.presenceUsers}>{presenceUsers}</span>
+      </div>
     </BoothCard>
   );
 };

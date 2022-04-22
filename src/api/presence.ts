@@ -1,5 +1,5 @@
 import * as fs from "firebase/firestore";
-import { debounce, omit, uniqBy } from "lodash";
+import { debounce, groupBy, mapValues, omit, uniqBy } from "lodash";
 
 import {
   COLLECTION_USER_PRESENCE,
@@ -82,7 +82,7 @@ interface subscribeToCheckInsOptions {
   spaceIds: SpaceId[];
   limit?: number;
   debounceInterval?: number;
-  callback: (docs: UserPresenceDocument[]) => void;
+  callback: (docs: { [spaceId: SpaceId]: UserPresenceDocument[] }) => void;
 }
 
 export const subscribeToCheckIns: (
@@ -107,6 +107,10 @@ export const subscribeToCheckIns: (
     spaceIds.splice(10);
   }
 
+  if (!spaceIds.length) {
+    return () => {};
+  }
+
   const query = fs.query(
     collection,
     fs.where(FIELD_SPACE_ID, "in", spaceIds),
@@ -116,8 +120,11 @@ export const subscribeToCheckIns: (
 
   const onNext = debounce((snap: fs.QuerySnapshot<UserPresenceDocument>) => {
     const users = snap.docs.map((doc) => doc.data());
-    const dedupedUsers = uniqBy(users, ({ userId }) => userId);
-    callback(dedupedUsers);
+    const uniqueUsersBySpace = mapValues(
+      groupBy(users, ({ spaceId }) => spaceId),
+      (users) => uniqBy(users, ({ userId }) => userId)
+    );
+    callback(uniqueUsersBySpace);
   }, debounceInterval);
 
   const onError = (err: fs.FirestoreError) => {

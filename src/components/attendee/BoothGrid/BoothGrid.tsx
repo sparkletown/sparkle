@@ -6,6 +6,7 @@ import { User } from "types/User";
 import { WithId } from "utils/id";
 
 import { useManagedSpaces } from "hooks/spaces/useManagedSpaces";
+import { usePresenceData } from "hooks/user/usePresence";
 
 import { Loading } from "components/molecules/Loading";
 
@@ -31,12 +32,19 @@ export const BoothGrid: React.FC<BoothGridProps> = ({ space, user }) => {
     }
   );
 
+  const {
+    presentUsersBySpace,
+    isLoading: presentUsersLoading,
+  } = usePresenceData({
+    spaceIds: managedSpaces.map(({ id }) => id),
+  });
+
   const visibleBooths = useMemo(
     () =>
       managedSpaces.filter(
-        ({ presentUserCachedCount }) => presentUserCachedCount > 0
+        ({ id }) => (presentUsersBySpace[id] || []).length > 0
       ),
-    [managedSpaces]
+    [managedSpaces, presentUsersBySpace]
   );
 
   const renderedBooths = useMemo(() => {
@@ -46,13 +54,17 @@ export const BoothGrid: React.FC<BoothGridProps> = ({ space, user }) => {
         (createdAtA || 0) - (createdAtB || 0)
     );
     return sortedSpaces.map((boothSpace) => (
-      <Booth key={boothSpace.id} space={boothSpace} />
+      <Booth
+        key={boothSpace.id}
+        space={boothSpace}
+        presentUsers={presentUsersBySpace[boothSpace.id] || []}
+      />
     ));
-  }, [visibleBooths]);
+  }, [presentUsersBySpace, visibleBooths]);
 
   const allowCreate = space.maxBooths && visibleBooths.length < space.maxBooths;
 
-  if (isLoadingManagedSpaces) {
+  if (isLoadingManagedSpaces || presentUsersLoading) {
     return <Loading />;
   }
 

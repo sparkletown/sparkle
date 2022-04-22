@@ -45,7 +45,9 @@ export const usePresenceData = ({
   limit,
   debounceInterval,
 }: usePresenceDataOptions) => {
-  const [presentUsers, setPresentUsers] = useState<UserPresenceDocument[]>();
+  const [presentUsersBySpace, setPresentUsers] = useState<{
+    [spaceId: SpaceId]: UserPresenceDocument[];
+  }>();
 
   useEffect(() => {
     const unsubscribe = subscribeToCheckIns({
@@ -60,8 +62,8 @@ export const usePresenceData = ({
   }, [debounceInterval, limit, spaceIds]);
 
   return {
-    isLoading: presentUsers === undefined,
-    presentUsers: presentUsers || [],
+    isLoading: presentUsersBySpace === undefined,
+    presentUsersBySpace: presentUsersBySpace || {},
   };
 };
 

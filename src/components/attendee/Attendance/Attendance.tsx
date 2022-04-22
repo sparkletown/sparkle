@@ -18,10 +18,15 @@ export const Attendance: React.FC<AttendanceOptions> = ({ space }) => {
   const containerRef = useRef(null);
 
   const spaceIds = useMemo(() => [space.id], [space.id]);
-  const { isLoading, presentUsers } = usePresenceData({
+  const { isLoading, presentUsersBySpace } = usePresenceData({
     spaceIds,
     limit: ATTENDEE_HEADER_AVATAR_LIMIT,
   });
+
+  const presentUsers = useMemo(() => presentUsersBySpace[space.id] || [], [
+    presentUsersBySpace,
+    space.id,
+  ]);
 
   const renderedAvatars = useMemo(
     () =>
