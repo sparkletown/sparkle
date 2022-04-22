@@ -17,8 +17,9 @@ type AttendanceOptions = {
 export const Attendance: React.FC<AttendanceOptions> = ({ space }) => {
   const containerRef = useRef(null);
 
+  const spaceIds = useMemo(() => [space.id], [space.id]);
   const { isLoading, presentUsers } = usePresenceData({
-    spaceId: space.id,
+    spaceIds,
     limit: ATTENDEE_HEADER_AVATAR_LIMIT,
   });
 

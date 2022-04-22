@@ -1,6 +1,5 @@
 import { useHistory } from "react-router-dom";
 import { useAsyncFn } from "react-use";
-import { Button } from "components/attendee/Button";
 
 import { ATTENDEE_INSIDE_URL } from "settings";
 
@@ -12,7 +11,7 @@ import { generateUrl } from "utils/url";
 
 import { useWorldParams } from "hooks/worlds/useWorldParams";
 
-import styles from "./Booth.module.scss";
+import { BoothCard } from "./BoothCard";
 
 interface BoothProps {
   parentSpace: SpaceWithId;
@@ -44,22 +43,14 @@ export const BoothCreateCard: React.FC<BoothProps> = ({ parentSpace }) => {
   });
 
   return (
-    <div className={styles.container}>
-      <div className={styles.contents}>
-        <span className={styles.title}>New Booth</span>
-        <div className={styles.presenceContainer}>
-          <span className={styles.presenceCount}>
-            Description of what a booth is.
-          </span>
-        </div>
-      </div>
-      <Button
-        variant="panel-primary"
-        onClick={createBooth}
-        disabled={createBoothState.loading}
-      >
-        {createBoothState.loading ? "Creating..." : "Create"}
-      </Button>
-    </div>
+    <BoothCard
+      title="New Meeting Room"
+      buttonText={createBoothState.loading ? "Creating..." : "Create"}
+      onButtonClick={createBooth}
+      buttonDisabled={createBoothState.loading}
+    >
+      Create a new space with video chat and screen sharing, with a portal here.
+      The space is removed when the last person leaves.
+    </BoothCard>
   );
 };

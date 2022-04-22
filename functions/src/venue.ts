@@ -1241,11 +1241,14 @@ const generateNameForBooth = async (parentSpaceId: string) => {
   // space. Starts at 1 and keeps going until a free number is found
   const collection = admin.firestore().collection("venues");
   const existingBooths = (
-    await collection.where("parentId", "==", parentSpaceId).get()
+    await collection
+      .where("parentId", "==", parentSpaceId)
+      .where("isHidden", "==", false)
+      .get()
   ).docs;
 
   for (let i = 1; i <= existingBooths.length; i++) {
-    const possibleName = `Booth ${i}`;
+    const possibleName = `Meeting Room ${i}`;
     const matchingBooth = existingBooths.find(
       (doc) => doc.data().name === possibleName
     );
@@ -1279,7 +1282,7 @@ export const createBooth = functions.https.onCall(async (data, context) => {
   if (!templateSpace) {
     throw new HttpsError(
       "not-found",
-      `The tremplate ${options.templateSpaceId} does not exist`
+      `The template ${options.templateSpaceId} does not exist`
     );
   }
 

@@ -79,7 +79,7 @@ export const removeCheckIn: (checkInId: string) => Promise<void> = async (
 };
 
 interface subscribeToCheckInsOptions {
-  spaceId: SpaceId;
+  spaceIds: SpaceId[];
   limit?: number;
   debounceInterval?: number;
   callback: (docs: UserPresenceDocument[]) => void;
@@ -88,7 +88,7 @@ interface subscribeToCheckInsOptions {
 export const subscribeToCheckIns: (
   options: subscribeToCheckInsOptions
 ) => fs.Unsubscribe = ({
-  spaceId,
+  spaceIds,
   limit,
   debounceInterval = USER_PRESENCE_DEBOUNCE_INTERVAL,
   callback,
@@ -100,9 +100,16 @@ export const subscribeToCheckIns: (
     queryOptions.push(fs.limit(limit));
   }
 
+  if (spaceIds.length > 10) {
+    console.error(
+      "Too many space IDs provided. Firebase limits to 10 items in an IN query. Truncating"
+    );
+    spaceIds.splice(10);
+  }
+
   const query = fs.query(
     collection,
-    fs.where(FIELD_SPACE_ID, "==", spaceId),
+    fs.where(FIELD_SPACE_ID, "in", spaceIds),
     fs.orderBy("firstSeenAt", "desc"),
     ...queryOptions
   );

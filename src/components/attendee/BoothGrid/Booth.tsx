@@ -1,6 +1,5 @@
 import { useCallback, useMemo } from "react";
 import { useHistory } from "react-router-dom";
-import { Button } from "components/attendee/Button";
 
 import { ATTENDEE_INSIDE_URL } from "settings";
 
@@ -13,11 +12,14 @@ import { useWorldParams } from "hooks/worlds/useWorldParams";
 
 import { UserAvatar } from "components/atoms/UserAvatar";
 
-import styles from "./Booth.module.scss";
+import { BoothCard } from "./BoothCard";
+
+import styles from "./BoothCard.module.scss";
 
 interface BoothProps {
   space: SpaceWithId;
 }
+
 export const Booth: React.FC<BoothProps> = ({ space }) => {
   const { worldSlug } = useWorldParams();
   const history = useHistory();
@@ -35,14 +37,14 @@ export const Booth: React.FC<BoothProps> = ({ space }) => {
   }, [history, space.slug, worldSlug]);
 
   const { presentUsers, isLoading: presentUsersLoading } = usePresenceData({
-    spaceId: space.id,
+    spaceIds: [space.id],
   });
 
   const usersInBoothCount = presentUsers.length;
   const usersInBooth = presentUsers;
 
   const presenceUsers = useMemo(() => {
-    return usersInBooth.map((user, idx) => {
+    return usersInBooth.map((user) => {
       return <UserAvatar key={user.id} user={user} size="small" />;
     });
   }, [usersInBooth]);
@@ -58,19 +60,13 @@ export const Booth: React.FC<BoothProps> = ({ space }) => {
   }, [usersInBoothCount]);
 
   return (
-    <div className={styles.container}>
-      <div className={styles.contents}>
-        <span className={styles.title}>{space.name}</span>
-        {!presentUsersLoading && (
-          <div className={styles.presenceContainer}>
-            <span className={styles.presenceCount}>{countText}</span>
-            <span className={styles.presenceUsers}>{presenceUsers}</span>
-          </div>
-        )}
-      </div>
-      <Button variant="panel-primary" onClick={goToSpace}>
-        Join
-      </Button>
-    </div>
+    <BoothCard title={space.name} buttonText="Join" onButtonClick={goToSpace}>
+      {!presentUsersLoading && (
+        <div className={styles.presenceContainer}>
+          <span className={styles.presenceCount}>{countText}</span>
+          <span className={styles.presenceUsers}>{presenceUsers}</span>
+        </div>
+      )}
+    </BoothCard>
   );
 };

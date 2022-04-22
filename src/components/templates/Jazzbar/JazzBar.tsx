@@ -51,11 +51,15 @@ export const JazzBar: React.FC<JazzProps> = ({ space }) => {
         user={userWithId}
       />
 
-      <StaticInfoBlock
-        title="Booths"
-        subtitle="Have meetings with screen-sharing in booths"
-      />
-      <BoothGrid space={space} user={userWithId} />
+      {space.boothsEnabled && (
+        <>
+          <StaticInfoBlock
+            title="Meeting Rooms"
+            subtitle="Have meetings with video chat and screen sharing."
+          />
+          <BoothGrid space={space} user={userWithId} />
+        </>
+      )}
     </>
   );
 };

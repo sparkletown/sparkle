@@ -32,7 +32,7 @@ import { useLiveUser } from "hooks/user/useLiveUser";
  */
 
 interface usePresenceDataOptions {
-  spaceId: SpaceId;
+  spaceIds: SpaceId[];
   limit?: number;
   debounceInterval?: number;
 }
@@ -41,7 +41,7 @@ interface usePresenceDataOptions {
  * Hook for listening to (debounced) presence data
  */
 export const usePresenceData = ({
-  spaceId,
+  spaceIds,
   limit,
   debounceInterval,
 }: usePresenceDataOptions) => {
@@ -49,7 +49,7 @@ export const usePresenceData = ({
 
   useEffect(() => {
     const unsubscribe = subscribeToCheckIns({
-      spaceId,
+      spaceIds,
       limit,
       debounceInterval,
       callback: setPresentUsers,
@@ -57,7 +57,7 @@ export const usePresenceData = ({
     return () => {
       unsubscribe();
     };
-  }, [debounceInterval, limit, spaceId]);
+  }, [debounceInterval, limit, spaceIds]);
 
   return {
     isLoading: presentUsers === undefined,
