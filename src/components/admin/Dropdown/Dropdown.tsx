@@ -3,9 +3,12 @@ import { MenuPlacement } from "react-select";
 
 import {
   ALWAYS_EMPTY_ARRAY,
+  ALWAYS_EMPTY_OBJECT,
   ALWAYS_EMPTY_SELECT_OPTION,
   ALWAYS_NO_STYLE_FUNCTION,
 } from "settings";
+
+import { PortalOptionProps } from "types/venues";
 
 import {
   buttonTailwind,
@@ -36,7 +39,11 @@ const NO_INLINE_STYLES_PLEASE = {
 Object.freeze(NO_INLINE_STYLES_PLEASE);
 
 const DROPDOWN_VALUE_PROP = "data-dropdown-value";
-type DropdownItemProps = { [DROPDOWN_VALUE_PROP]?: string };
+const DROPDOWN_PROPS_PROP = "data-dropdown-props";
+type DropdownItemProps = {
+  [DROPDOWN_VALUE_PROP]?: string;
+  [DROPDOWN_PROPS_PROP]?: PortalOptionProps;
+};
 
 const remap: (label: ReactNode) => { label: ReactNode; value: string } = (
   reactNode
@@ -55,6 +62,10 @@ const remap: (label: ReactNode) => { label: ReactNode; value: string } = (
           (reactNode as ReactElement<DropdownItemProps>).props[
             DROPDOWN_VALUE_PROP
           ] ?? "",
+        props:
+          (reactNode as ReactElement<DropdownItemProps>).props[
+            DROPDOWN_PROPS_PROP
+          ] ?? ALWAYS_EMPTY_OBJECT,
       };
 };
 
@@ -70,6 +81,7 @@ interface DropdownProps {
 export type Option = {
   label: ReactNode;
   value: string;
+  props?: PortalOptionProps;
 };
 
 export const Dropdown: React.FC<DropdownProps> = ({
@@ -121,9 +133,10 @@ export const Dropdown: React.FC<DropdownProps> = ({
               option.value === selectedOption?.value ||
               option.value === titleName ||
               (!selectedOption && !option.value && !titleName);
+
             const textContainerClasses = isSelected
-              ? "font-semibold select-none relative py-2 pl-3 pr-9"
-              : "select-none relative py-2 pl-3 pr-9";
+              ? "font-semibold select-none relative py-2 pl-3 w-max"
+              : "select-none relative py-2 pl-3 w-max";
             const checkmarkClasses = isSelected
               ? `${CN.dropdownSelected} ${checkmarkSelected}`
               : `${CN.dropdownSelected} ${checkmarkTailwind}`;
