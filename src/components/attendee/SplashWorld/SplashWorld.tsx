@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useHistory } from "react-router-dom";
+import { useSearchParam } from "react-use";
 import { Button } from "components/attendee/Button";
 
 import {
   ATTENDEE_WORLD_URL,
+  QUICK_JOIN_PARAM_NAME,
   RETURN_URL_PARAM_NAME,
   SIGN_IN_URL,
   SIGN_UP_URL,
@@ -33,6 +35,13 @@ export const SplashWorld: React.FC<SplashWorldProps> = ({ world }) => {
     });
   };
 
+  const quickJoinWorld = () => {
+    history.push({
+      pathname: SIGN_IN_URL,
+      search: `?${RETURN_URL_PARAM_NAME}=${history.location.pathname}&${QUICK_JOIN_PARAM_NAME}=true`,
+    });
+  };
+
   const navigateToWorld = () => {
     const spaceUrl = generateUrl({
       route: ATTENDEE_WORLD_URL,
@@ -49,15 +58,24 @@ export const SplashWorld: React.FC<SplashWorldProps> = ({ world }) => {
       search: `?${RETURN_URL_PARAM_NAME}=${history.location.pathname}`,
     });
   };
+
+  const shouldJoinQuickly = Boolean(useSearchParam(QUICK_JOIN_PARAM_NAME));
+
+  useEffect(() => {
+    if (!shouldJoinQuickly) return;
+
+    navigateToWorld();
+  });
+
   return (
     <div className={styles.Container}>
       <h1>World splash page!</h1>
       <p>{world.name}</p>
       <p>{world.config.landingPageConfig.description}</p>
 
-      {userId ? (
-        <Button onClick={navigateToWorld}>Join</Button>
-      ) : (
+      <Button onClick={userId ? navigateToWorld : quickJoinWorld}>Join</Button>
+
+      {!userId && (
         <div>
           <Button onClick={navigateToSignIn}>Sign In</Button>
           <Button onClick={navigateToSignUp}>Sign Up</Button>

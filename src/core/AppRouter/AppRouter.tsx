@@ -17,6 +17,7 @@ import {
   ATTENDEE_WORLD_URL,
   EXTERNAL_SPARKLE_HOMEPAGE_URL,
   EXTERNAL_SPARKLEVERSE_HOMEPAGE_URL,
+  JOIN_WORLD_URL,
   PASSWORD_RESET_URL,
   ROOT_URL,
   SIGN_IN_URL,
@@ -42,6 +43,14 @@ const SubAdmin = lazy(() =>
   tracePromise("AppRouter::lazy-import::AdminSubRouter", () =>
     import("./AdminSubRouter").then(({ AdminSubRouter }) => ({
       default: AdminSubRouter,
+    }))
+  )
+);
+
+const SubWorldJoin = lazy(() =>
+  tracePromise("AppRouter::lazy-import::OnboardingSubRouter", () =>
+    import("./OnboardingSubRouter").then(({ OnboardingSubRouter }) => ({
+      default: OnboardingSubRouter,
     }))
   )
 );
@@ -135,6 +144,9 @@ export const AppRouter: React.FC = () => (
         </Route>
         <Route path={ADMIN_ROOT_URL}>
           <SubAdmin />
+        </Route>
+        <Route path={JOIN_WORLD_URL}>
+          <SubWorldJoin />
         </Route>
         {
           // Subs END

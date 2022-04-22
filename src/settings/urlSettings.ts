@@ -45,6 +45,11 @@ export const ATTENDEE_STEPPING_PARAM_URL = `${ENTRANCE_BASE_URL}/w/:worldSlug/s/
 export const ATTENDEE_WORLD_URL = `/w/:worldSlug`;
 export const ATTENDEE_SPACE_URL = `${ATTENDEE_WORLD_URL}/s/:spaceSlug`;
 
+// Onboarding URLs
+export const JOIN_WORLD_URL = `${ATTENDEE_WORLD_URL}/join`;
+export const JOIN_WORLD_CODE_CONDUCT_URL = `${JOIN_WORLD_URL}/code-of-conduct`;
+export const JOIN_WORLD_ENTRANCE = `${JOIN_WORLD_URL}/entrance`;
+
 // Splash URLs
 export const ATTENDEE_WORLD_SPLASH_URL = `${ATTENDEE_WORLD_URL}/splash`;
 export const ATTENDEE_SPACE_SPLASH_URL = `${ATTENDEE_SPACE_URL}/splash`;
@@ -77,4 +82,5 @@ export const ACCESSIBILITY_URL = "#accessibility";
 export const PARTNERS_URL = "#partners";
 
 // Search params names
-export const RETURN_URL_PARAM_NAME = "returnUrl";
+export const RETURN_URL_PARAM_NAME = "return_url";
+export const QUICK_JOIN_PARAM_NAME = "quick_join";

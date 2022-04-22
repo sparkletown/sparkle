@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useHistory } from "react-router-dom";
+import { useSearchParam } from "react-use";
 import { Button } from "components/attendee/Button";
 
 import {
   ATTENDEE_SPACE_URL,
   ATTENDEE_WORLD_SPLASH_URL,
+  QUICK_JOIN_PARAM_NAME,
   RETURN_URL_PARAM_NAME,
   SIGN_IN_URL,
   SIGN_UP_URL,
@@ -27,6 +29,13 @@ export const SplashSpace: React.FC<SplashSpaceProps> = ({ space, world }) => {
   const { userId } = useLiveUser();
 
   const history = useHistory();
+
+  const quickJoinSpace = () => {
+    history.push({
+      pathname: SIGN_IN_URL,
+      search: `?${RETURN_URL_PARAM_NAME}=${history.location.pathname}&${QUICK_JOIN_PARAM_NAME}=true`,
+    });
+  };
 
   const navigateToWorldSplash = () => {
     const worldSplashUrl = generateUrl({
@@ -62,6 +71,14 @@ export const SplashSpace: React.FC<SplashSpaceProps> = ({ space, world }) => {
     });
   };
 
+  const shouldJoinQuickly = Boolean(useSearchParam(QUICK_JOIN_PARAM_NAME));
+
+  useEffect(() => {
+    if (!shouldJoinQuickly) return;
+
+    navigateToSpace();
+  });
+
   return (
     <div className={styles.Container}>
       <h1>Space splash page!</h1>
@@ -69,9 +86,9 @@ export const SplashSpace: React.FC<SplashSpaceProps> = ({ space, world }) => {
       <p>{space.name}</p>
       <p>{space.config?.landingPageConfig.description}</p>
 
-      {userId ? (
-        <Button onClick={navigateToSpace}>Join</Button>
-      ) : (
+      <Button onClick={userId ? navigateToSpace : quickJoinSpace}>Join</Button>
+
+      {!userId && (
         <div>
           <Button onClick={navigateToSignIn}>Sign In</Button>
           <Button onClick={navigateToSignUp}>Sign Up</Button>
