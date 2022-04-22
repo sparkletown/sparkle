@@ -14,13 +14,11 @@
   z-index: 10;
   padding: space.empty(2) 0 0;
   margin-top: space.empty(2);
-  margin-bottom: space.button(1);
   padding-bottom: space.empty(2);
   height: min-content;
 
   &__fullWidth {
     position: unset;
-    margin-bottom: 0;
   }
 }
 
