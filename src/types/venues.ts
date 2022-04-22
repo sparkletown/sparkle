@@ -91,6 +91,24 @@ export interface BaseVenue {
   worldId: string;
   backgroundImageUrl?: string;
   presentUserCachedCount: number;
+  // Optional: The space that manages this one. This is used for system managed
+  // spaces such as poster pages and meeting room booths.
+  managedBy?: SpaceId;
+
+  // The isHidden flag is used to indicate that a system managed space has
+  // been deleted by the system. We only hide it rather than delete it as
+  // it should still be accessible to people who have been there and references
+  // to spaces in things like analytics should still work.
+  isHidden?: boolean;
+
+  // Used by the empty booth tracker for understanding how long a booth has
+  // been empty for.
+  emptySince?: number;
+
+  // Fields for implementing "booths" inside a jazzbar
+  boothsEnabled?: boolean;
+  maxBooths?: number;
+  boothTemplateSpaceId?: SpaceId;
 }
 
 export interface GenericVenue extends BaseVenue {

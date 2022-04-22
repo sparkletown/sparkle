@@ -4,6 +4,7 @@ import { where } from "firebase/firestore";
 import {
   ALWAYS_EMPTY_ARRAY,
   COLLECTION_SPACES,
+  FIELD_IS_HIDDEN,
   FIELD_WORLD_ID,
 } from "settings";
 
@@ -54,7 +55,10 @@ const LegacyRelatedVenuesProvider: React.FC<WorldAndSpaceIdLocation> = ({
 }) => {
   const { data, isLoading } = useRefiCollection<SpaceWithId>({
     path: [COLLECTION_SPACES],
-    constraints: [where(FIELD_WORLD_ID, "==", convertToFirestoreKey(worldId))],
+    constraints: [
+      where(FIELD_WORLD_ID, "==", convertToFirestoreKey(worldId)),
+      where(FIELD_IS_HIDDEN, "==", false),
+    ],
   });
 
   const relatedVenues = data ?? ALWAYS_EMPTY_ARRAY;
@@ -151,7 +155,10 @@ const WorldSpacesProvider: React.FC<WorldIdLocation> = ({
 }) => {
   const { data, isLoading } = useRefiCollection<SpaceWithId>({
     path: [COLLECTION_SPACES],
-    constraints: [where(FIELD_WORLD_ID, "==", convertToFirestoreKey(worldId))],
+    constraints: [
+      where(FIELD_WORLD_ID, "==", convertToFirestoreKey(worldId)),
+      where(FIELD_IS_HIDDEN, "==", false),
+    ],
   });
 
   const relatedVenues = data?.filter(isDefined) ?? ALWAYS_EMPTY_ARRAY;

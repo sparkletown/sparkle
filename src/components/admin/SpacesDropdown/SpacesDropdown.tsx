@@ -37,6 +37,9 @@ interface SpacesDropdownProps {
   fieldName: string;
   error?: FieldError;
   spaces: Record<string, SpaceWithId>;
+  label?: string;
+  subtext?: string;
+  disabled?: boolean;
 }
 
 export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
@@ -46,6 +49,9 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
   register,
   fieldName,
   error,
+  subtext,
+  label,
+  disabled = false,
 }) => {
   // @debt SpacesDropdown should not know about the concept of parent spaces
   // It should be getting the value from the form values instead.
@@ -132,11 +138,15 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
     <>
       <div data-bem="SpacesDropdown" className="mb-2">
         <label className="block text-sm font-medium text-gray-700 mb-1">
-          Link portal to a space
+          {label ? label : "Link portal to a space"}
         </label>
-        <Dropdown title={renderedTitle}>{renderedOptions}</Dropdown>
+        <Dropdown title={renderedTitle} disabled={disabled}>
+          {renderedOptions}
+        </Dropdown>
         <input type="hidden" {...register} name={fieldName} />
       </div>
+      {subtext && <span className="mt-2 text-sm text-gray-500">{subtext}</span>}
+
       {error && <span className="input-error">{error.message}</span>}
     </>
   );

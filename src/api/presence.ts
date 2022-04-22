@@ -1,5 +1,5 @@
 import * as fs from "firebase/firestore";
-import { debounce, omit, uniqBy } from "lodash";
+import { debounce, groupBy, mapValues, omit, uniqBy } from "lodash";
 
 import {
   COLLECTION_USER_PRESENCE,
@@ -79,16 +79,16 @@ export const removeCheckIn: (checkInId: string) => Promise<void> = async (
 };
 
 interface subscribeToCheckInsOptions {
-  spaceId: SpaceId;
+  spaceIds: SpaceId[];
   limit?: number;
   debounceInterval?: number;
-  callback: (docs: UserPresenceDocument[]) => void;
+  callback: (docs: { [spaceId: SpaceId]: UserPresenceDocument[] }) => void;
 }
 
 export const subscribeToCheckIns: (
   options: subscribeToCheckInsOptions
 ) => fs.Unsubscribe = ({
-  spaceId,
+  spaceIds,
   limit,
   debounceInterval = USER_PRESENCE_DEBOUNCE_INTERVAL,
   callback,
@@ -100,17 +100,31 @@ export const subscribeToCheckIns: (
     queryOptions.push(fs.limit(limit));
   }
 
+  if (spaceIds.length > 10) {
+    console.error(
+      "Too many space IDs provided. Firebase limits to 10 items in an IN query. Truncating"
+    );
+    spaceIds.splice(10);
+  }
+
+  if (!spaceIds.length) {
+    return () => {};
+  }
+
   const query = fs.query(
     collection,
-    fs.where(FIELD_SPACE_ID, "==", spaceId),
+    fs.where(FIELD_SPACE_ID, "in", spaceIds),
     fs.orderBy("firstSeenAt", "desc"),
     ...queryOptions
   );
 
   const onNext = debounce((snap: fs.QuerySnapshot<UserPresenceDocument>) => {
     const users = snap.docs.map((doc) => doc.data());
-    const dedupedUsers = uniqBy(users, ({ userId }) => userId);
-    callback(dedupedUsers);
+    const uniqueUsersBySpace = mapValues(
+      groupBy(users, ({ spaceId }) => spaceId),
+      (users) => uniqBy(users, ({ userId }) => userId)
+    );
+    callback(uniqueUsersBySpace);
   }, debounceInterval);
 
   const onError = (err: fs.FirestoreError) => {

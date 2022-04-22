@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { AdminRestrictedLoading } from "components/admin/AdminRestrictedLoading";
 import { AdminRestrictedMessage } from "components/admin/AdminRestrictedMessage";
 import { CardList } from "components/admin/CardList";
@@ -13,7 +13,7 @@ import { WithPermission } from "components/shared/WithPermission";
 
 import { ADMIN_IA_SPACE_CREATE_PARAM_URL, SPACE_TAXON } from "settings";
 
-import { UserId, WorldWithId } from "types/id";
+import { SpaceWithId, UserId, WorldWithId } from "types/id";
 import { isNotPartyMapVenue, isPartyMapVenue } from "types/venues";
 
 import { generateUrl } from "utils/url";
@@ -32,9 +32,12 @@ export const SpacesDashboard: React.FC<SpacesDashboardProps> = ({
   const isWorldAdmin = userId ? world?.owners.includes(userId) : undefined;
   const { spaces } = useWorldSpaces({ worldId: world.id });
 
-  const renderedMapCards: JSX.Element[] | undefined = useMemo(
-    () =>
-      spaces?.filter(isPartyMapVenue).map((space) => {
+  const managedSpaces = spaces.filter(({ managedBy }) => !!managedBy);
+  const unmanagedSpaces = spaces.filter(({ managedBy }) => !managedBy);
+
+  const renderSpaceCards = useCallback(
+    (spacesToRender: SpaceWithId[]) =>
+      spacesToRender.map((space) => {
         const isSpaceAdmin = userId
           ? space.owners?.includes(userId)
           : undefined;
@@ -48,31 +51,28 @@ export const SpacesDashboard: React.FC<SpacesDashboardProps> = ({
           />
         );
       }),
-    [spaces, userId, world, isWorldAdmin]
+    [isWorldAdmin, userId, world]
   );
 
-  const renderedOtherSpacesCards: JSX.Element[] | undefined = useMemo(
-    () =>
-      spaces?.filter(isNotPartyMapVenue).map((space) => {
-        const isSpaceAdmin = userId
-          ? space.owners?.includes(userId)
-          : undefined;
+  const renderedMapCards = useMemo(
+    () => renderSpaceCards(unmanagedSpaces?.filter(isPartyMapVenue)),
+    [renderSpaceCards, unmanagedSpaces]
+  );
 
-        return (
-          <SpaceCard
-            key={space.id}
-            space={space}
-            world={world}
-            isEditable={isWorldAdmin || isSpaceAdmin}
-          />
-        );
-      }),
-    [spaces, userId, world, isWorldAdmin]
+  const renderedOtherSpacesCards = useMemo(
+    () => renderSpaceCards(unmanagedSpaces?.filter(isNotPartyMapVenue)),
+    [renderSpaceCards, unmanagedSpaces]
+  );
+
+  const renderedManagedSpacesCards = useMemo(
+    () => renderSpaceCards(managedSpaces),
+    [renderSpaceCards, managedSpaces]
   );
 
   const hasSpaces = spaces?.length > 0;
   const hasMaps = renderedMapCards?.length > 0;
   const hasOtherSpaces = renderedOtherSpacesCards?.length > 0;
+  const hasManagedSpaces = renderedManagedSpacesCards?.length > 0;
 
   const createNewSpaceUrl = generateUrl({
     route: ADMIN_IA_SPACE_CREATE_PARAM_URL,
@@ -114,6 +114,13 @@ export const SpacesDashboard: React.FC<SpacesDashboardProps> = ({
               <Section>
                 <SectionSubtitle>Other spaces</SectionSubtitle>
                 <CardList>{renderedOtherSpacesCards}</CardList>
+              </Section>
+            )}
+
+            {hasManagedSpaces && (
+              <Section>
+                <SectionSubtitle>System managed spaces</SectionSubtitle>
+                <CardList>{renderedManagedSpacesCards}</CardList>
               </Section>
             )}
           </FullWidthLayout>

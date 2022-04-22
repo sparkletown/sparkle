@@ -246,3 +246,9 @@ Object.freeze(DEFAULT_SAFE_ZONE);
 
 // Allow 70px for the top and bottom UI. Ideally, this would come from CSS
 export const PARTY_MAP_VERTICAL_PAD = 140;
+
+// The min/max for the maximum number of booths a space can contain
+export const MIN_MAX_BOOTHS = 1;
+// Firebase has a limit of how many values can be provided to an IN query. Due
+// to how we query for presence data we cap the number of booths to this limit.
+export const MAX_MAX_BOOTHS = 10;
