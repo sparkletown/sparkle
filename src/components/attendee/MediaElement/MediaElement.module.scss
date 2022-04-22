@@ -27,6 +27,8 @@
   width: 100%;
   height: auto;
   max-width: 600px;
+  margin-top: space.empty(1);
+
   @media (min-width: breakpoint.$md) {
     margin-left: space.empty(2);
     transition: max-width 0.2s ease;
