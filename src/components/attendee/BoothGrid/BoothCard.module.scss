@@ -26,6 +26,6 @@ $booth-height: 255px;
   display: block;
   margin-bottom: space.gap(12);
   @include font.xlarge;
-  border-bottom: 1px solid rgba(130, 130, 130, 0.3);
+  border-bottom: border.$width--slim solid theme.$sparkle--border;
   padding-bottom: space.gap(6);
 }
