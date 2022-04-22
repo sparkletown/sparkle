@@ -9,7 +9,6 @@ export enum VenueTemplate {
   posterhall = "posterhall",
   posterpage = "posterpage",
   screeningroom = "screeningroom",
-  viewingwindow = "viewingwindow",
   zoomroom = "zoomroom",
   experiment = "experiment",
 

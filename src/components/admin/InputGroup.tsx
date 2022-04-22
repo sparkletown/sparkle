@@ -4,7 +4,7 @@ import classNames from "classnames";
 import { InputGroupSubtitle } from "./InputGroupSubtitle";
 import { InputGroupTitle } from "./InputGroupTitle";
 
-type MarginVariant = "regular" | "no-bottom";
+type MarginVariant = "regular" | "subgroup";
 
 export interface InputGroupProps {
   title?: ReactNode | string;
@@ -34,7 +34,7 @@ export const InputGroup: React.FC<InputGroupProps> = ({
   );
 
   const sectionClasses = classNames("mt-6 flow-root", {
-    "mb-6": margin !== "no-bottom",
+    "mt-4 ml-14 pl-1": margin === "subgroup",
   });
 
   return (

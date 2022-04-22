@@ -90,7 +90,6 @@ export const IFRAME_TEMPLATES = Object.freeze([
   VenueTemplate.firebarrel,
   VenueTemplate.jazzbar,
   VenueTemplate.posterpage,
-  VenueTemplate.viewingwindow,
 ]);
 
 export const EMBEDDABLE_CONTENT_TEMPLATES = Object.freeze([

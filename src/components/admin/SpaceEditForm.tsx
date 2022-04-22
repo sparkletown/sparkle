@@ -62,6 +62,8 @@ import { FormErrors } from "components/molecules/FormErrors";
 import { SubmitError } from "components/molecules/SubmitError";
 import { YourUrlDisplay } from "components/molecules/YourUrlDisplay";
 
+import { TesterRestricted } from "components/atoms/TesterRestricted";
+
 import { Button } from "./Button";
 
 const HANDLED_ERRORS = [
@@ -397,7 +399,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
 
           {EMBEDDABLE_CONTENT_TEMPLATES.includes(
             space.template as VenueTemplate
-          ) && <SidebarHeader>Embedable content</SidebarHeader>}
+          ) && <SidebarHeader>Embeddable content</SidebarHeader>}
 
           {space.template &&
             // @debt use a single structure of type Record<VenueTemplate,TemplateInfo> to compile all these .includes() arrays' flags
@@ -410,7 +412,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                   checked={values.showContent}
                 />
                 {values.showContent && (
-                  <InputGroup title="Livestream URL" margin="no-bottom">
+                  <InputGroup title="Livestream URL" margin="subgroup">
                     <Input
                       placeholder="Livestream or embed URL"
                       register={register}
@@ -455,35 +457,40 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
               />
             )}
 
-          {
-            // @debt use a single structure of type Record<VenueTemplate,TemplateInfo> to compile all these .includes() arrays' flags
-            HAS_REACTIONS_TEMPLATES.includes(
-              space.template as VenueTemplate
-            ) && (
-              <>
-                <Toggle
-                  label="Show reactions"
-                  register={register}
-                  name="showReactions"
-                  checked={values.showReactions}
-                />
-                {values.showReactions && (
-                  <Checkbox
+          <TesterRestricted>
+            {
+              // @debt use a single structure of type Record<VenueTemplate,TemplateInfo> to compile all these .includes() arrays' flags
+              HAS_REACTIONS_TEMPLATES.includes(
+                space.template as VenueTemplate
+              ) && (
+                <>
+                  <Toggle
+                    label="Show reactions"
                     register={register}
-                    label="Audible"
-                    name="isReactionsMuted"
-                    disabled={isReactionsMutedDisabled}
+                    name="showReactions"
+                    checked={values.showReactions}
                   />
-                )}
-                <Toggle
-                  label="Show shoutouts"
-                  register={register}
-                  name="showShoutouts"
-                  checked={values.showShoutouts}
-                />
-              </>
-            )
-          }
+                  {values.showReactions && (
+                    <InputGroup margin="subgroup">
+                      <Checkbox
+                        register={register}
+                        label="Audible"
+                        name="isReactionsMuted"
+                        disabled={isReactionsMutedDisabled}
+                      />
+                    </InputGroup>
+                  )}
+
+                  <Toggle
+                    label="Show shoutouts"
+                    register={register}
+                    name="showShoutouts"
+                    checked={values.showShoutouts}
+                  />
+                </>
+              )
+            }
+          </TesterRestricted>
 
           {!DISABLED_DUE_TO_1253 &&
             HAS_GRID_TEMPLATES.includes(space.template as VenueTemplate) &&
