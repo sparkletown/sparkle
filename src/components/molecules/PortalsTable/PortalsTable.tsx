@@ -11,7 +11,10 @@ import { ALWAYS_EMPTY_ARRAY } from "settings";
 import { SpaceWithId } from "types/id";
 import { isVenueWithRooms } from "types/venues";
 
+import { useCheckImage } from "hooks/useCheckImage";
 import { useShowHide } from "hooks/useShowHide";
+
+import { Loading } from "components/molecules/Loading";
 
 import { PortalAddEditModal } from "../PortalAddEditModal";
 
@@ -23,11 +26,19 @@ export const PortalsTable: React.FC<PortalsTableProps> = ({ space }) => {
   const isSupportingPortals = isVenueWithRooms(space);
   const portals = isSupportingPortals ? space?.rooms : ALWAYS_EMPTY_ARRAY;
 
+  const { width, height, isLoading } = useCheckImage(
+    space.mapBackgroundImageUrl
+  );
+
   const {
     isShown: isShownCreateModal,
     hide: hideCreateModal,
     show: showCreateModal,
   } = useShowHide(false);
+
+  if (isLoading || !width || !height) {
+    return <Loading />;
+  }
 
   return (
     <Section>
@@ -43,10 +54,17 @@ export const PortalsTable: React.FC<PortalsTableProps> = ({ space }) => {
               portal={portal}
               index={index}
               spaceId={space?.id}
+              mapWidthPx={width}
+              mapHeightPx={height}
             />
           ))}
           {isShownCreateModal && (
-            <PortalAddEditModal show={true} onHide={hideCreateModal} />
+            <PortalAddEditModal
+              show={true}
+              onHide={hideCreateModal}
+              mapWidthPx={width}
+              mapHeightPx={height}
+            />
           )}
         </TablePanel.Body>
       </TablePanel.Panel>
