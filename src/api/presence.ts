@@ -108,6 +108,12 @@ export const subscribeToCheckIns: (
   }
 
   if (!spaceIds.length) {
+    // If no space IDs have been passed in then let the listener know that there
+    // arent' any presence documents and make the unsubscribe a no-op.
+    // Do this once the current execution has finished by using a zero timer.
+    window.setTimeout(() => {
+      callback({});
+    }, 0);
     return () => {};
   }
 
