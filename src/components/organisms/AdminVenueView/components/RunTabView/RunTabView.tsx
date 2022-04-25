@@ -75,13 +75,17 @@ export const RunTabView: React.FC<RunTabViewProps> = ({ space }) => {
               required
             />
           </InputGroup>
-          <Checkbox
-            label="Set full-screen announcement"
-            register={register}
-            name="isFullScreen"
-            disabled
-            checked={values.isFullScreen}
-          />
+
+          <InputGroup>
+            <Checkbox
+              label="Set full-screen announcement"
+              register={register}
+              name="isFullScreen"
+              disabled
+              checked={values.isFullScreen}
+            />
+          </InputGroup>
+
           <Toggle
             label="Call to action button"
             register={register}
@@ -109,11 +113,14 @@ export const RunTabView: React.FC<RunTabViewProps> = ({ space }) => {
             </>
           )}
 
-          <Checkbox
-            label="Force funnel"
-            register={register}
-            name="isForceFunnel"
-          />
+          <InputGroup>
+            <Checkbox
+              label="Force funnel"
+              register={register}
+              name="isForceFunnel"
+            />
+          </InputGroup>
+
           <div className="flex justify-end">
             <Button
               variant="secondary"
