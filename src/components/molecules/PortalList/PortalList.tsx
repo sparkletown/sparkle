@@ -1,10 +1,4 @@
-import React, {
-  Fragment,
-  ReactNode,
-  useCallback,
-  useMemo,
-  useState,
-} from "react";
+import React, { Fragment, ReactNode, useMemo, useState } from "react";
 import { FieldErrors, FieldValues, UseFormRegister } from "react-hook-form";
 import { get } from "lodash";
 
@@ -12,12 +6,9 @@ import { PortalInfoItem } from "settings";
 
 import { AnyForm } from "types/utility";
 
-import { PortalAddEditModal } from "components/molecules/PortalAddEditModal";
 import { PortalListItem } from "components/molecules/PortalListItem";
 
 import "./PortalList.scss";
-
-type PortalListVariant = "input" | "modal";
 
 interface PortalListProps {
   errors?: FieldErrors<FieldValues>;
@@ -27,7 +18,6 @@ interface PortalListProps {
   onClick?: (context: { item: PortalInfoItem; index: number }) => void;
   register?: UseFormRegister<AnyForm>;
   selectedItem?: PortalInfoItem;
-  variant: PortalListVariant;
 }
 
 export const PortalList: React.FC<PortalListProps> = ({
@@ -38,14 +28,10 @@ export const PortalList: React.FC<PortalListProps> = ({
   onClick,
   register,
   selectedItem,
-  variant,
 }) => {
   const error = name && get(errors, name);
 
   const [selectedIndex, setSelectedIndex] = useState<number | undefined>();
-  const clearSelectedIndex = useCallback(() => setSelectedIndex(undefined), [
-    setSelectedIndex,
-  ]);
 
   const renderedItems = useMemo(
     () =>
@@ -60,16 +46,9 @@ export const PortalList: React.FC<PortalListProps> = ({
               onClick?.({ item, index });
             }}
           />
-          {variant === "modal" && (
-            <PortalAddEditModal
-              item={item}
-              show={selectedIndex === index}
-              onHide={clearSelectedIndex}
-            />
-          )}
         </Fragment>
       )),
-    [items, onClick, clearSelectedIndex, selectedIndex, selectedItem, variant]
+    [items, onClick, selectedIndex, selectedItem]
   );
 
   const renderedInput = (
@@ -89,7 +68,7 @@ export const PortalList: React.FC<PortalListProps> = ({
 
   return (
     <div className="PortalList">
-      {variant === "input" && (label ? renderedLabel : renderedInput)}
+      {label ? renderedLabel : renderedInput}
       {error && <span className="PortalList__error">{error?.message}</span>}
       {renderedItems}
     </div>
