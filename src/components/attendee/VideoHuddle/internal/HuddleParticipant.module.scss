@@ -4,6 +4,7 @@
   display: flex;
   justify-content: center;
   flex-shrink: 0;
+  width: 100%;
 
   @include rounded.normal;
   overflow: hidden;
