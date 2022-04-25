@@ -68,16 +68,13 @@ const useVenueScheduleEvents = ({
 
   const minDateUtcSeconds = secondsToMilliseconds(liveEventsMinimalStartValue);
 
-  const isMinDateWithinToday = isDateRangeStartWithinToday({
-    dateValue: secondsToMilliseconds(liveEventsMinimalStartValue),
-    targetDateValue: secondsToMilliseconds(
-      getUnixTime(startOfToday().getTime())
-    ),
-  });
-
   const firstRangeDateInSeconds = secondsToMilliseconds(
     getUnixTime(max([minDateUtcSeconds, todaysDate.getTime()]))
   );
+
+  const isMinDateWithinToday = isDateRangeStartWithinToday({
+    dateValue: firstRangeDateInSeconds,
+  });
 
   const maxDate = useMemo(
     () =>
