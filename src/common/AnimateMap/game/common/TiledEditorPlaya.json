@@ -1,0 +1,140 @@
+{
+  "compressionlevel": -1,
+  "height": 100,
+  "infinite": false,
+  "layers": [
+    {
+      "draworder": "topdown",
+      "id": 2,
+      "name": "background",
+      "objects": [
+        {
+          "gid": 1,
+          "height": 9920,
+          "id": 15,
+          "name": "",
+          "rotation": 0,
+          "type": "",
+          "visible": true,
+          "width": 9920,
+          "x": 0,
+          "y": 9900
+        }
+      ],
+      "opacity": 1,
+      "type": "objectgroup",
+      "visible": true,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "draworder": "topdown",
+      "id": 3,
+      "name": "objects",
+      "objects": [
+        {
+          "ellipse": true,
+          "height": 5381.10498973832,
+          "id": 13,
+          "name": "sound_playa_03",
+          "properties": [
+            {
+              "name": "sound",
+              "type": "string",
+              "value": "playa_sound_03"
+            },
+            {
+              "name": "type",
+              "type": "string",
+              "value": "sound"
+            }
+          ],
+          "rotation": 0,
+          "type": "",
+          "visible": true,
+          "width": 5519.08538160595,
+          "x": 2178,
+          "y": 2178
+        },
+        {
+          "ellipse": true,
+          "height": 3790.44792201128,
+          "id": 8,
+          "name": "sound_playa_02",
+          "properties": [
+            {
+              "name": "sound",
+              "type": "string",
+              "value": "playa_sound_02"
+            },
+            {
+              "name": "type",
+              "type": "string",
+              "value": "sound"
+            }
+          ],
+          "rotation": 0,
+          "type": "",
+          "visible": true,
+          "width": 3887.63889437054,
+          "x": 5942.53846153846,
+          "y": 6039
+        },
+        {
+          "ellipse": true,
+          "height": 3762,
+          "id": 2,
+          "name": "sound_playa_01",
+          "properties": [
+            {
+              "name": "sound",
+              "type": "string",
+              "value": "playa_sound_01"
+            },
+            {
+              "name": "type",
+              "type": "string",
+              "value": "sound"
+            }
+          ],
+          "rotation": 0,
+          "type": "",
+          "visible": true,
+          "width": 3762,
+          "x": 0,
+          "y": 0
+        }
+      ],
+      "opacity": 1,
+      "type": "objectgroup",
+      "visible": true,
+      "x": 0,
+      "y": 0
+    }
+  ],
+  "nextlayerid": 4,
+  "nextobjectid": 16,
+  "orientation": "orthogonal",
+  "renderorder": "left-up",
+  "tiledversion": "1.7.1",
+  "tileheight": 99,
+  "tilesets": [
+    {
+      "columns": 1,
+      "firstgid": 1,
+      "image": "../../images/AnimateMap/SPA_PlayaMap.jpg",
+      "imageheight": 9920,
+      "imagewidth": 9920,
+      "margin": 0,
+      "name": "SPA_PlayaMap",
+      "spacing": 0,
+      "tilecount": 1,
+      "tileheight": 9920,
+      "tilewidth": 9920
+    }
+  ],
+  "tilewidth": 99,
+  "type": "map",
+  "version": "1.6",
+  "width": 100
+}

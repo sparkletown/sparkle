@@ -1,0 +1,24 @@
+$chat-sidebar-controller-width: 100px;
+$message-box-height--min: 30vw;
+$offset--normal: font-size--root(1);
+$offset--for-chat: calc(#{$chat-sidebar-controller-width} + #{$offset--normal});
+
+.AnimateMapErrorPrompt {
+  display: grid;
+  place-content: center;
+  min-height: $message-box-height--min;
+  padding: $offset--normal $offset--for-chat $offset--normal $offset--normal;
+
+  &__contents {
+    text-align: center;
+    font-size: font-size--root(1.5);
+  }
+
+  &__normal-text {
+    color: var(--content--over);
+  }
+
+  &__error-message {
+    color: var(--danger--under);
+  }
+}
