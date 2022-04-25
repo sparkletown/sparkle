@@ -1,10 +1,12 @@
 @use "scss/attendee/effects/rounded.scss";
+@use "scss/attendee/layout.scss";
 
 .huddleParticipant {
   display: flex;
   justify-content: center;
   flex-shrink: 0;
-  width: 100%;
+  height: layout.$h-video-chat;
+  width: layout.$w-video-chat-participant;
 
   @include rounded.normal;
   overflow: hidden;
