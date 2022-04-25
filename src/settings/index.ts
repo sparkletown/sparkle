@@ -243,8 +243,8 @@ export const DEFAULT_MISSING_PLACEHOLDER = "Placeholder";
 export const DEFAULT_SAFE_ZONE = { width: 100.0, height: 100.0 };
 Object.freeze(DEFAULT_SAFE_ZONE);
 
-// Allow 70px for the top and bottom UI. Ideally, this would come from CSS
-export const PARTY_MAP_VERTICAL_PAD = 140;
+// Configurable - allow for the top and bottom UI. Ideally, this would come from CSS
+export const PARTY_MAP_VERTICAL_PAD = 0;
 
 // The min/max for the maximum number of booths a space can contain
 export const MIN_MAX_BOOTHS = 1;
