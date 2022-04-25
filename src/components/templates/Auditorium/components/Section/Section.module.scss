@@ -9,8 +9,8 @@
   @include sparkle.panel--glass;
   @include rounded.normal;
   width: fit-content;
-  margin: space.empty(2) auto;
-  padding: space.empty(2);
+  margin: space.empty(0.5) auto;
+  padding: space.empty(1);
   border: 1px solid theme.$sparkle--border;
 }
 
@@ -19,7 +19,7 @@
   grid-template-columns: 1fr repeat(1, auto) 1fr;
   grid-column-gap: 5px;
   justify-items: center;
-  padding-bottom: space.empty(2);
+  padding: space.empty(0.5) space.empty(1);
 
   > *:nth-child(1) {
     grid-column-start: 2;
@@ -49,6 +49,7 @@
   justify-content: center;
   flex-wrap: wrap;
   max-width: 100vw;
+  margin-top: space.empty(0.5);
 
   gap: space.empty(1);
 
