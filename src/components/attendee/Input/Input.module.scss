@@ -12,7 +12,7 @@
 
 .inputWrapper {
   border-radius: border.$radius--xs;
-  background-color: theme.$c-login-input--bg;
+  background-color: theme.$c-button-fg;
   border-color: theme.$c-login-input--eg;
 }
 
@@ -33,7 +33,7 @@
   padding-left: space.empty(0.75);
   padding-right: space.empty(0.8);
   border-left: border.$width--slim solid theme.$sparkle--border;
-  color: theme.$c-default-text;
+  color: theme.$c-dark-text;
   cursor: pointer;
 }
 

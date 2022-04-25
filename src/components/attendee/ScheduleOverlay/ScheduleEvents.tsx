@@ -94,14 +94,22 @@ export const ScheduleEvents: React.FC<ScheduleEventsProps> = ({
 
   const renderedEvents = useMemo(
     () =>
-      schedule.daysEvents.map((event) => (
-        <ScheduleEvent
-          key={event.id}
-          event={event}
-          bookmarkEvent={bookmarkEvent}
-        />
-      )),
-    [schedule.daysEvents, bookmarkEvent]
+      schedule.daysEvents?.length ? (
+        schedule.daysEvents.map((event) => (
+          <ScheduleEvent
+            key={event.id}
+            event={event}
+            bookmarkEvent={bookmarkEvent}
+          />
+        ))
+      ) : (
+        <div>
+          {showPersonalisedSchedule
+            ? "No bookmarked events found"
+            : "No events found"}
+        </div>
+      ),
+    [schedule.daysEvents, bookmarkEvent, showPersonalisedSchedule]
   );
 
   return (

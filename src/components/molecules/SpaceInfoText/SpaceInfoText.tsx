@@ -27,7 +27,7 @@ export const SpaceInfoText: React.FC<SpaceInfoTextProps> = ({ space }) => (
     {space?.config?.landingPageConfig?.description && (
       <div className="row">
         <div className="col">
-          <p className={CN.description}>
+          <div className={CN.description}>
             <ShowMoreText
               lines={1}
               anchorClass={CN.showMoreLessAnchor}
@@ -39,7 +39,7 @@ export const SpaceInfoText: React.FC<SpaceInfoTextProps> = ({ space }) => (
                 text={space.config.landingPageConfig.description}
               />
             </ShowMoreText>
-          </p>
+          </div>
         </div>
       </div>
     )}
