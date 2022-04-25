@@ -6,6 +6,7 @@ export enum VenueTemplate {
   firebarrel = "firebarrel",
   jazzbar = "jazzbar",
   partymap = "partymap",
+  animatemap = "animatemap",
   posterhall = "posterhall",
   posterpage = "posterpage",
   screeningroom = "screeningroom",

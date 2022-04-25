@@ -1,3 +1,5 @@
+import IconAnimateMap from "common/AnimateMap/assets/icons/icon-room-animatemap.svg";
+
 import { PortalBox, PortalInput } from "types/rooms";
 import { PortalTemplate } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
@@ -121,6 +123,14 @@ export const SPACE_INFO_MAP: Record<VenueTemplate, SpaceInfoItem> = {
     poster: PosterMap,
     description: "Create “mapception” - a map within a map!",
     template: VenueTemplate.partymap,
+  },
+  [VenueTemplate.animatemap]: {
+    text: "Animated map",
+    poster: "",
+    description: "",
+    icon: IconAnimateMap,
+    template: VenueTemplate.animatemap,
+    hidden: true,
   },
   [VenueTemplate.viewingwindow]: {
     text: "Viewing Window",

@@ -11,7 +11,7 @@ import { ALWAYS_EMPTY_ARRAY } from "settings";
 import { SpaceWithId } from "types/id";
 import { isVenueWithRooms } from "types/venues";
 
-import { useCheckImage } from "hooks/useCheckImage";
+import { useCheckImage } from "hooks/image/useCheckImage";
 import { useShowHide } from "hooks/useShowHide";
 
 import { Loading } from "components/molecules/Loading";
