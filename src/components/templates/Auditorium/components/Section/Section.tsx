@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
+import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { AuditoriumSpaceWithId, UserWithId } from "types/id";

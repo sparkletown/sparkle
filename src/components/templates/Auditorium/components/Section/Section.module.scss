@@ -6,7 +6,7 @@
 @use "scss/attendee/effects/sparkle";
 
 .section {
-  @include sparkle.panel--normal;
+  @include sparkle.panel--glass;
   @include rounded.normal;
   width: fit-content;
   margin: space.empty(2) auto;
