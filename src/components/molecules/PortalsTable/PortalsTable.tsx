@@ -40,6 +40,11 @@ export const PortalsTable: React.FC<PortalsTableProps> = ({ space }) => {
     return <Loading />;
   }
 
+  // Use the safe zone width for calculating the width and height that images
+  // should be rendered at.
+  const safeWidth = (width * (space?.config?.safeZone?.width || 1)) / 100;
+  const safeHeight = (height * (space?.config?.safeZone?.height || 1)) / 100;
+
   return (
     <Section>
       <SectionHeading>
@@ -54,16 +59,16 @@ export const PortalsTable: React.FC<PortalsTableProps> = ({ space }) => {
               portal={portal}
               index={index}
               spaceId={space?.id}
-              mapWidthPx={width}
-              mapHeightPx={height}
+              mapWidthPx={safeWidth}
+              mapHeightPx={safeHeight}
             />
           ))}
           {isShownCreateModal && (
             <PortalAddEditModal
               show={true}
               onHide={hideCreateModal}
-              mapWidthPx={width}
-              mapHeightPx={height}
+              mapWidthPx={safeWidth}
+              mapHeightPx={safeHeight}
             />
           )}
         </TablePanel.Body>
