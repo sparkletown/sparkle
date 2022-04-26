@@ -82,5 +82,5 @@ $-z-index--header: layer.level(layer.$z-index--header);
 }
 
 .blur {
-  filter: blur(100px) contrast(60%);
+  filter: blur(100px) contrast(60%) opacity(0);
 }

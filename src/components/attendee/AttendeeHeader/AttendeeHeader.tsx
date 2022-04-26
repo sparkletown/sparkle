@@ -95,6 +95,7 @@ export const AttendeeHeader: React.FC<AttendeeHeaderProps> = ({
 
   const headerClassnames = classNames(CN.attendeeHeader, {
     [CN.headerNarrow]: isChatExpanded,
+    [CN.blur]: isBannerOn,
   });
 
   if (!userWithId) return null;

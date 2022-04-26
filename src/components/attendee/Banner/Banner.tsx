@@ -9,6 +9,7 @@ import { openUrl } from "utils/url";
 
 import { useLiveSpace } from "hooks/spaces/useLiveSpace";
 import { useShowHide } from "hooks/useShowHide";
+import { useDisableBodyScroll } from "hooks/viewport/useDisableBodyScroll";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
@@ -58,6 +59,9 @@ export const Banner: React.FC<BannerProps> = ({
       turnOnBlur();
     }
   }, [isBannerFullScreen, turnOnBlur, isBannerShown]);
+
+  // Hide body scroll.
+  useDisableBodyScroll({ isOpen: isBannerShown });
 
   const { push: openUrlUsingRouter } = useHistory();
 
