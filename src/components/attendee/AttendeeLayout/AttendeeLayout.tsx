@@ -65,7 +65,7 @@ export const AttendeeLayout: React.FC<AttendeeLayoutProps> = ({ space }) => {
     <VideoCommsProvider>
       <HuddleProvider>
         <AttendeeHeader backButtonSpace={backButtonSpace} />
-        <main>
+        <main data-bem="AttendeeLayout__main">
           <MainSection isBlurred={isTruthy(isBlurTurnedOn && banner)}>
             <VenuePage setBackButtonSpace={setBackButtonSpace} />
           </MainSection>
@@ -77,7 +77,11 @@ export const AttendeeLayout: React.FC<AttendeeLayoutProps> = ({ space }) => {
 
         <AttendeeFooter forwardRef={footerRef} />
         {/* Used by popovers to ensure z-index is handled properly */}
-        <div id={POPOVER_CONTAINER_ID} className={styles.popoverContainer} />
+        <div
+          data-bem="AttendeeLayout__popover"
+          id={POPOVER_CONTAINER_ID}
+          className={styles.popoverContainer}
+        />
         {space.id && (
           <Banner
             spaceId={space.id}
