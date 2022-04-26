@@ -24,6 +24,8 @@ $-z-index--header: layer.level(layer.$z-index--header);
   justify-content: space-between;
   width: 100%;
   align-items: center;
+
+  transition: filter 2s ease;
 }
 
 .headerNarrow {
@@ -43,11 +45,42 @@ $-z-index--header: layer.level(layer.$z-index--header);
   @include sparkle.color--glass;
 }
 
-.headerTime {
-  margin-left: space.empty(1);
-}
-
 .headerTimeTransparent {
   margin-left: space.empty(1);
   opacity: 0.5;
+}
+
+.headerTitle {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: layout.$w-header-max;
+
+  @media (max-width: breakpoint.$xl) {
+    max-width: layout.$w-header-xl;
+  }
+
+  @media (max-width: breakpoint.$lg) {
+    max-width: layout.$w-header-lg;
+  }
+
+  @media (max-width: breakpoint.$md) {
+    max-width: layout.$w-header-max;
+  }
+
+  @media (max-width: breakpoint.$sm) {
+    max-width: layout.$w-header-xl;
+  }
+
+  @media (max-width: breakpoint.$xs) {
+    max-width: layout.$w-header-lg;
+  }
+}
+
+.captionWrapper {
+  display: flex;
+}
+
+.blur {
+  filter: blur(100px) contrast(60%) opacity(0);
 }

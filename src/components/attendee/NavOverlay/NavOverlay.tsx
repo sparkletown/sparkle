@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 import { ProfileOverlay } from "components/attendee/ProfileOverlay";
 import { ScheduleOverlay } from "components/attendee/ScheduleOverlay/ScheduleOverlay";
 import { SearchOverlay } from "components/attendee/SearchOverlay/SearchOverlay";
@@ -8,7 +9,9 @@ import { SpaceInfo } from "components/attendee/SpaceInfo";
 
 import { SPACE_TAXON } from "settings";
 
+import { KEYS, useKeyboardKeys } from "hooks/keyboard/useKeyboardKeys";
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
+import { useKeyPress } from "hooks/useKeyPress";
 import { useDisableBodyScroll } from "hooks/viewport/useDisableBodyScroll";
 import { useMediaQuery } from "hooks/viewport/useMediaQuery";
 
@@ -17,6 +20,7 @@ import CN from "./NavOverlay.module.scss";
 type NavOverlayProps = {
   onClose: () => void;
   type?: string;
+  isBannerOn?: boolean;
 };
 
 export enum NavOverlayTabType {
@@ -35,7 +39,11 @@ const navOverlayTypeMap: Readonly<Record<NavOverlayTabType, string>> = {
   [NavOverlayTabType.help]: "Help",
 };
 
-export const NavOverlay: React.FC<NavOverlayProps> = ({ onClose, type }) => {
+export const NavOverlay: React.FC<NavOverlayProps> = ({
+  onClose,
+  type,
+  isBannerOn,
+}) => {
   const [selectedNavMenu, setNavMenu] = useState(type);
   const [isMenuShown, setMenuShown] = useState(true);
   const { isTablet, isMobile } = useMediaQuery();
@@ -63,10 +71,20 @@ export const NavOverlay: React.FC<NavOverlayProps> = ({ onClose, type }) => {
     ...navOverlayTypeMap,
   };
 
+  const handleKeyPress = useKeyPress({
+    keys: [KEYS.ESCAPE_KEY],
+    onPress: onClose,
+  });
+
+  useKeyboardKeys({ handleKeyPress });
+
   const isTabletAndMenuHidden = isMenuPaged && !isMenuShown;
 
+  const overlayClasses = classNames(CN.navOverlay, {
+    [CN.blur]: isBannerOn,
+  });
   return (
-    <div className={CN.navOverlay}>
+    <div className={overlayClasses}>
       <div className={CN.navOverlayHeader}>
         {isTabletAndMenuHidden && (
           <div className={CN.navOverlayBack} onClick={() => setMenuShown(true)}>
@@ -98,7 +116,7 @@ export const NavOverlay: React.FC<NavOverlayProps> = ({ onClose, type }) => {
         )}
         {!(isMenuPaged && isMenuShown) && (
           <div className={CN.navOverlayContent}>
-            {selectedNavMenu === space?.name && <SpaceInfo />}
+            {selectedNavMenu === space?.name && <SpaceInfo space={space} />}
             {selectedNavMenu === NavOverlayTabType.schedule && (
               <ScheduleOverlay />
             )}

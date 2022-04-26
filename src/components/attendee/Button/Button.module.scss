@@ -14,10 +14,14 @@
   white-space: nowrap;
   cursor: pointer;
   border: none;
+  display: flex;
+  align-items: center;
 
   &:focus {
     // removes blue highlighting on mobile tap
     -webkit-tap-highlight-color: transparent;
+    outline: none;
+    border: none;
   }
 }
 
