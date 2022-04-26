@@ -9,7 +9,7 @@
   @include font.core;
   padding: 0 space.empty(1);
   height: space.item(1);
-  margin: space.gap(1);
+  margin: 0 space.gap(1);
   border-radius: border.$radius--xs;
   white-space: nowrap;
   cursor: pointer;

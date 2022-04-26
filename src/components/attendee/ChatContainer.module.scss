@@ -75,7 +75,8 @@
   display: block;
   flex-grow: 1;
   flex-shrink: 1;
-  margin-top: 0;
+  // Removes 1px space between chat components
+  margin-top: -1px;
   max-width: 100%;
   max-height: layout.$h-mobile-chat-bar;
   order: 1;
