@@ -7,6 +7,8 @@
 :root {
   --default-text: rgb(0, 0, 0);
   --subdued-text: rgb(142, 142, 142);
+  --dark-text: rgb(0, 0, 0);
+  --white-text: rgb(255, 255, 255);
   --chat-input-background: rgb(230, 230, 230);
   --space-wrapper-background: rgb(230, 230, 230);
   --disabled-color: rgba(255, 255, 255, 0.4);
@@ -62,6 +64,10 @@ $c-default-text: var(--default-text);
 $c-subdued-text: var(--subdued-text);
 // Used wherever we are putting text on to a light background
 $c-inverted-text: var(--inverted-text);
+// Always dark text
+$c-dark-text: var(--dark-text);
+// Always white text
+$c-white-text: var(--white-text);
 
 $sparkle--bg: var(--sparkle--bg); // previously named $sparkle-theme
 $sparkle--bg-shadow: var(--sparkle--bg-shadow);
