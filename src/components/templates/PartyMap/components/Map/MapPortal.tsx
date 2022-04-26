@@ -10,10 +10,8 @@ import { RoomVisibility } from "types/RoomVisibility";
 import { Dimensions, Position } from "types/utility";
 
 import { eventTimeAndOrderComparator, isEventLive } from "utils/event";
-import { isExternalPortal, openUrl } from "utils/url";
 
 import { useSpaceEvents } from "hooks/events";
-import { useCustomSound } from "hooks/sounds";
 import { useAnalytics } from "hooks/useAnalytics";
 import { usePortal } from "hooks/usePortal";
 
@@ -76,18 +74,13 @@ export const MapPortal: React.FC<MapPortalProps> = ({
     [height, left, portal.zIndex, top, width]
   );
 
-  const [enterWithSound] = useCustomSound(portal.enterSound, {
-    interrupt: true,
-    onend: enterPortal,
-  });
-
   const selectRoomWithSound = useCallback(
     (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
       if (!shouldBeClickable) return;
       analytics.trackEnterRoomEvent(portal.title, portal.template);
-      isExternalPortal(portal) ? openUrl(portal.url) : enterWithSound();
+      enterPortal();
     },
-    [analytics, enterWithSound, portal, shouldBeClickable]
+    [analytics, enterPortal, portal, shouldBeClickable]
   );
 
   const portalImageClasses = classNames(styles.PortalImage, {

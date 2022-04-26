@@ -8,10 +8,8 @@ import { PortalWithBounds, RoomType } from "types/rooms";
 import { RoomVisibility } from "types/RoomVisibility";
 
 import { eventTimeAndOrderComparator, isEventLiveOrFuture } from "utils/event";
-import { isExternalPortal, openUrl } from "utils/url";
 
 import { useSpaceEvents } from "hooks/events";
-import { useCustomSound } from "hooks/sounds";
 import { useAnalytics } from "hooks/useAnalytics";
 import { usePortal } from "hooks/usePortal";
 import { useLiveUser } from "hooks/user/useLiveUser";
@@ -65,11 +63,6 @@ export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
   const { enterPortal } = usePortal({ portal: selectedPortal });
   const analytics = useAnalytics({ venue });
 
-  const [enterWithSound] = useCustomSound(selectedPortal?.enterSound, {
-    interrupt: true,
-    onend: enterPortal,
-  });
-
   const selectPortalWithSound = useCallback(
     (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
       if (!shouldBeClickable || !selectedPortal) return;
@@ -77,11 +70,10 @@ export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
         selectedPortal?.title,
         selectedPortal?.template
       );
-      isExternalPortal(selectedPortal)
-        ? openUrl(selectedPortal?.url)
-        : enterWithSound();
+
+      enterPortal();
     },
-    [analytics, enterWithSound, selectedPortal, shouldBeClickable]
+    [analytics, enterPortal, selectedPortal, shouldBeClickable]
   );
 
   if (!user || !profile) return <>Loading..</>;
