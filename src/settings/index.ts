@@ -35,6 +35,7 @@ export const DEFAULT_LANDING_BANNER = "/assets/Default_Venue_Banner.png";
 export const DEFAULT_VENUE_BANNER_COLOR = "#000000";
 export const DEFAULT_VENUE_LOGO = "/assets/Default_Venue_Logo.png";
 export const DEFAULT_VENUE_AUTOPLAY = false;
+export const BASE_PORTAL_ICON_PATH = "static/media";
 
 export const DEFAULT_PARTY_NAME = "Anon";
 export const DISPLAY_NAME_MAX_CHAR_COUNT = 40;
@@ -52,6 +53,7 @@ export const USER_PRESENCE_CHECKIN_INTERVAL = 60000;
 export const USER_PRESENCE_DEBOUNCE_INTERVAL = 1000;
 
 export const ATTENDEE_HEADER_AVATAR_LIMIT = 50;
+export const ATTENDEE_DESCRIPTION_AVATAR_LIMIT = 200;
 
 // How often to increment user's timespent
 export const LOCATION_INCREMENT_SECONDS = 10;
@@ -90,7 +92,6 @@ export const IFRAME_TEMPLATES = Object.freeze([
   VenueTemplate.firebarrel,
   VenueTemplate.jazzbar,
   VenueTemplate.posterpage,
-  VenueTemplate.viewingwindow,
 ]);
 
 export const EMBEDDABLE_CONTENT_TEMPLATES = Object.freeze([
@@ -244,5 +245,14 @@ export const DEFAULT_MISSING_PLACEHOLDER = "Placeholder";
 export const DEFAULT_SAFE_ZONE = { width: 100.0, height: 100.0 };
 Object.freeze(DEFAULT_SAFE_ZONE);
 
-// Allow 70px for the top and bottom UI. Ideally, this would come from CSS
-export const PARTY_MAP_VERTICAL_PAD = 140;
+// JS constants derived and in sync with their SCSS constants
+// "scss/attendee/layout";
+export const SCSS_SPACE_PORTAL_EVENT_WIDTH = 180;
+// Configurable - allow for the top and bottom UI. Ideally, this would come from CSS
+export const PARTY_MAP_VERTICAL_PAD = 0;
+
+// The min/max for the maximum number of booths a space can contain
+export const MIN_MAX_BOOTHS = 1;
+// Firebase has a limit of how many values can be provided to an IN query. Due
+// to how we query for presence data we cap the number of booths to this limit.
+export const MAX_MAX_BOOTHS = 10;

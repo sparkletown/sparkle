@@ -67,7 +67,7 @@ export const Input: React.FC<InputProps> = ({
       type="hidden"
     />
   ) : (
-    <div data-bem="Input">
+    <div data-bem="Input" className="mb-4">
       <div className={parentClasses}>
         {label && (
           <div className="block text-sm font-medium text-gray-700">{label}</div>

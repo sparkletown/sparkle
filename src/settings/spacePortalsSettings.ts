@@ -13,7 +13,6 @@ import IconMap from "assets/icons/icon-room-map.svg";
 import IconMusicBar from "assets/icons/icon-room-musicbar.svg";
 import IconPosterHall from "assets/icons/icon-room-posterhall.svg";
 import IconScreening from "assets/icons/icon-room-screening.svg";
-import IconViewingWindow from "assets/icons/icon-room-viewingwindow.svg";
 import PosterArtPiece from "assets/spaces/add-portal-artpiece.png";
 import PosterAuditorium from "assets/spaces/add-portal-auditorium.png";
 import PosterConversation from "assets/spaces/add-portal-conversation.png";
@@ -122,15 +121,6 @@ export const SPACE_INFO_MAP: Record<VenueTemplate, SpaceInfoItem> = {
     description: "Create “mapception” - a map within a map!",
     template: VenueTemplate.partymap,
   },
-  [VenueTemplate.viewingwindow]: {
-    text: "Viewing Window",
-    icon: IconViewingWindow,
-    poster: PosterArtPiece,
-    description:
-      "Focus on a central piece of content without any video chatting.",
-    template: VenueTemplate.viewingwindow,
-    hidden: true,
-  },
   [VenueTemplate.embeddable]: {
     text: "Embeddable",
     icon: IconEmbeddable,
@@ -171,7 +161,6 @@ export const SPACE_INFO_LIST: SpaceInfoItem[] = [
   SPACE_INFO_MAP[VenueTemplate.artpiece],
   SPACE_INFO_MAP[VenueTemplate.zoomroom],
   SPACE_INFO_MAP[VenueTemplate.partymap],
-  SPACE_INFO_MAP[VenueTemplate.viewingwindow],
   SPACE_INFO_MAP[VenueTemplate.embeddable],
   SPACE_INFO_MAP[VenueTemplate.screeningroom],
   SPACE_INFO_MAP[VenueTemplate.posterhall],

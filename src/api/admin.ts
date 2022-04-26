@@ -355,7 +355,8 @@ const createFirestoreRoomInput = async (
   }
 
   const firestoreRoomInput: FirestoreRoomInput = {
-    ...omit(input, "image_file"),
+    ...omit(input, "image_file", "spaceId"),
+    spaceId: input.spaceId || undefined,
     ...imageInputData,
   };
   return firestoreRoomInput;

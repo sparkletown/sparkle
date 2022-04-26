@@ -38,12 +38,52 @@ import { useShowHide } from "hooks/useShowHide";
 import { AdminSection } from "components/molecules/AdminSection";
 import { SubmitError } from "components/molecules/SubmitError";
 
+const DEFAULT_SIZE_PERCENT = 5;
+
+interface determineNewWidthAndHeightOptions {
+  portal?: Room;
+  newWidthPx: number;
+  newHeightPx: number;
+  mapWidthPx: number;
+  mapHeightPx: number;
+}
+
+const determineNewWidthAndHeight = ({
+  portal,
+  newWidthPx,
+  newHeightPx,
+  mapWidthPx,
+  mapHeightPx,
+}: determineNewWidthAndHeightOptions) => {
+  const newRatio = newHeightPx / newWidthPx;
+
+  // Fix the largest axis and change the other
+  if (!portal) {
+    return [DEFAULT_SIZE_PERCENT, DEFAULT_SIZE_PERCENT];
+  }
+  const existingWidthPx = (portal.width_percent * mapWidthPx) / 100;
+  const existingHeightPx = (portal.height_percent * mapHeightPx) / 100;
+  if (existingWidthPx > existingHeightPx) {
+    return [
+      portal.width_percent,
+      (100 * existingWidthPx * newRatio) / mapHeightPx,
+    ];
+  } else {
+    return [
+      (100 * existingHeightPx) / newRatio / mapWidthPx,
+      portal.height_percent,
+    ];
+  }
+};
+
 interface PortalAddEditFormProps {
   item?: PortalInfoItem;
   onDone: () => void;
   portal?: Room;
   venueVisibility?: RoomVisibility;
   portalIndex?: number;
+  mapWidthPx: number;
+  mapHeightPx: number;
 }
 
 export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
@@ -52,6 +92,8 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
   onDone,
   venueVisibility,
   portalIndex,
+  mapWidthPx,
+  mapHeightPx,
 }) => {
   const { user } = useLiveUser();
   const { spaceId: currentSpaceId, world, space } = useWorldAndSpaceByParams();
@@ -76,6 +118,8 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
       isEnabled: portal?.isEnabled ?? DEFAULT_PORTAL_IS_ENABLED,
       // @debt should use SpaceId type here, resolve error with form typing
       spaceId: (portal?.spaceId as string) ?? undefined,
+      width_percent: portal?.width_percent,
+      height_percent: portal?.height_percent,
     }),
     [
       portal?.title,
@@ -84,6 +128,8 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
       portal?.type,
       portal?.isEnabled,
       portal?.spaceId,
+      portal?.width_percent,
+      portal?.height_percent,
       icon,
       spaceLogoImage,
       venueVisibility,
@@ -113,8 +159,24 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
   const changeRoomImageUrl = useCallback(
     ({ url }) => {
       setValue("image_url", url, { shouldValidate: false });
+
+      // Get the new image and use it to calculate new width/height for the
+      // image so that the aspect ratio isn't wrong.
+      const checkImage = new Image();
+      checkImage.src = url;
+      checkImage.decode().then(() => {
+        const [newWidth, newHeight] = determineNewWidthAndHeight({
+          portal,
+          newWidthPx: checkImage.naturalWidth,
+          newHeightPx: checkImage.naturalHeight,
+          mapWidthPx,
+          mapHeightPx,
+        });
+        setValue("width_percent", newWidth);
+        setValue("height_percent", newHeight);
+      });
     },
-    [setValue]
+    [mapHeightPx, mapWidthPx, portal, setValue]
   );
 
   const [
@@ -134,6 +196,8 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       image_file,
+      width_percent,
+      height_percent,
     } = getValues();
 
     const portalSource = portal ?? {};
@@ -149,6 +213,12 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
       type: !isClickable ? RoomType.unclickable : undefined,
       isEnabled,
     };
+    if (width_percent) {
+      portalData.width_percent = width_percent;
+    }
+    if (height_percent) {
+      portalData.height_percent = height_percent;
+    }
 
     if (isEditMode) {
       await upsertRoom(portalData, currentSpaceId, user, portalIndex);

@@ -24,7 +24,6 @@ export type GenericVenueTemplates = Exclude<
   | VenueTemplate.partymap
   | VenueTemplate.posterpage
   | VenueTemplate.auditorium
-  | VenueTemplate.viewingwindow
   | VenueTemplate.experiment
   | VenueTemplate.artpiece
   | VenueTemplate.meetingroom
@@ -38,7 +37,6 @@ export type AnyVenue =
   | JazzbarVenue
   | PartyMapVenue
   | PosterPageVenue
-  | ViewingWindowVenue
   | ExperimentalVenue
   | ArtPieceVenue
   | MeetingRoomVenue;
@@ -68,7 +66,6 @@ export interface BaseVenue {
   samlAuthProviderId?: string;
   columns?: number;
   rows?: number;
-  hideVideo?: boolean;
   showGrid?: boolean;
   roomVisibility?: RoomVisibility;
   rooms?: Room[];
@@ -91,6 +88,24 @@ export interface BaseVenue {
   worldId: string;
   backgroundImageUrl?: string;
   presentUserCachedCount: number;
+  // Optional: The space that manages this one. This is used for system managed
+  // spaces such as poster pages and meeting room booths.
+  managedBy?: SpaceId;
+
+  // The isHidden flag is used to indicate that a system managed space has
+  // been deleted by the system. We only hide it rather than delete it as
+  // it should still be accessible to people who have been there and references
+  // to spaces in things like analytics should still work.
+  isHidden?: boolean;
+
+  // Used by the empty booth tracker for understanding how long a booth has
+  // been empty for.
+  emptySince?: number;
+
+  // Fields for implementing "booths" inside a jazzbar
+  boothsEnabled?: boolean;
+  maxBooths?: number;
+  boothTemplateSpaceId?: SpaceId;
 }
 
 export interface GenericVenue extends BaseVenue {
@@ -133,15 +148,6 @@ export interface EmbeddableVenue extends BaseVenue {
   containerStyles?: CSSProperties;
   iframeStyles?: CSSProperties;
   iframeOptions?: Record<string, string>;
-}
-
-export interface ViewingWindowVenue extends BaseVenue {
-  template: VenueTemplate.viewingwindow;
-  iframeUrl?: string;
-  containerStyles?: CSSProperties;
-  iframeStyles?: CSSProperties;
-  iframeOptions?: Record<string, string>;
-  isWithParticipants?: boolean;
 }
 
 export interface PosterPageVenue extends BaseVenue {
@@ -250,4 +256,11 @@ export const isNotPartyMapVenue = (venue: AnyVenue) =>
 export type Channel = {
   name: string;
   iframeUrl: string;
+};
+
+export type PortalOptionProps = {
+  template?: PortalTemplate;
+  name: string;
+  id?: string;
+  fieldName: string;
 };

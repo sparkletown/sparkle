@@ -15,7 +15,10 @@ type ButtonVariant =
   | "login"
   | "login-primary"
   | "intensive"
-  | "danger";
+  | "danger"
+  // A variant that pins the button to the bottom of the container and makes
+  // it full width
+  | "panel-primary";
 type BorderVariant = ButtonVariant;
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {

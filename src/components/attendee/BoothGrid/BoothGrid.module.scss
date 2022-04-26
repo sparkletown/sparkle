@@ -1,0 +1,14 @@
+@use "scss/attendee/space";
+@use "scss/attendee/breakpoint";
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: space.empty(1);
+  gap: space.gap(8);
+  @media (min-width: breakpoint.$md) {
+    padding: space.empty(2) space.empty(3.5) space.empty(2);
+  }
+  flex-wrap: wrap;
+}

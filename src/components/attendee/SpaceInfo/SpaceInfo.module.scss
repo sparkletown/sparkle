@@ -38,3 +38,10 @@ $-info-image-size: 188px;
   font-size: font.$size--lg;
   margin: space.empty(1) 0;
 }
+
+.headerTitle {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: layout.$w-header-max;
+}

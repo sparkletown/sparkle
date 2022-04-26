@@ -1,0 +1,1 @@
+export { StaticInfoBlock } from "./StaticInfoBlock";

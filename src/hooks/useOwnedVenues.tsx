@@ -26,8 +26,12 @@ export const useOwnedVenues: UseOwnedVenues = ({ worldId, userId }) => {
         ? [
             where("worldId", "==", worldId),
             where("owners", "array-contains", userId),
+            where("isHidden", "==", false),
           ]
-        : [where("owners", "array-contains", userId)],
+        : [
+            where("owners", "array-contains", userId),
+            where("isHidden", "==", false),
+          ],
     [worldId, userId]
   );
 
