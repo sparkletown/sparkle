@@ -35,12 +35,16 @@ interface PortalStripFormProps {
   portal: Room;
   index: number;
   spaceId: string;
+  mapWidthPx: number;
+  mapHeightPx: number;
 }
 
 export const PortalStripForm: React.FC<PortalStripFormProps> = ({
   portal,
   index,
   spaceId,
+  mapWidthPx,
+  mapHeightPx,
 }) => {
   const { image_url: iconUrl, title, spaceId: targetSpaceId } = portal;
   const { user } = useLiveUser();
@@ -196,6 +200,8 @@ export const PortalStripForm: React.FC<PortalStripFormProps> = ({
           show={true}
           onHide={hideModal}
           portalIndex={index}
+          mapWidthPx={mapWidthPx}
+          mapHeightPx={mapHeightPx}
         />
       )}
     </TablePanel.Row>

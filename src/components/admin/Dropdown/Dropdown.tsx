@@ -76,6 +76,7 @@ interface DropdownProps {
   noArrow?: boolean;
   onSelect?: (option: Option) => void;
   titleElement?: JSX.Element;
+  disabled?: boolean;
 }
 
 export type Option = {
@@ -89,6 +90,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
   children,
   onSelect,
   titleElement,
+  disabled = false,
 }) => {
   const [isOpened, setOpened] = useState<boolean>(false);
   const [selectedOption, setSelectedOption] = useState<Option>();
@@ -109,6 +111,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
         onClick={() => setOpened((value) => !value)}
         className={buttonTailwind}
         type="button"
+        disabled={disabled}
       >
         {selectedOption?.label ?? title}
         <svg

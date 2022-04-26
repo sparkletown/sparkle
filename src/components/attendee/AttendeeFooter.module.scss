@@ -34,6 +34,8 @@
 
     a {
       @include atom.button;
+      @include sparkle.panel--normal;
+      text-decoration: none;
       opacity: opacity.$md;
 
       &:hover,
