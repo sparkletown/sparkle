@@ -55,4 +55,13 @@ export const spaceEditSchema = Yup.object().shape({
         : schema.notRequired()
   ),
   template: Yup.mixed<VenueTemplate>().oneOf(Object.values(VenueTemplate)),
+  boothsEnabled: Yup.boolean().when(
+    "$template",
+    (template: VenueTemplate, schema: Yup.StringSchema) =>
+      template === VenueTemplate.jazzbar
+        ? schema.required()
+        : schema.notRequired()
+  ),
+  maxBooths: Yup.number().required(),
+  boothTemplateSpaceId: Yup.string().notRequired(),
 });

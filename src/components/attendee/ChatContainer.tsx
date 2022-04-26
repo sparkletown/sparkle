@@ -34,6 +34,10 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({ isRelative }) => {
     [styles.relativeContainer]: isRelative,
   });
 
+  const isSpaceChatOpen = isExpanded && openedChatType === ChatTypes.VENUE_CHAT;
+  const isPrivateChatOpen =
+    isExpanded && openedChatType === ChatTypes.PRIVATE_CHAT;
+
   return (
     <>
       <div className={sidebarClasses}>
@@ -42,20 +46,18 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({ isRelative }) => {
       <div className={containerlasses}>
         <nav>
           <span
-            onClick={
-              isExpanded && openedChatType === ChatTypes.VENUE_CHAT
-                ? toggleSidebar
-                : selectVenueChat
-            }
+            className={classNames({
+              [styles.selectedTab]: isSpaceChatOpen,
+            })}
+            onClick={isSpaceChatOpen ? toggleSidebar : selectVenueChat}
           >
             Chat
           </span>
           <span
-            onClick={
-              isExpanded && openedChatType === ChatTypes.PRIVATE_CHAT
-                ? toggleSidebar
-                : selectPrivateChat
-            }
+            className={classNames({
+              [styles.selectedTab]: isPrivateChatOpen,
+            })}
+            onClick={isPrivateChatOpen ? toggleSidebar : selectPrivateChat}
           >
             Messages
             {numberOfUnreadMessages > 0 && (

@@ -1,7 +1,7 @@
 import React from "react";
 import { isEqual } from "lodash";
 
-import { captureError, SparkleAssertError } from "utils/error";
+import { captureAssertError } from "utils/error";
 
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 
@@ -24,13 +24,11 @@ export const SpaceChatHoc: React.FC = () => {
   }
 
   if (!world || !space) {
-    captureError(
-      new SparkleAssertError({
-        message: "Chat used without world and space",
-        where: "SpaceChatHoc",
-        args: { worldSlug, spaceSlug, world, space },
-      })
-    );
+    captureAssertError({
+      message: "Chat used without world and space",
+      where: "SpaceChatHoc",
+      args: { worldSlug, spaceSlug, world, space },
+    });
     return null;
   }
 

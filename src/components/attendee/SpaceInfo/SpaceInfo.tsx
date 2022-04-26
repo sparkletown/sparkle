@@ -1,3 +1,4 @@
+import React from "react";
 import { Link } from "react-router-dom";
 import { useCss } from "react-use";
 
@@ -5,7 +6,7 @@ import { DEFAULT_MAP_BACKGROUND } from "settings";
 
 import { SpaceWithId } from "types/id";
 
-import { useValidImage } from "hooks/useCheckImage";
+import { useValidImage } from "hooks/image/useValidImage";
 
 import CN from "./SpaceInfo.module.scss";
 
@@ -14,7 +15,7 @@ type SpaceInfoProps = {
 };
 
 export const SpaceInfo: React.FC<SpaceInfoProps> = ({ space }) => {
-  const [mapBackground, { isLoading }] = useValidImage(
+  const { src: mapBackground } = useValidImage(
     space?.host?.icon,
     DEFAULT_MAP_BACKGROUND
   );
@@ -26,7 +27,7 @@ export const SpaceInfo: React.FC<SpaceInfoProps> = ({ space }) => {
     backgroundImage: `url(${mapBackground})`,
   });
 
-  if (!space || isLoading) {
+  if (!space) {
     return <div>Loading...</div>;
   }
 

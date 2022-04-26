@@ -1,7 +1,7 @@
 import { useFirestore, useFirestoreCollectionData } from "reactfire";
 import { collection, query, where } from "firebase/firestore";
 
-import { COLLECTION_SPACES, FIELD_WORLD_ID } from "settings";
+import { COLLECTION_SPACES, FIELD_IS_HIDDEN, FIELD_WORLD_ID } from "settings";
 
 import { SpaceId, SpaceWithId, SpaceWithoutId, WorldId } from "types/id";
 
@@ -16,7 +16,8 @@ export const useWorldSpaces: UseWorldSpaces = ({ worldId }) => {
 
   const worldSpacesRef = query(
     collection(firestore, COLLECTION_SPACES),
-    where(FIELD_WORLD_ID, "==", worldId ?? "")
+    where(FIELD_WORLD_ID, "==", worldId ?? ""),
+    where(FIELD_IS_HIDDEN, "==", false)
   ).withConverter(withIdConverter<SpaceWithoutId, SpaceId>());
 
   const { data: worldSpaces } = useFirestoreCollectionData<SpaceWithId>(

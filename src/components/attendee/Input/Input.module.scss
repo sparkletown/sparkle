@@ -5,13 +5,29 @@
 @use "scss/attendee/theme";
 @use "scss/attendee/effects/error";
 
-.input {
+.inputContainer {
   display: flex;
   flex-direction: column;
-  margin: space.empty(1) 0;
 }
 
-label {
+.inputWrapper {
+  border-radius: border.$radius--xs;
+  background-color: theme.$c-login-input--bg;
+  border-color: theme.$c-login-input--eg;
+}
+
+.variant-chat--wrapper {
+  background-color: theme.$c-chat-input-background;
+}
+
+.input {
+  outline: none;
+}
+.inputWrapper:focus-within {
+  outline: theme.$sparkle--bg auto 1px;
+}
+
+.label {
   display: flex;
   align-items: center;
   padding-left: space.empty(0.75);
@@ -52,8 +68,12 @@ label {
   margin-top: space.empty(0.5);
 }
 
-.inputField {
-  outline: none;
+.variant-chat {
+  padding: 0 space.empty(1);
+  width: 100%;
+  height: space.$l3;
+  border-radius: border.$radius--xs;
+  background-color: theme.$c-chat-input-background;
 }
 
 .variant-overlay {

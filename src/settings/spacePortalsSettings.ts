@@ -2,7 +2,6 @@ import { PortalBox, PortalInput } from "types/rooms";
 import { PortalTemplate } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
 
-import IconAnimateMap from "assets/icons/icon-room-animatemap.svg";
 import IconArtPiece from "assets/icons/icon-room-artpiece.svg";
 import IconAuditorium from "assets/icons/icon-room-auditorium.svg";
 import IconBurnBarrel from "assets/icons/icon-room-burnbarrel.svg";
@@ -14,7 +13,6 @@ import IconMap from "assets/icons/icon-room-map.svg";
 import IconMusicBar from "assets/icons/icon-room-musicbar.svg";
 import IconPosterHall from "assets/icons/icon-room-posterhall.svg";
 import IconScreening from "assets/icons/icon-room-screening.svg";
-import IconViewingWindow from "assets/icons/icon-room-viewingwindow.svg";
 import PosterArtPiece from "assets/spaces/add-portal-artpiece.png";
 import PosterAuditorium from "assets/spaces/add-portal-auditorium.png";
 import PosterConversation from "assets/spaces/add-portal-conversation.png";
@@ -52,7 +50,6 @@ const LEGACY_SPACE_INFO_ITEM: SpaceInfoItem = {
 Object.freeze(LEGACY_SPACE_INFO_ITEM);
 
 export const SPACE_INFO_MAP: Record<VenueTemplate, SpaceInfoItem> = {
-  [VenueTemplate.playa]: LEGACY_SPACE_INFO_ITEM,
   [VenueTemplate.posterhall]: {
     text: "Poster hall",
     poster: "",
@@ -67,14 +64,6 @@ export const SPACE_INFO_MAP: Record<VenueTemplate, SpaceInfoItem> = {
     description: "",
     icon: IconPosterHall,
     template: VenueTemplate.posterpage,
-    hidden: true,
-  },
-  [VenueTemplate.animatemap]: {
-    text: "Animated map",
-    poster: "",
-    description: "",
-    icon: IconAnimateMap,
-    template: VenueTemplate.animatemap,
     hidden: true,
   },
   [VenueTemplate.conversationspace]: {
@@ -132,15 +121,6 @@ export const SPACE_INFO_MAP: Record<VenueTemplate, SpaceInfoItem> = {
     description: "Create “mapception” - a map within a map!",
     template: VenueTemplate.partymap,
   },
-  [VenueTemplate.viewingwindow]: {
-    text: "Viewing Window",
-    icon: IconViewingWindow,
-    poster: PosterArtPiece,
-    description:
-      "Focus on a central piece of content without any video chatting.",
-    template: VenueTemplate.viewingwindow,
-    hidden: true,
-  },
   [VenueTemplate.embeddable]: {
     text: "Embeddable",
     icon: IconEmbeddable,
@@ -181,12 +161,10 @@ export const SPACE_INFO_LIST: SpaceInfoItem[] = [
   SPACE_INFO_MAP[VenueTemplate.artpiece],
   SPACE_INFO_MAP[VenueTemplate.zoomroom],
   SPACE_INFO_MAP[VenueTemplate.partymap],
-  SPACE_INFO_MAP[VenueTemplate.viewingwindow],
   SPACE_INFO_MAP[VenueTemplate.embeddable],
   SPACE_INFO_MAP[VenueTemplate.screeningroom],
   SPACE_INFO_MAP[VenueTemplate.posterhall],
   SPACE_INFO_MAP[VenueTemplate.posterpage],
-  SPACE_INFO_MAP[VenueTemplate.animatemap],
   SPACE_INFO_MAP[VenueTemplate.meetingroom],
 ];
 

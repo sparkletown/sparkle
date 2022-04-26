@@ -27,7 +27,7 @@ export const MiniProfile: React.FC<MiniProfileProps> = ({
 
   return (
     <div ref={setReferenceElement}>
-      <Popover referenceElement={referenceElement}>
+      <Popover referenceElement={referenceElement} placement="bottom">
         <MiniProfileModal userId={selectedUserId} />
       </Popover>
     </div>

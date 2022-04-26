@@ -5,7 +5,7 @@ import { CHAT_TAB_PRIVATE_ID, CHAT_TAB_SPACE_ID } from "settings";
 
 import { ChatTypes } from "types/chat";
 
-import { captureError, SparkleAssertError } from "utils/error";
+import { captureAssertError } from "utils/error";
 
 import { useChatSidebarControls } from "hooks/chats/util/useChatSidebarControls";
 import { useUserId } from "hooks/user/useUserId";
@@ -31,14 +31,12 @@ const _ChatSidebar: React.FC = () => {
     return null;
   } else if (!userId) {
     // But in this case, chat has been used in a in a place with no user logged in
-    captureError(
-      new SparkleAssertError({
-        message:
-          "ChatSidebar, as a descendant of LoginRestricted, should have userId",
-        where: "ChatSidebar",
-        args: { isLoading, userId, chatSettings },
-      })
-    );
+    captureAssertError({
+      message:
+        "ChatSidebar, as a descendant of LoginRestricted, should have userId",
+      where: "ChatSidebar",
+      args: { isLoading, userId, chatSettings },
+    });
     return null;
   }
 

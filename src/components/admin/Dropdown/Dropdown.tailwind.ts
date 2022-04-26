@@ -6,8 +6,8 @@ export const listTailwind =
   "absolute z-10 mt-1 min-w-full w-auto bg-white shadow-lg max-h-56 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm";
 
 export const checkmarkSelected =
-  "dropdownSelected text-white inset-y-0 right-0 flex items-center pr-4 h-5 w-5 mr-2 bg-indigo-600";
+  "text-white inset-y-0 right-0 flex items-center pr-4 h-5 w-5 mr-2 bg-indigo-600";
 export const checkmarkTailwind =
-  "dropdownSelected text-indigo-600 inset-y-0 right-0 flex items-center pr-4 h-5 w-5 mr-2 bg-white";
+  "text-indigo-600 inset-y-0 right-0 flex items-center pr-4 h-5 w-5 mr-2 bg-white";
 export const listItem =
-  "optionContainer text-gray-900 cursor-pointer hover:bg-indigo-600 hover:text-white flex justify-between items-center";
+  "text-gray-900 cursor-pointer hover:bg-indigo-600 hover:text-white flex justify-between items-center";

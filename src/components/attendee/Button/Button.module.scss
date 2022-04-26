@@ -60,6 +60,14 @@
   }
 }
 
+.variant-panel-primary {
+  position: absolute;
+  bottom: 0;
+  border-radius: 0;
+  width: 100%;
+  margin: 0;
+}
+
 .border-alternative {
   border: border.$width--slim solid theme.$c-button-fg;
 }

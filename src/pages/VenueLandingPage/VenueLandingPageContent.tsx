@@ -27,7 +27,7 @@ import { formatTimeLocalised, getTimeBeforeParty } from "utils/time";
 import { generateAttendeeInsideUrl, generateUrl } from "utils/url";
 
 import { useWorldEvents } from "hooks/events";
-import { useValidImage } from "hooks/useCheckImage";
+import { useValidImage } from "hooks/image/useValidImage";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
@@ -54,11 +54,13 @@ export const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = (
   const logoUrl = space?.host?.icon;
   const coverUrl = landingPageConfig?.coverImageUrl;
 
-  // TODO-redesign use it or delete it
+  const { src: validLogoUrl } = useValidImage(logoUrl, DEFAULT_VENUE_LOGO);
+  // TODO redesign, use it or delete it
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [validLogoUrl] = useValidImage(logoUrl, DEFAULT_VENUE_LOGO);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [validBannerUrl] = useValidImage(coverUrl, DEFAULT_LANDING_BANNER);
+  const { src: validBannerUrl } = useValidImage(
+    coverUrl,
+    DEFAULT_LANDING_BANNER
+  );
 
   const { events } = useWorldEvents({ worldId });
 

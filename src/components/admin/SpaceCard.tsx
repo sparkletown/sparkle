@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import ShowMoreText from "react-show-more-text";
 import { faExternalLinkAlt, faUsers } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 
 import {
   ADMIN_IA_SPACE_EDIT_PARAM_URL,
@@ -15,6 +16,7 @@ import {
 
 import { SpaceWithId, WorldWithId } from "types/id";
 
+import { isDefaultPortalIcon } from "utils/image";
 import { generateUrl } from "utils/url";
 
 import { useWorldEvents } from "hooks/events";
@@ -60,6 +62,11 @@ export const SpaceCard: React.FC<SpaceCardProps> = ({
     (exp) => exp.spaceId === space.id
   );
 
+  const spaceLogoSrc = space.host?.icon || DEFAULT_VENUE_LOGO;
+  const spaceIconClasses = classNames("w-16 h-16 rounded-full", {
+    "bg-gray-800": isDefaultPortalIcon(spaceLogoSrc),
+  });
+
   return (
     <li className="flex flex-col bg-white rounded-lg shadow">
       <div
@@ -81,11 +88,7 @@ export const SpaceCard: React.FC<SpaceCardProps> = ({
       </div>
 
       <div className="flex flex-row justify-start items-center pt-2 px-4">
-        <img
-          className="w-16 h-16 rounded-full"
-          src={space.host?.icon || DEFAULT_VENUE_LOGO}
-          alt="space logo"
-        />
+        <img className={spaceIconClasses} src={spaceLogoSrc} alt="space logo" />
         <div className="flex flex-col w-full ml-3">
           <h3 className="text-black text-md font-medium">
             <ShowMoreText

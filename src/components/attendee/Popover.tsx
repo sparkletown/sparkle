@@ -1,25 +1,35 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import ReactDOM from "react-dom";
 import { usePopper } from "react-popper";
+import { Placement } from "popper.js";
 
 import { POPOVER_CONTAINER_ID } from "settings";
 
 export interface PopoverProps {
   referenceElement?: Element | null;
+  placement?: Placement;
 }
 
 export const Popover: React.FC<PopoverProps> = ({
   children,
   referenceElement,
+  placement = "auto",
 }) => {
   const popoverContainerElement = document.querySelector(
     `#${POPOVER_CONTAINER_ID}`
+  );
+  const options = useMemo(
+    () => ({
+      placement,
+    }),
+    [placement]
   );
 
   const [popperElement, setPopperElement] = useState<HTMLElement | null>(null);
   const { styles: popperStyles, attributes: popperAttributes } = usePopper(
     referenceElement,
-    popperElement
+    popperElement,
+    options
   );
 
   return (

@@ -1,4 +1,3 @@
-import { AnimateMapActions } from "./AnimateMap";
 import { AttendanceActions } from "./Attendance";
 import { ChatActions } from "./Chat";
 import { LocationActions } from "./Location";
@@ -10,5 +9,4 @@ export type RootActions =
   | ChatActions
   | LocationActions
   | RoomActions
-  | UserProfileActions
-  | AnimateMapActions;
+  | UserProfileActions;

@@ -4,9 +4,6 @@ import { SPACE_TAXON } from "settings";
 
 import { Room } from "types/rooms";
 
-import { isExternalPortal, openUrl } from "utils/url";
-
-import { useCustomSound } from "hooks/sounds";
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useAnalytics } from "hooks/useAnalytics";
 import { usePortal } from "hooks/usePortal";
@@ -25,18 +22,13 @@ export const PortalItem: React.FC<PortalItemProps> = ({ portal, onClick }) => {
     portal,
   });
 
-  const [enterWithSound] = useCustomSound(portal.enterSound, {
-    interrupt: true,
-    onend: enterPortal,
-  });
-
   const analytics = useAnalytics({ venue: space });
 
   const enter = useCallback(() => {
     analytics.trackEnterRoomEvent(portal.title, portal.template);
-    void (isExternalPortal(portal) ? openUrl(portal.url) : enterWithSound());
+    void enterPortal();
     onClick();
-  }, [analytics, enterWithSound, portal, onClick]);
+  }, [analytics, enterPortal, portal, onClick]);
 
   return (
     <div>

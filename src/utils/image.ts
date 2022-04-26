@@ -2,6 +2,7 @@ import React from "react";
 import Resizer from "react-image-file-resizer";
 
 import {
+  BASE_PORTAL_ICON_PATH,
   DEFAULT_AVATAR_LIST,
   DEFAULT_PARTY_NAME,
   FIREBASE_STORAGE_IMAGES_IMGIX_URL,
@@ -142,3 +143,6 @@ const makeProfileImageLoadErrorHandler = (
   currentTarget.onerror = null; // prevents looping
   currentTarget.src = src;
 };
+
+export const isDefaultPortalIcon = (src?: string) =>
+  src?.includes(BASE_PORTAL_ICON_PATH);
