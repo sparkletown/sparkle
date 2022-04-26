@@ -65,7 +65,6 @@ type RoomImageUrls = Partial<Record<RoomImageUrlKeys, string>>;
 interface VenueAdvancedConfig {
   radioStations?: string | string[]; // single string on form, array in DB
   roomVisibility?: RoomVisibility;
-  showGrid?: boolean;
   showRadio?: boolean;
   parentId?: SpaceId;
   showUserStatus?: boolean;

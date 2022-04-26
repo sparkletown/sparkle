@@ -64,7 +64,6 @@ export interface BaseVenue {
   radioTitle?: string;
   banner?: Banner;
   samlAuthProviderId?: string;
-  showGrid?: boolean;
   roomVisibility?: RoomVisibility;
   rooms?: Room[];
   start_utc_seconds?: number;

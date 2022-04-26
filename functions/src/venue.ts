@@ -106,8 +106,6 @@ interface VenueData2Payload {
 
   logoImageUrl?: string;
 
-  showGrid?: boolean;
-
   template?: string;
 
   parentId?: string;
@@ -153,8 +151,6 @@ interface CreateVenueData2 {
   };
   owners: string[];
 
-  showGrid: boolean;
-
   isHidden: boolean;
   boothsEnabled: boolean;
   maxBooths: number;
@@ -178,7 +174,6 @@ const createVenueData_v2 = (data: VenueData2Payload, context: Object) => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     owners: [context.auth.token.user_id],
-    showGrid: data.showGrid || false,
     template: data.template || VenueTemplate.partymap,
     rooms: [],
     createdAt: Date.now(),
@@ -235,7 +230,6 @@ interface Venue {
   name: string;
   start_utc_seconds?: number;
   end_utc_seconds?: number;
-  showGrid?: boolean;
   showRadio?: boolean;
   radioStations: string[];
   entrance?: string;
@@ -677,11 +671,6 @@ export const updateVenue_v2 = functions.https.onCall(async (data, context) => {
     updated.end_utc_seconds = data.end_utc_seconds;
   }
 
-  // @debt aside from the data.columns part, this is exactly the same as in updateVenue
-  if (typeof data.showGrid === "boolean") {
-    updated.showGrid = data.showGrid;
-  }
-
   // @debt aside from the data.radioStations part, this is exactly the same as in updateVenue
   if (typeof data.showRadio === "boolean") {
     updated.showRadio = data.showRadio;
@@ -872,10 +861,6 @@ export const updateVenueNG = functions.https.onCall(async (data, context) => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     updated.config.landingPageConfig.coverImageUrl = data.bannerImageUrl;
-  }
-
-  if (typeof data.showGrid === "boolean") {
-    updated.showGrid = data.showGrid;
   }
 
   if (typeof data.showRadio === "boolean") {

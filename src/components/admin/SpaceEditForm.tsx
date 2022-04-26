@@ -25,9 +25,7 @@ import {
   DEFAULT_SHOW_SHOUTOUTS,
   DEFAULT_VENUE_AUTOPLAY,
   DEFAULT_VENUE_LOGO,
-  DISABLED_DUE_TO_1253,
   EMBEDDABLE_CONTENT_TEMPLATES,
-  HAS_GRID_TEMPLATES,
   HAS_REACTIONS_TEMPLATES,
   IFRAME_TEMPLATES,
   MAX_MAX_BOOTHS,
@@ -95,7 +93,6 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
       description: space.config?.landingPageConfig?.description ?? "",
       mapBackgroundImage: space.mapBackgroundImageUrl ?? "",
       iframeUrl: space.iframeUrl ?? DEFAULT_EMBED_URL,
-      showGrid: space.showGrid ?? false,
       showReactions: space.showReactions ?? DEFAULT_SHOW_REACTIONS,
       showShoutouts: space.showShoutouts ?? DEFAULT_SHOW_SHOUTOUTS,
       autoPlay: space.autoPlay ?? DEFAULT_VENUE_AUTOPLAY,
@@ -121,7 +118,6 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
       space.config?.landingPageConfig?.description,
       space.mapBackgroundImageUrl,
       space.iframeUrl,
-      space.showGrid,
       space.showReactions,
       space.showShoutouts,
       space.autoPlay,
@@ -439,17 +435,6 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                   autoComplete="off"
                 />
               </InputGroup>
-            )}
-
-          {!DISABLED_DUE_TO_1253 &&
-            // @debt use a single structure of type Record<VenueTemplate,TemplateInfo> to compile all these .includes() arrays' flags
-            HAS_GRID_TEMPLATES.includes(space.template as VenueTemplate) && (
-              <Checkbox
-                label="Show grid layout"
-                variant="toggler"
-                register={register}
-                name="showGrid"
-              />
             )}
 
           <TesterRestricted>
