@@ -35,6 +35,7 @@ export const DEFAULT_LANDING_BANNER = "/assets/Default_Venue_Banner.png";
 export const DEFAULT_VENUE_BANNER_COLOR = "#000000";
 export const DEFAULT_VENUE_LOGO = "/assets/Default_Venue_Logo.png";
 export const DEFAULT_VENUE_AUTOPLAY = false;
+export const BASE_PORTAL_ICON_PATH = "static/media";
 
 export const DEFAULT_PARTY_NAME = "Anon";
 export const DISPLAY_NAME_MAX_CHAR_COUNT = 40;
@@ -243,6 +244,9 @@ export const DEFAULT_MISSING_PLACEHOLDER = "Placeholder";
 export const DEFAULT_SAFE_ZONE = { width: 100.0, height: 100.0 };
 Object.freeze(DEFAULT_SAFE_ZONE);
 
+// JS constants derived and in sync with their SCSS constants
+// "scss/attendee/layout";
+export const SCSS_SPACE_PORTAL_EVENT_WIDTH = 180;
 // Configurable - allow for the top and bottom UI. Ideally, this would come from CSS
 export const PARTY_MAP_VERTICAL_PAD = 0;
 

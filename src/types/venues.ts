@@ -257,3 +257,10 @@ export type Channel = {
   name: string;
   iframeUrl: string;
 };
+
+export type PortalOptionProps = {
+  template?: PortalTemplate;
+  name: string;
+  id?: string;
+  fieldName: string;
+};

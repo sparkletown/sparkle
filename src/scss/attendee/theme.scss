@@ -15,9 +15,11 @@
   --panel-background: rgb(255, 255, 255);
   --glass-panel-background: rgba(255, 255, 255, 0.4);
   --color-glass-panel-background: rgba(99, 42, 199, 0.7);
+  --color-glass-panel-background-hover: rgb(99, 42, 199);
 
   --sparkle--bg: rgb(99, 42, 199);
   --sparkle--border: rgba(130, 130, 130, 0.3);
+  --sparkle--bg-shadow: rgb(99, 42, 199 / 50%);
 
   --button-fg: rgb(255, 255, 255);
   --button-bg: rgb(99, 42, 199);
@@ -62,6 +64,7 @@ $c-subdued-text: var(--subdued-text);
 $c-inverted-text: var(--inverted-text);
 
 $sparkle--bg: var(--sparkle--bg); // previously named $sparkle-theme
+$sparkle--bg-shadow: var(--sparkle--bg-shadow);
 $sparkle--border: var(--sparkle--border); // previously named $sparkle-border
 
 $c-panel-background: var(--panel-background);
@@ -71,6 +74,9 @@ $c-glass-panel-background-transparent: var(
 );
 $c-glass-panel-text: var(--glass-panel-text);
 $c-color-glass-panel-background: var(--color-glass-panel-background);
+$c-color-glass-panel-background-hover: var(
+  --color-glass-panel-background-hover
+);
 $c-space-wrapper-background: var(--space-wrapper-background);
 
 $c-button-fg: var(--button-fg);

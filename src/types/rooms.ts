@@ -37,6 +37,16 @@ export interface Room extends PortalBox {
   spaceId?: SpaceId;
 }
 
+export interface PortalBounds {
+  top: number;
+  left: number;
+  height: number;
+  width: number;
+}
+export interface PortalWithBounds extends Room {
+  bounds: PortalBounds;
+}
+
 export type ParticipantWithUser<T extends Participant = Participant> = {
   participant: T;
   user: WithId<DisplayUser>;
