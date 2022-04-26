@@ -13,19 +13,10 @@ import IconMap from "assets/icons/icon-room-map.svg";
 import IconMusicBar from "assets/icons/icon-room-musicbar.svg";
 import IconPosterHall from "assets/icons/icon-room-posterhall.svg";
 import IconScreening from "assets/icons/icon-room-screening.svg";
-import PosterArtPiece from "assets/spaces/add-portal-artpiece.png";
-import PosterAuditorium from "assets/spaces/add-portal-auditorium.png";
-import PosterConversation from "assets/spaces/add-portal-conversation.png";
-import PosterEmbeddable from "assets/spaces/add-portal-embeddable.png";
-import PosterExperience from "assets/spaces/add-portal-experience.png";
-import PosterExternal from "assets/spaces/add-portal-external.png";
-import PosterMusicBar from "assets/spaces/add-portal-jazzbar.png";
-import PosterMap from "assets/spaces/add-portal-map.png";
 
 // NOTE: local, use one of SpaceInfoListItem or PortalInfoListItem
 type InfoItem = {
   text: string;
-  poster: string;
   description: string;
   icon: string;
   hidden?: boolean;
@@ -40,19 +31,9 @@ export type PortalInfoItem = InfoItem & {
   template?: PortalTemplate;
 };
 
-const LEGACY_SPACE_INFO_ITEM: SpaceInfoItem = {
-  text: "Legacy space",
-  poster: "",
-  description: "This space is no longer in use",
-  icon: "",
-  deprecated: true,
-};
-Object.freeze(LEGACY_SPACE_INFO_ITEM);
-
 export const SPACE_INFO_MAP: Record<VenueTemplate, SpaceInfoItem> = {
   [VenueTemplate.posterhall]: {
     text: "Poster hall",
-    poster: "",
     description: "",
     icon: IconPosterHall,
     template: VenueTemplate.posterhall,
@@ -60,7 +41,6 @@ export const SPACE_INFO_MAP: Record<VenueTemplate, SpaceInfoItem> = {
   },
   [VenueTemplate.posterpage]: {
     text: "Poster page",
-    poster: "",
     description: "",
     icon: IconPosterHall,
     template: VenueTemplate.posterpage,
@@ -69,7 +49,6 @@ export const SPACE_INFO_MAP: Record<VenueTemplate, SpaceInfoItem> = {
   [VenueTemplate.conversationspace]: {
     text: "Conversation Space",
     icon: IconConversation,
-    poster: PosterConversation,
     description:
       "Host any number of small groups from 2-10 in video chats with each other.",
     template: VenueTemplate.conversationspace,
@@ -77,7 +56,6 @@ export const SPACE_INFO_MAP: Record<VenueTemplate, SpaceInfoItem> = {
   [VenueTemplate.auditorium]: {
     text: "Auditorium",
     icon: IconAuditorium,
-    poster: PosterAuditorium,
     description:
       "Attendees sit in seats around your video content, and can react w/ emojis & shoutouts.",
     template: VenueTemplate.auditorium,
@@ -85,7 +63,6 @@ export const SPACE_INFO_MAP: Record<VenueTemplate, SpaceInfoItem> = {
   [VenueTemplate.jazzbar]: {
     text: "Music Bar",
     icon: IconMusicBar,
-    poster: PosterMusicBar,
     description:
       "Host any number of small groups from 2-10 in video chats with each other around central content.",
     template: VenueTemplate.jazzbar,
@@ -94,14 +71,12 @@ export const SPACE_INFO_MAP: Record<VenueTemplate, SpaceInfoItem> = {
     text: "Burn Firebarrel",
     icon: IconBurnBarrel,
     template: VenueTemplate.firebarrel,
-    poster: "",
     description: "",
     hidden: true,
   },
   [VenueTemplate.artpiece]: {
     text: "Art Piece",
     icon: IconArtPiece,
-    poster: PosterArtPiece,
     description:
       "Small group video chatting around a central piece of content.",
     template: VenueTemplate.artpiece,
@@ -109,7 +84,6 @@ export const SPACE_INFO_MAP: Record<VenueTemplate, SpaceInfoItem> = {
   [VenueTemplate.zoomroom]: {
     text: "External Experience",
     icon: IconExperience,
-    poster: PosterExperience,
     description:
       "Attendees will be directed off-platform, opening your content in a new tab.",
     template: VenueTemplate.zoomroom,
@@ -117,14 +91,12 @@ export const SPACE_INFO_MAP: Record<VenueTemplate, SpaceInfoItem> = {
   [VenueTemplate.partymap]: {
     text: "Map",
     icon: IconMap,
-    poster: PosterMap,
     description: "Create “mapception” - a map within a map!",
     template: VenueTemplate.partymap,
   },
   [VenueTemplate.embeddable]: {
     text: "Embeddable",
     icon: IconEmbeddable,
-    poster: PosterEmbeddable,
     description:
       "Focus on a central piece of content without any video chatting.",
     template: VenueTemplate.embeddable,
@@ -132,21 +104,18 @@ export const SPACE_INFO_MAP: Record<VenueTemplate, SpaceInfoItem> = {
   [VenueTemplate.screeningroom]: {
     text: "Screening Room",
     icon: IconScreening,
-    poster: "",
     description: "",
     template: VenueTemplate.screeningroom,
   },
   [VenueTemplate.experiment]: {
     text: "Experimental space",
     icon: IconScreening,
-    poster: "",
     description: "",
     template: VenueTemplate.experiment,
   },
   [VenueTemplate.meetingroom]: {
     text: "Meeting room",
     icon: IconConversation,
-    poster: "",
     description: "",
     template: VenueTemplate.meetingroom,
   },
@@ -175,7 +144,6 @@ export const PORTAL_INFO_LIST: PortalInfoItem[] = [
   {
     text: "External link",
     icon: IconExternalLink,
-    poster: PosterExternal,
     description:
       "New Space will not be created and the Space name will be used as the title for the newly added External Link portal",
     template: "external",
