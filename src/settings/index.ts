@@ -13,7 +13,6 @@ export * from "./taxonomy";
 export * from "./adminDesignSettings";
 export * from "./apiSettings";
 export * from "./dateSettings";
-export * from "./disableSettings";
 export * from "./domSettings";
 export * from "./embedUrlSettings";
 export * from "./imageSettings";
