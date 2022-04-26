@@ -34,7 +34,7 @@ export const Checkbox: React.FC<CheckboxProps> = ({
   const error = get(errors, name);
 
   return (
-    <fieldset data-bem="Checkbox" className="mb-4 mt-4" tabIndex={tabIndex}>
+    <fieldset data-bem="Checkbox" className="mb-4" tabIndex={tabIndex}>
       <div className="relative flex items-start">
         <div className="flex items-center h-5">
           <input

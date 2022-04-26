@@ -32,7 +32,6 @@ const VenueTemplate = {
   posterpage: "posterpage",
   screeningroom: "screeningroom",
   themecamp: "themecamp",
-  viewingwindow: "viewingwindow",
   zoomroom: "zoomroom",
 
   /**

@@ -1,24 +1,28 @@
 import React from "react";
 import { MediaElement } from "components/attendee/MediaElement";
 
+import { DEFAULT_SHOW_CONTENT } from "settings";
+
 import { AuditoriumSpaceWithId } from "types/id";
 
 import { SeatingBlock } from "./components/SeatingBlock";
 
 interface AuditoriumProps {
-  venue: AuditoriumSpaceWithId;
+  space: AuditoriumSpaceWithId;
 }
 
-export const Auditorium: React.FC<AuditoriumProps> = ({ venue }) => {
+export const Auditorium: React.FC<AuditoriumProps> = ({ space }) => {
+  const showContent = space.showContent ?? DEFAULT_SHOW_CONTENT;
+
   return (
     <>
-      {!venue.hideVideo && venue.iframeUrl && (
+      {showContent && space.iframeUrl && (
         <MediaElement
-          url={venue.iframeUrl}
-          autoPlay={venue.autoPlay || false}
+          url={space.iframeUrl}
+          autoPlay={space.autoPlay || false}
         />
       )}
-      <SeatingBlock space={venue} />
+      <SeatingBlock space={space} />
     </>
   );
 };

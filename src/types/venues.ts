@@ -24,7 +24,6 @@ export type GenericVenueTemplates = Exclude<
   | VenueTemplate.partymap
   | VenueTemplate.posterpage
   | VenueTemplate.auditorium
-  | VenueTemplate.viewingwindow
   | VenueTemplate.experiment
   | VenueTemplate.artpiece
   | VenueTemplate.meetingroom
@@ -38,7 +37,6 @@ export type AnyVenue =
   | JazzbarVenue
   | PartyMapVenue
   | PosterPageVenue
-  | ViewingWindowVenue
   | ExperimentalVenue
   | ArtPieceVenue
   | MeetingRoomVenue;
@@ -68,7 +66,6 @@ export interface BaseVenue {
   samlAuthProviderId?: string;
   columns?: number;
   rows?: number;
-  hideVideo?: boolean;
   showGrid?: boolean;
   roomVisibility?: RoomVisibility;
   rooms?: Room[];
@@ -151,15 +148,6 @@ export interface EmbeddableVenue extends BaseVenue {
   containerStyles?: CSSProperties;
   iframeStyles?: CSSProperties;
   iframeOptions?: Record<string, string>;
-}
-
-export interface ViewingWindowVenue extends BaseVenue {
-  template: VenueTemplate.viewingwindow;
-  iframeUrl?: string;
-  containerStyles?: CSSProperties;
-  iframeStyles?: CSSProperties;
-  iframeOptions?: Record<string, string>;
-  isWithParticipants?: boolean;
 }
 
 export interface PosterPageVenue extends BaseVenue {
