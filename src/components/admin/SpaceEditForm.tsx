@@ -31,7 +31,9 @@ import {
   HAS_GRID_TEMPLATES,
   HAS_REACTIONS_TEMPLATES,
   IFRAME_TEMPLATES,
+  MAX_MAX_BOOTHS,
   MAX_SECTIONS_AMOUNT,
+  MIN_MAX_BOOTHS,
   MIN_SECTIONS_AMOUNT,
   PORTAL_INFO_ICON_MAPPING,
   SUBVENUE_TEMPLATES,
@@ -59,6 +61,8 @@ import { AdminSidebarButtons } from "components/organisms/AdminVenueView/compone
 import { FormErrors } from "components/molecules/FormErrors";
 import { SubmitError } from "components/molecules/SubmitError";
 import { YourUrlDisplay } from "components/molecules/YourUrlDisplay";
+
+import { TesterRestricted } from "components/atoms/TesterRestricted";
 
 import { Button } from "./Button";
 
@@ -110,6 +114,10 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
       showContent: space.showContent ?? DEFAULT_SHOW_CONTENT,
       backgroundImage: undefined,
       backgroundImageUrl: space.backgroundImageUrl,
+      boothsEnabled: space.boothsEnabled,
+      maxBooths: space.maxBooths || 1,
+      // @debt should use SpaceId type here, resolve error with form typing
+      boothTemplateSpaceId: space.boothTemplateSpaceId as string,
     }),
     [
       space.name,
@@ -130,6 +138,9 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
       space?.host?.icon,
       space.showContent,
       space.backgroundImageUrl,
+      space.boothsEnabled,
+      space.maxBooths,
+      space.boothTemplateSpaceId,
       spaceLogoImage,
     ]
   );
@@ -202,12 +213,36 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
     [relatedVenues, space.worldId, space.id]
   );
 
+  const boothTemplateOptionList = useMemo(
+    () =>
+      Object.fromEntries(
+        relatedVenues
+          .filter(
+            ({ id, worldId, template, managedBy }) =>
+              space.worldId === worldId &&
+              id !== space.id &&
+              template === VenueTemplate.meetingroom &&
+              managedBy === undefined
+          )
+          .map((venue) => [venue.id, venue])
+      ),
+    [relatedVenues, space.worldId, space.id]
+  );
+
   const parentSpace = useMemo(
     () =>
       space.parentId
         ? relatedVenues.find(({ id }) => id === space.parentId)
         : { name: "" },
     [relatedVenues, space.parentId]
+  );
+
+  const boothTemplateSpace = useMemo(
+    () =>
+      space.boothTemplateSpaceId
+        ? relatedVenues.find(({ id }) => id === space.boothTemplateSpaceId)
+        : { name: "" },
+    [relatedVenues, space.boothTemplateSpaceId]
   );
 
   const { name: watchedName } = watch();
@@ -364,7 +399,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
 
           {EMBEDDABLE_CONTENT_TEMPLATES.includes(
             space.template as VenueTemplate
-          ) && <SidebarHeader>Embedable content</SidebarHeader>}
+          ) && <SidebarHeader>Embeddable content</SidebarHeader>}
 
           {space.template &&
             // @debt use a single structure of type Record<VenueTemplate,TemplateInfo> to compile all these .includes() arrays' flags
@@ -377,7 +412,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                   checked={values.showContent}
                 />
                 {values.showContent && (
-                  <InputGroup title="Livestream URL" margin="no-bottom">
+                  <InputGroup title="Livestream URL" margin="subgroup">
                     <Input
                       placeholder="Livestream or embed URL"
                       register={register}
@@ -422,35 +457,40 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
               />
             )}
 
-          {
-            // @debt use a single structure of type Record<VenueTemplate,TemplateInfo> to compile all these .includes() arrays' flags
-            HAS_REACTIONS_TEMPLATES.includes(
-              space.template as VenueTemplate
-            ) && (
-              <>
-                <Toggle
-                  label="Show reactions"
-                  register={register}
-                  name="showReactions"
-                  checked={values.showReactions}
-                />
-                {values.showReactions && (
-                  <Checkbox
+          <TesterRestricted>
+            {
+              // @debt use a single structure of type Record<VenueTemplate,TemplateInfo> to compile all these .includes() arrays' flags
+              HAS_REACTIONS_TEMPLATES.includes(
+                space.template as VenueTemplate
+              ) && (
+                <>
+                  <Toggle
+                    label="Show reactions"
                     register={register}
-                    label="Audible"
-                    name="isReactionsMuted"
-                    disabled={isReactionsMutedDisabled}
+                    name="showReactions"
+                    checked={values.showReactions}
                   />
-                )}
-                <Toggle
-                  label="Show shoutouts"
-                  register={register}
-                  name="showShoutouts"
-                  checked={values.showShoutouts}
-                />
-              </>
-            )
-          }
+                  {values.showReactions && (
+                    <InputGroup margin="subgroup">
+                      <Checkbox
+                        register={register}
+                        label="Audible"
+                        name="isReactionsMuted"
+                        disabled={isReactionsMutedDisabled}
+                      />
+                    </InputGroup>
+                  )}
+
+                  <Toggle
+                    label="Show shoutouts"
+                    register={register}
+                    name="showShoutouts"
+                    checked={values.showShoutouts}
+                  />
+                </>
+              )
+            }
+          </TesterRestricted>
 
           {!DISABLED_DUE_TO_1253 &&
             HAS_GRID_TEMPLATES.includes(space.template as VenueTemplate) &&
@@ -499,6 +539,45 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                   subtext={numberOfSectionsSubtext}
                 />
               </InputGroup>
+            </>
+          )}
+
+          {space.template === VenueTemplate.jazzbar && (
+            <>
+              <SidebarHeader>Extras</SidebarHeader>
+
+              <Toggle
+                label="Enable booths with screen-sharing"
+                register={register}
+                name="boothsEnabled"
+                checked={values.boothsEnabled}
+              />
+
+              <InputGroup title="Maximum number of booths">
+                <Input
+                  register={register}
+                  name="maxBooths"
+                  type="number"
+                  min={MIN_MAX_BOOTHS}
+                  max={MAX_MAX_BOOTHS}
+                  disabled={!values.boothsEnabled}
+                  error={errors.maxBooths}
+                />
+              </InputGroup>
+
+              <SpacesDropdown
+                spaces={boothTemplateOptionList}
+                setValue={setValue}
+                register={register}
+                fieldName="boothTemplateSpaceId"
+                parentSpace={boothTemplateSpace}
+                error={errors?.boothTemplateSpaceId}
+                label={"Meeting Room space to copy"}
+                disabled={!values.boothsEnabled}
+                subtext={
+                  'Title, slug and "back" button destination will be updated for all new booths'
+                }
+              />
             </>
           )}
           <FormErrors errors={errors} omitted={HANDLED_ERRORS} />

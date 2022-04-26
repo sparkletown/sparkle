@@ -13,6 +13,8 @@ type PortalAddEditModalProps = {
   onHide: () => void;
   portal?: Room;
   portalIndex?: number;
+  mapWidthPx: number;
+  mapHeightPx: number;
 };
 
 export const PortalAddEditModal: React.FC<PortalAddEditModalProps> = ({
@@ -21,6 +23,8 @@ export const PortalAddEditModal: React.FC<PortalAddEditModalProps> = ({
   show,
   portal,
   portalIndex,
+  mapWidthPx,
+  mapHeightPx,
 }) => (
   <Modal show={show} onHide={onHide} autoHide>
     <PortalAddEditForm
@@ -28,6 +32,8 @@ export const PortalAddEditModal: React.FC<PortalAddEditModalProps> = ({
       onDone={onHide}
       portal={portal}
       portalIndex={portalIndex}
+      mapWidthPx={mapWidthPx}
+      mapHeightPx={mapHeightPx}
     />
   </Modal>
 );

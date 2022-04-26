@@ -1,8 +1,10 @@
 import React, { useEffect } from "react";
+import { BoothGrid } from "components/attendee/BoothGrid";
 import { MediaElement } from "components/attendee/MediaElement";
+import { StaticInfoBlock } from "components/attendee/StaticInfoBlock";
 import { TableGrid } from "components/attendee/TableGrid";
 
-import { JAZZBAR_TABLES } from "settings";
+import { DEFAULT_SHOW_CONTENT, JAZZBAR_TABLES } from "settings";
 
 import { JazzBarSpaceWithId } from "types/id";
 
@@ -18,6 +20,7 @@ interface JazzProps {
 
 export const JazzBar: React.FC<JazzProps> = ({ space }) => {
   const analytics = useAnalytics({ venue: space });
+  const showContent = space.showContent ?? DEFAULT_SHOW_CONTENT;
 
   const jazzbarTables = space.config?.tables ?? JAZZBAR_TABLES;
 
@@ -33,7 +36,7 @@ export const JazzBar: React.FC<JazzProps> = ({ space }) => {
 
   return (
     <>
-      {!space.hideVideo && (
+      {showContent && (
         <MediaElement
           url={space.iframeUrl}
           autoPlay={space.autoPlay || false}
@@ -48,6 +51,16 @@ export const JazzBar: React.FC<JazzProps> = ({ space }) => {
         defaultTables={JAZZBAR_TABLES}
         user={userWithId}
       />
+
+      {space.boothsEnabled && (
+        <>
+          <StaticInfoBlock
+            title="Meeting Rooms"
+            subtitle="Have meetings with video chat and screen sharing."
+          />
+          <BoothGrid space={space} user={userWithId} />
+        </>
+      )}
     </>
   );
 };
