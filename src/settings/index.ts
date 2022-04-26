@@ -31,7 +31,6 @@ export const PLATFORM_BRAND_NAME = "Sparkle";
 
 export const DEFAULT_MAP_BACKGROUND = "/maps/Sparkle_Field_Background.jpg";
 export const DEFAULT_LANDING_BANNER = "/assets/Default_Venue_Banner.png";
-export const DEFAULT_VENUE_BANNER_COLOR = "#000000";
 export const DEFAULT_VENUE_LOGO = "/assets/Default_Venue_Logo.png";
 export const DEFAULT_VENUE_AUTOPLAY = false;
 export const BASE_PORTAL_ICON_PATH = "static/media";
@@ -39,9 +38,6 @@ export const BASE_PORTAL_ICON_PATH = "static/media";
 export const DEFAULT_PARTY_NAME = "Anon";
 export const DISPLAY_NAME_MAX_CHAR_COUNT = 40;
 export const GIF_RESIZER_URL = "https://gifgifs.com/resizer/";
-
-// How often to refresh events schedule
-export const SCHEDULE_SHOW_COPIED_TEXT_MS = 1000; // 1s
 
 // @debt FIVE_MINUTES_MS is deprecated; use utils/time or date-fns functions instead
 // How often to update location for counting
@@ -52,14 +48,10 @@ export const USER_PRESENCE_CHECKIN_INTERVAL = 60000;
 export const USER_PRESENCE_DEBOUNCE_INTERVAL = 1000;
 
 export const ATTENDEE_HEADER_AVATAR_LIMIT = 50;
-export const ATTENDEE_DESCRIPTION_AVATAR_LIMIT = 200;
 
 // How often to increment user's timespent
 export const LOCATION_INCREMENT_SECONDS = 10;
 export const LOCATION_INCREMENT_MS = LOCATION_INCREMENT_SECONDS * 1000;
-
-// How often to refresh event status (passed / happening now / haven't started)
-export const EVENT_STATUS_REFRESH_MS = 60 * 1000; // 1 min
 
 export const MAX_UPLOAD_IMAGE_FILE_SIZE_MB = 2;
 export const MAX_UPLOAD_IMAGE_FILE_SIZE_BYTES =
@@ -74,7 +66,6 @@ export const ACCEPTED_IMAGE_TYPES =
 
 export const IFRAME_ALLOW =
   "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen;";
-export const IFRAME_ALLOW_ADVANCED = `${IFRAME_ALLOW} camera; microphone;`;
 
 // These templates use zoomUrl (they should remain alphabetically sorted)
 // @debt Refactor this constant into types/venues + create an actual custom type grouping for it
@@ -136,12 +127,7 @@ export const DEFAULT_SHOW_REACTIONS = true;
 export const DEFAULT_REACTIONS_MUTED = false;
 export const DEFAULT_SHOW_CONTENT = true;
 
-export const DEFAULT_CAMERA_ENABLED = true;
-
 export const DEFAULT_SHOW_USER_STATUSES = true;
-
-// Max questions number for Poll inside Chat
-export const MAX_POLL_QUESTIONS = 8;
 
 export const SEARCH_DEBOUNCE_TIME = 200; // ms
 
