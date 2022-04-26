@@ -19,7 +19,6 @@ import {
   COMMON_NAME_MAX_CHAR_COUNT,
   DEFAULT_EMBED_URL,
   DEFAULT_REACTIONS_MUTED,
-  DEFAULT_SECTION_CAPACITY,
   DEFAULT_SECTIONS_AMOUNT,
   DEFAULT_SHOW_CONTENT,
   DEFAULT_SHOW_REACTIONS,
@@ -36,6 +35,7 @@ import {
   MIN_MAX_BOOTHS,
   MIN_SECTIONS_AMOUNT,
   PORTAL_INFO_ICON_MAPPING,
+  SECTION_CAPACITY,
   SUBVENUE_TEMPLATES,
   ZOOM_URL_TEMPLATES,
 } from "settings";
@@ -267,8 +267,8 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
 
   const numberOfSectionsSubtext = `${
     values.numberOfSections || 0
-  } Sections * ${DEFAULT_SECTION_CAPACITY} Seats = ${
-    DEFAULT_SECTION_CAPACITY * values.numberOfSections
+  } Sections * ${SECTION_CAPACITY} Seats = ${
+    SECTION_CAPACITY * values.numberOfSections
   } (Capacity)`;
 
   return (
