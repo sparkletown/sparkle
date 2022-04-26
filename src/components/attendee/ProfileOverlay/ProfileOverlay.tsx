@@ -106,7 +106,7 @@ export const ProfileOverlay: React.FC<ProfileOverlayProps> = ({
       }, 2000);
     }
   }, [isSuccess]);
-  console.log(values);
+
   const [{ loading: isSubmitting }, onSubmit] = useAsyncFn(
     async (data: Omit<UserProfileModalFormData, "profileLinks">) => {
       if (!firebaseUser) return;

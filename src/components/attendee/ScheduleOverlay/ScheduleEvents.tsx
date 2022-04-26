@@ -63,7 +63,7 @@ export const ScheduleEvents: React.FC<ScheduleEventsProps> = ({
     const daysEvents = liveAndFutureEvents.filter(
       isEventWithinDateAndNotFinished(day)
     );
-    console.log(liveAndFutureEvents, daysEvents, day);
+
     const eventsFilledWithPriority = daysEvents.sort(
       eventTimeAndOrderComparator
     );
