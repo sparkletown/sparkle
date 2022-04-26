@@ -17,23 +17,19 @@ import {
 } from "utils/image";
 import { generateId } from "utils/string";
 
-import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
-
-import { UserAvatarStatus } from "./UserStatus";
 
 import CN from "./UserAvatar.module.scss";
 
 export type UserAvatarSize = "small" | "medium" | "large" | "xlarge" | "full";
 
 export type UserAvatarUserFields = WithId<
-  Pick<Profile, "partyName" | "pictureUrl" | "status">
+  Pick<Profile, "partyName" | "pictureUrl">
 >;
 
 export interface UserAvatarProps extends ContainerClassName {
   user?: UserAvatarUserFields;
   imageClassName?: string;
-  showStatus?: boolean;
   onClick?: () => void;
   size?: UserAvatarSize;
   clickable?: boolean;
@@ -54,12 +50,10 @@ const _UserAvatar: React.FC<UserAvatarProps> = ({
   containerClassName, // @debt remove injected classes in favor of variance props
   imageClassName, // @debt remove injected classes in favor of variance props
   clickable = true,
-  showStatus,
   size,
 }) => {
   const elementId = useMemo(() => generateId("UserAvatar-") as ElementId, []);
 
-  const { worldSlug } = useSpaceParams();
   const { src: imageSrc, onError: onImageLoadError } = useMemo(
     () => determineAvatar({ user }),
     [user]
@@ -121,10 +115,6 @@ const _UserAvatar: React.FC<UserAvatarProps> = ({
         onClick={onClick}
         onError={onImageLoadError}
       />
-
-      {worldSlug && (
-        <UserAvatarStatus user={user} size={size} showStatus={showStatus} />
-      )}
 
       {clickable && <MiniProfile parentComponent={elementId} />}
     </div>

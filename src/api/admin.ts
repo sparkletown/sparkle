@@ -24,7 +24,7 @@ import { RoomVisibility } from "types/RoomVisibility";
 import { ScreeningRoomVideo } from "types/screeningRoom";
 import { SpaceType } from "types/spaces";
 import { Table } from "types/Table";
-import { User, UserStatus } from "types/User";
+import { User } from "types/User";
 import { Channel, WorldEvent } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
 
@@ -67,8 +67,6 @@ interface VenueAdvancedConfig {
   roomVisibility?: RoomVisibility;
   showRadio?: boolean;
   parentId?: SpaceId;
-  showUserStatus?: boolean;
-  userStatuses?: UserStatus[];
   enableJukebox?: boolean;
 }
 

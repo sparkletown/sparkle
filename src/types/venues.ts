@@ -11,7 +11,6 @@ import { Banner } from "./banner";
 import { Poster } from "./posters";
 import { Room } from "./rooms";
 import { Table } from "./Table";
-import { UserStatus } from "./User";
 import { VenueAccessMode } from "./VenueAcccess";
 
 export type PortalTemplate = VenueTemplate | "external";
@@ -74,9 +73,7 @@ export interface BaseVenue {
   showShoutouts?: boolean;
   sectionsCount?: number;
   termsAndConditions: TermOfService[];
-  userStatuses?: UserStatus[];
   showRadio?: boolean;
-  showUserStatus?: boolean;
   createdAt?: number;
   recentUserCount?: number;
   recentUsersSample?: UserWithId[];

@@ -19,7 +19,6 @@ interface UserProfilePictureProp {
   user?: WithId<User>;
   isAudioEffectDisabled?: boolean;
   reactionPosition?: "left" | "right";
-  showStatus?: boolean;
   size?: UserAvatarSize;
   isVideoEnabled?: boolean;
 }
@@ -28,7 +27,6 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   user,
   isAudioEffectDisabled = true,
   reactionPosition = "right",
-  showStatus = false,
   isVideoEnabled = true,
   size,
 }) => {
@@ -47,7 +45,7 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
       className="UserProfilePicture"
       onClick={openProfileModal}
     >
-      <UserAvatar user={user} showStatus={showStatus} size={size} />
+      <UserAvatar user={user} size={size} />
 
       {userId && (
         <UserReactions

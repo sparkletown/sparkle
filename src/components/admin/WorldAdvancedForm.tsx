@@ -1,16 +1,14 @@
 import React, { useMemo } from "react";
-import { useFieldArray, useForm, useFormState } from "react-hook-form";
+import { useForm, useFormState } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button } from "components/admin/Button";
 import { Checkbox } from "components/admin/Checkbox";
 import { Input } from "components/admin/Input";
 import { InputGroup } from "components/admin/InputGroup";
-import { UserStatusInput } from "components/admin/UserStatusInput";
 
 import { updateWorldAdvancedSettings, World } from "api/world";
 
-import { UserStatus } from "types/User";
 import { WorldAdvancedFormInput } from "types/world";
 
 import { WithId, withId } from "utils/id";
@@ -45,8 +43,6 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
       showBadges: world.showBadges,
       showRadio: world.showRadio,
       showSchedule: shouldScheduleBeShown(world),
-      showUserStatus: world.showUserStatus,
-      userStatuses: world.userStatuses,
       hasSocialLoginEnabled: world.hasSocialLoginEnabled,
     }),
     [world]
@@ -65,17 +61,6 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
     defaultValues,
   });
 
-  const {
-    fields: userStatuses,
-    append: appendStatus,
-    update: updateStatus,
-    remove: removeStatus,
-  } = useFieldArray({ control, name: "userStatuses", shouldUnregister: true });
-
-  const handleAddStatus = () => {
-    appendStatus({ status: "", color: "" });
-  };
-
   const { isDirty, isSubmitting, errors } = useFormState({ control });
 
   const values = watch();
@@ -90,28 +75,6 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
 
   const isSaveLoading = isSubmitting || isSaving;
   const isSaveDisabled = !isDirty || isSaving || isSubmitting;
-
-  const renderedUserStatuses = useMemo(
-    () =>
-      userStatuses.map((userStatus, index) => {
-        const key = `${userStatus}-${index}`;
-
-        const handleChange = (item: UserStatus) => updateStatus(index, item);
-        const handleRemove = () => removeStatus(index);
-
-        return (
-          <UserStatusInput
-            key={key}
-            index={index}
-            item={userStatuses[index]}
-            register={register}
-            onChange={handleChange}
-            onRemove={handleRemove}
-          />
-        );
-      }),
-    [userStatuses, updateStatus, removeStatus, register]
-  );
 
   return (
     <div className="WorldAdvancedForm">
@@ -165,21 +128,6 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
           name="showSchedule"
           register={register}
         />
-
-        <Checkbox
-          label="Show user status"
-          variant="toggler"
-          name="showUserStatus"
-          register={register}
-        />
-        {values.showUserStatus && (
-          <>
-            {renderedUserStatuses}
-            <Button variant="primary" onClick={handleAddStatus}>
-              Add a status
-            </Button>
-          </>
-        )}
 
         <FormErrors errors={errors} omitted={HANDLED_ERRORS} />
         <SubmitError error={error} />

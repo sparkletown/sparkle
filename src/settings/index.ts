@@ -127,17 +127,10 @@ export const DEFAULT_SHOW_REACTIONS = true;
 export const DEFAULT_REACTIONS_MUTED = false;
 export const DEFAULT_SHOW_CONTENT = true;
 
-export const DEFAULT_SHOW_USER_STATUSES = true;
-
 export const SEARCH_DEBOUNCE_TIME = 200; // ms
 
 export const DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT = 48;
 export const DEFAULT_DISPLAYED_VIDEO_PREVIEW_COUNT = 12;
-
-export const DEFAULT_USER_STATUS = {
-  status: "Online",
-  color: "#53E52A",
-};
 
 // Analytics
 export const DEFAULT_ANALYTICS_GROUP_KEY = "world";
