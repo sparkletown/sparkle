@@ -26,12 +26,15 @@ const version = () => ({
   repositoryUrl: BUILD_REPOSITORY_URL,
 });
 
+const env = () => process.env;
+
 /**
  * Handy browser global object for some Sparkle utility functions.
  */
 export const SPARK = {
   logout,
   version,
+  env,
 };
 
 // NOTE: the name SPARK is chosen for brevity and avoiding conflicts by being all caps

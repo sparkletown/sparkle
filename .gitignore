@@ -54,6 +54,8 @@ reporting/cookies.json
 
 # Tool results
 *.result.txt
+
+# Cypress
 /cypress/videos/
 /cypress/screenshots/
 /cypress/downloads/

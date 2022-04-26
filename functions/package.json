@@ -15,6 +15,8 @@
     "npm:install": "npm install --legacy-peer-deps",
     "npm:invalidate-cache": "npm cache clear --force",
     "firebase": "npx --no-install -- firebase",
+    "firebase:emulate-cy": "npm run build && firebase emulators:start --only auth,functions,firestore,hosting,storage --import=../cypress/fixtures/firebase",
+    "firebase:emulate-cy:prepare": "npm run build && firebase emulators:start --only auth,functions,firestore,hosting,storage --export-on-exit --import=../cypress/fixtures/firebase",
     "firebase:emulate-all": "npm run build && firebase emulators:start",
     "firebase:emulate-functions": "npm run build && firebase emulators:start --only functions",
     "firebase:emulate-functions-hosting": "npm run build && firebase emulators:start --only functions,hosting",
