@@ -13,9 +13,7 @@ import { Room } from "types/rooms";
 import { WorldEvent } from "types/venues";
 
 import { shouldScheduleBeShown } from "utils/schedule";
-import { isExternalPortal, openUrl } from "utils/url";
 
-import { useCustomSound } from "hooks/sounds";
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useAnalytics } from "hooks/useAnalytics";
 import { useDispatch } from "hooks/useDispatch";
@@ -73,17 +71,12 @@ export const PortalModalContent: React.FC<PortalModalContentProps> = ({
   const portalVenueDescription =
     portalSpace?.config?.landingPageConfig?.description;
 
-  const [enterWithSound] = useCustomSound(portal.enterSound, {
-    interrupt: true,
-    onend: enterPortal,
-  });
-
   // note: this is here just to change the type on it in an easy way
   const enter: () => void = useCallback(() => {
     analytics.trackEnterRoomEvent(portal.title, portal.template);
-    void (isExternalPortal(portal) ? openUrl(portal.url) : enterWithSound());
+    void enterPortal();
     onHide();
-  }, [analytics, enterWithSound, onHide, portal]);
+  }, [analytics, enterPortal, onHide, portal]);
 
   const showPortalEvents =
     shouldScheduleBeShown(world) && venueEvents.length > 0;

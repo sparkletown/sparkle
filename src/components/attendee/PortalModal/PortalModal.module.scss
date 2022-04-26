@@ -2,8 +2,16 @@
 @use "scss/attendee/effects/atom";
 @use "scss/attendee/effects/rounded";
 @use "scss/attendee/space";
+@use "scss/attendee/layout";
+@use "scss/attendee/layer";
 @use "scss/attendee/effects/sparkle";
 @use "scss/attendee/theme";
+
+.modalWrapper {
+  position: absolute;
+  min-width: layout.$w-space-portal-event-modal;
+  z-index: layer.$z-index--portal-modal;
+}
 
 .PortalPopupInfo {
   @include sparkle.panel--glass;
@@ -14,6 +22,7 @@
   max-width: 200px;
   display: flex;
   flex-direction: column;
+  cursor: text;
 
   h3 {
     @include font.body;
@@ -33,4 +42,12 @@
   @include sparkle.color--normal;
   justify-content: center;
   cursor: pointer;
+}
+
+.portalEventContent {
+  display: flex;
+  margin: space.empty(0.5) space.empty(1);
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }

@@ -64,11 +64,11 @@ export const ChatMessageInfo: React.FC<ChatMessageInfoProps> = ({
       onClick={openAuthorProfile}
       className={containerClassnames}
     >
-      <span className={styles.authorName}>{fromUser.partyName}</span>
+      <h4 className={styles.authorName}>{fromUser.partyName}</h4>
       &nbsp;
-      <span className={styles.messageTime}>
+      <time className={styles.messageTime}>
         {formatTimeLocalised(timestampMillis)}
-      </span>
+      </time>
       {deleteMessage && (
         <FontAwesomeIcon onClick={deleteMessage} icon={faTrash} size="sm" />
       )}

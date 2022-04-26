@@ -20,7 +20,6 @@ export * from "./imageSettings";
 export * from "./interpolationSettings";
 export * from "./mapBackgrounds";
 export * from "./placeholderSettings";
-export * from "./playaSettings";
 export * from "./portalSettings";
 export * from "./sectionSettings";
 export * from "./spacePortalsSettings";
@@ -36,11 +35,10 @@ export const DEFAULT_LANDING_BANNER = "/assets/Default_Venue_Banner.png";
 export const DEFAULT_VENUE_BANNER_COLOR = "#000000";
 export const DEFAULT_VENUE_LOGO = "/assets/Default_Venue_Logo.png";
 export const DEFAULT_VENUE_AUTOPLAY = false;
+export const BASE_PORTAL_ICON_PATH = "static/media";
 
 export const DEFAULT_PARTY_NAME = "Anon";
 export const DISPLAY_NAME_MAX_CHAR_COUNT = 40;
-export const PLAYA_VENUE_NAME = "Jam";
-export const PLAYA_VENUE_ID = "jamonline";
 export const GIF_RESIZER_URL = "https://gifgifs.com/resizer/";
 
 // How often to refresh events schedule
@@ -93,7 +91,6 @@ export const IFRAME_TEMPLATES = Object.freeze([
   VenueTemplate.firebarrel,
   VenueTemplate.jazzbar,
   VenueTemplate.posterpage,
-  VenueTemplate.viewingwindow,
 ]);
 
 export const EMBEDDABLE_CONTENT_TEMPLATES = Object.freeze([
@@ -102,16 +99,10 @@ export const EMBEDDABLE_CONTENT_TEMPLATES = Object.freeze([
 ]);
 
 // @debt Refactor this constant into types/venues + create an actual custom type grouping for it
-export const BACKGROUND_IMG_TEMPLATES = [
-  VenueTemplate.partymap,
-  VenueTemplate.animatemap,
-];
+export const BACKGROUND_IMG_TEMPLATES = [VenueTemplate.partymap];
 
 // @debt Refactor this constant into types/venues + create an actual custom type grouping for it
-export const SUBVENUE_TEMPLATES = [
-  VenueTemplate.partymap,
-  VenueTemplate.animatemap,
-];
+export const SUBVENUE_TEMPLATES = [VenueTemplate.partymap];
 
 export const COVERT_ROOM_TYPES: RoomType[] = [
   RoomType.unclickable,
@@ -128,14 +119,11 @@ export interface Template {
 // @debt Refactor this constant into types/templates + create an actual custom type grouping for it
 export const HAS_ROOMS_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.partymap,
-  VenueTemplate.animatemap,
-  VenueTemplate.playa,
 ];
 
 // @debt Refactor this constant into types/templates + create an actual custom type grouping for it
 export const HAS_GRID_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.partymap,
-  VenueTemplate.animatemap,
 ];
 
 // @debt Refactor this constant into types/templates + create an actual custom type grouping for it
@@ -256,5 +244,14 @@ export const DEFAULT_MISSING_PLACEHOLDER = "Placeholder";
 export const DEFAULT_SAFE_ZONE = { width: 100.0, height: 100.0 };
 Object.freeze(DEFAULT_SAFE_ZONE);
 
-// Allow 70px for the top and bottom UI. Ideally, this would come from CSS
-export const PARTY_MAP_VERTICAL_PAD = 140;
+// JS constants derived and in sync with their SCSS constants
+// "scss/attendee/layout";
+export const SCSS_SPACE_PORTAL_EVENT_WIDTH = 180;
+// Configurable - allow for the top and bottom UI. Ideally, this would come from CSS
+export const PARTY_MAP_VERTICAL_PAD = 0;
+
+// The min/max for the maximum number of booths a space can contain
+export const MIN_MAX_BOOTHS = 1;
+// Firebase has a limit of how many values can be provided to an IN query. Due
+// to how we query for presence data we cap the number of booths to this limit.
+export const MAX_MAX_BOOTHS = 10;

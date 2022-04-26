@@ -25,7 +25,7 @@ import { ScreeningRoomVideo } from "types/screeningRoom";
 import { SpaceType } from "types/spaces";
 import { Table } from "types/Table";
 import { User, UserStatus } from "types/User";
-import { Channel, VenuePlacement, WorldEvent } from "types/venues";
+import { Channel, WorldEvent } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
 
 import { createErrorRethrow } from "utils/error";
@@ -109,14 +109,6 @@ type FirestoreRoomInput_v2 = Omit<PortalInput, RoomImageFileKeys> &
   RoomImageUrls & {
     url?: string;
   };
-
-export type PlacementInput = {
-  addressText?: string;
-  notes?: string;
-  placement?: Omit<VenuePlacement, "state">;
-  width: number;
-  height: number;
-};
 
 export const createSlug = (name: string | unknown) =>
   String(name ?? "")
@@ -363,7 +355,8 @@ const createFirestoreRoomInput = async (
   }
 
   const firestoreRoomInput: FirestoreRoomInput = {
-    ...omit(input, "image_file"),
+    ...omit(input, "image_file", "spaceId"),
+    spaceId: input.spaceId || undefined,
     ...imageInputData,
   };
   return firestoreRoomInput;

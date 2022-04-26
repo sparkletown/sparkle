@@ -11,7 +11,10 @@ import { ALWAYS_EMPTY_ARRAY } from "settings";
 import { SpaceWithId } from "types/id";
 import { isVenueWithRooms } from "types/venues";
 
+import { useCheckImage } from "hooks/image/useCheckImage";
 import { useShowHide } from "hooks/useShowHide";
+
+import { Loading } from "components/molecules/Loading";
 
 import { PortalAddEditModal } from "../PortalAddEditModal";
 
@@ -23,11 +26,24 @@ export const PortalsTable: React.FC<PortalsTableProps> = ({ space }) => {
   const isSupportingPortals = isVenueWithRooms(space);
   const portals = isSupportingPortals ? space?.rooms : ALWAYS_EMPTY_ARRAY;
 
+  const { width, height, isLoading } = useCheckImage(
+    space.mapBackgroundImageUrl
+  );
+
   const {
     isShown: isShownCreateModal,
     hide: hideCreateModal,
     show: showCreateModal,
   } = useShowHide(false);
+
+  if (isLoading || !width || !height) {
+    return <Loading />;
+  }
+
+  // Use the safe zone width for calculating the width and height that images
+  // should be rendered at.
+  const safeWidth = (width * (space?.config?.safeZone?.width || 1)) / 100;
+  const safeHeight = (height * (space?.config?.safeZone?.height || 1)) / 100;
 
   return (
     <Section>
@@ -43,10 +59,17 @@ export const PortalsTable: React.FC<PortalsTableProps> = ({ space }) => {
               portal={portal}
               index={index}
               spaceId={space?.id}
+              mapWidthPx={safeWidth}
+              mapHeightPx={safeHeight}
             />
           ))}
           {isShownCreateModal && (
-            <PortalAddEditModal show={true} onHide={hideCreateModal} />
+            <PortalAddEditModal
+              show={true}
+              onHide={hideCreateModal}
+              mapWidthPx={safeWidth}
+              mapHeightPx={safeHeight}
+            />
           )}
         </TablePanel.Body>
       </TablePanel.Panel>
