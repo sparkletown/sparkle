@@ -63,7 +63,6 @@ type RoomImageUrls = Partial<Record<RoomImageUrlKeys, string>>;
 
 // @debt remove this old interface, most/all of these fields were moved to the world
 interface VenueAdvancedConfig {
-  columns?: number;
   radioStations?: string | string[]; // single string on form, array in DB
   roomVisibility?: RoomVisibility;
   showGrid?: boolean;

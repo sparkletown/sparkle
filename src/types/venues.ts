@@ -64,8 +64,6 @@ export interface BaseVenue {
   radioTitle?: string;
   banner?: Banner;
   samlAuthProviderId?: string;
-  columns?: number;
-  rows?: number;
   showGrid?: boolean;
   roomVisibility?: RoomVisibility;
   rooms?: Room[];

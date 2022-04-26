@@ -4,12 +4,6 @@
 // Please add proper description and links as references
 
 /**
- *
- *  @see https://github.com/sparkletown/internal-sparkle-issues/issues/1253
- */
-export const DISABLED_DUE_TO_1253 = true;
-
-/**
  * Since navbar has one, disables a redundant "Log in" button
  * @see https://github.com/sparkletown/internal-sparkle-issues/issues/1324
  */

@@ -72,9 +72,6 @@ const HANDLED_ERRORS = [
   "mapBackgroundImage",
   "iframeUrl",
   "zoomUrl",
-  "auditoriumColumns",
-  "auditoriumRows",
-  "columns",
 ];
 
 export interface SpaceEditFormProps {
@@ -101,7 +98,6 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
       showGrid: space.showGrid ?? false,
       showReactions: space.showReactions ?? DEFAULT_SHOW_REACTIONS,
       showShoutouts: space.showShoutouts ?? DEFAULT_SHOW_SHOUTOUTS,
-      columns: space.columns ?? 0,
       autoPlay: space.autoPlay ?? DEFAULT_VENUE_AUTOPLAY,
       isReactionsMuted: space.isReactionsMuted ?? DEFAULT_REACTIONS_MUTED,
       // @debt should use SpaceId type here, resolve error with form typing
@@ -128,7 +124,6 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
       space.showGrid,
       space.showReactions,
       space.showShoutouts,
-      space.columns,
       space.autoPlay,
       space.isReactionsMuted,
       space.parentId,
@@ -491,36 +486,6 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
               )
             }
           </TesterRestricted>
-
-          {!DISABLED_DUE_TO_1253 &&
-            HAS_GRID_TEMPLATES.includes(space.template as VenueTemplate) &&
-            values.showGrid && (
-              <>
-                <div className="input-container">
-                  <h4 className="italic input-header">Number of columns</h4>
-                  <input
-                    defaultValue={1}
-                    type="number"
-                    {...register("columns")}
-                    className="align-left"
-                    placeholder={`Number of grid columns`}
-                  />
-                  {errors?.columns ? (
-                    <span className="input-error">
-                      {errors?.columns.message}
-                    </span>
-                  ) : null}
-                </div>
-                <div className="input-container">
-                  <h4 className="italic input-header">Number of rows</h4>
-                  <div>
-                    Not editable. The number of rows is derived from the number
-                    of specified columns and the width:height ratio of the party
-                    map, to keep the two aligned.
-                  </div>
-                </div>
-              </>
-            )}
 
           <div className="mb-10"></div>
 
