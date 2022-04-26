@@ -4,6 +4,7 @@
 
 $-z-index--base: layer.above(layer.$z-index--chatbox);
 $-z-index--banner: layer.above($-z-index--base);
+$mw-banner-content: 600px;
 
 .banner {
   position: fixed;
@@ -25,7 +26,10 @@ $-z-index--banner: layer.above($-z-index--base);
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
+  max-width: $mw-banner-content;
+  padding: space.empty(1);
+  margin: auto;
+  text-align: center;
   color: theme.$c-default-text;
 
   height: 100%;

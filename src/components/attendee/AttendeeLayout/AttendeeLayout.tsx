@@ -64,7 +64,10 @@ export const AttendeeLayout: React.FC<AttendeeLayoutProps> = ({ space }) => {
   return (
     <VideoCommsProvider>
       <HuddleProvider>
-        <AttendeeHeader backButtonSpace={backButtonSpace} />
+        <AttendeeHeader
+          backButtonSpace={backButtonSpace}
+          isBannerOn={isBlurTurnedOn}
+        />
         <main data-bem="AttendeeLayout__main">
           <MainSection isBlurred={isTruthy(isBlurTurnedOn && banner)}>
             <VenuePage setBackButtonSpace={setBackButtonSpace} />

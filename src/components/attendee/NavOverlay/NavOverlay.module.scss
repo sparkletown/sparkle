@@ -21,6 +21,8 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
+  transition: filter 2s ease;
 }
 
 .navOverlayClose {
@@ -98,7 +100,6 @@
 
 .navigationButton {
   cursor: pointer;
-  display: flex;
   align-items: center;
   height: space.item(1);
   border-radius: border.$radius--xs;
@@ -106,6 +107,11 @@
   font-size: font.$size--xl;
   // removes blue highlighting on mobile tap
   -webkit-tap-highlight-color: transparent;
+
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: layout.$w-header-xl;
 }
 
 .navOverlayBack {
@@ -127,4 +133,8 @@
 
 .navOverlayBackIcon {
   margin-right: space.empty(0.33);
+}
+
+.blur {
+  filter: blur(100px) contrast(60%);
 }

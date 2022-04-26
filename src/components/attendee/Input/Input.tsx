@@ -81,6 +81,7 @@ export const Input: React.ForwardRefRenderFunction<
       [CN.invalid]: error,
     }
   );
+
   const registerProps = name && register ? register(name, rules) : {};
 
   const handleKeyPress = useKeyPress({
@@ -98,11 +99,11 @@ export const Input: React.ForwardRefRenderFunction<
       >
         <input
           id={inputId}
+          ref={forwardRef}
           {...registerProps}
           className={inputClassNames}
           {...extraInputProps}
           onKeyDown={handleKeyPress}
-          ref={forwardRef}
         />
 
         {icon && renderIcon(icon, onIconClick)}
