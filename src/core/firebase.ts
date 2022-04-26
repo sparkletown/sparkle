@@ -39,6 +39,7 @@ import "firebase/compat/firestore";
 const ENV = process.env.NODE_ENV;
 const PROTOCOL = process.env.REACT_APP_FIRE_EMULATE_PROTOCOL || `http`;
 const HOST = process.env.REACT_APP_FIRE_EMULATE_HOST || "127.0.0.1";
+const CY = !!((window as unknown) as { Cypress: unknown }).Cypress;
 
 const FLAGS = Object.freeze({
   emulateAll: !!process.env.REACT_APP_FIRE_EMULATE_ALL,
@@ -116,24 +117,35 @@ export const FIREBASE: FirebaseSuite = Object.freeze({
   ports: PORTS,
 });
 
+if (CY) {
+  console.log("Running inside Cypress, connecting to emulators...");
+  // NOTE: Cypress can't work with how Firestore long-polls requests, so there is a need for
+  // each response from the backend to be closed immediately after the backend sends data
+  // @see https://firebase.google.com/docs/reference/js/v8/firebase.firestore.Settings#experimentalautodetectlongpolling
+  firebase.firestore().settings({
+    experimentalAutoDetectLongPolling: true, // this should be set out of the box, but isn't
+    // experimentalForceLongPolling: true, // exclusive with the one above
+  });
+}
+
 // to keep the old behavior, emulate functions even if NODE_ENV is development
-if (FLAGS.emulateAll || FLAGS.emulateFunctions || ENV === "development") {
+if (CY || FLAGS.emulateAll || FLAGS.emulateFunctions || ENV === "development") {
   console.log(`Using functions emulator at ${HOST}:${PORTS.functions}`);
   connectFunctionsEmulator(functions, HOST, PORTS.functions);
 }
 
-if (FLAGS.emulateAll || FLAGS.emulateFirestore) {
+if (CY || FLAGS.emulateAll || FLAGS.emulateFirestore) {
   console.log(`Using Firestore emulator at ${HOST}:${PORTS.firestore}`);
   connectFirestoreEmulator(firestore, HOST, PORTS.firestore);
 }
 
-if (FLAGS.emulateAll || FLAGS.emulateAuth) {
+if (CY || FLAGS.emulateAll || FLAGS.emulateAuth) {
   const url = `${PROTOCOL}://${HOST}:${PORTS.auth}`;
   console.log("Using auth emulator at", url);
   connectAuthEmulator(auth, url);
 }
 
-if (FLAGS.emulateAll || FLAGS.emulateStorage) {
+if (CY || FLAGS.emulateAll || FLAGS.emulateStorage) {
   console.log(`Using storage emulator at ${HOST}:${PORTS.storage}`);
   connectStorageEmulator(storage, HOST, PORTS.storage);
 }
