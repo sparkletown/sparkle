@@ -23,7 +23,6 @@ export * from "./portalSettings";
 export * from "./sectionSettings";
 export * from "./spacePortalsSettings";
 export * from "./urlSettings";
-export * from "./useSettingsDefaults";
 export * from "./validationSettings";
 export * from "./worldDefaultSettings";
 
