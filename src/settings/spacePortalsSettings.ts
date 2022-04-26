@@ -4,11 +4,9 @@ import { VenueTemplate } from "types/VenueTemplate";
 
 import IconArtPiece from "assets/icons/icon-room-artpiece.svg";
 import IconAuditorium from "assets/icons/icon-room-auditorium.svg";
-import IconBurnBarrel from "assets/icons/icon-room-burnbarrel.svg";
 import IconConversation from "assets/icons/icon-room-conversation.svg";
 import IconEmbeddable from "assets/icons/icon-room-embeddable.svg";
 import IconExperience from "assets/icons/icon-room-experience.svg";
-import IconExternalLink from "assets/icons/icon-room-externallink.svg";
 import IconMap from "assets/icons/icon-room-map.svg";
 import IconMusicBar from "assets/icons/icon-room-musicbar.svg";
 import IconPosterHall from "assets/icons/icon-room-posterhall.svg";
@@ -67,13 +65,6 @@ export const SPACE_INFO_MAP: Record<VenueTemplate, SpaceInfoItem> = {
       "Host any number of small groups from 2-10 in video chats with each other around central content.",
     template: VenueTemplate.jazzbar,
   },
-  [VenueTemplate.firebarrel]: {
-    text: "Burn Firebarrel",
-    icon: IconBurnBarrel,
-    template: VenueTemplate.firebarrel,
-    description: "",
-    hidden: true,
-  },
   [VenueTemplate.artpiece]: {
     text: "Art Piece",
     icon: IconArtPiece,
@@ -126,7 +117,6 @@ export const SPACE_INFO_LIST: SpaceInfoItem[] = [
   SPACE_INFO_MAP[VenueTemplate.conversationspace],
   SPACE_INFO_MAP[VenueTemplate.auditorium],
   SPACE_INFO_MAP[VenueTemplate.jazzbar],
-  SPACE_INFO_MAP[VenueTemplate.firebarrel],
   SPACE_INFO_MAP[VenueTemplate.artpiece],
   SPACE_INFO_MAP[VenueTemplate.zoomroom],
   SPACE_INFO_MAP[VenueTemplate.partymap],
@@ -137,23 +127,9 @@ export const SPACE_INFO_LIST: SpaceInfoItem[] = [
   SPACE_INFO_MAP[VenueTemplate.meetingroom],
 ];
 
-export const PORTAL_INFO_LIST: PortalInfoItem[] = [
-  ...SPACE_INFO_LIST,
-  // @debt external templates need to be implemented properly again
-  // enabled to fix broken icon as per https://github.com/sparkletown/internal-sparkle-issues/issues/1576
-  {
-    text: "External link",
-    icon: IconExternalLink,
-    description:
-      "New Space will not be created and the Space name will be used as the title for the newly added External Link portal",
-    template: "external",
-    hidden: true,
-  },
-];
-
 export const PORTAL_INFO_ICON_MAPPING: Record<string, string> = Object.freeze(
   Object.fromEntries(
-    PORTAL_INFO_LIST.map(({ template, icon }) => [template, icon])
+    SPACE_INFO_LIST.map(({ template, icon }) => [template, icon])
   )
 );
 
