@@ -3,6 +3,7 @@ import { useAsync } from "react-use";
 import { keyBy } from "lodash";
 
 import { AlgoliaSearchResult } from "types/algolia";
+import { WorldId } from "types/id";
 import { UserWithLocation } from "types/User";
 
 import { propName } from "utils/propName";
@@ -13,12 +14,12 @@ import { useAlgoliaSearchContext } from "hooks/algolia/context";
 export const useAlgoliaSearch = (
   searchQuery: string | undefined,
   params?: {
-    sovereignVenueId: string;
+    worldId: WorldId;
   }
 ) => {
   const context = useAlgoliaSearchContext();
 
-  const { sovereignVenueId } = params ?? {};
+  const { worldId } = params ?? {};
 
   const state = useAsync(async () => {
     if (
@@ -32,18 +33,18 @@ export const useAlgoliaSearch = (
       Object.values(context.indices).map((index) => ({
         indexName: index.indexName,
         query: searchQuery,
-        ...(sovereignVenueId && {
+        ...(worldId && {
           params: {
             filters: `${propName<UserWithLocation>(
-              "enteredVenueIds"
-            )}: ${sovereignVenueId}`,
+              "enteredWorldIds"
+            )}: ${worldId}`,
           },
         }),
       }))
     );
 
     return keyBy(results, "index") as AlgoliaSearchResult;
-  }, [context?.client, context?.indices, searchQuery, sovereignVenueId]);
+  }, [context?.client, context?.indices, searchQuery, worldId]);
 
   useEffect(() => {
     if (state.error) {

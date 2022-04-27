@@ -2,7 +2,7 @@ import { CONVERSATION_TABLES, JAZZBAR_TABLES } from "settings";
 
 import { createSlug, VenueInput_v2 } from "api/admin";
 
-import { SpaceSlug, SpaceWithId } from "types/id";
+import { SpaceSlug } from "types/id";
 import { AnyVenue } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
 
@@ -54,45 +54,3 @@ export enum SortingOptions {
   newestFirst = "Newest First",
   oldestFirst = "Oldest First",
 }
-
-export interface FindSovereignVenueOptions {
-  previouslyCheckedVenueIds?: readonly string[];
-  maxDepth?: number;
-}
-
-export interface FindSovereignVenueReturn {
-  sovereignVenue: SpaceWithId;
-  checkedVenueIds: readonly string[];
-}
-
-export const findSovereignVenue = (
-  venueId: string,
-  venues: SpaceWithId[],
-  options?: FindSovereignVenueOptions
-): FindSovereignVenueReturn | undefined => {
-  const { previouslyCheckedVenueIds = [], maxDepth } = options ?? {};
-
-  const venue = venues.find((venue) => venue.id === venueId);
-
-  if (!venue) return undefined;
-
-  if (!venue.parentId)
-    return {
-      sovereignVenue: venue,
-      checkedVenueIds: previouslyCheckedVenueIds,
-    };
-
-  if (previouslyCheckedVenueIds.includes(venueId))
-    throw new Error(
-      `Circular reference detected. '${venueId}' has already been checked`
-    );
-
-  if (maxDepth && maxDepth <= 0)
-    throw new Error("Maximum depth reached before finding the sovereignVenue.");
-
-  return findSovereignVenue(venue.parentId, venues, {
-    ...options,
-    previouslyCheckedVenueIds: [...previouslyCheckedVenueIds, venueId],
-    maxDepth: maxDepth ? maxDepth - 1 : undefined,
-  });
-};
