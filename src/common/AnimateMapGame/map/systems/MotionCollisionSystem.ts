@@ -1,6 +1,6 @@
 import { Engine, NodeList, System } from "@ash.ts/ash";
+import { EventType } from "common/AnimateMap/bridges/EventProvider/EventProvider";
 
-import { EventType } from "../../../bridges/EventProvider/EventProvider";
 import { GameArtcar, GameControls } from "../../common";
 import { GameInstance } from "../../GameInstance";
 import { CollisionComponent } from "../components/CollisionComponent";

@@ -1,3 +1,8 @@
+import { CloudDataProvider } from "common/AnimateMap/bridges/DataProvider/CloudDataProvider";
+import { DataProviderEvent } from "common/AnimateMap/bridges/DataProvider/Providers/DataProviderEvent";
+import EventProvider, {
+  EventType,
+} from "common/AnimateMap/bridges/EventProvider/EventProvider";
 import {
   Application,
   Container,
@@ -8,12 +13,6 @@ import {
 } from "pixi.js";
 import { Store } from "redux";
 import { subscribeActionAfter } from "redux-subscribe-action";
-
-import { CloudDataProvider } from "../bridges/DataProvider/CloudDataProvider";
-import { DataProviderEvent } from "../bridges/DataProvider/Providers/DataProviderEvent";
-import EventProvider, {
-  EventType,
-} from "../bridges/EventProvider/EventProvider";
 
 import { TimeoutCommand } from "./commands/TimeoutCommand";
 import WaitClickForHeroCreation from "./commands/WaitClickForHeroCreation";

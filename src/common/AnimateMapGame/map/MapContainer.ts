@@ -4,7 +4,7 @@ import { Viewport } from "pixi-viewport";
 
 import EventProvider, {
   EventType,
-} from "../../bridges/EventProvider/EventProvider";
+} from "../../AnimateMap/bridges/EventProvider/EventProvider";
 import { TimeoutCommand } from "../commands/TimeoutCommand";
 import {
   GameControls,

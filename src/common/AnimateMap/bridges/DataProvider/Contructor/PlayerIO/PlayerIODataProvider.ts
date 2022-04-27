@@ -1,7 +1,7 @@
 import { AnimateMapPoint } from "common/AnimateMapCommon";
+import { PlaygroundMap } from "common/AnimateMapGame/utils/PlaygroundMap";
 import { utils } from "pixi.js";
 
-import { PlaygroundMap } from "../../../../game/utils/PlaygroundMap";
 import { PlayerIOInstance } from "../../../../vendors/playerio/PlayerIO";
 import { ProxyClient } from "../../../../vendors/playerio/PromissesWrappers/ProxyClient";
 import { ProxyMultiplayer } from "../../../../vendors/playerio/PromissesWrappers/ProxyMultiplayer";

@@ -1,5 +1,5 @@
-import { GameConfig } from "../AnimateMap/game/common";
-import { MAP_IMAGE } from "../AnimateMap/game/constants/AssetConstants";
+import { GameConfig } from "common/AnimateMapGame/common";
+import { MAP_IMAGE } from "common/AnimateMapGame/constants/AssetConstants";
 
 export interface AnimateMapGameOptions {
   worldWidth: number;

@@ -1,6 +1,6 @@
-import { StartPoint } from "common/AnimateMap/game/utils/Point";
 import {
   AnimateMapFirebarrel,
+  AnimateMapStartPoint,
   AnimateMapUser,
   AnimateMapUserData,
   AnimateMapVenue,
@@ -74,7 +74,7 @@ const initialAnimateMapState: AnimateMapState = {
   room: null,
   expectedZoom: 2,
   cameraRect: new Box(0, 0, 0, 0),
-  pointer: StartPoint(),
+  pointer: AnimateMapStartPoint(),
   hero: null,
   users: new Map<string, ReplicatedUser>(),
   replicatedUsers: new Map<string, ReplicatedUser>(),

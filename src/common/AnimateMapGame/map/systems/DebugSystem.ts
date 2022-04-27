@@ -1,9 +1,9 @@
 import { Engine, NodeList, System } from "@ash.ts/ash";
+import { RoomPointNode } from "common/AnimateMap/bridges/DataProvider/Structures/RoomsModel";
+import { EventType } from "common/AnimateMap/bridges/EventProvider/EventProvider";
 import { Container, DisplayObject, Graphics, Sprite } from "pixi.js";
 import { Viewport } from "pixi-viewport";
 
-import { RoomPointNode } from "../../../bridges/DataProvider/Structures/RoomsModel";
-import { EventType } from "../../../bridges/EventProvider/EventProvider";
 import { GameControls, GamePoint } from "../../common";
 import { GameInstance } from "../../GameInstance";
 import EntityFactory from "../entities/EntityFactory";

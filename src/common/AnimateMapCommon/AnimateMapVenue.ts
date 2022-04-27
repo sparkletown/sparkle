@@ -1,4 +1,4 @@
-import { GameConfigOptions } from "common/AnimateMap/game/common";
+import { GameConfigOptions } from "common/AnimateMapGame/common";
 
 import { BaseVenue } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";

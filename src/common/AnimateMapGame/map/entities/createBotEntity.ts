@@ -1,7 +1,7 @@
 import { Entity } from "@ash.ts/ash";
 import { Sprite } from "pixi.js";
 
-import { EventType } from "../../../bridges/EventProvider/EventProvider";
+import { EventType } from "../../../AnimateMap/bridges/EventProvider/EventProvider";
 import { RoundAvatar } from "../../commands/RoundAvatar";
 import { GamePoint, GameUser } from "../../common";
 import { GameInstance } from "../../GameInstance";
