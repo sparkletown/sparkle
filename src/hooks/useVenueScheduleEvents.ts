@@ -18,7 +18,7 @@ import { isDateRangeStartWithinToday } from "utils/time";
 
 import { prepareForSchedule } from "components/organisms/NavBarSchedule/utils";
 
-import { useWorldBySlug } from "./worlds/useWorldBySlug";
+import { useWorldAndSpaceByParams } from "./spaces/useWorldAndSpaceByParams";
 import { useWorldParams } from "./worlds/useWorldParams";
 import { useSpaceEvents } from "./events";
 import { useRelatedVenues } from "./useRelatedVenues";
@@ -32,34 +32,28 @@ const useVenueScheduleEvents = ({
 }: {
   userEventIds: Partial<Record<string, string[]>>;
 }) => {
-  const {
-    descendantVenues,
-    relatedVenueIds,
-    isLoading,
-    sovereignVenue,
-    relatedVenues,
-  } = useRelatedVenues();
+  const { isLoading, worldSpaces, worldSpacesById } = useRelatedVenues();
 
   const { worldSlug } = useWorldParams();
-  const { world } = useWorldBySlug(worldSlug);
+  const { space, world } = useWorldAndSpaceByParams();
 
   const {
     events: relatedVenueEvents = emptyRelatedEvents,
     isLoaded: isEventsLoaded,
   } = useSpaceEvents({
     worldId: world?.id,
-    spaceIds: relatedVenueIds,
+    spaceIds: Object.keys(worldSpacesById),
   });
   const liveAndFutureEvents = useMemo(
     () =>
       relatedVenueEvents.filter(isEventLiveOrFuture).map(
         prepareForSchedule({
           worldSlug,
-          relatedVenues: descendantVenues,
+          relatedVenues: worldSpaces,
           usersEvents: userEventIds,
         })
       ),
-    [relatedVenueEvents, descendantVenues, worldSlug, userEventIds]
+    [relatedVenueEvents, worldSlug, worldSpaces, userEventIds]
   );
 
   const liveEventsMinimalStartValue = Math.min(
@@ -91,9 +85,8 @@ const useVenueScheduleEvents = ({
   );
 
   const endScheduleDate =
-    sovereignVenue?.end_utc_seconds &&
-    isFuture(fromUnixTime(sovereignVenue.end_utc_seconds))
-      ? sovereignVenue.end_utc_seconds
+    space?.end_utc_seconds && isFuture(fromUnixTime(space.end_utc_seconds))
+      ? space.end_utc_seconds
       : undefined;
 
   const daysInBetween = differenceInDays(
@@ -114,10 +107,8 @@ const useVenueScheduleEvents = ({
     firstScheduleDate,
     dayDifference,
     liveAndFutureEvents,
-    descendantVenues,
     isEventsLoading: isLoading || !isEventsLoaded,
-    sovereignVenue,
-    relatedVenues,
+    worldSpaces,
   };
 };
 

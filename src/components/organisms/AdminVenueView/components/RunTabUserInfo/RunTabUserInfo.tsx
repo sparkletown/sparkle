@@ -15,7 +15,7 @@ export interface RunTabUserInfoProps {
 export const RunTabUserInfo: React.FC<RunTabUserInfoProps> = ({ user }) => {
   return (
     <div key={user.id} className="RunTabUserInfo">
-      <UserAvatar user={user} showStatus size="small" />
+      <UserAvatar user={user} size="small" />
       <div className="RunTabUserInfo__user">
         <div>{user.partyName}</div>
       </div>

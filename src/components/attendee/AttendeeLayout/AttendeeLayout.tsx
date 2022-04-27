@@ -16,18 +16,18 @@ import { SpaceWithId } from "types/id";
 
 import { isTruthy } from "utils/types";
 
+import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useShowHide } from "hooks/useShowHide";
 
 import { VenuePage } from "pages/VenuePage";
 
+import { NotFound } from "../errors/NotFound";
+
 import "scss/attendee/initial.scss";
 import styles from "./AttendeeLayout.module.scss";
 
-type AttendeeLayoutProps = {
-  space: SpaceWithId;
-};
-
-export const AttendeeLayout: React.FC<AttendeeLayoutProps> = ({ space }) => {
+export const AttendeeLayout = () => {
+  const { space, isLoaded } = useWorldAndSpaceByParams();
   const [backButtonSpace, setBackButtonSpace] = useState<SpaceWithId>();
   const footerRef = useRef<HTMLElement>(null);
   const footerIntersect = useIntersection(footerRef, {
@@ -61,6 +61,13 @@ export const AttendeeLayout: React.FC<AttendeeLayoutProps> = ({ space }) => {
     };
   }, []);
 
+  // Loading status is handled inside here rather than in a HOC so that the
+  // UI layer can be rendered and maintained across route transitions. This
+  // reduces the amount of re-rendering.
+  if (isLoaded && !space) {
+    return <NotFound />;
+  }
+
   return (
     <VideoCommsProvider>
       <HuddleProvider>
@@ -81,7 +88,7 @@ export const AttendeeLayout: React.FC<AttendeeLayoutProps> = ({ space }) => {
         <AttendeeFooter forwardRef={footerRef} />
         {/* Used by popovers to ensure z-index is handled properly */}
         <div id={POPOVER_CONTAINER_ID} className={styles.popoverContainer} />
-        {space.id && (
+        {isLoaded && space?.id && (
           <Banner
             spaceId={space.id}
             turnOnBlur={turnOnBlur}

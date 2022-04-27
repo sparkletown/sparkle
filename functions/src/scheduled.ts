@@ -263,7 +263,7 @@ export const updateUsersLocations = functions.pubsub
       for (const venue of venuesChunk) {
         const recentVenueUsers = recentUsers.filter(
           (user) =>
-            user.lastVenueIdSeenIn && user.lastVenueIdSeenIn.includes(venue.id)
+            user.lastVenueIdSeenIn && user.lastVenueIdSeenIn === venue.id
         );
 
         const recentVenueUsersCount = recentVenueUsers.length;
