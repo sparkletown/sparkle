@@ -9,26 +9,14 @@ import {
   FIELD_WORLD_ID,
 } from "settings";
 
-import {
-  SpaceId,
-  SpaceSlug,
-  SpaceWithId,
-  WorldAndSpaceIdLocation,
-  WorldIdLocation,
-} from "types/id";
+import { SpaceId, SpaceWithId, WorldIdLocation } from "types/id";
 
-import { convertToFirestoreKey } from "utils/id";
 import { isDefined } from "utils/types";
 
 import { useRefiCollection } from "hooks/fire/useRefiCollection";
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 
-export type FindVenueInRelatedVenuesOptions = {
-  spaceId?: SpaceId;
-  spaceSlug?: SpaceSlug;
-};
-
-export interface RelatedVenuesContextState {
+interface RelatedVenuesContextState {
   isLoading: boolean;
 
   worldSpaces: SpaceWithId[];
@@ -39,43 +27,6 @@ const RelatedVenuesContext = createContext<
   RelatedVenuesContextState | undefined
 >(undefined);
 
-const LegacyRelatedVenuesProvider: React.FC<WorldAndSpaceIdLocation> = ({
-  spaceId,
-  worldId,
-  children,
-}) => {
-  const { data, isLoading } = useRefiCollection<SpaceWithId>({
-    path: [COLLECTION_SPACES],
-    constraints: [
-      where(FIELD_WORLD_ID, "==", convertToFirestoreKey(worldId)),
-      where(FIELD_IS_HIDDEN, "==", false),
-    ],
-  });
-
-  const worldSpaces = data ?? ALWAYS_EMPTY_ARRAY;
-
-  const worldSpacesById = useMemo(
-    () => Object.fromEntries(worldSpaces.map((space) => [space.id, space])),
-    [worldSpaces]
-  );
-
-  const relatedVenuesState: RelatedVenuesContextState = useMemo(
-    () => ({
-      isLoading,
-
-      worldSpaces,
-      worldSpacesById,
-    }),
-    [isLoading, worldSpaces, worldSpacesById]
-  );
-
-  return (
-    <RelatedVenuesContext.Provider value={relatedVenuesState}>
-      {children}
-    </RelatedVenuesContext.Provider>
-  );
-};
-
 const WorldSpacesProvider: React.FC<WorldIdLocation> = ({
   worldId,
   children,
@@ -83,7 +34,7 @@ const WorldSpacesProvider: React.FC<WorldIdLocation> = ({
   const { data, isLoading } = useRefiCollection<SpaceWithId>({
     path: [COLLECTION_SPACES],
     constraints: [
-      where(FIELD_WORLD_ID, "==", convertToFirestoreKey(worldId)),
+      where(FIELD_WORLD_ID, "==", worldId),
       where(FIELD_IS_HIDDEN, "==", false),
     ],
   });
@@ -111,7 +62,7 @@ const WorldSpacesProvider: React.FC<WorldIdLocation> = ({
 };
 
 export const RelatedVenuesProvider: React.FC = ({ children }) => {
-  const { worldId, spaceId } = useWorldAndSpaceByParams();
+  const { worldId } = useWorldAndSpaceByParams();
   const defaultState: RelatedVenuesContextState = useMemo(
     () => ({
       isLoading: false,
@@ -129,16 +80,8 @@ export const RelatedVenuesProvider: React.FC = ({ children }) => {
     );
   }
 
-  if (!spaceId) {
-    return (
-      <WorldSpacesProvider worldId={worldId}>{children}</WorldSpacesProvider>
-    );
-  }
-
   return (
-    <LegacyRelatedVenuesProvider spaceId={spaceId} worldId={worldId}>
-      {children}
-    </LegacyRelatedVenuesProvider>
+    <WorldSpacesProvider worldId={worldId}>{children}</WorldSpacesProvider>
   );
 };
 
