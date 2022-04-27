@@ -1,5 +1,9 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { useAsyncFn } from "react-use";
+import { Card } from "components/attendee/Card";
+import { CardBody } from "components/attendee/Card/CardBody";
+import { CardButton } from "components/attendee/Card/CardButton";
+import { Popover } from "components/attendee/Popover";
 
 import { CONVERSATION_TABLES, JAZZBAR_TABLES, STRING_SPACE } from "settings";
 
@@ -11,13 +15,9 @@ import { VenueTemplate } from "types/VenueTemplate";
 import { useAdminRole } from "hooks/user/useAdminRole";
 import { useShowHide } from "hooks/useShowHide";
 
-import { Modal } from "components/molecules/Modal";
 import { ModalTitle } from "components/molecules/Modal/ModalTitle";
 
-import { ButtonNG } from "components/atoms/ButtonNG";
 import { UserAvatar } from "components/atoms/UserAvatar";
-
-import PortalCloseIcon from "assets/icons/icon-close-portal.svg";
 
 import styles from "./TableComponent.module.scss";
 
@@ -32,6 +32,9 @@ export const TableComponent: React.FunctionComponent<TableComponentPropsType> = 
   const locked = tableLocked(table.reference);
   const numberOfSeatsLeft = table.capacity && table.capacity - users.length;
   const full = numberOfSeatsLeft === 0;
+  const [referenceElement, setReferenceElement] = useState<HTMLElement | null>(
+    null
+  );
 
   const { isAdminUser, isLoading: isCheckingRole } = useAdminRole({ userId });
 
@@ -80,15 +83,16 @@ export const TableComponent: React.FunctionComponent<TableComponentPropsType> = 
   return (
     <div className={styles.tableContainer}>
       <div className={styles.tableHeader}>
-        <span className={styles.tableTitle}>{table.title}</span>
+        <h2 className={styles.tableTitle}>{table.title}</h2>
 
         {isRemoveButtonShown && (
-          <img
+          <span
             className={styles.deleteButton}
-            src={PortalCloseIcon}
-            alt="remove table"
             onClick={toggleModal}
-          />
+            ref={setReferenceElement}
+          >
+            Delete
+          </span>
         )}
         <div>
           {locked && "locked"}
@@ -103,33 +107,35 @@ export const TableComponent: React.FunctionComponent<TableComponentPropsType> = 
             Join
           </span>
         )}
-        <Modal show={isModalShown} onHide={hideModal} centered bgVariant="dark">
-          <div>
-            <ModalTitle>Delete table</ModalTitle>
-            <p>
-              WARNING: This action cannot be undone and will permanently remove
-              {STRING_SPACE}
-              {table.title}
-            </p>
-            <div>
-              <ButtonNG
-                variant="secondary"
-                onClick={hideModal}
-                disabled={isDeletingTable}
-              >
-                Cancel
-              </ButtonNG>
 
-              <ButtonNG
+        {isModalShown && (
+          <Popover referenceElement={referenceElement}>
+            <Card>
+              <CardBody>
+                <ModalTitle>Delete table</ModalTitle>
+
+                <p>
+                  WARNING: This action cannot be undone and will permanently
+                  remove
+                  {STRING_SPACE}
+                  {table.title}
+                </p>
+                <div></div>
+              </CardBody>
+
+              <CardButton onClick={hideModal} disabled={isDeletingTable}>
+                Cancel
+              </CardButton>
+              <CardButton
                 disabled={isDeletingTable}
-                variant="secondary"
+                variant="danger"
                 onClick={removeTable}
               >
                 Delete
-              </ButtonNG>
-            </div>
-          </div>
-        </Modal>
+              </CardButton>
+            </Card>
+          </Popover>
+        )}
       </div>
     </div>
   );
