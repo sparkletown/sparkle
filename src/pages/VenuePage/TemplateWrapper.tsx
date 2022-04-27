@@ -1,5 +1,7 @@
 import React, { useMemo } from "react";
 import classNames from "classnames";
+import { AnimateMap } from "common/AnimateMap";
+import { AnimateMapSpace } from "common/AnimateMapCommon";
 
 import { SpaceWithId } from "types/id";
 import { AnyVenue } from "types/venues";
@@ -41,6 +43,10 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
 
     case VenueTemplate.partymap:
       template = <PartyMap venue={venue} />;
+      break;
+
+    case VenueTemplate.animatemap:
+      template = <AnimateMap space={(venue as unknown) as AnimateMapSpace} />;
       break;
 
     case VenueTemplate.artpiece:

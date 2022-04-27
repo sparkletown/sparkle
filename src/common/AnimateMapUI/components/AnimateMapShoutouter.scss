@@ -1,0 +1,46 @@
+.UIShoutouter {
+  width: 287px;
+  height: 34px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  pointer-events: all;
+  border-radius: 17px;
+  padding: 4px;
+  background-color: rgba(0, 0, 0, 0.15);
+  vertical-align: middle;
+
+  & input {
+    flex: 3 2 10px;
+    width: 257px;
+    text-align: left;
+    background: transparent;
+  }
+  & input:hover {
+    background: rgba(0, 0, 0, 0.1);
+  }
+  & input::placeholder {
+    color: #d3d3d3;
+  }
+
+  & div {
+    padding: 2px;
+    margin: 0px;
+    border: none;
+    flex: 0;
+    min-width: 25px;
+    min-height: 25px;
+    text-align: center;
+    cursor: pointer;
+    width: auto;
+    & img {
+      height: 16px;
+      margin: 0px;
+      opacity: 0.5;
+      vertical-align: middle;
+    }
+    &:hover img {
+      opacity: 0.7;
+    }
+  }
+}

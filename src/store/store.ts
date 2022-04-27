@@ -8,10 +8,11 @@ import subscribeActionMiddleware from "redux-subscribe-action";
 
 import { Firestore } from "types/Firestore";
 
-import { MiscReducers } from "./reducers";
+import { MiscReducers, VenueTemplateReducers } from "./reducers";
 
 export const rootReducer = combineReducers({
   firestore: firestoreReducer as Reducer<Firestore>,
+  ...VenueTemplateReducers,
   ...MiscReducers,
 });
 
