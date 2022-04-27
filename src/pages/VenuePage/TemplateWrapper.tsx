@@ -1,5 +1,4 @@
-import React from "react";
-import { useCss } from "react-use";
+import React, { useMemo } from "react";
 import classNames from "classnames";
 
 import { SpaceWithId } from "types/id";
@@ -100,17 +99,19 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   const isPartyMap = venue.template === VenueTemplate.partymap;
   const venueShrinksForChat = !isPartyMap;
 
-  const backgroundCss = useCss({
-    backgroundImage:
-      venue.backgroundImageUrl && `url(${venue.backgroundImageUrl})`,
-  });
+  const backgroundStyles = useMemo(
+    () => ({
+      backgroundImage: `url('${venue.backgroundImageUrl}')`,
+    }),
+    [venue.backgroundImageUrl]
+  );
 
-  const containerClassnames = classNames(
-    styles.templateContainer,
-    backgroundCss,
-    {
-      [styles.gradients]: !venue.backgroundImageUrl && !isPartyMap,
-    }
+  const containerClassnames = useMemo(
+    () =>
+      classNames(styles.templateContainer, {
+        [styles.gradients]: !venue.backgroundImageUrl && !isPartyMap,
+      }),
+    [isPartyMap, venue.backgroundImageUrl]
   );
 
   const wrapperClassnames = classNames({
@@ -120,7 +121,7 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   return (
     <ReactionsProvider venueId={venue.id}>
       {/* TODO <AnnouncementMessage isAnnouncementUserView /> */}
-      <div className={containerClassnames}>
+      <div className={containerClassnames} style={backgroundStyles}>
         <div className={wrapperClassnames}>{template}</div>
       </div>
 
