@@ -101,39 +101,7 @@ export interface RelatedVenuesProps {
   currentVenueId?: SpaceId;
 }
 
-export interface RelatedVenuesData extends RelatedVenuesContextState {
-  parentVenue?: SpaceWithId;
-  currentVenue?: SpaceWithId;
-  parentVenueId?: SpaceId;
-}
-
-export function useRelatedVenues(props: RelatedVenuesProps): RelatedVenuesData;
-export function useRelatedVenues(): RelatedVenuesContextState;
-
-// eslint-disable-next-line func-style, prefer-arrow/prefer-arrow-functions
-export function useRelatedVenues(props?: RelatedVenuesProps) {
-  const { currentVenueId } = props ?? {};
+export const useRelatedVenues = (): RelatedVenuesContextState => {
   const relatedVenuesState = useRelatedVenuesContext();
-
-  const { worldSpacesById } = relatedVenuesState;
-
-  const currentVenue: SpaceWithId | undefined = useMemo(() => {
-    return currentVenueId && worldSpacesById[currentVenueId];
-  }, [currentVenueId, worldSpacesById]);
-
-  const parentVenue: SpaceWithId | undefined = useMemo(() => {
-    return (
-      currentVenue &&
-      currentVenue.parentId &&
-      worldSpacesById[currentVenue.parentId]
-    );
-  }, [currentVenue, worldSpacesById]);
-
-  const parentVenueId = parentVenue?.id;
-
-  if (!props) {
-    return relatedVenuesState;
-  }
-
-  return { ...relatedVenuesState, currentVenue, parentVenue, parentVenueId };
-}
+  return { ...relatedVenuesState };
+};

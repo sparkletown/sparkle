@@ -110,7 +110,11 @@ export const VenuePage: React.FC<VenuePageProps> = ({
     });
   }, LOC_UPDATE_FREQ_MS);
 
-  const { parentVenue } = useRelatedVenues({ currentVenueId: space.id });
+  const { worldSpacesById } = useRelatedVenues();
+  const parentVenue = useMemo(
+    () => space.parentId && worldSpacesById[space.parentId],
+    [space.parentId, worldSpacesById]
+  );
 
   useEffect(() => {
     setBackButtonSpace(parentVenue);

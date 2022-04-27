@@ -41,7 +41,7 @@ export const PortalModalContent: React.FC<PortalModalContentProps> = ({
   venueEvents,
   onHide,
 }) => {
-  const { world, space, spaceId } = useWorldAndSpaceByParams();
+  const { world, space } = useWorldAndSpaceByParams();
 
   const dispatch = useDispatch();
 
@@ -55,9 +55,7 @@ export const PortalModalContent: React.FC<PortalModalContentProps> = ({
     dispatch(retainAttendance(false));
   }, [dispatch]);
 
-  const { worldSpacesById } = useRelatedVenues({
-    currentVenueId: spaceId,
-  });
+  const { worldSpacesById } = useRelatedVenues();
 
   const { enterPortal, portalSpaceId } = usePortal({
     portal,
