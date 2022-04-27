@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useStore } from "react-redux";
+import { useRelatedPartymapRooms } from "common/AnimateMapCommon/hooks";
 import { subscribeActionAfter } from "redux-subscribe-action";
 
 import { useDispatch } from "hooks/useDispatch";
@@ -18,9 +19,7 @@ import { CloudDataProvider } from "./bridges/DataProvider/CloudDataProvider";
 import { GameConfig, GameControls } from "./game/common";
 import { GameInstance } from "./game/GameInstance";
 import { PlaygroundMap } from "./game/utils/PlaygroundMap";
-import { useRelatedPartymapRooms } from "./hooks/useRelatedPartymapRooms";
 
-// import { UIOverlay, UIOverlayGrid } from "./components";
 import "./AnimateMap.scss";
 
 export interface AnimateMapProps {

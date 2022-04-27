@@ -1,6 +1,6 @@
-import { Room } from "types/rooms";
+import { AnimateMapRoom } from "./AnimateMapRoom";
 
-export interface AnimateMapVenueData extends Room {
+export interface AnimateMapVenueData extends AnimateMapRoom {
   id: number;
   isLive: boolean;
   countUsers: number;

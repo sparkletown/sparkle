@@ -1,6 +1,6 @@
 // import { DocumentData, QuerySnapshot } from "@firebase/firestore-types";
 
-// import { ReplicatedUser } from "../../../../../../store/reducers/AnimateMap";
+// import { AnimateMapUser } from "common/AnimateMapCommon";
 
 import { FirebaseDataProvider } from "./Firebase/FirebaseDataProvider";
 import { PlayerIODataProvider } from "./PlayerIO/PlayerIODataProvider";
@@ -31,7 +31,7 @@ export interface CommonInterface {
   sendPlayerPosition(x: number, y: number): void;
   sendShoutMessage(shout: string): void;
 
-  // updateUsers(users: ReplicatedUser[]) : void;
+  // updateUsers(users: AnimateMapUser[]) : void;
 
   // loadVenuesAsync(): Promise<QuerySnapshot<DocumentData>>;
 }

@@ -1,12 +1,11 @@
 import { throttle } from "lodash";
 
-import { getRandomInt } from "utils/getRandomInt";
-
 import { connection } from "../../../../vendors/playerio/PlayerIO";
 import { CloudDataProvider } from "../../CloudDataProvider";
 
 import { getIntByHash } from "./utils/getIntByHash";
 import { getRandomBotId } from "./utils/getRandomBotId";
+import { getRandomInt } from "./utils/getRandomInt";
 import { PlayerIODataProvider } from "./PlayerIODataProvider";
 // import { MessagesTypes } from "./types";
 

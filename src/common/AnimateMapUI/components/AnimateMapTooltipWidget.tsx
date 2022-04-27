@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from "react";
+import { ENTER, KeyPoll } from "common/AnimateMapCommon/utils";
+
+import { DEFAULT_PORTAL_BOX } from "../../AnimateMapCommon/settings";
 
 import EventProvider, {
   EventType,
 } from "../../AnimateMap/bridges/EventProvider/EventProvider";
-import {
-  AnimateMapRoom,
-  AnimateMapVenue,
-  DEFAULT_PORTAL_BOX,
-  ENTER,
-  KeyPoll,
-} from "../../AnimateMapCommon";
+import { AnimateMapRoom, AnimateMapVenue } from "../../AnimateMapCommon";
 
 import "./AnimateMapTooltipWidget.scss";
 

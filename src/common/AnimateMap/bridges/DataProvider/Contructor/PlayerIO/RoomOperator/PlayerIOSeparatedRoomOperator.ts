@@ -1,4 +1,4 @@
-import { Point } from "types/utility";
+import { AnimateMapPoint } from "common/AnimateMapCommon";
 
 import { ProxyMultiplayer } from "../../../../../vendors/playerio/PromissesWrappers/ProxyMultiplayer";
 import EventProvider, {
@@ -19,12 +19,12 @@ enum IsConnectedStates {
 
 export class PlayerIOSeparatedRoomOperator implements IPlayerIORoomOperator {
   mainConnection: ConnectionWrapper = {};
-  position: Point;
+  position: AnimateMapPoint;
 
   public constructor(
     readonly cloudDataProvider: CloudDataProvider,
     public multiplayer: ProxyMultiplayer,
-    playerPosition: Point,
+    playerPosition: AnimateMapPoint,
     public playerId: string
   ) {
     this.position = playerPosition;

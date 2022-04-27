@@ -1,4 +1,4 @@
-import { Point } from "types/utility";
+import { AnimateMapPoint } from "common/AnimateMapCommon";
 
 import {
   RoomInfoType,
@@ -16,9 +16,9 @@ export abstract class NinePartRoomOperator {
   protected _myMainRoom?: RoomItem;
   protected _myPeripheralRoom: RoomItem[] = [];
 
-  protected _userPosition: Point = { x: -100, y: -100 };
+  protected _userPosition: AnimateMapPoint = { x: -100, y: -100 };
 
-  set position(point: Point) {
+  set position(point: AnimateMapPoint) {
     this._userPosition.x = point.x;
     this._userPosition.y = point.y;
   }
@@ -27,7 +27,7 @@ export abstract class NinePartRoomOperator {
     return { ...this._userPosition };
   }
 
-  protected constructor(playerPosition: Point) {
+  protected constructor(playerPosition: AnimateMapPoint) {
     this.position = playerPosition;
     this._roomsModel = new RoomsModel(9920, 9920); //TODO: throw sizes from configs
   }

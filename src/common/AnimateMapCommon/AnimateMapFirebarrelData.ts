@@ -1,5 +1,14 @@
-import { AnimateMapFirebarrel } from "./AnimateMapFirebarrel";
+export type Firebarrel = {
+  id: string;
+  connectedUsers?: string[];
+  coordinateX: string;
+  coordinateY: string;
+  iconSrc: string;
+  trackSrc: string;
+  isLocked: boolean;
+  maxUserCount: number;
+};
 
-export interface AnimateMapFirebarrelData extends AnimateMapFirebarrel {
+export interface AnimateMapFirebarrelData extends Firebarrel {
   connectedUsers?: string[];
 }

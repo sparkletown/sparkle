@@ -1,4 +1,4 @@
-import { Point } from "types/utility";
+import { AnimateMapPoint } from "common/AnimateMapCommon";
 
 const D = 3; // dimension in line
 const DD = 9; // dimension in square
@@ -150,7 +150,10 @@ export class RoomMath {
     return res;
   }
 
-  public static isPointInBounds(p: Point, bounds: Tuple<[number, number], 4>) {
+  public static isPointInBounds(
+    p: AnimateMapPoint,
+    bounds: Tuple<[number, number], 4>
+  ) {
     return (
       bounds[0][0] < p.x &&
       bounds[0][1] < p.y &&

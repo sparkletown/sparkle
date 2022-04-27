@@ -1,9 +1,4 @@
-/**
- * Usage interfaces for GameInstance class
- */
-import { ReplicatedVenue } from "common/AnimateMapStore/reducers";
-
-import { Point } from "types/utility";
+import { AnimateMapPoint, AnimateMapVenue } from "common/AnimateMapCommon";
 
 type ListenerFn = (...args: unknown[]) => void;
 
@@ -19,7 +14,7 @@ export interface DataProvider {
 
   release: () => void;
 
-  venuesData: ReplicatedVenue[];
+  venuesData: AnimateMapVenue[];
 
   // player
   player: PlayerDataProviderInterface;
@@ -29,6 +24,6 @@ export interface DataProvider {
 
 export interface PlayerDataProviderInterface {
   isReady: () => boolean;
-  position: Point;
+  position: AnimateMapPoint;
   id: string;
 }

@@ -1,6 +1,4 @@
-// import { ReplicatedUser } from "store/reducers/AnimateMap";
-
-import { Point } from "types/utility";
+import { AnimateMapPoint } from "common/AnimateMapCommon";
 
 import { PlayerDataProviderInterface } from "../../DataProvider";
 import { CommonInterface } from "../Contructor/CommonInterface";
@@ -20,7 +18,7 @@ export enum PlayerDataProviderEvents {
 }
 
 export class PlayerDataProvider implements PlayerDataProviderInterface {
-  private _sendPosition: Point = { x: 0, y: 0 };
+  private _sendPosition: AnimateMapPoint = { x: 0, y: 0 };
   private _position = { x: 0, y: 0 };
   private _isReady = false;
 

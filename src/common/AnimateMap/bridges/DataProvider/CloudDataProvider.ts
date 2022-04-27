@@ -1,20 +1,18 @@
-import { AnimateMapFirebarrel } from "common/AnimateMapCommon/AnimateMapFirebarrel";
 import {
-  ReplicatedFirebarrel,
-  ReplicatedUser,
-  ReplicatedVenue,
-} from "common/AnimateMapStore/reducers";
+  AnimateMapFirebarrel,
+  AnimateMapFirebarrelData,
+  AnimateMapUser,
+  AnimateMapVenue,
+  User,
+  WithId,
+} from "common/AnimateMapCommon";
 import firebase from "firebase/compat/app";
 import { utils } from "pixi.js";
 
-import { DEFAULT_BADGE_IMAGE } from "settings";
-
-import { User } from "types/User";
-
-import { WithId } from "utils/id";
-import { getFirebaseStorageResizedImage } from "utils/image";
+import { DEFAULT_BADGE_IMAGE } from "common/AnimateMapCommon/settings";
 
 import { RoomWithFullData } from "../CloudDataProviderWrapper";
+import { getFirebaseStorageResizedImage } from "../common/utils";
 import { DataProvider } from "../DataProvider";
 import EventProvider, { EventType } from "../EventProvider/EventProvider";
 
@@ -53,8 +51,8 @@ export class CloudDataProvider
   readonly player: PlayerDataProvider;
   readonly users: UsersDataProvider;
   readonly commonInterface: CommonInterface;
-  public venuesData: ReplicatedVenue[] = [];
-  public firebarrelsData: ReplicatedFirebarrel[] = [];
+  public venuesData: AnimateMapVenue[] = [];
+  public firebarrelsData: AnimateMapFirebarrel[] = [];
   private _updateCounter = 0;
   private _maxUpdateCounter = 1000 / this.settings.playerioFrequencyUpdate;
   private _testBots;
@@ -156,7 +154,7 @@ export class CloudDataProvider
           }),
           withoutPlate: room.title === "Temple" || room.title === "The Man",
         },
-      } as ReplicatedVenue;
+      } as AnimateMapVenue;
     };
 
     const modifiedVenues = this.venuesData
@@ -211,7 +209,7 @@ export class CloudDataProvider
     if (!data?.isRecentWorldUsersLoaded) return;
 
     // new entities scenario
-    const usersData: ReplicatedUser[] = [];
+    const usersData: AnimateMapUser[] = [];
     data.recentWorldUsers.forEach((user) => {
       // if (user.lastSeenIn) //todo: add counter
 
@@ -238,7 +236,7 @@ export class CloudDataProvider
     this.users.updateUsers(usersData);
   }
 
-  public updateFirebarrels(data: AnimateMapFirebarrel[] | undefined) {
+  public updateFirebarrels(data: AnimateMapFirebarrelData[] | undefined) {
     if (!data) return;
 
     const newFirebarrels = data.filter(
@@ -294,7 +292,7 @@ export class CloudDataProvider
           data: {
             ...firebarrel,
           },
-        } as ReplicatedFirebarrel;
+        } as AnimateMapFirebarrel;
       });
 
     existFirebarrels.forEach((firebarrel) => {
@@ -312,7 +310,7 @@ export class CloudDataProvider
         data: {
           ...newFirebbarrel,
         },
-      } as ReplicatedFirebarrel;
+      } as AnimateMapFirebarrel;
 
       this.firebarrelsData.push(firebarrel);
       this.emit(DataProviderEvent.FIREBARREL_ADDED, firebarrel);

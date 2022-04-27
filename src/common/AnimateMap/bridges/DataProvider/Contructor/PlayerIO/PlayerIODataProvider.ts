@@ -1,8 +1,5 @@
+import { AnimateMapPoint } from "common/AnimateMapCommon";
 import { utils } from "pixi.js";
-
-import { Point } from "types/utility";
-
-import { getRandomInt } from "utils/getRandomInt";
 
 import { PlaygroundMap } from "../../../../game/utils/PlaygroundMap";
 import { PlayerIOInstance } from "../../../../vendors/playerio/PlayerIO";
@@ -18,6 +15,7 @@ import { IPlayerIORoomOperator } from "./RoomOperator/IPlayerIORoomOperator";
 import { PlayerIORoomOperator } from "./RoomOperator/PlayerIORoomOperator";
 import { PlayerIOSeparatedRoomOperator } from "./RoomOperator/PlayerIOSeparatedRoomOperator";
 import { getIntByHash } from "./utils/getIntByHash";
+import { getRandomInt } from "./utils/getRandomInt";
 import {
   FindMessageTuple,
   MessagesTypes,
@@ -136,7 +134,10 @@ export class PlayerIODataProvider extends utils.EventEmitter {
     return Promise.resolve(this.playerIORoomOperator);
   };
 
-  private _getRoomOperator(client: ProxyClient, playerPosition: Point) {
+  private _getRoomOperator(
+    client: ProxyClient,
+    playerPosition: AnimateMapPoint
+  ) {
     if (this.playerIORoomOperator) return this.playerIORoomOperator;
 
     console.log(
@@ -149,7 +150,7 @@ export class PlayerIODataProvider extends utils.EventEmitter {
     const initialParams: [
       CloudDataProvider,
       ProxyMultiplayer,
-      Point,
+      AnimateMapPoint,
       string
     ] = [
       this.cloudDataProvider,
@@ -196,7 +197,7 @@ export class PlayerIODataProvider extends utils.EventEmitter {
     this.playerIORoomOperator.mainConnection.instance.sendMessage(m);
   }
 
-  public savePlayerPosition(position: Point) {
+  public savePlayerPosition(position: AnimateMapPoint) {
     if (!this.playerIORoomOperator)
       return console.error("playerIORoomOperator not exist");
     this.playerIORoomOperator.position = position;

@@ -1,4 +1,4 @@
-import { ReplicatedUser } from "common/AnimateMapStore/reducers";
+import { AnimateMapUser } from "common/AnimateMapCommon";
 
 import { CommonInterface } from "../Contructor/CommonInterface";
 import { UsersMap } from "../Structures/UsersMap";
@@ -20,7 +20,7 @@ export class UsersDataProvider {
     return this.users.add(sessionId, id);
   }
 
-  public updateUsers(usersData: ReplicatedUser[]) {
+  public updateUsers(usersData: AnimateMapUser[]) {
     usersData.forEach((user) =>
       // this.users.add(user.data.messengerId, user.data.id)
       this.users.addReplicatedUser(user)

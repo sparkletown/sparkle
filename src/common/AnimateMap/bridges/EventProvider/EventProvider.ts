@@ -1,7 +1,4 @@
-import {
-  ReplicatedUser,
-  ReplicatedVenue,
-} from "common/AnimateMapStore/reducers";
+import { AnimateMapUser, AnimateMapVenue } from "common/AnimateMapCommon";
 import { utils } from "pixi.js";
 
 import { RoomPointNode } from "../DataProvider/Structures/RoomsModel";
@@ -29,19 +26,19 @@ export enum EventType {
 
 type OnRoomsChangedCallback = (points: RoomPointNode[]) => void;
 
-type OnVenueCollisionCallback = (venue: ReplicatedVenue) => void;
-type PlayerModelReadyCallback = (player: ReplicatedUser) => void;
+type OnVenueCollisionCallback = (venue: AnimateMapVenue) => void;
+type PlayerModelReadyCallback = (player: AnimateMapUser) => void;
 
 type OnPlayerClickCallback = (
-  user: ReplicatedUser,
+  user: AnimateMapUser,
   viewportX: number,
   viewportY: number
 ) => void;
 
 // playerio
-type UserJoinedCallback = (user: ReplicatedUser) => void;
-type UserLeftCallback = (user: ReplicatedUser) => void;
-type UserMovedCallback = (user: ReplicatedUser) => void;
+type UserJoinedCallback = (user: AnimateMapUser) => void;
+type UserLeftCallback = (user: AnimateMapUser) => void;
+type UserMovedCallback = (user: AnimateMapUser) => void;
 type SendShoutCallback = (msg: string) => void;
 type ReceiveShoutCallback = (playerId: string, msg: string) => void;
 

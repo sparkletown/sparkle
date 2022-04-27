@@ -1,4 +1,4 @@
-import { Point } from "types/utility";
+import { AnimateMapPoint } from "common/AnimateMapCommon";
 
 import { ProxyConnection } from "../../../../../vendors/playerio/PromissesWrappers/ProxyConnection";
 import { ProxyMultiplayer } from "../../../../../vendors/playerio/PromissesWrappers/ProxyMultiplayer";
@@ -29,7 +29,7 @@ export class PlayerIORoomOperator
   public constructor(
     readonly cloudDataProvider: CloudDataProvider,
     public multiplayer: ProxyMultiplayer,
-    playerPosition: Point,
+    playerPosition: AnimateMapPoint,
     public playerId: string
   ) {
     super(playerPosition);

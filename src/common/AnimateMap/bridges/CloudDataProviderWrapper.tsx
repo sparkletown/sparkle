@@ -1,23 +1,24 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { AnimateMapSpace } from "common/AnimateMapCommon";
+import {
+  AnimateMapRoom,
+  AnimateMapSpace,
+  isEventLive,
+  SpaceWithId,
+  WithVenue,
+} from "common/AnimateMapCommon";
 import firebase from "firebase/compat/app";
 
-import { ALWAYS_EMPTY_ARRAY } from "settings";
+import { ALWAYS_EMPTY_ARRAY } from "common/AnimateMapCommon/settings";
 
-import { SpaceWithId } from "types/id";
-import { Room } from "types/rooms";
+import {
+  useFirebarrels,
+  useLiveUser,
+  useRecentLocationsUsers,
+  UseRelatedPartymapRoomsResult,
+  useSpaceEvents,
+} from "../../AnimateMapCommon/hooks";
 
-import { isEventLive } from "utils/event";
-import { getFirebaseStorageResizedImage } from "utils/image";
-import { WithVenue } from "utils/venue";
-
-import { useSpaceEvents } from "hooks/events";
-import { useLiveUser } from "hooks/user/useLiveUser";
-
-import { useFirebarrels } from "../hooks/useFirebarrels";
-import { useRecentLocationsUsers } from "../hooks/useRecentLocationsUsers";
-import { UseRelatedPartymapRoomsResult } from "../hooks/useRelatedPartymapRooms";
-
+import { getFirebaseStorageResizedImage } from "./common/utils";
 import { CloudDataProvider } from "./DataProvider/CloudDataProvider";
 
 // @debt Removed users out as a part of massive refactor of users. Beavers should implement the new architecture in this template a part of AnimateMap refactor
@@ -33,7 +34,7 @@ export interface CloudDataProviderWrapperProps {
   reInitOnError?: boolean;
 }
 
-export type RoomWithFullData = (WithVenue<Room> | Room) & {
+export type RoomWithFullData = (WithVenue<AnimateMapRoom> | AnimateMapRoom) & {
   id: number;
   isLive?: boolean;
   countUsers?: number;
@@ -58,7 +59,10 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
       relatedRooms
         ? relatedRooms
             .filter((room) => "venue" in room && "id" in venue)
-            .map((room) => (room as WithVenue<Room>)?.venue as SpaceWithId)
+            .map(
+              (room) =>
+                (room as WithVenue<AnimateMapRoom>)?.venue as SpaceWithId
+            )
         : emptyRelatedVenues,
     [relatedRooms, venue]
   );
@@ -85,7 +89,7 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
   const roomsWithFullData: RoomWithFullData[] | undefined = relatedRooms?.map(
     (room, index) => {
       if ("venue" in room) {
-        const roomWithVenue = room as WithVenue<Room>;
+        const roomWithVenue = room as WithVenue<AnimateMapRoom>;
         const venue = roomWithVenue.venue as SpaceWithId;
         const location = locationUsers.find(
           (location) => location.id === venue.id

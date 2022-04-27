@@ -1,0 +1,68 @@
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+
+import { AnimateMapFireAuthUser } from "../AnimateMapFireAuthUser";
+import { UserId } from "../AnimateMapIds";
+
+type WorkaroundSetter = (
+  newAuthUser: AnimateMapFireAuthUser | null
+) => (
+  oldAuthUser: AnimateMapFireAuthUser | null
+) => AnimateMapFireAuthUser | null;
+
+const workaroundSetter: WorkaroundSetter = (newAuthUser) => (oldAuthUser) => {
+  // the user has logged out, time for a workaround
+  if (oldAuthUser && !newAuthUser) {
+    // Firestore SDK and/or Reactfire bug on re-login (at least when Reactfire used):
+    // insufficient permissions' error because of old observers.
+    // Reloading the page clears the cached observers attached to the window itself
+    // and prevents the error on the next login since we're window is starting fresh
+    window.location.reload();
+  }
+  return newAuthUser;
+};
+
+export const useUserId = () => {
+  // @see https://firebase.google.com/docs/auth/web/start
+  // @see https://firebase.google.com/docs/reference/js/firebase.User
+  const [authUser, setAuthUser] = useState<AnimateMapFireAuthUser>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | undefined>();
+
+  const setLoaded = useCallback(() => setLoading(false), []);
+
+  useEffect(() => {
+    // prevents warning: Can't perform a React state update on an unmounted component.
+    let isMounted = true;
+
+    const unsubscribe = onAuthStateChanged(
+      getAuth(),
+      (usr) => {
+        if (!isMounted) return;
+        setAuthUser(workaroundSetter(usr));
+        setLoaded();
+      },
+      (err) => {
+        if (!isMounted) return;
+        setError(err);
+        setLoaded();
+      }
+    );
+
+    return () => {
+      isMounted = false;
+      unsubscribe?.();
+    };
+  }, [setLoaded]);
+
+  return useMemo(
+    () => ({
+      userId: authUser?.uid as UserId,
+      auth: authUser,
+      isLoading: loading,
+      isLoaded: !loading,
+      error,
+    }),
+    [authUser, loading, error]
+  );
+};
