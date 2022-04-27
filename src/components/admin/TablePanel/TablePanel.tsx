@@ -31,7 +31,7 @@ const Cell: React.FC = ({ children }) => (
 );
 
 const ActionsCell: React.FC = ({ children }) => (
-  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+  <td className="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
     <div className="flex align-center justify-end gap-x-5 flex-row">
       {children}
     </div>

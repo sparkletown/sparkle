@@ -1,20 +1,20 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
+import { PortalModal } from "components/attendee/PortalModal";
 
 import { COVERT_ROOM_TYPES } from "settings";
 
-import { PartyMapSpaceWithId, SpaceId } from "types/id";
-import { Room } from "types/rooms";
+import { PartyMapSpaceWithId } from "types/id";
+import { PortalWithBounds, RoomType } from "types/rooms";
+import { RoomVisibility } from "types/RoomVisibility";
 
-import {
-  eventsByStartUtcSecondsSorter,
-  isEventLiveOrFuture,
-} from "utils/event";
+import { eventTimeAndOrderComparator, isEventLiveOrFuture } from "utils/event";
 
 import { useSpaceEvents } from "hooks/events";
+import { useAnalytics } from "hooks/useAnalytics";
+import { usePortal } from "hooks/usePortal";
 import { useLiveUser } from "hooks/user/useLiveUser";
 
 import { Map } from "components/templates/PartyMap/components/Map";
-import { PortalModal } from "components/templates/PartyMap/components/PortalModal";
 
 import styles from "./PartyMap.module.scss";
 
@@ -25,42 +25,56 @@ interface PartyMapProps {
 export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
   const { user, profile } = useLiveUser();
 
-  const selfAndPortalSpaceIds = useMemo(() => {
-    const spaceIds = (venue?.rooms ?? [])
-      .map((portal) => portal.spaceId)
-      .filter((spaceId) => !!spaceId) as SpaceId[];
-    return [venue?.id].concat(spaceIds);
-  }, [venue]);
+  const portalRef = useRef<HTMLDivElement | null>(null);
+  const [selectedPortal, setSelectedPortal] = useState<
+    PortalWithBounds | undefined
+  >();
 
   const { events: selfAndChildVenueEvents } = useSpaceEvents({
     worldId: venue.worldId,
-    spaceIds: selfAndPortalSpaceIds,
+    spaceIds: [selectedPortal?.spaceId || ""],
   });
 
-  const [selectedRoom, setSelectedRoom] = useState<Room | undefined>();
-
-  const hasSelectedRoom = !!selectedRoom;
-
-  const selectedRoomEvents = useMemo(() => {
-    if (!selfAndChildVenueEvents || !selectedRoom) return [];
+  const [firstEvent] = useMemo(() => {
+    if (!selfAndChildVenueEvents || !selectedPortal) return [];
 
     return selfAndChildVenueEvents
       .filter(
         (event) =>
-          event.spaceId === selectedRoom.spaceId && isEventLiveOrFuture(event)
+          event.spaceId === selectedPortal.spaceId && isEventLiveOrFuture(event)
       )
-      .sort(eventsByStartUtcSecondsSorter);
-  }, [selfAndChildVenueEvents, selectedRoom]);
+      .sort(eventTimeAndOrderComparator);
+  }, [selfAndChildVenueEvents, selectedPortal]);
 
-  const selectRoom = useCallback((room: Room) => {
-    if (room.type && COVERT_ROOM_TYPES.includes(room.type)) return;
-
-    setSelectedRoom(room);
+  const selectPortal = useCallback((portal: PortalWithBounds) => {
+    setSelectedPortal(portal);
   }, []);
 
-  const unselectRoom = useCallback(() => {
-    setSelectedRoom(undefined);
+  const unselectPortal = useCallback(() => {
+    setSelectedPortal(undefined);
   }, []);
+
+  const isUnclickable =
+    selectedPortal?.visibility === RoomVisibility.unclickable ||
+    selectedPortal?.type === RoomType.unclickable;
+  const isCovertRoom =
+    selectedPortal?.type && COVERT_ROOM_TYPES.includes(selectedPortal?.type);
+  const shouldBeClickable = !isCovertRoom && !isUnclickable;
+  const { enterPortal } = usePortal({ portal: selectedPortal });
+  const analytics = useAnalytics({ venue });
+
+  const selectPortalWithSound = useCallback(
+    (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+      if (!shouldBeClickable || !selectedPortal) return;
+      analytics.trackEnterRoomEvent(
+        selectedPortal?.title,
+        selectedPortal?.template
+      );
+
+      enterPortal();
+    },
+    [analytics, enterPortal, selectedPortal, shouldBeClickable]
+  );
 
   if (!user || !profile) return <>Loading..</>;
 
@@ -71,14 +85,23 @@ export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
       data-side="att"
       className={styles.PartyMap}
     >
-      <Map user={user} venue={venue} selectRoom={selectRoom} />
-
-      <PortalModal
-        portal={selectedRoom}
-        venueEvents={selectedRoomEvents}
-        show={hasSelectedRoom}
-        onHide={unselectRoom}
+      <Map
+        user={user}
+        venue={venue}
+        selectPortal={selectPortal}
+        unselectPortal={unselectPortal}
+        portalRef={portalRef}
+        selectedPortal={selectedPortal}
       />
+
+      {selectedPortal && (
+        <PortalModal
+          onEnter={selectPortalWithSound}
+          portal={selectedPortal}
+          event={firstEvent}
+          portalRef={portalRef}
+        />
+      )}
     </div>
   );
 };

@@ -3,7 +3,6 @@
 export enum VenueTemplate {
   auditorium = "auditorium",
   conversationspace = "conversationspace",
-  firebarrel = "firebarrel",
   jazzbar = "jazzbar",
   partymap = "partymap",
   posterhall = "posterhall",

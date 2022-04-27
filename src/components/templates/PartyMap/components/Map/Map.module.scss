@@ -10,10 +10,10 @@
   background-position: center;
   background-repeat: no-repeat;
   background-color: black;
+  // Needed to override inline styles that are only used on larger screens
+  background-size: cover !important;
 
   @media (max-width: calc(#{breakpoint.$md} - 1px)) {
-    // Needed to override inline styles that are only used on larger screens
-    background-size: cover !important;
     z-index: -1;
   }
 

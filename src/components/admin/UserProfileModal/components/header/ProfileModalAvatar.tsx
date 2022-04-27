@@ -75,7 +75,6 @@ export const ProfileModalAvatar: React.FC<ProfileModalAvatarProps> = ({
           imageClassName="rounded-full w-20 h-20"
           user={userWithOverriddenPictureUrl}
           size="full"
-          showStatus
         />
         {editMode && (
           <div onClick={uploadProfilePic}>

@@ -1,0 +1,35 @@
+@keyframes live-portal-bounce {
+  0% {
+    -moz-filter: blur(0px) saturate(150%);
+    -webkit-filter: blur(0px) saturate(150%);
+    filter: blur(0px) saturate(150%);
+    -moz-transform: scale(1);
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+  100% {
+    -moz-filter: blur(0.5px) saturate(50%);
+    -webkit-filter: blur(0.5px) saturate(50%);
+    filter: blur(0.5px) saturate(50%);
+    -moz-transform: scale(1.025);
+    -webkit-transform: scale(1.025);
+    transform: scale(1.025);
+  }
+}
+
+@keyframes live-portal-wiggle {
+  0% {
+    left: 0;
+    transform: rotate(0deg);
+  }
+  50% {
+    left: -2px;
+    transform: rotate(0.5deg);
+  }
+  100% {
+    left: 2px;
+    transform: rotate(-0.5deg);
+  }
+}
+
+$live-bouncerate: 0.2s;

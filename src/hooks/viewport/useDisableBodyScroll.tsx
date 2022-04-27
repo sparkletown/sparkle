@@ -9,6 +9,9 @@ export const useDisableBodyScroll = ({ isOpen }: { isOpen: boolean }) => {
     const [layoutElement] = document.getElementsByClassName(
       ATTENDEE_LAYOUT_CLASSNAME
     ) as HTMLCollectionOf<HTMLElement>;
+    if (!layoutElement) {
+      return;
+    }
     if (isOpen) {
       layoutElement.style.overflow = "hidden";
     } else {

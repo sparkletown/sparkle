@@ -11,7 +11,6 @@ import { Banner } from "./banner";
 import { Poster } from "./posters";
 import { Room } from "./rooms";
 import { Table } from "./Table";
-import { UserStatus } from "./User";
 import { VenueAccessMode } from "./VenueAcccess";
 
 export type PortalTemplate = VenueTemplate | "external";
@@ -64,9 +63,6 @@ export interface BaseVenue {
   radioTitle?: string;
   banner?: Banner;
   samlAuthProviderId?: string;
-  columns?: number;
-  rows?: number;
-  showGrid?: boolean;
   roomVisibility?: RoomVisibility;
   rooms?: Room[];
   start_utc_seconds?: number;
@@ -77,9 +73,7 @@ export interface BaseVenue {
   showShoutouts?: boolean;
   sectionsCount?: number;
   termsAndConditions: TermOfService[];
-  userStatuses?: UserStatus[];
   showRadio?: boolean;
-  showUserStatus?: boolean;
   createdAt?: number;
   recentUserCount?: number;
   recentUsersSample?: UserWithId[];
@@ -256,4 +250,11 @@ export const isNotPartyMapVenue = (venue: AnyVenue) =>
 export type Channel = {
   name: string;
   iframeUrl: string;
+};
+
+export type PortalOptionProps = {
+  template?: PortalTemplate;
+  name: string;
+  id?: string;
+  fieldName: string;
 };

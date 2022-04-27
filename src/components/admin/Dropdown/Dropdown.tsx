@@ -3,9 +3,12 @@ import { MenuPlacement } from "react-select";
 
 import {
   ALWAYS_EMPTY_ARRAY,
+  ALWAYS_EMPTY_OBJECT,
   ALWAYS_EMPTY_SELECT_OPTION,
   ALWAYS_NO_STYLE_FUNCTION,
 } from "settings";
+
+import { PortalOptionProps } from "types/venues";
 
 import {
   buttonTailwind,
@@ -16,7 +19,7 @@ import {
   optionWrapper,
 } from "./Dropdown.tailwind";
 
-import "./Dropdown.module.scss";
+import CN from "./Dropdown.module.scss";
 
 // if these are undefined, the 3rd party library will provide own defaults
 const NO_INLINE_STYLES_PLEASE = {
@@ -36,7 +39,11 @@ const NO_INLINE_STYLES_PLEASE = {
 Object.freeze(NO_INLINE_STYLES_PLEASE);
 
 const DROPDOWN_VALUE_PROP = "data-dropdown-value";
-type DropdownItemProps = { [DROPDOWN_VALUE_PROP]?: string };
+const DROPDOWN_PROPS_PROP = "data-dropdown-props";
+type DropdownItemProps = {
+  [DROPDOWN_VALUE_PROP]?: string;
+  [DROPDOWN_PROPS_PROP]?: PortalOptionProps;
+};
 
 const remap: (label: ReactNode) => { label: ReactNode; value: string } = (
   reactNode
@@ -55,6 +62,10 @@ const remap: (label: ReactNode) => { label: ReactNode; value: string } = (
           (reactNode as ReactElement<DropdownItemProps>).props[
             DROPDOWN_VALUE_PROP
           ] ?? "",
+        props:
+          (reactNode as ReactElement<DropdownItemProps>).props[
+            DROPDOWN_PROPS_PROP
+          ] ?? ALWAYS_EMPTY_OBJECT,
       };
 };
 
@@ -64,23 +75,28 @@ interface DropdownProps {
   placement?: MenuPlacement;
   noArrow?: boolean;
   onSelect?: (option: Option) => void;
+  titleElement?: JSX.Element;
   disabled?: boolean;
 }
 
 export type Option = {
   label: ReactNode;
   value: string;
+  props?: PortalOptionProps;
 };
 
 export const Dropdown: React.FC<DropdownProps> = ({
   title,
   children,
   onSelect,
+  titleElement,
   disabled = false,
 }) => {
   const [isOpened, setOpened] = useState<boolean>(false);
   const [selectedOption, setSelectedOption] = useState<Option>();
-
+  const titleName = !selectedOption
+    ? titleElement?.props?.["data-dropdown-value"]
+    : null;
   const options = React.Children.map(children, remap) ?? ALWAYS_EMPTY_ARRAY;
 
   const selectOption = (option: Option) => {
@@ -99,7 +115,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
       >
         {selectedOption?.label ?? title}
         <svg
-          className="ml-2 w-4 h-4"
+          className="ml-2 w-4 h-4 self-center"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -118,18 +134,20 @@ export const Dropdown: React.FC<DropdownProps> = ({
           {options.map((option, index) => {
             const isSelected =
               option.value === selectedOption?.value ||
-              (!selectedOption && !option.value);
+              option.value === titleName ||
+              (!selectedOption && !option.value && !titleName);
+
             const textContainerClasses = isSelected
-              ? "font-semibold select-none relative py-2 pl-3 pr-9"
-              : "select-none relative py-2 pl-3 pr-9";
+              ? "font-semibold select-none relative py-2 pl-3 w-max"
+              : "select-none relative py-2 pl-3 w-max";
             const checkmarkClasses = isSelected
-              ? checkmarkSelected
-              : checkmarkTailwind;
+              ? `${CN.dropdownSelected} ${checkmarkSelected}`
+              : `${CN.dropdownSelected} ${checkmarkTailwind}`;
 
             return (
               <li
                 key={`${index}-${option.value}`}
-                className={listItem}
+                className={`${CN.optionContainer} ${listItem}`}
                 onClick={() => selectOption(option)}
               >
                 <div className={textContainerClasses}>{option.label}</div>

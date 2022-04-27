@@ -1,13 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm, useFormState } from "react-hook-form";
-import { useAsync, useAsyncFn } from "react-use";
+import { useAsyncFn } from "react-use";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { DEFAULT_PORTAL_IS_ENABLED } from "settings";
 
 import { upsertRoom } from "api/admin";
-import { fetchVenue } from "api/venue";
 
 import { Room } from "types/rooms";
 
@@ -16,11 +15,11 @@ import {
   convertPortalTypeToClickability,
 } from "utils/portal";
 
+import { useSpaceById } from "hooks/spaces/useSpaceById";
 import { useLiveUser } from "hooks/user/useLiveUser";
 import { useShowHide } from "hooks/useShowHide";
 
 import { FormErrors } from "components/molecules/FormErrors";
-import { Loading } from "components/molecules/Loading";
 import { PortalAddEditModal } from "components/molecules/PortalAddEditModal";
 import { SubmitError } from "components/molecules/SubmitError";
 
@@ -48,10 +47,10 @@ export const PortalStripForm: React.FC<PortalStripFormProps> = ({
   mapHeightPx,
 }) => {
   const { image_url: iconUrl, title, spaceId: targetSpaceId } = portal;
-
   const { user } = useLiveUser();
   const [updatingClickable, setUpdatingClickable] = useState(false);
   const [updatingEnabled, setUpdatingEnabled] = useState(false);
+  const { space } = useSpaceById({ spaceId: targetSpaceId });
   const {
     isShown: isModalShown,
     hide: hideModal,
@@ -59,12 +58,6 @@ export const PortalStripForm: React.FC<PortalStripFormProps> = ({
   } = useShowHide(false);
 
   const portalIcon = iconUrl;
-
-  const { value: targetSpace } = useAsync(async () => {
-    if (targetSpaceId) {
-      return fetchVenue(targetSpaceId);
-    }
-  });
 
   const { getValues, reset, control, handleSubmit } = useForm({
     mode: "onSubmit",
@@ -134,7 +127,7 @@ export const PortalStripForm: React.FC<PortalStripFormProps> = ({
     () => (
       <span className="PortalStripForm__label">
         {loading && updatingClickable ? (
-          <Loading label="Updating..." />
+          <span>Updating...</span>
         ) : (
           <span>{values.isClickable ? "Clickable" : "Unclickable"}</span>
         )}
@@ -147,7 +140,7 @@ export const PortalStripForm: React.FC<PortalStripFormProps> = ({
     () => (
       <span className="PortalStripForm__label">
         {loading && updatingEnabled ? (
-          <Loading label="Updating..." />
+          <span>Updating...</span>
         ) : (
           <span>{values.isEnabled ? "Visible" : "Invisible"}</span>
         )}
@@ -163,7 +156,7 @@ export const PortalStripForm: React.FC<PortalStripFormProps> = ({
         <div className="ml-4">
           <div className="text-sm font-medium text-gray-900">{title}</div>
           <div className="text-sm text-gray-900">
-            Destination {targetSpace?.name || "no linked space"}
+            Destination {space?.name || "no linked space"}
           </div>
         </div>
       </TablePanel.Cell>
@@ -189,7 +182,7 @@ export const PortalStripForm: React.FC<PortalStripFormProps> = ({
           </div>
         </div>
         <div
-          className="flex items-center flex-row cursor-pointer"
+          className="flex items-end flex-row cursor-pointer"
           onClick={showModal}
         >
           <FontAwesomeIcon

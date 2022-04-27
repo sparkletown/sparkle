@@ -12,7 +12,6 @@ export interface Profile {
   partyName?: string;
   pictureUrl?: string;
   mirrorVideo?: boolean;
-  status?: string;
   myPersonalizedSchedule?: MyPersonalizedSchedule;
   profileLinks?: ProfileLink[];
 
@@ -39,11 +38,6 @@ export type SeatedUser<T> = DisplayUser & {
   spaceId: string;
   seatData: T;
 };
-
-export interface UserStatus {
-  status: string;
-  color: string;
-}
 
 export interface UserLocation {
   lastVenueIdSeenIn: string | null;

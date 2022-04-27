@@ -11,7 +11,11 @@ import { AdminLayout } from "components/layouts/AdminLayout";
 import { FullWidthLayout } from "components/layouts/FullWidthLayout";
 import { WithPermission } from "components/shared/WithPermission";
 
-import { ADMIN_IA_SPACE_CREATE_PARAM_URL, SPACE_TAXON } from "settings";
+import {
+  ADMIN_IA_SPACE_CREATE_PARAM_URL,
+  ALWAYS_EMPTY_ARRAY,
+  SPACE_TAXON,
+} from "settings";
 
 import { SpaceWithId, UserId, WorldWithId } from "types/id";
 import { isNotPartyMapVenue, isPartyMapVenue } from "types/venues";
@@ -30,10 +34,10 @@ export const SpacesDashboard: React.FC<SpacesDashboardProps> = ({
   world,
 }) => {
   const isWorldAdmin = userId ? world?.owners.includes(userId) : undefined;
-  const { spaces } = useWorldSpaces({ worldId: world.id });
+  const { spaces = ALWAYS_EMPTY_ARRAY } = useWorldSpaces({ worldId: world.id });
 
-  const managedSpaces = spaces.filter(({ managedBy }) => !!managedBy);
-  const unmanagedSpaces = spaces.filter(({ managedBy }) => !managedBy);
+  const managedSpaces = spaces?.filter(({ managedBy }) => !!managedBy);
+  const unmanagedSpaces = spaces?.filter(({ managedBy }) => !managedBy);
 
   const renderSpaceCards = useCallback(
     (spacesToRender: SpaceWithId[]) =>

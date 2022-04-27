@@ -7,8 +7,6 @@ import { BUILD_SHA1, LOGROCKET_APP_ID } from "secrets";
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useLiveUser } from "hooks/user/useLiveUser";
 
-import { LoadingPage } from "components/molecules/LoadingPage";
-
 import { AnalyticsCount } from "./AnalyticsCount";
 
 if (LOGROCKET_APP_ID) {
@@ -22,16 +20,8 @@ if (LOGROCKET_APP_ID) {
 }
 
 export const AnalyticsCheck: React.FC = ({ children }) => {
-  const { auth, userId, profile, isLoading: isUserLoading } = useLiveUser();
-  const { space, isLoading: isSpaceLoading } = useWorldAndSpaceByParams();
-
-  if (isUserLoading || isSpaceLoading) {
-    return <LoadingPage />;
-  }
-
-  if (!userId || !space) {
-    return <>{children}</>;
-  }
+  const { auth, userId, profile } = useLiveUser();
+  const { space } = useWorldAndSpaceByParams();
 
   return (
     <AnalyticsCount auth={auth} userId={userId} profile={profile} space={space}>

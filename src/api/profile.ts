@@ -14,34 +14,6 @@ export const getUser = async (userId: string): Promise<WithId<User>> => {
   return withId(snapshot.data() as User, snapshot.id);
 };
 
-export interface UpdateUserOnlineStatusProps {
-  status?: string;
-  userId: string;
-}
-
-export const updateUserOnlineStatus = async ({
-  status,
-  userId,
-}: UpdateUserOnlineStatusProps): Promise<void> => {
-  const userProfileRef = getUserRef(userId);
-
-  const newUserStatusData = {
-    status: status ?? firebase.firestore.FieldValue.delete(),
-  };
-
-  const context = {
-    location: "api/profile::updateUserOnlineStatus",
-    status,
-    userId,
-  };
-
-  return userProfileRef.update(newUserStatusData).catch((err) => {
-    Bugsnag.notify(err, (event) => {
-      event.addMetadata("context", context);
-    });
-  });
-};
-
 // ================================================= Personalized Schedule
 export const addEventToPersonalizedSchedule = ({
   event,
