@@ -39,21 +39,6 @@ export const spaceEditSchema = Yup.object().shape({
     (template: VenueTemplate, schema: Yup.StringSchema) =>
       IFRAME_TEMPLATES.includes(template) ? validUrlSchema : schema
   ),
-  // @debt de-dupe this
-  auditoriumColumns: Yup.number().when(
-    "$template",
-    (template: VenueTemplate, schema: Yup.StringSchema) =>
-      template === VenueTemplate.auditorium
-        ? schema.required()
-        : schema.notRequired()
-  ),
-  auditoriumRows: Yup.number().when(
-    "$template",
-    (template: VenueTemplate, schema: Yup.StringSchema) =>
-      template === VenueTemplate.auditorium
-        ? schema.required()
-        : schema.notRequired()
-  ),
   template: Yup.mixed<VenueTemplate>().oneOf(Object.values(VenueTemplate)),
   boothsEnabled: Yup.boolean().when(
     "$template",

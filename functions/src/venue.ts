@@ -106,10 +106,6 @@ interface VenueData2Payload {
 
   logoImageUrl?: string;
 
-  showGrid?: boolean;
-
-  columns: number;
-
   template?: string;
 
   parentId?: string;
@@ -155,9 +151,6 @@ interface CreateVenueData2 {
   };
   owners: string[];
 
-  showGrid: boolean;
-
-  columns?: number;
   isHidden: boolean;
   boothsEnabled: boolean;
   maxBooths: number;
@@ -181,8 +174,6 @@ const createVenueData_v2 = (data: VenueData2Payload, context: Object) => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     owners: [context.auth.token.user_id],
-    showGrid: data.showGrid || false,
-    ...(data.showGrid && { columns: data.columns }),
     template: data.template || VenueTemplate.partymap,
     rooms: [],
     createdAt: Date.now(),
@@ -239,8 +230,6 @@ interface Venue {
   name: string;
   start_utc_seconds?: number;
   end_utc_seconds?: number;
-  showGrid?: boolean;
-  columns?: number;
   showRadio?: boolean;
   radioStations: string[];
   entrance?: string;
@@ -258,8 +247,6 @@ interface Venue {
   updatedAt: number;
   zoomUrl?: string;
   iframeUrl?: string;
-  auditoriumColumns?: number;
-  auditoriumRows?: number;
   showRangers?: boolean;
   isReactionsMuted?: boolean;
   boothsEnabled?: boolean;
@@ -684,14 +671,6 @@ export const updateVenue_v2 = functions.https.onCall(async (data, context) => {
     updated.end_utc_seconds = data.end_utc_seconds;
   }
 
-  // @debt aside from the data.columns part, this is exactly the same as in updateVenue
-  if (typeof data.showGrid === "boolean") {
-    updated.showGrid = data.showGrid;
-
-    // @debt the logic here differs from updateVenue, as data.columns is always set when present there
-    updated.columns = data.columns;
-  }
-
   // @debt aside from the data.radioStations part, this is exactly the same as in updateVenue
   if (typeof data.showRadio === "boolean") {
     updated.showRadio = data.showRadio;
@@ -829,14 +808,6 @@ export const updateVenueNG = functions.https.onCall(async (data, context) => {
     updated.roomVisibility = data.roomVisibility;
   }
 
-  if (data.auditoriumColumns) {
-    updated.auditoriumColumns = data.auditoriumColumns;
-  }
-
-  if (data.auditoriumRows) {
-    updated.auditoriumRows = data.auditoriumRows;
-  }
-
   if (typeof data.showRangers === "boolean") {
     updated.showRangers = data.showRangers;
   }
@@ -890,14 +861,6 @@ export const updateVenueNG = functions.https.onCall(async (data, context) => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     updated.config.landingPageConfig.coverImageUrl = data.bannerImageUrl;
-  }
-
-  if (typeof data.showGrid === "boolean") {
-    updated.showGrid = data.showGrid;
-  }
-
-  if (typeof data.columns === "number") {
-    updated.columns = data.columns;
   }
 
   if (typeof data.showRadio === "boolean") {
@@ -1300,7 +1263,6 @@ export const createBooth = functions.https.onCall(async (data, context) => {
       subtitle: templateSpace.config.landingPageConfig.subtitle,
       description: templateSpace.config.landingPageConfig.description,
       logoImageUrl: templateSpace.host.icon,
-      columns: 0,
       template: "meetingroom",
       parentId: options.parentSpaceId,
       worldId: templateSpace.worldId,
