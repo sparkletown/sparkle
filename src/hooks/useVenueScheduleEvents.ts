@@ -33,11 +33,10 @@ const useVenueScheduleEvents = ({
   userEventIds: Partial<Record<string, string[]>>;
 }) => {
   const {
-    descendantVenues,
     relatedVenueIds,
     isLoading,
     sovereignVenue,
-    relatedVenues,
+    worldSpaces,
   } = useRelatedVenues();
 
   const { worldSlug } = useWorldParams();
@@ -55,11 +54,11 @@ const useVenueScheduleEvents = ({
       relatedVenueEvents.filter(isEventLiveOrFuture).map(
         prepareForSchedule({
           worldSlug,
-          relatedVenues: descendantVenues,
+          relatedVenues: worldSpaces,
           usersEvents: userEventIds,
         })
       ),
-    [relatedVenueEvents, descendantVenues, worldSlug, userEventIds]
+    [relatedVenueEvents, worldSlug, worldSpaces, userEventIds]
   );
 
   const liveEventsMinimalStartValue = Math.min(
@@ -114,10 +113,9 @@ const useVenueScheduleEvents = ({
     firstScheduleDate,
     dayDifference,
     liveAndFutureEvents,
-    descendantVenues,
     isEventsLoading: isLoading || !isEventsLoaded,
     sovereignVenue,
-    relatedVenues,
+    worldSpaces,
   };
 };
 

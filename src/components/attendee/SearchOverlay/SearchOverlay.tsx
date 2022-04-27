@@ -47,11 +47,11 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ onClose }) => {
     setSearchInputValue(searchValue);
   };
 
-  const { isLoading, relatedVenues } = useRelatedVenues();
+  const { isLoading, worldSpaces } = useRelatedVenues();
 
   const enabledRelatedPortals = useMemo<Room[]>(
     () =>
-      relatedVenues
+      worldSpaces
         .flatMap((venue) => venue.rooms ?? [])
         .filter((portal) => {
           if (
@@ -63,7 +63,7 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ onClose }) => {
 
           return portal.isEnabled;
         }),
-    [relatedVenues]
+    [worldSpaces]
   );
 
   const foundPortals = useMemo<Room[]>(() => {
@@ -77,9 +77,12 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ onClose }) => {
     );
   }, [searchQuery, enabledRelatedPortals]);
 
-  const algoliaSearchState = useAlgoliaSearch(searchQuery, {
-    sovereignVenueId: worldId as string,
-  });
+  const algoliaSearchState = useAlgoliaSearch(
+    searchQuery,
+    worldId && {
+      worldId,
+    }
+  );
 
   const foundUsers = useMemo<
     Hit<

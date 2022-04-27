@@ -33,10 +33,8 @@ export interface RelatedVenuesContextState {
 
   sovereignVenue?: SpaceWithId;
   sovereignVenueId?: string;
-  sovereignVenueDescendantIds?: readonly string[];
 
-  relatedVenues: SpaceWithId[];
-  descendantVenues: SpaceWithId[];
+  worldSpaces: SpaceWithId[];
   relatedVenueIds: string[];
 
   findVenueInRelatedVenues: (
@@ -61,30 +59,21 @@ const LegacyRelatedVenuesProvider: React.FC<WorldAndSpaceIdLocation> = ({
     ],
   });
 
-  const relatedVenues = data ?? ALWAYS_EMPTY_ARRAY;
+  const worldSpaces = data ?? ALWAYS_EMPTY_ARRAY;
 
   const sovereignVenueSearchResult = useMemo(() => {
-    if (!spaceId || !Array.isArray(relatedVenues) || !relatedVenues.length) {
+    if (!spaceId || !Array.isArray(worldSpaces) || !worldSpaces.length) {
       return;
     }
 
-    return findSovereignVenue(spaceId, relatedVenues);
-  }, [spaceId, relatedVenues]);
+    return findSovereignVenue(spaceId, worldSpaces);
+  }, [spaceId, worldSpaces]);
 
   const sovereignVenue = sovereignVenueSearchResult?.sovereignVenue;
-  const sovereignVenueDescendantIds =
-    sovereignVenueSearchResult?.checkedVenueIds;
-  const sovereignVenueId = sovereignVenue?.id;
 
-  const relatedVenueIds = useMemo(
-    () => relatedVenues.map((venue) => venue.id),
-    [relatedVenues]
-  );
-
-  const descendantVenues = useMemo(
-    () => relatedVenues.filter((venue) => venue.id !== sovereignVenueId),
-    [relatedVenues, sovereignVenueId]
-  );
+  const relatedVenueIds = useMemo(() => worldSpaces.map((venue) => venue.id), [
+    worldSpaces,
+  ]);
 
   const findVenueInRelatedVenues = useCallback(
     (
@@ -93,7 +82,7 @@ const LegacyRelatedVenuesProvider: React.FC<WorldAndSpaceIdLocation> = ({
       if (!searchOptions) return;
 
       if (searchOptions.spaceSlug) {
-        const foundSpace = relatedVenues.find(
+        const foundSpace = worldSpaces.find(
           (space) => space.slug === searchOptions.spaceSlug
         );
         if (foundSpace) {
@@ -102,7 +91,7 @@ const LegacyRelatedVenuesProvider: React.FC<WorldAndSpaceIdLocation> = ({
       }
 
       if (searchOptions.spaceId) {
-        const foundSpace = relatedVenues.find(
+        const foundSpace = worldSpaces.find(
           (space) => space.id === searchOptions.spaceId
         );
         if (foundSpace) {
@@ -112,7 +101,7 @@ const LegacyRelatedVenuesProvider: React.FC<WorldAndSpaceIdLocation> = ({
 
       return undefined;
     },
-    [relatedVenues]
+    [worldSpaces]
   );
 
   const relatedVenuesState: RelatedVenuesContextState = useMemo(
@@ -120,25 +109,18 @@ const LegacyRelatedVenuesProvider: React.FC<WorldAndSpaceIdLocation> = ({
       isLoading,
 
       sovereignVenue,
-      sovereignVenueId,
-      sovereignVenueDescendantIds,
 
-      relatedVenues,
+      worldSpaces,
       relatedVenueIds,
-
-      descendantVenues,
 
       findVenueInRelatedVenues,
     }),
     [
       isLoading,
-      relatedVenues,
+      worldSpaces,
       relatedVenueIds,
-      descendantVenues,
       findVenueInRelatedVenues,
       sovereignVenue,
-      sovereignVenueId,
-      sovereignVenueDescendantIds,
     ]
   );
 
@@ -161,19 +143,11 @@ const WorldSpacesProvider: React.FC<WorldIdLocation> = ({
     ],
   });
 
-  const relatedVenues = data?.filter(isDefined) ?? ALWAYS_EMPTY_ARRAY;
+  const worldSpaces = data?.filter(isDefined) ?? ALWAYS_EMPTY_ARRAY;
 
-  // considering only worldId is provided, before this being defined maybe a whole world could be made to have a default space
-  const sovereignVenueId = undefined;
-
-  const relatedVenueIds = useMemo(() => relatedVenues.map(({ id }) => id), [
-    relatedVenues,
+  const relatedVenueIds = useMemo(() => worldSpaces.map(({ id }) => id), [
+    worldSpaces,
   ]);
-
-  const descendantVenues = useMemo(
-    () => relatedVenues.filter(({ id }) => id !== sovereignVenueId),
-    [relatedVenues, sovereignVenueId]
-  );
 
   const findVenueInRelatedVenues = useCallback(
     (
@@ -182,7 +156,7 @@ const WorldSpacesProvider: React.FC<WorldIdLocation> = ({
       if (!searchOptions) return;
 
       if (searchOptions.spaceSlug) {
-        const foundSpace = relatedVenues.find(
+        const foundSpace = worldSpaces.find(
           (space) => space.slug === searchOptions.spaceSlug
         );
         if (foundSpace) {
@@ -191,7 +165,7 @@ const WorldSpacesProvider: React.FC<WorldIdLocation> = ({
       }
 
       if (searchOptions.spaceId) {
-        const foundSpace = relatedVenues.find(
+        const foundSpace = worldSpaces.find(
           (space) => space.id === searchOptions.spaceId
         );
         if (foundSpace) {
@@ -201,24 +175,17 @@ const WorldSpacesProvider: React.FC<WorldIdLocation> = ({
 
       return undefined;
     },
-    [relatedVenues]
+    [worldSpaces]
   );
 
   const relatedVenuesState: RelatedVenuesContextState = useMemo(
     () => ({
       isLoading,
-      relatedVenues,
+      worldSpaces,
       relatedVenueIds,
-      descendantVenues,
       findVenueInRelatedVenues,
     }),
-    [
-      isLoading,
-      relatedVenues,
-      relatedVenueIds,
-      descendantVenues,
-      findVenueInRelatedVenues,
-    ]
+    [isLoading, worldSpaces, relatedVenueIds, findVenueInRelatedVenues]
   );
 
   return (
@@ -233,9 +200,8 @@ export const RelatedVenuesProvider: React.FC = ({ children }) => {
   const defaultState: RelatedVenuesContextState = useMemo(
     () => ({
       isLoading: false,
-      relatedVenues: ALWAYS_EMPTY_ARRAY,
+      worldSpaces: ALWAYS_EMPTY_ARRAY,
       relatedVenueIds: ALWAYS_EMPTY_ARRAY,
-      descendantVenues: ALWAYS_EMPTY_ARRAY,
       findVenueInRelatedVenues: () => undefined,
     }),
     []
