@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext, useMemo } from "react";
+import React, { createContext, useContext, useMemo } from "react";
 import { where } from "firebase/firestore";
 
 import {
@@ -73,35 +73,6 @@ const LegacyRelatedVenuesProvider: React.FC<WorldAndSpaceIdLocation> = ({
     [worldSpaces]
   );
 
-  const findVenueInRelatedVenues = useCallback(
-    (
-      searchOptions: FindVenueInRelatedVenuesOptions
-    ): SpaceWithId | undefined => {
-      if (!searchOptions) return;
-
-      if (searchOptions.spaceSlug) {
-        const foundSpace = worldSpaces.find(
-          (space) => space.slug === searchOptions.spaceSlug
-        );
-        if (foundSpace) {
-          return foundSpace;
-        }
-      }
-
-      if (searchOptions.spaceId) {
-        const foundSpace = worldSpaces.find(
-          (space) => space.id === searchOptions.spaceId
-        );
-        if (foundSpace) {
-          return foundSpace;
-        }
-      }
-
-      return undefined;
-    },
-    [worldSpaces]
-  );
-
   const relatedVenuesState: RelatedVenuesContextState = useMemo(
     () => ({
       isLoading,
@@ -110,16 +81,8 @@ const LegacyRelatedVenuesProvider: React.FC<WorldAndSpaceIdLocation> = ({
 
       worldSpaces,
       worldSpacesById,
-
-      findVenueInRelatedVenues,
     }),
-    [
-      isLoading,
-      worldSpaces,
-      worldSpacesById,
-      findVenueInRelatedVenues,
-      sovereignVenue,
-    ]
+    [isLoading, worldSpaces, worldSpacesById, sovereignVenue]
   );
 
   return (
