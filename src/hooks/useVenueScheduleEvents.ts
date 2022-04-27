@@ -18,7 +18,7 @@ import { isDateRangeStartWithinToday } from "utils/time";
 
 import { prepareForSchedule } from "components/organisms/NavBarSchedule/utils";
 
-import { useWorldBySlug } from "./worlds/useWorldBySlug";
+import { useWorldAndSpaceByParams } from "./spaces/useWorldAndSpaceByParams";
 import { useWorldParams } from "./worlds/useWorldParams";
 import { useSpaceEvents } from "./events";
 import { useRelatedVenues } from "./useRelatedVenues";
@@ -32,15 +32,10 @@ const useVenueScheduleEvents = ({
 }: {
   userEventIds: Partial<Record<string, string[]>>;
 }) => {
-  const {
-    isLoading,
-    sovereignVenue,
-    worldSpaces,
-    worldSpacesById,
-  } = useRelatedVenues();
+  const { isLoading, worldSpaces, worldSpacesById } = useRelatedVenues();
 
   const { worldSlug } = useWorldParams();
-  const { world } = useWorldBySlug(worldSlug);
+  const { space, world } = useWorldAndSpaceByParams();
 
   const {
     events: relatedVenueEvents = emptyRelatedEvents,
@@ -90,9 +85,8 @@ const useVenueScheduleEvents = ({
   );
 
   const endScheduleDate =
-    sovereignVenue?.end_utc_seconds &&
-    isFuture(fromUnixTime(sovereignVenue.end_utc_seconds))
-      ? sovereignVenue.end_utc_seconds
+    space?.end_utc_seconds && isFuture(fromUnixTime(space.end_utc_seconds))
+      ? space.end_utc_seconds
       : undefined;
 
   const daysInBetween = differenceInDays(
@@ -114,7 +108,6 @@ const useVenueScheduleEvents = ({
     dayDifference,
     liveAndFutureEvents,
     isEventsLoading: isLoading || !isEventsLoaded,
-    sovereignVenue,
     worldSpaces,
   };
 };

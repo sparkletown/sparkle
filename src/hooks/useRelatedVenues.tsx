@@ -19,7 +19,6 @@ import {
 
 import { convertToFirestoreKey } from "utils/id";
 import { isDefined } from "utils/types";
-import { findSovereignVenue } from "utils/venue";
 
 import { useRefiCollection } from "hooks/fire/useRefiCollection";
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
@@ -31,9 +30,6 @@ export type FindVenueInRelatedVenuesOptions = {
 
 export interface RelatedVenuesContextState {
   isLoading: boolean;
-
-  sovereignVenue?: SpaceWithId;
-  sovereignVenueId?: string;
 
   worldSpaces: SpaceWithId[];
   worldSpacesById: Record<SpaceId, SpaceWithId>;
@@ -58,16 +54,6 @@ const LegacyRelatedVenuesProvider: React.FC<WorldAndSpaceIdLocation> = ({
 
   const worldSpaces = data ?? ALWAYS_EMPTY_ARRAY;
 
-  const sovereignVenueSearchResult = useMemo(() => {
-    if (!spaceId || !Array.isArray(worldSpaces) || !worldSpaces.length) {
-      return;
-    }
-
-    return findSovereignVenue(spaceId, worldSpaces);
-  }, [spaceId, worldSpaces]);
-
-  const sovereignVenue = sovereignVenueSearchResult?.sovereignVenue;
-
   const worldSpacesById = useMemo(
     () => Object.fromEntries(worldSpaces.map((space) => [space.id, space])),
     [worldSpaces]
@@ -77,12 +63,10 @@ const LegacyRelatedVenuesProvider: React.FC<WorldAndSpaceIdLocation> = ({
     () => ({
       isLoading,
 
-      sovereignVenue,
-
       worldSpaces,
       worldSpacesById,
     }),
-    [isLoading, worldSpaces, worldSpacesById, sovereignVenue]
+    [isLoading, worldSpaces, worldSpacesById]
   );
 
   return (

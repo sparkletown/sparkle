@@ -5,14 +5,13 @@ import { Spacer } from "components/attendee/Spacer";
 
 import { fetchCustomAuthConfig } from "api/auth";
 
-import { SpaceId, SpaceWithId } from "types/id";
+import { SpaceId } from "types/id";
 
 import { tracePromise } from "utils/performance";
 import { isDefined } from "utils/types";
 import { openUrl } from "utils/url";
 
 import { UseAnalyticsResult } from "hooks/useAnalytics";
-import { useSAMLSignIn } from "hooks/useSAMLSignIn";
 
 import CN from "pages/auth/auth.module.scss";
 import { InitialForm } from "pages/auth/InitialForm";
@@ -28,21 +27,15 @@ import sparkleHeaderImage from "assets/images/sparkle-header.png";
 export interface LoginProps {
   formType?: "initial" | "login" | "register" | "passwordReset";
   spaceId: SpaceId;
-  sovereignSpace?: SpaceWithId;
   analytics?: UseAnalyticsResult;
 }
 
 export const Login: React.FC<LoginProps> = ({
   formType = "initial",
   spaceId,
-  sovereignSpace,
   analytics,
 }) => {
   const [formToDisplay, setFormToDisplay] = useState(formType);
-
-  const { signInWithSAML, hasSamlAuthProviderId } = useSAMLSignIn(
-    sovereignSpace?.samlAuthProviderId
-  );
 
   const {
     loading: isCustomAuthConfigLoading,
@@ -64,7 +57,7 @@ export const Login: React.FC<LoginProps> = ({
     );
   }, [customAuthConnectPath, spaceId]);
 
-  const hasAlternativeLogins = hasSamlAuthProviderId || hasCustomAuthConnect;
+  const hasAlternativeLogins = hasCustomAuthConnect;
 
   const displayLoginForm = () => {
     setFormToDisplay("login");
@@ -106,15 +99,6 @@ export const Login: React.FC<LoginProps> = ({
                   onClick={signInWithCustomAuth}
                   title={customAuthName}
                   alt={customAuthName}
-                />
-              )}
-              {hasSamlAuthProviderId && (
-                <img
-                  className="Login__quick-login-icon"
-                  src={SAMLLoginIcon}
-                  onClick={signInWithSAML}
-                  title="SAML SSO login"
-                  alt="SAML SSO login"
                 />
               )}
             </Button>
