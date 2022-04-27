@@ -48,9 +48,9 @@ const SubAdmin = lazy(() =>
 );
 
 const SubWorldJoin = lazy(() =>
-  tracePromise("AppRouter::lazy-import::OnboardingSubRouter", () =>
-    import("./OnboardingSubRouter").then(({ OnboardingSubRouter }) => ({
-      default: OnboardingSubRouter,
+  tracePromise("AppRouter::lazy-import::OnboardingPage", () =>
+    import("components/attendee/OnboardingPage").then(({ OnboardingPage }) => ({
+      default: OnboardingPage,
     }))
   )
 );
@@ -184,7 +184,7 @@ export const AppRouter: React.FC = () => (
           </SplashGated>
         </Route>
 
-        <Route path={ATTENDEE_STEPPING_PARAM_URL}>
+        {/* <Route path={ATTENDEE_STEPPING_PARAM_URL}>
           <LoginRestricted>
             <RelatedVenuesProvider>
               <AnalyticsCheck>
@@ -192,7 +192,7 @@ export const AppRouter: React.FC = () => (
               </AnalyticsCheck>
             </RelatedVenuesProvider>
           </LoginRestricted>
-        </Route>
+        </Route> */}
         <Route path={ATTENDEE_INSIDE_URL}>
           <LoginRestricted>
             <RelatedVenuesProvider>

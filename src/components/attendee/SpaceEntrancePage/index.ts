@@ -1,1 +1,1 @@
-export { SpaceEntrancePageHoc as SpaceEntrancePage } from "./SpaceEntrancePage.hoc";
+export { SpaceEntrancePage } from "./SpaceEntrancePage";

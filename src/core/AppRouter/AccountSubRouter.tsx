@@ -23,9 +23,7 @@ export const AccountSubRouter: React.FC = () => {
       </Route>
       <Route path={ACCOUNT_CODE_QUESTIONS_URL}>
         <LoginRestricted>
-          <AnalyticsCheck>
-            <CodeOfConduct />
-          </AnalyticsCheck>
+          <AnalyticsCheck>{/* <CodeOfConduct /> */}</AnalyticsCheck>
         </LoginRestricted>
       </Route>
     </Switch>
