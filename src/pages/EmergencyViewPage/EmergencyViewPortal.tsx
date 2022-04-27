@@ -20,8 +20,8 @@ export const EmergencyViewPortal: React.FC<EmergencyViewPortalProps> = ({
 }) => {
   const { enterPortal, portalSpaceId } = usePortal({ portal });
 
-  const { findVenueInRelatedVenues } = useRelatedVenues({});
-  const portalVenue = findVenueInRelatedVenues({ spaceId: portalSpaceId });
+  const { worldSpacesById } = useRelatedVenues({});
+  const portalVenue = portalSpaceId && worldSpacesById[portalSpaceId];
 
   const portalImage = getFirebaseStorageResizedImage(portal.image_url, {
     fit: "crop",

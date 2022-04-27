@@ -3,6 +3,7 @@ import { where } from "firebase/firestore";
 
 import {
   ALWAYS_EMPTY_ARRAY,
+  ALWAYS_EMPTY_OBJECT,
   COLLECTION_SPACES,
   FIELD_IS_HIDDEN,
   FIELD_WORLD_ID,
@@ -35,11 +36,7 @@ export interface RelatedVenuesContextState {
   sovereignVenueId?: string;
 
   worldSpaces: SpaceWithId[];
-  relatedVenueIds: string[];
-
-  findVenueInRelatedVenues: (
-    searchOptions: FindVenueInRelatedVenuesOptions
-  ) => SpaceWithId | undefined;
+  worldSpacesById: Record<SpaceId, SpaceWithId>;
 }
 
 const RelatedVenuesContext = createContext<
@@ -71,9 +68,10 @@ const LegacyRelatedVenuesProvider: React.FC<WorldAndSpaceIdLocation> = ({
 
   const sovereignVenue = sovereignVenueSearchResult?.sovereignVenue;
 
-  const relatedVenueIds = useMemo(() => worldSpaces.map((venue) => venue.id), [
-    worldSpaces,
-  ]);
+  const worldSpacesById = useMemo(
+    () => Object.fromEntries(worldSpaces.map((space) => [space.id, space])),
+    [worldSpaces]
+  );
 
   const findVenueInRelatedVenues = useCallback(
     (
@@ -111,14 +109,14 @@ const LegacyRelatedVenuesProvider: React.FC<WorldAndSpaceIdLocation> = ({
       sovereignVenue,
 
       worldSpaces,
-      relatedVenueIds,
+      worldSpacesById,
 
       findVenueInRelatedVenues,
     }),
     [
       isLoading,
       worldSpaces,
-      relatedVenueIds,
+      worldSpacesById,
       findVenueInRelatedVenues,
       sovereignVenue,
     ]
@@ -144,52 +142,22 @@ const WorldSpacesProvider: React.FC<WorldIdLocation> = ({
   });
 
   const worldSpaces = data?.filter(isDefined) ?? ALWAYS_EMPTY_ARRAY;
-
-  const relatedVenueIds = useMemo(() => worldSpaces.map(({ id }) => id), [
-    worldSpaces,
-  ]);
-
-  const findVenueInRelatedVenues = useCallback(
-    (
-      searchOptions: FindVenueInRelatedVenuesOptions
-    ): SpaceWithId | undefined => {
-      if (!searchOptions) return;
-
-      if (searchOptions.spaceSlug) {
-        const foundSpace = worldSpaces.find(
-          (space) => space.slug === searchOptions.spaceSlug
-        );
-        if (foundSpace) {
-          return foundSpace;
-        }
-      }
-
-      if (searchOptions.spaceId) {
-        const foundSpace = worldSpaces.find(
-          (space) => space.id === searchOptions.spaceId
-        );
-        if (foundSpace) {
-          return foundSpace;
-        }
-      }
-
-      return undefined;
-    },
+  const worldSpacesById = useMemo(
+    () => Object.fromEntries(worldSpaces.map((space) => [space.id, space])),
     [worldSpaces]
   );
 
-  const relatedVenuesState: RelatedVenuesContextState = useMemo(
+  const relatedSpacesState: RelatedVenuesContextState = useMemo(
     () => ({
       isLoading,
       worldSpaces,
-      relatedVenueIds,
-      findVenueInRelatedVenues,
+      worldSpacesById,
     }),
-    [isLoading, worldSpaces, relatedVenueIds, findVenueInRelatedVenues]
+    [isLoading, worldSpaces, worldSpacesById]
   );
 
   return (
-    <RelatedVenuesContext.Provider value={relatedVenuesState}>
+    <RelatedVenuesContext.Provider value={relatedSpacesState}>
       {children}
     </RelatedVenuesContext.Provider>
   );
@@ -201,8 +169,7 @@ export const RelatedVenuesProvider: React.FC = ({ children }) => {
     () => ({
       isLoading: false,
       worldSpaces: ALWAYS_EMPTY_ARRAY,
-      relatedVenueIds: ALWAYS_EMPTY_ARRAY,
-      findVenueInRelatedVenues: () => undefined,
+      worldSpacesById: ALWAYS_EMPTY_OBJECT,
     }),
     []
   );
@@ -258,17 +225,19 @@ export function useRelatedVenues(props?: RelatedVenuesProps) {
   const { currentVenueId } = props ?? {};
   const relatedVenuesState = useRelatedVenuesContext();
 
-  const { findVenueInRelatedVenues } = relatedVenuesState;
+  const { worldSpacesById } = relatedVenuesState;
 
   const currentVenue: SpaceWithId | undefined = useMemo(() => {
-    return findVenueInRelatedVenues({ spaceId: currentVenueId });
-  }, [currentVenueId, findVenueInRelatedVenues]);
+    return currentVenueId && worldSpacesById[currentVenueId];
+  }, [currentVenueId, worldSpacesById]);
 
   const parentVenue: SpaceWithId | undefined = useMemo(() => {
-    if (!currentVenue) return;
-
-    return findVenueInRelatedVenues({ spaceId: currentVenue.parentId });
-  }, [currentVenue, findVenueInRelatedVenues]);
+    return (
+      currentVenue &&
+      currentVenue.parentId &&
+      worldSpacesById[currentVenue.parentId]
+    );
+  }, [currentVenue, worldSpacesById]);
 
   const parentVenueId = parentVenue?.id;
 

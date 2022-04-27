@@ -33,10 +33,10 @@ const useVenueScheduleEvents = ({
   userEventIds: Partial<Record<string, string[]>>;
 }) => {
   const {
-    relatedVenueIds,
     isLoading,
     sovereignVenue,
     worldSpaces,
+    worldSpacesById,
   } = useRelatedVenues();
 
   const { worldSlug } = useWorldParams();
@@ -47,7 +47,7 @@ const useVenueScheduleEvents = ({
     isLoaded: isEventsLoaded,
   } = useSpaceEvents({
     worldId: world?.id,
-    spaceIds: relatedVenueIds,
+    spaceIds: Object.keys(worldSpacesById),
   });
   const liveAndFutureEvents = useMemo(
     () =>

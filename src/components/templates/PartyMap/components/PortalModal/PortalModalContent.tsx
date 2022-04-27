@@ -55,7 +55,7 @@ export const PortalModalContent: React.FC<PortalModalContentProps> = ({
     dispatch(retainAttendance(false));
   }, [dispatch]);
 
-  const { findVenueInRelatedVenues } = useRelatedVenues({
+  const { worldSpacesById } = useRelatedVenues({
     currentVenueId: spaceId,
   });
 
@@ -65,7 +65,7 @@ export const PortalModalContent: React.FC<PortalModalContentProps> = ({
 
   const analytics = useAnalytics({ venue: space });
 
-  const portalSpace = findVenueInRelatedVenues({ spaceId: portalSpaceId });
+  const portalSpace = portalSpaceId && worldSpacesById[portalSpaceId];
 
   const portalVenueSubtitle = portalSpace?.config?.landingPageConfig?.subtitle;
   const portalVenueDescription =
