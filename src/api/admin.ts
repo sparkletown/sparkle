@@ -67,7 +67,6 @@ interface VenueAdvancedConfig {
   roomVisibility?: RoomVisibility;
   showRadio?: boolean;
   parentId?: SpaceId;
-  enableJukebox?: boolean;
 }
 
 export interface VenueInput_v2 extends WithId<VenueAdvancedConfig> {
@@ -110,14 +109,6 @@ export const createSlug = (name: string | unknown) =>
   String(name ?? "")
     .replace(INVALID_SLUG_CHARS_REGEX, "")
     .toLowerCase();
-
-export const getVenueOwners = async (venueId: string): Promise<string[]> => {
-  const owners = (
-    await firebase.firestore().collection("venues").doc(venueId).get()
-  ).data()?.owners;
-
-  return owners;
-};
 
 /**
  * This method creates the payload for an API call for creating/updating venues.

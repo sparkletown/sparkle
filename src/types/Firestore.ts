@@ -10,11 +10,7 @@ import { Settings } from "./settings";
 
 import { World } from "api/world";
 
-import {
-  JukeboxMessage,
-  PrivateChatMessage,
-  VenueChatMessage,
-} from "types/chat";
+import { PrivateChatMessage, VenueChatMessage } from "types/chat";
 import { Reaction } from "types/reactions";
 import { ScreeningRoomVideo } from "types/screeningRoom";
 import { Table } from "types/Table";
@@ -96,7 +92,6 @@ export interface FirestoreData {
   settings?: Settings;
   screeningRoomVideos: Record<string, ScreeningRoomVideo>;
   venueChatMessages?: Record<string, VenueChatMessage>;
-  venueJukeboxMessages?: Record<string, JukeboxMessage>;
   venueEvents?: Record<string, WorldEvent>;
   worldEdit?: World;
   currentWorld?: World;
@@ -117,7 +112,6 @@ export interface FirestoreOrdered {
   privateChatMessages?: WithId<PrivateChatMessage>[];
   posterVenues?: PosterPageSpaceWithId[];
   venueChatMessages?: WithId<VenueChatMessage>[];
-  venueJukeboxMessages?: WithId<JukeboxMessage>[];
   venueEvents?: WorldEvent[];
   worldEdit?: WithId<World>[];
 }
