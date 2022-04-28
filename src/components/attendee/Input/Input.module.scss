@@ -14,10 +14,15 @@
   border-radius: border.$radius--xs;
   background-color: theme.$c-button-fg;
   border-color: theme.$c-login-input--eg;
+  color: theme.$c-default-text;
 }
 
 .variant-chat--wrapper {
   background-color: theme.$c-chat-input-background;
+}
+
+.variant-overlay--wrapper {
+  color: theme.$c-dark-text;
 }
 
 .input {
@@ -33,7 +38,6 @@
   padding-left: space.empty(0.75);
   padding-right: space.empty(0.8);
   border-left: border.$width--slim solid theme.$sparkle--border;
-  color: theme.$c-dark-text;
   cursor: pointer;
 }
 
@@ -74,7 +78,6 @@
   height: space.$l3;
   border-radius: border.$radius--xs;
   background-color: theme.$c-chat-input-background;
-  color: theme.$c-default-text;
 }
 
 .variant-overlay {

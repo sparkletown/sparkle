@@ -19,16 +19,13 @@ import {
   COMMON_NAME_MAX_CHAR_COUNT,
   DEFAULT_EMBED_URL,
   DEFAULT_REACTIONS_MUTED,
-  DEFAULT_SECTION_CAPACITY,
   DEFAULT_SECTIONS_AMOUNT,
   DEFAULT_SHOW_CONTENT,
   DEFAULT_SHOW_REACTIONS,
   DEFAULT_SHOW_SHOUTOUTS,
   DEFAULT_VENUE_AUTOPLAY,
   DEFAULT_VENUE_LOGO,
-  DISABLED_DUE_TO_1253,
   EMBEDDABLE_CONTENT_TEMPLATES,
-  HAS_GRID_TEMPLATES,
   HAS_REACTIONS_TEMPLATES,
   IFRAME_TEMPLATES,
   MAX_MAX_BOOTHS,
@@ -36,6 +33,7 @@ import {
   MIN_MAX_BOOTHS,
   MIN_SECTIONS_AMOUNT,
   PORTAL_INFO_ICON_MAPPING,
+  SECTION_CAPACITY,
   SUBVENUE_TEMPLATES,
   ZOOM_URL_TEMPLATES,
 } from "settings";
@@ -72,9 +70,6 @@ const HANDLED_ERRORS = [
   "mapBackgroundImage",
   "iframeUrl",
   "zoomUrl",
-  "auditoriumColumns",
-  "auditoriumRows",
-  "columns",
 ];
 
 export interface SpaceEditFormProps {
@@ -98,10 +93,8 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
       description: space.config?.landingPageConfig?.description ?? "",
       mapBackgroundImage: space.mapBackgroundImageUrl ?? "",
       iframeUrl: space.iframeUrl ?? DEFAULT_EMBED_URL,
-      showGrid: space.showGrid ?? false,
       showReactions: space.showReactions ?? DEFAULT_SHOW_REACTIONS,
       showShoutouts: space.showShoutouts ?? DEFAULT_SHOW_SHOUTOUTS,
-      columns: space.columns ?? 0,
       autoPlay: space.autoPlay ?? DEFAULT_VENUE_AUTOPLAY,
       isReactionsMuted: space.isReactionsMuted ?? DEFAULT_REACTIONS_MUTED,
       // @debt should use SpaceId type here, resolve error with form typing
@@ -125,10 +118,8 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
       space.config?.landingPageConfig?.description,
       space.mapBackgroundImageUrl,
       space.iframeUrl,
-      space.showGrid,
       space.showReactions,
       space.showShoutouts,
-      space.columns,
       space.autoPlay,
       space.isReactionsMuted,
       space.parentId,
@@ -199,24 +190,24 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
 
   const isReactionsMutedDisabled = !values?.showReactions;
 
-  const { relatedVenues } = useRelatedVenues();
+  const { worldSpaces } = useRelatedVenues();
 
   const backButtonOptionList = useMemo(
     () =>
       Object.fromEntries(
-        relatedVenues
+        worldSpaces
           .filter(
             ({ id, worldId }) => !(space.worldId !== worldId || id === space.id)
           )
           .map((venue) => [venue.id, venue])
       ),
-    [relatedVenues, space.worldId, space.id]
+    [worldSpaces, space.worldId, space.id]
   );
 
   const boothTemplateOptionList = useMemo(
     () =>
       Object.fromEntries(
-        relatedVenues
+        worldSpaces
           .filter(
             ({ id, worldId, template, managedBy }) =>
               space.worldId === worldId &&
@@ -226,23 +217,23 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
           )
           .map((venue) => [venue.id, venue])
       ),
-    [relatedVenues, space.worldId, space.id]
+    [worldSpaces, space.worldId, space.id]
   );
 
   const parentSpace = useMemo(
     () =>
       space.parentId
-        ? relatedVenues.find(({ id }) => id === space.parentId)
+        ? worldSpaces.find(({ id }) => id === space.parentId)
         : { name: "" },
-    [relatedVenues, space.parentId]
+    [worldSpaces, space.parentId]
   );
 
   const boothTemplateSpace = useMemo(
     () =>
       space.boothTemplateSpaceId
-        ? relatedVenues.find(({ id }) => id === space.boothTemplateSpaceId)
+        ? worldSpaces.find(({ id }) => id === space.boothTemplateSpaceId)
         : { name: "" },
-    [relatedVenues, space.boothTemplateSpaceId]
+    [worldSpaces, space.boothTemplateSpaceId]
   );
 
   const { name: watchedName } = watch();
@@ -267,8 +258,8 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
 
   const numberOfSectionsSubtext = `${
     values.numberOfSections || 0
-  } Sections * ${DEFAULT_SECTION_CAPACITY} Seats = ${
-    DEFAULT_SECTION_CAPACITY * values.numberOfSections
+  } Sections * ${SECTION_CAPACITY} Seats = ${
+    SECTION_CAPACITY * values.numberOfSections
   } (Capacity)`;
 
   return (
@@ -446,17 +437,6 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
               </InputGroup>
             )}
 
-          {!DISABLED_DUE_TO_1253 &&
-            // @debt use a single structure of type Record<VenueTemplate,TemplateInfo> to compile all these .includes() arrays' flags
-            HAS_GRID_TEMPLATES.includes(space.template as VenueTemplate) && (
-              <Checkbox
-                label="Show grid layout"
-                variant="toggler"
-                register={register}
-                name="showGrid"
-              />
-            )}
-
           <TesterRestricted>
             {
               // @debt use a single structure of type Record<VenueTemplate,TemplateInfo> to compile all these .includes() arrays' flags
@@ -491,36 +471,6 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
               )
             }
           </TesterRestricted>
-
-          {!DISABLED_DUE_TO_1253 &&
-            HAS_GRID_TEMPLATES.includes(space.template as VenueTemplate) &&
-            values.showGrid && (
-              <>
-                <div className="input-container">
-                  <h4 className="italic input-header">Number of columns</h4>
-                  <input
-                    defaultValue={1}
-                    type="number"
-                    {...register("columns")}
-                    className="align-left"
-                    placeholder={`Number of grid columns`}
-                  />
-                  {errors?.columns ? (
-                    <span className="input-error">
-                      {errors?.columns.message}
-                    </span>
-                  ) : null}
-                </div>
-                <div className="input-container">
-                  <h4 className="italic input-header">Number of rows</h4>
-                  <div>
-                    Not editable. The number of rows is derived from the number
-                    of specified columns and the width:height ratio of the party
-                    map, to keep the two aligned.
-                  </div>
-                </div>
-              </>
-            )}
 
           <div className="mb-10"></div>
 

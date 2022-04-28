@@ -39,10 +39,10 @@ export const EmergencyViewPage: React.FC = () => {
     userWithId?.myPersonalizedSchedule ?? emptyPersonalizedSchedule;
 
   const {
-    descendantVenues,
     dayDifference,
     liveAndFutureEvents,
     firstScheduleDate,
+    worldSpaces,
   } = useVenueScheduleEvents({
     userEventIds,
   });
@@ -101,7 +101,7 @@ export const EmergencyViewPage: React.FC = () => {
       <EmergencyViewTabs updateTab={updateTab} selectedTab={selectedTab} />
       <div className="EmergencyView__main">
         {!selectedTab ? (
-          <EmergencyViewPagePortals descendantVenues={descendantVenues} />
+          <EmergencyViewPagePortals worldSpaces={worldSpaces} />
         ) : (
           <ul className="EmergencyView__weekdays">{weekdays}</ul>
         )}

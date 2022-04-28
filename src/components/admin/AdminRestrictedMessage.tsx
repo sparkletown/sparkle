@@ -3,11 +3,7 @@ import { useHistory } from "react-router-dom";
 import { useAsyncFn } from "react-use";
 import firebase from "firebase/compat/app";
 
-import {
-  ATTENDEE_INSIDE_URL,
-  ATTENDEE_LANDING_URL,
-  DISABLED_DUE_TO_1324,
-} from "settings";
+import { ATTENDEE_INSIDE_URL, ATTENDEE_LANDING_URL } from "settings";
 
 import { generateUrl } from "utils/url";
 
@@ -63,17 +59,15 @@ export const AdminRestrictedMessage: React.FC = () => {
           If you don’t have an Admin Account, please contact your event
           organiser.
         </p>
-        {DISABLED_DUE_TO_1324 && (
-          <ButtonNG
-            className="AdminRestricted__switch-button"
-            variant="primary"
-            loading={isLoggingOut}
-            disabled={isLoggingOut}
-            onClick={handleLogout}
-          >
-            {userId ? "Log Out" : "Log In"}
-          </ButtonNG>
-        )}
+        <ButtonNG
+          className="AdminRestricted__switch-button"
+          variant="primary"
+          loading={isLoggingOut}
+          disabled={isLoggingOut}
+          onClick={handleLogout}
+        >
+          {userId ? "Log Out" : "Log In"}
+        </ButtonNG>
       </div>
     </div>
   );

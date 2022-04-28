@@ -22,7 +22,7 @@ if (LOGROCKET_APP_ID) {
 export type AnalyticsCountProps = {
   auth?: FireAuthUser;
   profile?: Profile;
-  space: SpaceWithId;
+  space?: SpaceWithId;
   userId?: UserId;
 };
 

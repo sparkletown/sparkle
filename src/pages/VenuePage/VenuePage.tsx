@@ -27,7 +27,6 @@ import {
   updateProfileEnteredVenueIds,
   updateProfileEnteredWorldIds,
 } from "utils/profile";
-import { wrapIntoSlashes } from "utils/string";
 import { isDefined } from "utils/types";
 import { generateUrl } from "utils/url";
 import { isCompleteUserInfo } from "utils/user";
@@ -83,11 +82,7 @@ export const VenuePage: React.FC<VenuePageProps> = ({
 }) => {
   const analytics = useAnalytics({ venue: space });
 
-  const {
-    lastVenueIdSeenIn: userLastSeenIn,
-    enteredVenueIds,
-    enteredWorldIds,
-  } = userLocation ?? {};
+  const { enteredVenueIds, enteredWorldIds } = userLocation ?? {};
 
   const assetsToPreload = useMemo(
     () =>
@@ -107,19 +102,19 @@ export const VenuePage: React.FC<VenuePageProps> = ({
   // NOTE: User location updates
   // @debt refactor how user location updates works here to encapsulate in a hook or similar?
   useInterval(() => {
-    if (!userId || !userLastSeenIn) return;
+    if (!userId) return;
 
     updateLocationData({
       userId,
-      newLocationPath: userLastSeenIn,
+      spaceId: space.id,
     });
   }, LOC_UPDATE_FREQ_MS);
 
-  const {
-    sovereignVenueId,
-    sovereignVenueDescendantIds,
-    parentVenue,
-  } = useRelatedVenues({ currentVenueId: space.id });
+  const { worldSpacesById } = useRelatedVenues();
+  const parentVenue = useMemo(
+    () => space.parentId && worldSpacesById[space.parentId],
+    [space.parentId, worldSpacesById]
+  );
 
   useEffect(() => {
     setBackButtonSpace(parentVenue);
@@ -130,17 +125,10 @@ export const VenuePage: React.FC<VenuePageProps> = ({
 
   // @debt refactor how user location updates works here to encapsulate in a hook or similar?
   useEffect(() => {
-    if (!userId || !sovereignVenueId || !sovereignVenueDescendantIds) return;
+    if (!userId) return;
 
-    const allVenueIds = [
-      ...sovereignVenueDescendantIds,
-      sovereignVenueId,
-    ].reverse();
-
-    const locationPath = wrapIntoSlashes(allVenueIds.join("/"));
-
-    updateLocationData({ userId, newLocationPath: locationPath });
-  }, [userId, sovereignVenueId, sovereignVenueDescendantIds]);
+    updateLocationData({ userId, spaceId: space.id });
+  }, [userId, space.id]);
 
   useEffect(() => {
     if (

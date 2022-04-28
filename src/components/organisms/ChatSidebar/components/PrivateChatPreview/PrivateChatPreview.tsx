@@ -38,12 +38,12 @@ export const PrivateChatPreview: React.FC<PrivateChatPreviewProps> = ({
       />
       <div className={styles.chatBodyContainer}>
         <div className={styles.chatPreviewInfo}>
-          <div className={styles.chatPreviewInfoUsername}>
+          <h4 className={styles.chatPreviewInfoUsername}>
             {counterPartyUser.partyName}
-          </div>
-          <div className={styles.chatPreviewInfoTime}>
+          </h4>
+          <time className={styles.chatPreviewInfoTime}>
             {formatDistanceToNow(timestampMillis, { addSuffix: true })}
-          </div>
+          </time>
         </div>
         <div className={styles.chatPreviewText}>{text}</div>
       </div>

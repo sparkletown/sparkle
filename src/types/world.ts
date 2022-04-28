@@ -1,6 +1,5 @@
 import { EntranceStepConfig } from "types/EntranceStep";
 import { Question } from "types/Question";
-import { UserStatus } from "types/User";
 
 export enum WorldNavTab {
   general = "general",
@@ -31,8 +30,6 @@ export interface WorldAdvancedFormInput {
   showRadio?: boolean;
   radioStation?: string;
   showSchedule?: boolean;
-  showUserStatus?: boolean;
-  userStatuses?: UserStatus[];
   hasSocialLoginEnabled?: boolean;
 }
 

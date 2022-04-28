@@ -20,7 +20,7 @@ import CN from "./ScheduleOverlay.module.scss";
 const minWeekDaysScrollValue = 8;
 
 export const ScheduleOverlay: React.FC = () => {
-  const { world, isLoaded } = useWorldAndSpaceByParams();
+  const { space, world, isLoaded } = useWorldAndSpaceByParams();
   const { userWithId } = useLiveUser();
   const userEventIds =
     userWithId?.myPersonalizedSchedule ?? ALWAYS_EMPTY_OBJECT;
@@ -32,11 +32,11 @@ export const ScheduleOverlay: React.FC = () => {
     toggle: togglePersonalisedSchedule,
   } = useShowHide(false);
 
-  const { dayDifference, sovereignVenue } = useVenueScheduleEvents({
+  const { dayDifference } = useVenueScheduleEvents({
     userEventIds,
   });
 
-  const scheduledStartDate = sovereignVenue?.start_utc_seconds;
+  const scheduledStartDate = space?.start_utc_seconds;
 
   // @debt: probably will need to be re-calculated based on minDateUtcSeconds instead of startOfDay.Check later
   const firstDayOfSchedule = useMemo(() => {

@@ -5,20 +5,20 @@ import { SpaceWithId } from "types/id";
 import { EmergencyViewPortal } from "./EmergencyViewPortal";
 
 type EmergencyViewTabsProps = {
-  descendantVenues: SpaceWithId[];
+  worldSpaces: SpaceWithId[];
 };
 
 export const EmergencyViewPagePortals: React.FC<EmergencyViewTabsProps> = ({
-  descendantVenues,
+  worldSpaces,
 }) => {
-  const renderVenuesPortals = descendantVenues
+  const renderPortals = worldSpaces
     .map(
-      (venue) =>
-        !!venue?.rooms?.length && (
-          <div key={venue.id}>
-            <span className="EmergencyView__venue">{venue.name}</span>
-            <div key={venue.id} className="EmergencyView__content">
-              {venue?.rooms?.map((portal) => (
+      (space) =>
+        !!space?.rooms?.length && (
+          <div key={space.id}>
+            <span className="EmergencyView__venue">{space.name}</span>
+            <div key={space.id} className="EmergencyView__content">
+              {space?.rooms?.map((portal) => (
                 <EmergencyViewPortal
                   key={portal.title}
                   portal={portal}
@@ -29,7 +29,7 @@ export const EmergencyViewPagePortals: React.FC<EmergencyViewTabsProps> = ({
           </div>
         )
     )
-    .filter((venue) => !!venue);
+    .filter((space) => !!space);
 
-  return <>{renderVenuesPortals}</>;
+  return <>{renderPortals}</>;
 };
