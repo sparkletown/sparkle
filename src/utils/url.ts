@@ -149,10 +149,13 @@ export const openUrl = (url: string, options?: OpenUrlOptions) => {
       ? customOpenExternalUrl(url)
       : window.open(url, "_blank", "noopener,noreferrer");
   } else {
+    const targetUrl = customOpenRelativeUrl
+      ? extractLocalUrlPathname(url)
+      : url;
     // @debt Is this a decent enough way to use react router here? Should we just use it always and get rid of window.location.href?
     customOpenRelativeUrl
-      ? customOpenRelativeUrl(url)
-      : (window.location.href = url);
+      ? customOpenRelativeUrl(targetUrl)
+      : (window.location.href = targetUrl);
   }
 };
 
@@ -224,4 +227,10 @@ export const resolveUrlPath: (path: string) => string = (path) => {
     });
     return "";
   }
+};
+
+export const extractLocalUrlPathname = (url: string) => {
+  const { pathname } = new URL(url);
+
+  return pathname;
 };
