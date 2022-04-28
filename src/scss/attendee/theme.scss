@@ -23,6 +23,8 @@
   --sparkle--border: rgba(130, 130, 130, 0.3);
   --sparkle--bg-shadow: rgb(99, 42, 199 / 50%);
 
+  --webcam-video-disabled-bg: rgb(240, 240, 240);
+
   --button-fg: rgb(255, 255, 255);
   --button-bg: rgb(99, 42, 199);
 
@@ -72,6 +74,8 @@ $c-white-text: var(--white-text);
 $sparkle--bg: var(--sparkle--bg); // previously named $sparkle-theme
 $sparkle--bg-shadow: var(--sparkle--bg-shadow);
 $sparkle--border: var(--sparkle--border); // previously named $sparkle-border
+
+$webcam-video-disabled-bg: var(--webcam-video-disabled-bg);
 
 $c-panel-background: var(--panel-background);
 $c-glass-panel-background: var(--glass-panel-background);

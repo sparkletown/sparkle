@@ -239,9 +239,9 @@ const getVideoSizeInSeats = (columnCount: number) => {
     SECTION_VIDEO_MIN_WIDTH_IN_SEATS
   );
 
-  // Keep the 16:9 ratio
+  // Keep the 4:3 ratio
   const videoHeightInSeats =
-    Math.ceil(videoWidthInSeats * (9 / 16)) +
+    Math.ceil(videoWidthInSeats * (3 / 4)) +
     //+3 for extra UI elements
     3;
 
