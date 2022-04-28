@@ -1,6 +1,20 @@
 // having this singleton relieves modules from needing to import index.tsx
 // noinspection PointlessBooleanExpressionJS
 
+import {
+  API_KEY,
+  APP_ID,
+  AUTH_DOMAIN,
+  BUCKET_URL,
+  CY,
+  ENV,
+  FLAGS,
+  HOST,
+  MEASUREMENT_ID,
+  PORTS,
+  PROJECT_ID,
+  PROTOCOL,
+} from "env";
 import { Analytics, getAnalytics } from "firebase/analytics";
 import { FirebaseApp, FirebaseOptions } from "firebase/app";
 import { Auth, connectAuthEmulator, getAuth } from "firebase/auth";
@@ -23,39 +37,8 @@ import {
   getStorage,
 } from "firebase/storage";
 
-import {
-  API_KEY,
-  APP_ID,
-  AUTH_DOMAIN,
-  BUCKET_URL,
-  MEASUREMENT_ID,
-  PROJECT_ID,
-} from "secrets";
-
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
-
-// read configuration from environment and/or set emulator defaults
-const ENV = process.env.NODE_ENV;
-const PROTOCOL = process.env.REACT_APP_FIRE_EMULATE_PROTOCOL || `http`;
-const HOST = process.env.REACT_APP_FIRE_EMULATE_HOST || "127.0.0.1";
-const CY = !!((window as unknown) as { Cypress: unknown }).Cypress;
-
-const FLAGS = Object.freeze({
-  emulateAll: !!process.env.REACT_APP_FIRE_EMULATE_ALL,
-  emulateAuth: !!process.env.REACT_APP_FIRE_EMULATE_AUTH,
-  emulateFunctions: !!process.env.REACT_APP_FIRE_EMULATE_FUNCTIONS,
-  emulateFirestore: !!process.env.REACT_APP_FIRE_EMULATE_FIRESTORE,
-  emulateStorage: !!process.env.REACT_APP_FIRE_EMULATE_STORAGE,
-});
-
-// NOTE: make sure these match the ports in firebase.json or their overrides if provided through other means
-const PORTS = Object.freeze({
-  auth: 9099,
-  firestore: 8080,
-  functions: 5001,
-  storage: 9199,
-});
 
 const OPTIONS: FirebaseOptions = {
   apiKey: API_KEY,
@@ -100,8 +83,6 @@ type FirebaseSuite = {
   functions: Functions;
   performance: FirebasePerformance;
   storage: FirebaseStorage;
-  flags: typeof FLAGS;
-  ports: typeof PORTS;
 };
 
 export const FIREBASE: FirebaseSuite = Object.freeze({
@@ -113,8 +94,6 @@ export const FIREBASE: FirebaseSuite = Object.freeze({
   functions,
   performance,
   storage,
-  flags: FLAGS,
-  ports: PORTS,
 });
 
 if (CY) {

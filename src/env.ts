@@ -25,3 +25,33 @@ export const BUILD_PULL_REQUESTS = (
 )
   .split(",")
   .filter((s) => !!s);
+
+// read configuration from environment and/or set emulator defaults
+export const ENV = process.env.NODE_ENV;
+export const PROTOCOL = process.env.REACT_APP_FIRE_EMULATE_PROTOCOL || `http`;
+export const HOST = process.env.REACT_APP_FIRE_EMULATE_HOST || "127.0.0.1";
+export const PORT = process.env.PORT || 3000;
+export const CY = !!((window as unknown) as { Cypress: unknown }).Cypress;
+
+export const FLAGS = Object.freeze({
+  emulateAll: !!process.env.REACT_APP_FIRE_EMULATE_ALL,
+  emulateAuth: !!process.env.REACT_APP_FIRE_EMULATE_AUTH,
+  emulateFunctions: !!process.env.REACT_APP_FIRE_EMULATE_FUNCTIONS,
+  emulateFirestore: !!process.env.REACT_APP_FIRE_EMULATE_FIRESTORE,
+  emulateStorage: !!process.env.REACT_APP_FIRE_EMULATE_STORAGE,
+});
+
+// NOTE: due to CRA import restrictions
+// import fireConfig from "firebase.json" throws an error
+// so try to keep the following ports same as fireConfig.emulators ones
+
+export const PORTS = Object.freeze({
+  auth: 9099,
+  firestore: 8080,
+  functions: 5001,
+  hosting: 5000,
+  hub: 4400,
+  pubsub: 8085,
+  storage: 9199,
+  ui: 4000,
+});

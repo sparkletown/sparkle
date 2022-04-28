@@ -1,5 +1,8 @@
 import * as dotenv from "dotenv";
 
+import { determineBaseUrl } from "./config";
+import { emulatorsInfo } from "./emulators";
+
 // @debt There should always only be .env, no other files for environment setup
 // @see https://github.com/motdotla/dotenv#should-i-have-multiple-env-files
 // @see https://12factor.net/config
@@ -16,9 +19,11 @@ dotenv.config({ path: ".env", override: true });
  * @param config - `config` is the resolved Cypress config
  */
 const configure: Cypress.PluginConfig = (on, config) => {
-  const baseUrl = process.env.CYPRESS_BASE_URL;
-  console.log("Setting baseUrl to be", baseUrl, "instead of", config.baseUrl);
-  config.baseUrl = baseUrl ?? null;
+  on("before:run", async () =>
+    console.log("Running with emulators:", await emulatorsInfo())
+  );
+
+  config.baseUrl = determineBaseUrl(config.baseUrl);
 
   return config;
 };

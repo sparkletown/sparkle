@@ -1,7 +1,8 @@
 {
   "chromeWebSecurity": false,
-  "baseUrl": "http://localhost:3000",
+  "baseUrl": "http://localhost:5000",
   "testFiles": "**/*.spec.ts",
   "viewportHeight": 666,
-  "viewportWidth": 777
+  "viewportWidth": 777,
+  "defaultCommandTimeout": 20000
 }

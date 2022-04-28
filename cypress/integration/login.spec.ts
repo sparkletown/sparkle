@@ -1,11 +1,29 @@
 // Just a simple test to make sure Cypress is running correctly
 // For more info, @see https://on.cypress.io/introduction-to-cypress
 
-import { getByText, getInput } from "cypress/support/util/get";
+import { emulatorsResetFirebase } from "cypress/support/util/db";
+import {
+  getButton,
+  getByBem,
+  getByText,
+  getInput,
+} from "cypress/support/util/get";
 import { visitSpaceInside } from "cypress/support/util/visit";
 
-type WithSpark = {
-  SPARK: { logout: () => void };
+type LogIn = (options: {
+  worldSlug: string;
+  spaceSlug: string;
+  email: string;
+  pass: string;
+}) => void;
+
+const logIn: LogIn = ({ worldSlug, spaceSlug, email, pass }) => {
+  visitSpaceInside({ worldSlug, spaceSlug });
+  getByText("Log In").click();
+  getInput("email").type(email);
+  getInput("password").type(pass);
+  getButton("Log in").click();
+  getByBem("AttendeeLayout__main").should("exist");
 };
 
 describe("plain attendee login using pre-seeded DB", () => {
@@ -16,17 +34,21 @@ describe("plain attendee login using pre-seeded DB", () => {
   const pass = "user-01-some-password";
 
   beforeEach(() => {
-    visitSpaceInside({ worldSlug, spaceSlug });
+    emulatorsResetFirebase();
   });
 
   afterEach(() => {
-    ((cy.window() as unknown) as WithSpark).SPARK.logout();
+    // TODO: reset users' auth, they need to be logged out or removed
   });
 
-  it("displays AttendeeLayout upon entering correct credentials", () => {
-    getByText("Log In").click();
-    getInput("email").type(email);
-    getInput("password").type(pass);
-    getByText("Log in").click();
+  // First take makes sure the login works
+  it("displays AttendeeLayout upon entering correct credentials - TAKE 1", () => {
+    logIn({ worldSlug, spaceSlug, email, pass });
+  });
+
+  // Second take makes sure the DB reset works
+  // TODO: implement Auth reset similar to how Firestore reset works
+  it.skip("displays AttendeeLayout upon entering correct credentials - TAKE 2", () => {
+    logIn({ worldSlug, spaceSlug, email, pass });
   });
 });

@@ -4,7 +4,7 @@ import {
   BUILD_REPOSITORY_URL,
   BUILD_SHA1,
   BUILD_TAG,
-} from "secrets";
+} from "env";
 
 import { createErrorCapture } from "utils/error";
 
