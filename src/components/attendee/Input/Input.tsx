@@ -81,6 +81,12 @@ export const Input: React.ForwardRefRenderFunction<
       [CN.invalid]: error,
     }
   );
+
+  const wrapperClassNames = classNames(
+    CN.inputWrapper,
+    CN[`variant-${variant}--wrapper`]
+  );
+
   const registerProps = name && register ? register(name, rules) : {};
 
   const handleKeyPress = useKeyPress({
@@ -90,19 +96,14 @@ export const Input: React.ForwardRefRenderFunction<
 
   return (
     <div data-bem="Input" className={CN.inputContainer}>
-      <div
-        className={classNames(
-          CN.inputWrapper,
-          CN[`variant-${variant}--wrapper`]
-        )}
-      >
+      <div className={wrapperClassNames}>
         <input
           id={inputId}
+          ref={forwardRef}
           {...registerProps}
           className={inputClassNames}
           {...extraInputProps}
           onKeyDown={handleKeyPress}
-          ref={forwardRef}
         />
 
         {icon && renderIcon(icon, onIconClick)}

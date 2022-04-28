@@ -16,9 +16,9 @@ type RoomAttendanceProps = {
 export const RoomAttendance: React.FC<RoomAttendanceProps> = ({ room }) => {
   const portalSpaceId = room.spaceId;
 
-  const { findVenueInRelatedVenues } = useRelatedVenues();
+  const { worldSpacesById } = useRelatedVenues();
 
-  const portalVenue = findVenueInRelatedVenues({ spaceId: portalSpaceId });
+  const portalVenue = portalSpaceId && worldSpacesById[portalSpaceId];
 
   const numberOfUsersInRoom = portalVenue?.recentUserCount ?? 0;
 

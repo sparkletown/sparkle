@@ -24,7 +24,7 @@ import { RoomVisibility } from "types/RoomVisibility";
 import { ScreeningRoomVideo } from "types/screeningRoom";
 import { SpaceType } from "types/spaces";
 import { Table } from "types/Table";
-import { User, UserStatus } from "types/User";
+import { User } from "types/User";
 import { Channel, WorldEvent } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
 
@@ -63,14 +63,10 @@ type RoomImageUrls = Partial<Record<RoomImageUrlKeys, string>>;
 
 // @debt remove this old interface, most/all of these fields were moved to the world
 interface VenueAdvancedConfig {
-  columns?: number;
   radioStations?: string | string[]; // single string on form, array in DB
   roomVisibility?: RoomVisibility;
-  showGrid?: boolean;
   showRadio?: boolean;
   parentId?: SpaceId;
-  showUserStatus?: boolean;
-  userStatuses?: UserStatus[];
   enableJukebox?: boolean;
 }
 
@@ -355,7 +351,8 @@ const createFirestoreRoomInput = async (
   }
 
   const firestoreRoomInput: FirestoreRoomInput = {
-    ...omit(input, "image_file"),
+    ...omit(input, "image_file", "spaceId"),
+    spaceId: input.spaceId || undefined,
     ...imageInputData,
   };
   return firestoreRoomInput;

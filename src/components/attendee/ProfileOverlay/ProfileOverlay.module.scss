@@ -37,6 +37,8 @@
   }
 
   &__action {
+    display: flex;
+    align-items: center;
     padding: space.empty(4) 0;
     font-size: 14px;
     line-height: 1.4;

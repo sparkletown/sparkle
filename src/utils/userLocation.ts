@@ -4,6 +4,8 @@ import { LOCATION_INCREMENT_MS, LOCATION_INCREMENT_SECONDS } from "settings";
 
 import { getUserRef } from "api/profile";
 
+import { SpaceId } from "types/id";
+
 import { useInterval } from "hooks/useInterval";
 
 import { updateUserProfile } from "pages/Account/helpers";
@@ -14,23 +16,23 @@ export type LocationData = string | null;
 
 export interface UpdateLocationDataProps {
   userId: string;
-  newLocationPath: LocationData;
+  spaceId: SpaceId | null;
 }
 
 export const updateLocationData = ({
   userId,
-  newLocationPath,
+  spaceId,
 }: UpdateLocationDataProps) => {
   updateUserProfile(userId, {
     lastSeenAt: getCurrentTimeInMilliseconds(),
-    lastVenueIdSeenIn: newLocationPath,
+    lastVenueIdSeenIn: spaceId,
   });
 };
 
 // TODO: refactor how user location updates works here?
 //   Called from VenuePage useEffect + onBeforeUnloadHandler
 export const clearLocationData = (userId: string) => {
-  updateLocationData({ userId, newLocationPath: null });
+  updateLocationData({ userId, spaceId: null });
 };
 
 export interface UseUpdateTimespentPeriodicallyProps {

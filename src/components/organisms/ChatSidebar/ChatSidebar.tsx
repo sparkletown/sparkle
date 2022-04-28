@@ -8,6 +8,7 @@ import { ChatTypes } from "types/chat";
 import { captureAssertError } from "utils/error";
 
 import { useChatSidebarControls } from "hooks/chats/util/useChatSidebarControls";
+import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useUserId } from "hooks/user/useUserId";
 
 import { PrivateChats, VenueChat } from "./components";
@@ -17,6 +18,7 @@ import styles from "./ChatSidebar.module.scss";
 const _ChatSidebar: React.FC = () => {
   const { chatSettings } = useChatSidebarControls();
   const { userId, isLoading } = useUserId();
+  const { space } = useWorldAndSpaceByParams();
 
   const isVenueChat = chatSettings.openedChatType === ChatTypes.VENUE_CHAT;
   const isPrivateChat = chatSettings.openedChatType === ChatTypes.PRIVATE_CHAT;
@@ -48,7 +50,7 @@ const _ChatSidebar: React.FC = () => {
     >
       {isVenueChat && <VenueChat />}
       {isPrivateChat && userId && (
-        <PrivateChats userId={userId} recipient={recipient} />
+        <PrivateChats userId={userId} recipient={recipient} space={space} />
       )}
     </div>
   );

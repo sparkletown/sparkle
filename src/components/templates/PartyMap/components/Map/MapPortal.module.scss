@@ -5,12 +5,13 @@
 @use "scss/attendee/effects/sparkle";
 @use "scss/attendee/effects/atom";
 @use "scss/attendee/effects/rounded";
+@use "scss/attendee/effects/animations";
 @use "scss/attendee/layout";
 @use "scss/attendee/breakpoint";
 
 $-title-height: 42px;
 
-.MapRoom {
+.MapPortal {
   @media (max-width: calc(#{breakpoint.$md} - 1px)) {
     // Override inline styles. The code for this component calculates the width
     // and height for the element for when the element is displayed on a
@@ -35,8 +36,6 @@ $-title-height: 42px;
 }
 
 .PortalImage {
-  cursor: pointer;
-
   img {
     display: block;
     max-width: 90vw;
@@ -57,6 +56,34 @@ $-title-height: 42px;
       max-height: unset;
     }
   }
+
+  &:hover {
+    transform: scale(1);
+  }
+}
+
+.livePortalEvent {
+  animation: live-portal-bounce animations.$live-bouncerate alternate infinite;
+
+  &:hover {
+    animation: live-portal-bounce animations.$live-bouncerate alternate infinite,
+      live-portal-wiggle 0.15s alternate infinite;
+  }
+
+  &:after {
+    content: "Now";
+    color: theme.$c-button-fg;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: font.$size--l2;
+    text-shadow: 0 0 space.empty(1) theme.$sparkle--bg-shadow;
+  }
 }
 
 .portalInfo {
@@ -65,7 +92,7 @@ $-title-height: 42px;
 
   @media (min-width: breakpoint.$md) {
     position: absolute;
-    top: 100%;
+    top: calc(100% + space.empty(1));
   }
 }
 
@@ -73,29 +100,56 @@ $-title-height: 42px;
   @include atom.button;
   @include rounded.normal;
   @include sparkle.color--glass;
-
+  cursor: default;
   white-space: nowrap;
+
+  &:hover {
+    background-color: theme.$c-color-glass-panel-background-hover;
+  }
 }
 
 .PortalOnMap {
   @media (min-width: breakpoint.$md) {
     display: flex;
+    justify-content: center;
   }
 }
 
 .InfoButton {
   @include atom.button;
   height: space.button(1) - space.gap(8);
-  margin: space.gap(4) 0;
+  margin: space.gap(4) 0 space.gap(4) space.empty(0.5);
   border-left: 1px solid theme.$sparkle--border;
   border-radius: 0;
   padding-right: 0;
-  margin-left: auto;
 
   span {
     @include atom.icon;
     background-image: url(/assets/icons/icon-info.svg);
     position: relative;
     filter: invert(1);
+    cursor: pointer;
   }
+}
+
+.externalIconWrapper {
+  cursor: pointer;
+  @include atom.button;
+  height: space.button(1) - space.gap(8);
+  margin: space.gap(4) 0 space.gap(4) space.empty(0.3);
+  padding: 0;
+}
+
+.externalIcon {
+  @include atom.icon;
+  background-image: url(/assets/icons/icon-room-externallink.svg);
+  position: relative;
+}
+
+.linkHidden {
+  visibility: hidden;
+}
+
+.portalName {
+  margin-right: space.empty(0.75);
 }

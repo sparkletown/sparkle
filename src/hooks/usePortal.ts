@@ -17,18 +17,18 @@ export const usePortal = ({ portal }: UsePortalProps) => {
   const { push: openUrlUsingRouter } = useHistory();
   const { worldSlug } = useSpaceParams();
 
-  const { findVenueInRelatedVenues } = useRelatedVenues();
+  const { worldSpacesById } = useRelatedVenues();
 
   const enterPortal = useCallback(() => {
     if (targetSpaceId) {
-      const targetSpace = findVenueInRelatedVenues({ spaceId: targetSpaceId });
+      const targetSpace = targetSpaceId && worldSpacesById[targetSpaceId];
       if (targetSpace) {
         enterSpace(worldSlug, targetSpace?.slug, {
           customOpenRelativeUrl: openUrlUsingRouter,
         });
       }
     }
-  }, [findVenueInRelatedVenues, targetSpaceId, worldSlug, openUrlUsingRouter]);
+  }, [targetSpaceId, worldSpacesById, worldSlug, openUrlUsingRouter]);
 
   return {
     enterPortal,

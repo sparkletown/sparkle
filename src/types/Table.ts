@@ -7,8 +7,6 @@ export interface Table {
   title: string;
   subtitle?: string;
   capacity?: number;
-  columns?: number;
-  rows?: number;
   reference: string;
   locked?: boolean;
 }

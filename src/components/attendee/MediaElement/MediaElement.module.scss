@@ -14,7 +14,6 @@
   z-index: 10;
   padding: space.empty(2) 0 0;
   margin-top: space.empty(2);
-  margin-bottom: space.button(1);
   padding-bottom: space.empty(2);
   height: min-content;
 
@@ -28,6 +27,8 @@
   width: 100%;
   height: auto;
   max-width: 600px;
+  margin-top: space.empty(1);
+
   @media (min-width: breakpoint.$md) {
     margin-left: space.empty(2);
     transition: max-width 0.2s ease;
@@ -48,10 +49,8 @@
   }
 
   &__fullWidth {
-    // This will change as soon as the design team decide what "full width"
-    // actually means
-    max-width: 30vw;
-    margin-right: space.empty(2);
+    max-width: 100%;
+    margin: space.empty(1) space.empty(1) 0;
   }
 }
 

@@ -248,16 +248,16 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
     await onDone();
   }, [currentSpaceId, onDone, portal]);
 
-  const { relatedVenues } = useRelatedVenues();
+  const { worldSpaces } = useRelatedVenues();
 
   const backButtonOptionList = useMemo(
     () =>
       Object.fromEntries(
-        relatedVenues
+        worldSpaces
           .filter(({ id }) => id !== currentSpaceId)
           .map((venue) => [venue.id, venue])
       ),
-    [currentSpaceId, relatedVenues]
+    [currentSpaceId, worldSpaces]
   );
 
   const isAppearanceOverridenInPortal =
@@ -275,9 +275,9 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
   const parentSpace = useMemo(
     () =>
       portal?.spaceId
-        ? relatedVenues.find(({ id }) => id === portal?.spaceId)
+        ? worldSpaces.find(({ id }) => id === portal?.spaceId)
         : { name: "" },
-    [relatedVenues, portal?.spaceId]
+    [worldSpaces, portal?.spaceId]
   );
 
   const createLabel = isLoading ? "Creating..." : "Create";
