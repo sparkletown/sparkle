@@ -4,10 +4,14 @@
 @use "scss/attendee/theme";
 @use "scss/attendee/effects/sparkle";
 
+$w-icon: 20px;
+$h-icon: 16px;
+
 .videoCommsParticipant {
   display: flex;
   flex-direction: row;
   position: relative;
+  width: 100%;
 
   &:hover {
     .userName {
@@ -19,6 +23,7 @@
 .trackContainer {
   display: flex;
   position: relative;
+  width: 100%;
 }
 
 .videoCommsControlsContainer {
@@ -29,27 +34,33 @@
   flex-direction: row-reverse;
   font-size: font.$size--lg;
   color: theme.$c-light-text-on-dark;
-  background: rgba(0, 0, 0, 0.5);
+  background: theme.$c-mask-bg;
   border-top-left-radius: 4px;
-  padding-left: space.$md;
+  padding-left: space.gap(4);
+  // removes blue highlighting on mobile tap
+  -webkit-tap-highlight-color: transparent;
 
   span {
-    margin: space.$sm space.$md space.$sm 0;
+    margin: space.gap(4);
+    width: $w-icon;
+    height: $h-icon;
+    text-align: center;
+    cursor: pointer;
   }
 
   &__darkButtons {
     color: theme.$c-default-text;
-    background: none;
-    cursor: pointer;
   }
 }
 
 .avatarContainer {
   display: flex;
   border: 1px solid theme.$sparkle--border;
-  min-width: 186px;
+  width: 100%;
+  min-width: layout.$w-video-chat-participant;
 
   @include sparkle.panel--normal;
+  background-color: theme.$webcam-video-disabled-bg;
 
   img {
     max-width: 64px;
@@ -61,7 +72,7 @@
 .userName {
   position: absolute;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: theme.$c-mask-bg;
   color: theme.$c-light-text-on-dark;
   padding: space.$s2 space.$xs space.$xs;
   border-radius: 3px;
