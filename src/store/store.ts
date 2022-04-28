@@ -1,17 +1,11 @@
-import { combineReducers, configureStore, Reducer } from "@reduxjs/toolkit";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import LogRocket from "logrocket";
-import {
-  constants as reduxFirestoreConstants,
-  firestoreReducer,
-} from "redux-firestore";
+import { constants as reduxFirestoreConstants } from "redux-firestore";
 import subscribeActionMiddleware from "redux-subscribe-action";
-
-import { Firestore } from "types/Firestore";
 
 import { MiscReducers } from "./reducers";
 
 export const rootReducer = combineReducers({
-  firestore: firestoreReducer as Reducer<Firestore>,
   ...MiscReducers,
 });
 
