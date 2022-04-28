@@ -1,7 +1,4 @@
 import React, { useCallback, useEffect, useState } from "react";
-import EventProvider, {
-  EventType,
-} from "common/AnimateMap/bridges/EventProvider/EventProvider";
 
 import { Room } from "types/rooms";
 
@@ -9,6 +6,8 @@ import { PortalModal } from "components/templates/PartyMap/components/PortalModa
 
 import {
   AnimateMapActionTypes,
+  AnimateMapEventProvider,
+  AnimateMapEventType,
   AnimateMapRoom,
   AnimateMapSpace,
   setAnimateMapRoomAction,
@@ -49,7 +48,7 @@ export const AnimateMapUIOverlayGrid: React.FC<AnimateMapUIOverlayGridProps> = (
   }, []);
 
   const handleEventProvider = useCallback(() => {
-    EventProvider.emit(EventType.UI_SINGLE_BUTTON_FOLLOW);
+    AnimateMapEventProvider.emit(AnimateMapEventType.UI_SINGLE_BUTTON_FOLLOW);
   }, []);
 
   useEffect(() => {

@@ -1,7 +1,7 @@
 import { Entity } from "@ash.ts/ash";
+import { AnimateMapEventType } from "common/AnimateMapCommon";
 import { Sprite } from "pixi.js";
 
-import { EventType } from "../../../AnimateMap/bridges/EventProvider/EventProvider";
 import { RoundAvatar } from "../../commands/RoundAvatar";
 import { GamePoint, GameUser } from "../../common";
 import { GameInstance } from "../../GameInstance";
@@ -61,7 +61,7 @@ export const createBotEntity = (
         const replicatedUser = creator.getBotNode(user.data.id)?.bot.data;
         if (!replicatedUser || !realUser) return;
         GameInstance.instance.eventProvider.emit(
-          EventType.ON_REPLICATED_USER_CLICK,
+          AnimateMapEventType.ON_REPLICATED_USER_CLICK,
           replicatedUser,
           event.data.global.x,
           event.data.global.y

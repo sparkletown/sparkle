@@ -1,9 +1,9 @@
 import { AnimateMapUser, AnimateMapVenue } from "common/AnimateMapCommon";
 import { utils } from "pixi.js";
 
-import { RoomPointNode } from "../DataProvider/Structures/RoomsModel";
+import { AnimateMapRoomPointNode } from "./AnimateMapRoomPoint";
 
-export enum EventType {
+export enum AnimateMapEventType {
   ON_ROOMS_CHANGED = "EventProviderType.ON_ROOMS_CHANGED",
 
   ON_VENUE_COLLISION = "EventProviderType.ON_VENUE_COLLISION",
@@ -24,7 +24,7 @@ export enum EventType {
   RECEIVE_SHOUT = "EventProviderType.RECEIVE_SHOUT",
 }
 
-type OnRoomsChangedCallback = (points: RoomPointNode[]) => void;
+type OnRoomsChangedCallback = (points: AnimateMapRoomPointNode[]) => void;
 
 type OnVenueCollisionCallback = (venue: AnimateMapVenue) => void;
 type PlayerModelReadyCallback = (player: AnimateMapUser) => void;
@@ -43,71 +43,86 @@ type SendShoutCallback = (msg: string) => void;
 type ReceiveShoutCallback = (playerId: string, msg: string) => void;
 
 export declare interface EventProviderSingleton {
-  on(type: EventType.ON_ROOMS_CHANGED, callback: OnRoomsChangedCallback): this;
   on(
-    type: EventType.ON_VENUE_COLLISION,
+    type: AnimateMapEventType.ON_ROOMS_CHANGED,
+    callback: OnRoomsChangedCallback
+  ): this;
+  on(
+    type: AnimateMapEventType.ON_VENUE_COLLISION,
     callback: OnVenueCollisionCallback
   ): this;
   on(
-    type: EventType.PLAYER_MODEL_READY,
+    type: AnimateMapEventType.PLAYER_MODEL_READY,
     callback: PlayerModelReadyCallback
   ): this;
 
   // UI
-  on(type: EventType.UI_CONTROL_PANEL_ZOOM_IN, callback: () => void): this;
-  on(type: EventType.UI_CONTROL_PANEL_ZOOM_OUT, callback: () => void): this;
-  on(type: EventType.UI_SINGLE_BUTTON_FOLLOW, callback: () => void): this;
   on(
-    type: EventType.ON_REPLICATED_USER_CLICK,
+    type: AnimateMapEventType.UI_CONTROL_PANEL_ZOOM_IN,
+    callback: () => void
+  ): this;
+  on(
+    type: AnimateMapEventType.UI_CONTROL_PANEL_ZOOM_OUT,
+    callback: () => void
+  ): this;
+  on(
+    type: AnimateMapEventType.UI_SINGLE_BUTTON_FOLLOW,
+    callback: () => void
+  ): this;
+  on(
+    type: AnimateMapEventType.ON_REPLICATED_USER_CLICK,
     callback: OnPlayerClickCallback
   ): this;
   // playerio
-  on(type: EventType.USER_JOINED, callback: UserJoinedCallback): this;
-  on(type: EventType.USER_LEFT, callback: UserLeftCallback): this;
-  on(type: EventType.USER_MOVED, callback: UserMovedCallback): this;
-  on(type: EventType.SEND_SHOUT, callback: SendShoutCallback): this;
-  on(type: EventType.RECEIVE_SHOUT, callback: ReceiveShoutCallback): this;
+  on(type: AnimateMapEventType.USER_JOINED, callback: UserJoinedCallback): this;
+  on(type: AnimateMapEventType.USER_LEFT, callback: UserLeftCallback): this;
+  on(type: AnimateMapEventType.USER_MOVED, callback: UserMovedCallback): this;
+  on(type: AnimateMapEventType.SEND_SHOUT, callback: SendShoutCallback): this;
+  on(
+    type: AnimateMapEventType.RECEIVE_SHOUT,
+    callback: ReceiveShoutCallback
+  ): this;
 
   emit(
-    type: EventType.ON_ROOMS_CHANGED,
+    type: AnimateMapEventType.ON_ROOMS_CHANGED,
     ...params: Parameters<OnRoomsChangedCallback>
   ): boolean;
   emit(
-    type: EventType.ON_VENUE_COLLISION,
+    type: AnimateMapEventType.ON_VENUE_COLLISION,
     ...params: Parameters<OnVenueCollisionCallback>
   ): boolean;
   emit(
-    type: EventType.PLAYER_MODEL_READY,
+    type: AnimateMapEventType.PLAYER_MODEL_READY,
     ...params: Parameters<PlayerModelReadyCallback>
   ): boolean;
   emit(
-    type: EventType.ON_REPLICATED_USER_CLICK,
+    type: AnimateMapEventType.ON_REPLICATED_USER_CLICK,
     ...params: Parameters<OnPlayerClickCallback>
   ): boolean;
 
   //UI
-  emit(type: EventType.UI_CONTROL_PANEL_ZOOM_OUT): boolean;
-  emit(type: EventType.UI_SINGLE_BUTTON_FOLLOW): boolean;
-  emit(type: EventType.UI_CONTROL_PANEL_ZOOM_IN): boolean;
+  emit(type: AnimateMapEventType.UI_CONTROL_PANEL_ZOOM_OUT): boolean;
+  emit(type: AnimateMapEventType.UI_SINGLE_BUTTON_FOLLOW): boolean;
+  emit(type: AnimateMapEventType.UI_CONTROL_PANEL_ZOOM_IN): boolean;
   // playerio
   emit(
-    type: EventType.USER_JOINED,
+    type: AnimateMapEventType.USER_JOINED,
     ...params: Parameters<UserJoinedCallback>
   ): boolean;
   emit(
-    type: EventType.USER_LEFT,
+    type: AnimateMapEventType.USER_LEFT,
     ...params: Parameters<UserLeftCallback>
   ): boolean;
   emit(
-    type: EventType.USER_MOVED,
+    type: AnimateMapEventType.USER_MOVED,
     ...params: Parameters<UserMovedCallback>
   ): boolean;
   emit(
-    type: EventType.SEND_SHOUT,
+    type: AnimateMapEventType.SEND_SHOUT,
     ...params: Parameters<SendShoutCallback>
   ): boolean;
   emit(
-    type: EventType.RECEIVE_SHOUT,
+    type: AnimateMapEventType.RECEIVE_SHOUT,
     ...params: Parameters<ReceiveShoutCallback>
   ): boolean;
 }
@@ -127,5 +142,4 @@ export class EventProviderSingleton extends utils.EventEmitter {
   }
 }
 
-const EventProvider = EventProviderSingleton.getInstance();
-export default EventProvider;
+export const AnimateMapEventProvider = EventProviderSingleton.getInstance();

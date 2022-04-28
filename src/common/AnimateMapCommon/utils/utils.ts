@@ -51,3 +51,7 @@ Object.freeze(externalUrlAdditionalProps);
 
 export const getExtraLinkProps = (isExternal: boolean) =>
   isExternal ? externalUrlAdditionalProps : {};
+
+export const isDefined = <T>(
+  value: T | null | undefined
+): value is NonNullable<T> => value !== null && value !== undefined;

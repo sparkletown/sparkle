@@ -1,10 +1,9 @@
 import React, { useCallback, useEffect, useState } from "react";
-import EventProvider, {
-  EventType,
-} from "common/AnimateMap/bridges/EventProvider/EventProvider";
 
 import {
   AnimateMapActionTypes,
+  AnimateMapEventProvider,
+  AnimateMapEventType,
   setAnimateMapZoomAction,
   SubscribeActionAfterListener,
 } from "../../AnimateMapCommon";
@@ -29,7 +28,7 @@ export const AnimateMapContorlPanel: React.FC<AnimateMapContorlPanelProps> = (
   props
 ) => {
   const [zoom, setZoom] = useState(2);
-  const eventProvider = EventProvider;
+  const eventProvider = AnimateMapEventProvider;
 
   useEffect(() => {
     const unsubscribe = props.subscribeActionAfter(
@@ -44,11 +43,11 @@ export const AnimateMapContorlPanel: React.FC<AnimateMapContorlPanelProps> = (
   });
 
   const zoomIn = useCallback(
-    () => eventProvider.emit(EventType.UI_CONTROL_PANEL_ZOOM_IN),
+    () => eventProvider.emit(AnimateMapEventType.UI_CONTROL_PANEL_ZOOM_IN),
     [eventProvider]
   );
   const zoomOut = useCallback(
-    () => eventProvider.emit(EventType.UI_CONTROL_PANEL_ZOOM_OUT),
+    () => eventProvider.emit(AnimateMapEventType.UI_CONTROL_PANEL_ZOOM_OUT),
     [eventProvider]
   );
 

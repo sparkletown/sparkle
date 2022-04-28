@@ -2,6 +2,7 @@ import { Listener } from "redux-subscribe-action";
 
 import { ReduxAction } from "types/redux";
 
+import { ElementId, UserId } from "./AnimateMapIds";
 import { AnimateMapRoom } from "./AnimateMapRoom";
 
 export type SubscribeActionAfterListener = Listener;
@@ -52,4 +53,21 @@ export const setAnimateMapRoom = (
 ): setAnimateMapRoomAction => ({
   type: AnimateMapActionTypes.SET_ROOM,
   payload: { room },
+});
+
+export enum AnimateMapUserProfileActionTypes {
+  UPDATE_USER_PROFILE_ID = "UPDATE_USER_PROFILE_ID",
+}
+
+export type AnimateMapUpdateUserProfileDataAction = ReduxAction<
+  AnimateMapUserProfileActionTypes.UPDATE_USER_PROFILE_ID,
+  { userId?: UserId; elementId?: ElementId }
+>;
+
+export const updateUserProfileDataAction = (
+  userId?: UserId,
+  elementId?: ElementId
+): AnimateMapUpdateUserProfileDataAction => ({
+  type: AnimateMapUserProfileActionTypes.UPDATE_USER_PROFILE_ID,
+  payload: { userId, elementId },
 });

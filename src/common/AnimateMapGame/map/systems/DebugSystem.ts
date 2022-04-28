@@ -1,6 +1,8 @@
 import { Engine, NodeList, System } from "@ash.ts/ash";
-import { RoomPointNode } from "common/AnimateMap/bridges/DataProvider/Structures/RoomsModel";
-import { EventType } from "common/AnimateMap/bridges/EventProvider/EventProvider";
+import {
+  AnimateMapEventType,
+  AnimateMapRoomPointNode,
+} from "common/AnimateMapCommon";
 import { Container, DisplayObject, Graphics, Sprite } from "pixi.js";
 import { Viewport } from "pixi-viewport";
 
@@ -50,7 +52,7 @@ export class DebugSystem extends System {
     this.venues.nodeRemoved.add(this.venueRemoved);
 
     GameInstance.instance.eventProvider.on(
-      EventType.ON_ROOMS_CHANGED,
+      AnimateMapEventType.ON_ROOMS_CHANGED,
       this.handleRooms
     );
   }
@@ -69,7 +71,7 @@ export class DebugSystem extends System {
     this.player = undefined;
 
     GameInstance.instance.eventProvider.off(
-      EventType.ON_ROOMS_CHANGED,
+      AnimateMapEventType.ON_ROOMS_CHANGED,
       this.handleRooms
     );
   }
@@ -86,7 +88,7 @@ export class DebugSystem extends System {
     }
   }
 
-  private handleRooms = (points: RoomPointNode[]) => {
+  private handleRooms = (points: AnimateMapRoomPointNode[]) => {
     const name = "roomPoint";
     if (this.container) {
       this.container.children.forEach((display) => {

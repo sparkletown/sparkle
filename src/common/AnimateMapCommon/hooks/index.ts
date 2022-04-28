@@ -5,3 +5,4 @@ export * from "./useRefiCollection";
 export * from "./events";
 export * from "./useLiveUser";
 export * from "./useLiveDocument";
+export * from "./useProfileModalControls";

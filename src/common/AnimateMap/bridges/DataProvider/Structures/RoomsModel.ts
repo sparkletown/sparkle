@@ -1,8 +1,12 @@
+import {
+  AnimateMapEventProvider,
+  AnimateMapEventType,
+  AnimateMapRoomPointNode,
+} from "common/AnimateMapCommon";
 import { Box, Point as QPoint, QuadTree } from "js-quadtree";
 import { intersection } from "lodash";
 
 import { RoomInfo } from "../../../vendors/playerio/PlayerIO";
-import EventProvider, { EventType } from "../../EventProvider/EventProvider";
 import {
   RoomMath,
   Tuple,
@@ -22,12 +26,6 @@ export interface RoomItem extends RoomInfoType {
   bounds: Tuple<[number, number], 4>;
 }
 
-export interface RoomPointNode {
-  x: number;
-  y: number;
-  data: string[]; //rooms ids
-}
-
 /**
  * A complex data structure using an array for the basic representation of rooms.
  * And also using quadtree, for a quick search for the crossing of main room.
@@ -36,7 +34,7 @@ export class RoomsModel {
   private _list: RoomItem[] = [];
   private _idList: string[] = [];
   private _tree: QuadTree;
-  private _treeItemList: RoomPointNode[] = [];
+  private _treeItemList: AnimateMapRoomPointNode[] = [];
 
   get size() {
     return this._list.length;
@@ -119,7 +117,10 @@ export class RoomsModel {
         }
       });
 
-      EventProvider.emit(EventType.ON_ROOMS_CHANGED, this._treeItemList);
+      AnimateMapEventProvider.emit(
+        AnimateMapEventType.ON_ROOMS_CHANGED,
+        this._treeItemList
+      );
     });
     this._tree.insert(newPoints);
   }

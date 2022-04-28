@@ -3,10 +3,12 @@ import { ENTER, KeyPoll } from "common/AnimateMapCommon/utils";
 
 import { DEFAULT_PORTAL_BOX } from "../../AnimateMapCommon/settings";
 
-import EventProvider, {
-  EventType,
-} from "../../AnimateMap/bridges/EventProvider/EventProvider";
-import { AnimateMapRoom, AnimateMapVenue } from "../../AnimateMapCommon";
+import {
+  AnimateMapEventProvider,
+  AnimateMapEventType,
+  AnimateMapRoom,
+  AnimateMapVenue,
+} from "../../AnimateMapCommon";
 
 import "./AnimateMapTooltipWidget.scss";
 
@@ -40,7 +42,7 @@ export const AnimateMapTooltipWidget: React.FC<AnimateMapTooltipWidgetProps> = (
   } as AnimateMapTooltipWidgetState);
 
   // const eventProvider = useSelector(animateMapEventProviderSelector);
-  const eventProvider = EventProvider;
+  const eventProvider = AnimateMapEventProvider;
   useEffect(() => {
     const callback = (venue: AnimateMapVenue) => {
       if (state.timeoutFunc) {
@@ -85,9 +87,9 @@ export const AnimateMapTooltipWidget: React.FC<AnimateMapTooltipWidgetProps> = (
 
       setState({ ...state });
     };
-    eventProvider.on(EventType.ON_VENUE_COLLISION, callback);
+    eventProvider.on(AnimateMapEventType.ON_VENUE_COLLISION, callback);
     return () => {
-      eventProvider.off(EventType.ON_VENUE_COLLISION, callback);
+      eventProvider.off(AnimateMapEventType.ON_VENUE_COLLISION, callback);
     };
   });
 

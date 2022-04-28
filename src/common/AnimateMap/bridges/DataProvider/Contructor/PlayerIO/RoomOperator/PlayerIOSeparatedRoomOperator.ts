@@ -1,9 +1,10 @@
-import { AnimateMapPoint } from "common/AnimateMapCommon";
+import {
+  AnimateMapEventProvider,
+  AnimateMapEventType,
+  AnimateMapPoint,
+} from "common/AnimateMapCommon";
 
 import { ProxyMultiplayer } from "../../../../../vendors/playerio/PromissesWrappers/ProxyMultiplayer";
-import EventProvider, {
-  EventType,
-} from "../../../../EventProvider/EventProvider";
 import { CloudDataProvider } from "../../../CloudDataProvider";
 import { initialRoomData, RoomInfoType } from "../../../Structures/RoomsModel";
 import { FindMessageTuple, MessagesTypes, RoomTypes } from "../types";
@@ -79,7 +80,7 @@ export class PlayerIOSeparatedRoomOperator implements IPlayerIORoomOperator {
           user.x = x;
           user.y = y;
           if (this.playerId !== user.data.id)
-            EventProvider.emit(EventType.USER_JOINED, user);
+            AnimateMapEventProvider.emit(AnimateMapEventType.USER_JOINED, user);
         });
 
         connection.addMessageCallback<
@@ -95,7 +96,7 @@ export class PlayerIOSeparatedRoomOperator implements IPlayerIORoomOperator {
           user.x = x;
           user.y = y;
           if (this.playerId !== user.data.id)
-            EventProvider.emit(EventType.USER_MOVED, user);
+            AnimateMapEventProvider.emit(AnimateMapEventType.USER_MOVED, user);
         });
 
         connection.addMessageCallback<
@@ -112,7 +113,7 @@ export class PlayerIOSeparatedRoomOperator implements IPlayerIORoomOperator {
           user.x = x;
           user.y = y;
           if (this.playerId !== user.data.id)
-            EventProvider.emit(EventType.USER_MOVED, user);
+            AnimateMapEventProvider.emit(AnimateMapEventType.USER_MOVED, user);
         });
 
         connection.addMessageCallback<
@@ -124,7 +125,11 @@ export class PlayerIOSeparatedRoomOperator implements IPlayerIORoomOperator {
             innerUserId
           );
           if (!user || Array.isArray(user)) return console.error("Bad user");
-          EventProvider.emit(EventType.RECEIVE_SHOUT, user.data.id, shout);
+          AnimateMapEventProvider.emit(
+            AnimateMapEventType.RECEIVE_SHOUT,
+            user.data.id,
+            shout
+          );
         });
 
         connection.addMessageCallback<
@@ -137,7 +142,11 @@ export class PlayerIOSeparatedRoomOperator implements IPlayerIORoomOperator {
             parseInt(innerUserId)
           );
           if (!user || Array.isArray(user)) return console.error("Bad user");
-          EventProvider.emit(EventType.RECEIVE_SHOUT, user.data.id, shout);
+          AnimateMapEventProvider.emit(
+            AnimateMapEventType.RECEIVE_SHOUT,
+            user.data.id,
+            shout
+          );
         });
 
         connection.addMessageCallback<FindMessageTuple<MessagesTypes.userLeft>>(
@@ -150,7 +159,7 @@ export class PlayerIOSeparatedRoomOperator implements IPlayerIORoomOperator {
             );
             if (!user || Array.isArray(user)) return console.error("Bad user");
             if (this.playerId !== user.data.id)
-              EventProvider.emit(EventType.USER_LEFT, user);
+              AnimateMapEventProvider.emit(AnimateMapEventType.USER_LEFT, user);
           }
         );
 

@@ -1,7 +1,8 @@
 import { Engine, NodeList, System } from "@ash.ts/ash";
-import EventProvider, {
-  EventType,
-} from "common/AnimateMap/bridges/EventProvider/EventProvider";
+import {
+  AnimateMapEventProvider,
+  AnimateMapEventType,
+} from "common/AnimateMapCommon";
 import { Container, Graphics, Point, Sprite, Text, TextStyle } from "pixi.js";
 
 import EntityFactory from "../entities/EntityFactory";
@@ -22,7 +23,10 @@ export class BubbleSystem extends System {
 
     this.viewport = engine.getNodeList(ViewportNode);
 
-    EventProvider.on(EventType.RECEIVE_SHOUT, this.recieveShoutHandler);
+    AnimateMapEventProvider.on(
+      AnimateMapEventType.RECEIVE_SHOUT,
+      this.recieveShoutHandler
+    );
   }
 
   removeFromEngine(engine: Engine) {
@@ -41,7 +45,10 @@ export class BubbleSystem extends System {
     }
 
     this.viewport = undefined;
-    EventProvider.off(EventType.RECEIVE_SHOUT, this.recieveShoutHandler);
+    AnimateMapEventProvider.off(
+      AnimateMapEventType.RECEIVE_SHOUT,
+      this.recieveShoutHandler
+    );
   }
 
   update(time: number) {

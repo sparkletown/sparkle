@@ -1,4 +1,8 @@
-import { AnimateMapPoint } from "common/AnimateMapCommon";
+import {
+  AnimateMapEventProvider,
+  AnimateMapEventType,
+  AnimateMapPoint,
+} from "common/AnimateMapCommon";
 import { PlaygroundMap } from "common/AnimateMapGame/utils/PlaygroundMap";
 import { utils } from "pixi.js";
 
@@ -6,7 +10,6 @@ import { PlayerIOInstance } from "../../../../vendors/playerio/PlayerIO";
 import { ProxyClient } from "../../../../vendors/playerio/PromissesWrappers/ProxyClient";
 import { ProxyMultiplayer } from "../../../../vendors/playerio/PromissesWrappers/ProxyMultiplayer";
 import { ProxyPlayerIO } from "../../../../vendors/playerio/PromissesWrappers/ProxyPlayerIO";
-import EventProvider, { EventType } from "../../../EventProvider/EventProvider";
 import { CloudDataProvider } from "../../CloudDataProvider";
 import playerModel from "../../Structures/PlayerModel";
 import { RoomInfoType } from "../../Structures/RoomsModel";
@@ -121,7 +124,10 @@ export class PlayerIODataProvider extends utils.EventEmitter {
     playerModel.x = this._playerObject.x;
     playerModel.y = this._playerObject.y;
 
-    EventProvider.emit(EventType.PLAYER_MODEL_READY, playerModel);
+    AnimateMapEventProvider.emit(
+      AnimateMapEventType.PLAYER_MODEL_READY,
+      playerModel
+    );
 
     this.playerIORoomOperator = this._getRoomOperator(this.client, playerModel);
 

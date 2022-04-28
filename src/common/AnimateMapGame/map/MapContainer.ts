@@ -1,10 +1,11 @@
 import { Engine } from "@ash.ts/ash";
+import {
+  AnimateMapEventProvider,
+  AnimateMapEventType,
+} from "common/AnimateMapCommon";
 import { Application, Container } from "pixi.js";
 import { Viewport } from "pixi-viewport";
 
-import EventProvider, {
-  EventType,
-} from "../../AnimateMap/bridges/EventProvider/EventProvider";
 import { TimeoutCommand } from "../commands/TimeoutCommand";
 import {
   GameControls,
@@ -81,9 +82,12 @@ export class MapContainer extends Container {
     } else {
       const clbck = (player: GameUser) => {
         this._player = player;
-        EventProvider.off(EventType.PLAYER_MODEL_READY, clbck);
+        AnimateMapEventProvider.off(
+          AnimateMapEventType.PLAYER_MODEL_READY,
+          clbck
+        );
       };
-      EventProvider.on(EventType.PLAYER_MODEL_READY, clbck);
+      AnimateMapEventProvider.on(AnimateMapEventType.PLAYER_MODEL_READY, clbck);
     }
   }
 

@@ -1,5 +1,5 @@
 import { Engine, NodeList, System } from "@ash.ts/ash";
-import { EventType } from "common/AnimateMap/bridges/EventProvider/EventProvider";
+import { AnimateMapEventType } from "common/AnimateMapCommon";
 
 import { GameArtcar, GameControls } from "../../common";
 import { GameInstance } from "../../GameInstance";
@@ -54,7 +54,7 @@ export class MotionCollisionSystem extends System {
           this.creator.createWaitingArtcarClick(node.artcar.artcar);
 
           GameInstance.instance.eventProvider.emit(
-            EventType.ON_VENUE_COLLISION,
+            AnimateMapEventType.ON_VENUE_COLLISION,
             node.artcar.artcar as GameArtcar
           );
 
@@ -102,7 +102,7 @@ export class MotionCollisionSystem extends System {
           this.creator.createWaitingVenueClick(node.venue.model);
 
           GameInstance.instance.eventProvider.emit(
-            EventType.ON_VENUE_COLLISION,
+            AnimateMapEventType.ON_VENUE_COLLISION,
             node.venue.model
           );
           break;

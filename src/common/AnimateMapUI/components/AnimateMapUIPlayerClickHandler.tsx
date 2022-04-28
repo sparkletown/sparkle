@@ -1,16 +1,19 @@
 import React, { useCallback, useEffect } from "react";
+import { useProfileModalControls } from "common/AnimateMapCommon/hooks";
 
-import { useProfileModalControls } from "hooks/useProfileModalControls";
-
-import EventProvider, {
-  EventType,
-} from "../../AnimateMap/bridges/EventProvider/EventProvider";
-import { AnimateMapUser, UserId } from "../../AnimateMapCommon";
+import {
+  AnimateMapEventProvider,
+  AnimateMapEventType,
+  AnimateMapUser,
+  UserId,
+} from "../../AnimateMapCommon";
 
 import "./AnimateMapUIPlayerClickHandler.scss";
 export interface AnimateMapUIPlayerClickHandlerProps {}
 
-export const AnimateMapUIPlayerClickHandler: React.FC<AnimateMapUIPlayerClickHandlerProps> = () => {
+export const AnimateMapUIPlayerClickHandler: React.FC<AnimateMapUIPlayerClickHandlerProps> = (
+  props
+) => {
   const { openUserProfileModal } = useProfileModalControls();
 
   const viewProfileHandler = useCallback(
@@ -21,9 +24,15 @@ export const AnimateMapUIPlayerClickHandler: React.FC<AnimateMapUIPlayerClickHan
   );
 
   useEffect(() => {
-    EventProvider.on(EventType.ON_REPLICATED_USER_CLICK, viewProfileHandler);
+    AnimateMapEventProvider.on(
+      AnimateMapEventType.ON_REPLICATED_USER_CLICK,
+      viewProfileHandler
+    );
     return () => {
-      EventProvider.off(EventType.ON_REPLICATED_USER_CLICK, viewProfileHandler);
+      AnimateMapEventProvider.off(
+        AnimateMapEventType.ON_REPLICATED_USER_CLICK,
+        viewProfileHandler
+      );
     };
   }, [viewProfileHandler]);
 

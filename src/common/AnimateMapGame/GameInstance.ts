@@ -1,8 +1,9 @@
 import { CloudDataProvider } from "common/AnimateMap/bridges/DataProvider/CloudDataProvider";
 import { DataProviderEvent } from "common/AnimateMap/bridges/DataProvider/Providers/DataProviderEvent";
-import EventProvider, {
-  EventType,
-} from "common/AnimateMap/bridges/EventProvider/EventProvider";
+import {
+  AnimateMapEventProvider,
+  AnimateMapEventType,
+} from "common/AnimateMapCommon";
 import {
   Application,
   Container,
@@ -48,7 +49,7 @@ export class GameInstance {
 
   private _stage?: Container;
   public _mapContainer?: MapContainer;
-  private _eventProvider = EventProvider;
+  private _eventProvider = AnimateMapEventProvider;
 
   get eventProvider() {
     return this._eventProvider;
@@ -229,19 +230,28 @@ export class GameInstance {
   private _subscribes() {
     //TODO: refactor all subscribes to separate class? An example, rework eventProvider for this.
 
-    EventProvider.on(EventType.USER_JOINED, (user: GameUser) => {
-      console.log(`- ${user} join to room`);
-      this._mapContainer?.entityFactory?.updateUserPositionById(user);
-    });
+    AnimateMapEventProvider.on(
+      AnimateMapEventType.USER_JOINED,
+      (user: GameUser) => {
+        console.log(`- ${user} join to room`);
+        this._mapContainer?.entityFactory?.updateUserPositionById(user);
+      }
+    );
 
-    EventProvider.on(EventType.USER_LEFT, (user: GameUser) => {
-      console.log(`- ${user} left from room`);
-      this._mapContainer?.entityFactory?.removeUserById(user.toString());
-    });
+    AnimateMapEventProvider.on(
+      AnimateMapEventType.USER_LEFT,
+      (user: GameUser) => {
+        console.log(`- ${user} left from room`);
+        this._mapContainer?.entityFactory?.removeUserById(user.toString());
+      }
+    );
 
-    EventProvider.on(EventType.USER_MOVED, (user: GameUser) => {
-      this._mapContainer?.entityFactory?.updateUserPositionById(user);
-    });
+    AnimateMapEventProvider.on(
+      AnimateMapEventType.USER_MOVED,
+      (user: GameUser) => {
+        this._mapContainer?.entityFactory?.updateUserPositionById(user);
+      }
+    );
 
     // Venues
     this.dataProvider.on(DataProviderEvent.VENUE_ADDED, (venue: GameVenue) => {
@@ -286,7 +296,7 @@ export class GameInstance {
 
     window.addEventListener("resize", this.resize.bind(this));
 
-    this.eventProvider.on(EventType.UI_SINGLE_BUTTON_FOLLOW, () =>
+    this.eventProvider.on(AnimateMapEventType.UI_SINGLE_BUTTON_FOLLOW, () =>
       this._mapContainer?.entityFactory?.setPlayerCameraFollow(true)
     );
 

@@ -16,3 +16,5 @@ export * from "./AnimateMapFireAuthUser";
 export * from "./AnimateMapFirePath";
 export * from "./AnimateMapEvents";
 export * from "./AnimateMapUser";
+export * from "./AnimateMapRoomPoint";
+export * from "./AnimateMapEventProvider";

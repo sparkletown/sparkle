@@ -1,10 +1,11 @@
 import React from "react";
-import { getExtraLinkProps } from "common/AnimateMapCommon/utils";
 
 import {
   EXTERNAL_WEBGL_CHECK_URL,
   STRING_SPACE,
 } from "../../AnimateMapCommon/settings";
+
+import { getExtraLinkProps } from "../../AnimateMapCommon/utils";
 
 import "./AnimateMapErrorPrompt.scss";
 

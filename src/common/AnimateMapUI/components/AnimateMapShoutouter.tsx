@@ -1,8 +1,9 @@
 import React, { useCallback, useEffect, useRef } from "react";
+import {
+  AnimateMapEventProvider,
+  AnimateMapEventType,
+} from "common/AnimateMapCommon";
 
-import EventProvider, {
-  EventType,
-} from "../../AnimateMap/bridges/EventProvider/EventProvider";
 import { ENTER, KeyPoll } from "../../AnimateMapCommon/utils";
 
 import arrowImg from "assets/images/AnimateMap/UI/icon-send.svg";
@@ -16,7 +17,10 @@ export const AnimateMapShoutouter: React.FC<AnimateMapShoutouterProps> = () => {
 
   const onSendClick = useCallback(() => {
     if (!refInput.current) return;
-    EventProvider.emit(EventType.SEND_SHOUT, refInput.current.value);
+    AnimateMapEventProvider.emit(
+      AnimateMapEventType.SEND_SHOUT,
+      refInput.current.value
+    );
     refInput.current.value = "";
     refInput.current.blur();
   }, [refInput]);

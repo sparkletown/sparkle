@@ -4,6 +4,7 @@ import { AnyVenue } from "./AnimateMapVenues";
 
 export type SpaceId = Branded<string, "SpaceId">;
 export type UserId = Branded<string, "UserId">;
+export type ElementId = Branded<string, "ElementId">;
 export type WorldId = Branded<string, "WorldId">;
 export type UserWithId = WithId<User, UserId>;
 

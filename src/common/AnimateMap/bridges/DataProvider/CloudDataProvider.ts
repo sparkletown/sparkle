@@ -1,4 +1,6 @@
 import {
+  AnimateMapEventProvider,
+  AnimateMapEventType,
   AnimateMapFirebarrel,
   AnimateMapFirebarrelData,
   AnimateMapUser,
@@ -14,7 +16,6 @@ import { DEFAULT_BADGE_IMAGE } from "common/AnimateMapCommon/settings";
 import { RoomWithFullData } from "../CloudDataProviderWrapper";
 import { getFirebaseStorageResizedImage } from "../common/utils";
 import { DataProvider } from "../DataProvider";
-import EventProvider, { EventType } from "../EventProvider/EventProvider";
 
 import { CommonInterface, CommonLinker } from "./Contructor/CommonInterface";
 import { FirebaseDataProvider } from "./Contructor/Firebase/FirebaseDataProvider";
@@ -88,8 +89,8 @@ export class CloudDataProvider
       this.commonInterface
     );
     this.users = new UsersDataProvider(this.commonInterface);
-    EventProvider.on(
-      EventType.SEND_SHOUT,
+    AnimateMapEventProvider.on(
+      AnimateMapEventType.SEND_SHOUT,
       this.commonInterface.sendShoutMessage.bind(this.commonInterface)
     );
   }

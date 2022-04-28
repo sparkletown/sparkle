@@ -1,5 +1,5 @@
 import { Engine, NodeList, System } from "@ash.ts/ash";
-import { EventType } from "common/AnimateMap/bridges/EventProvider/EventProvider";
+import { AnimateMapEventType } from "common/AnimateMapCommon";
 import { Howler } from "howler";
 import { throttle } from "lodash";
 import { Application, InteractionEvent, Point } from "pixi.js";
@@ -101,7 +101,7 @@ export class ViewportSystem extends System {
     );
 
     GameInstance.instance.eventProvider.on(
-      EventType.UI_CONTROL_PANEL_ZOOM_OUT,
+      AnimateMapEventType.UI_CONTROL_PANEL_ZOOM_OUT,
       () => {
         const wheel: WheelEvent = new WheelEvent("wheel", { deltaY: 90 });
         try {
@@ -113,7 +113,7 @@ export class ViewportSystem extends System {
     );
 
     GameInstance.instance.eventProvider.on(
-      EventType.UI_CONTROL_PANEL_ZOOM_IN,
+      AnimateMapEventType.UI_CONTROL_PANEL_ZOOM_IN,
       () => {
         const wheel: WheelEvent = new WheelEvent("wheel", { deltaY: -90 });
         try {
@@ -167,11 +167,11 @@ export class ViewportSystem extends System {
     this._unsubscribeSetEnvironmentSound();
 
     GameInstance.instance.eventProvider.off(
-      EventType.UI_CONTROL_PANEL_ZOOM_OUT,
+      AnimateMapEventType.UI_CONTROL_PANEL_ZOOM_OUT,
       this.handleZoomOut
     );
     GameInstance.instance.eventProvider.off(
-      EventType.UI_CONTROL_PANEL_ZOOM_IN,
+      AnimateMapEventType.UI_CONTROL_PANEL_ZOOM_IN,
       this.handleZoomIn
     );
   }
