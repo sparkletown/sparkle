@@ -11,7 +11,6 @@ import { uniqueEmojiReactionsDataMapReducer } from "utils/reactions";
 
 import { useAudio } from "hooks/audio/useAudio";
 import { useReactions } from "hooks/reactions";
-import { useSelector } from "hooks/useSelector";
 
 import { Reaction } from "components/atoms/Reaction";
 
@@ -28,9 +27,7 @@ export const UserReactions: React.FC<UserReactionsProps> = ({
   isMuted: isMutedLocally = false,
   reactionPosition,
 }) => {
-  // @debt some of the redux patterns exist for this, but I don't believe anything actually uses them/calls this at the moment. Used in MapPartygoersOverlay
-  const isMutedGlobally = useSelector((state) => state.room.mute);
-  const isMuted = isMutedLocally || isMutedGlobally;
+  const isMuted = isMutedLocally;
 
   const userReactions = useReactions({
     userId,

@@ -35,10 +35,6 @@ export interface PollMessage extends BaseChatMessage {
   votes: PollVote[];
 }
 
-export interface JukeboxMessage extends BaseChatMessage {
-  tableId: string;
-}
-
 export type PollVoteBase = {
   questionId: number;
   pollId: string;
@@ -48,11 +44,7 @@ export type PollVote = PollVoteBase & {
   userId: string;
 };
 
-export type ChatMessage =
-  | VenueChatMessage
-  | PrivateChatMessage
-  | PollMessage
-  | JukeboxMessage;
+export type ChatMessage = VenueChatMessage | PrivateChatMessage | PollMessage;
 
 export type MessageWithReplies = {
   repliesCount?: number;
@@ -111,8 +103,6 @@ export interface PrivateChatActions
   extends Exclude<ChatActions, "deleteMessage" | "deleteThreadReply"> {
   markMessageRead: MarkMessageRead;
 }
-
-export type JukeboxChatActions = Pick<ChatActions, "sendChatMessage">;
 
 export type PreviewChatMessageMap = { [key: string]: PreviewChatMessage };
 
