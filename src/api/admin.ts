@@ -230,7 +230,7 @@ export const createVenue_v2 = async (
     ...firestoreVenueInput,
     worldId,
   };
-  const venueResponse = httpsCallable(
+  const venueResponse = await httpsCallable(
     FIREBASE.functions,
     "venue-createVenue_v2"
   )(venueOptions).catch(
