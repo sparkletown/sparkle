@@ -420,6 +420,7 @@ workflows:
   build-test-deploy:
     jobs:
       - lint-and-test
+      - start-emulators
       - e2e-test:
           requires:
             - start-emulators
