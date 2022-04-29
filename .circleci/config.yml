@@ -68,6 +68,7 @@ jobs:
       - run: npm -v
   lint-and-test:
     executor: node/default
+    resource_class: large
     steps:
       - checkout
       - run: npm ci
