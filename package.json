@@ -30,6 +30,7 @@
     "firebase:emulate-cy:run": "npm run build && cd functions && npm run firebase:emulate-cy:run",
     "firebase:emulate-cy:open": "npm run build && cd functions && npm run firebase:emulate-cy:open",
     "firebase:emulate-cy:prepare": "cd functions && npm run firebase:emulate-cy:prepare",
+    "firebase:emulate-cy:circle": "npm run build && cd functions && npm run firebase:emulate-cy:circle",
     "firebase:emulate-all": "cd functions && npm run firebase:emulate-all",
     "firebase:emulate-functions": "cd functions && npm run firebase:emulate-functions",
     "firebase:emulate-functions-hosting": "cd functions && npm run firebase:emulate-functions-hosting",

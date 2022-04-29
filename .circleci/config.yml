@@ -56,7 +56,7 @@ version: 2.1
 orbs:
   node: circleci/node@5.0.0
   slack: circleci/slack@4.1.1
-  cypress: cypress-io/cypress@1.29.0
+  #cypress: cypress-io/cypress@1.29.0
 jobs:
   install-node:
     executor: node/default
@@ -69,31 +69,30 @@ jobs:
       - run: npm -v
   lint-and-test:
     executor: node/default
+    steps:
+      - checkout
+      - run: npm ci
+      - run: npm run prettier:check
+      - run: npm run eslint:check
+      - run: npm run test
+      #- cypress/run
+      - *notify-on-fail
+  start-emulators:
+    docker:
+      - image: cimg/openjdk:17.0-node
     resource_class: large
     steps:
       - checkout
       - run:
-          name: install packages
-          command: npm ci && cd functions && npm ci && cd ..
-      - run: npm run prettier:check
-      - run: npm run eslint:check
-      - run: npm run test
-      - cypress/run
-      - *notify-on-fail
-  #  smoke-test:
-  #    executor:
-  #      name: node/default
-  #    steps:
-  #      - checkout
-  #      - node/with-cache:
-  #          cache-version: v2
-  #          steps:
-  #            - run: sudo apt-get update
-  #            - run: sudo apt-get install libgtk2.0-0 libgtk-3-0 libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
-  #            - run: npm install
-  #            - run: npm run cy:install # cache this instead
-  #            - run: npm run cy:run
-  #            - *notify-on-fail
+         name: install packages
+         command: npm ci && cd functions && npm ci && cd ..
+      - run: firebase:emulate-cy:circle
+  e2e-test:
+    executor: node/default
+    steps:
+      - checkout
+      - run: npm ci
+      - run: npm run cy:run
   deploy-functions:
     executor: node/default
     working_directory: ~/project/functions # ensure our steps (except for checkout) run in this directory
@@ -421,6 +420,9 @@ workflows:
   build-test-deploy:
     jobs:
       - lint-and-test
+      - e2e-test:
+          requires:
+            - start-emulators
       - deploy-functions:
           requires:
             - lint-and-test
@@ -489,11 +491,3 @@ workflows:
                 - env/github
                 - env/summit-hack
                 - env/northwell
-#      - smoke-test:
-#          requires:
-#            - deploy-functions
-#            - deploy-hosting
-#          filters:
-#            branches:
-#              only:
-#                - staging
