@@ -71,6 +71,7 @@ jobs:
     resource_class: large
     steps:
       - checkout
+      - run: cd functions && npm ci && cd ..
       - run: npm ci
       - run: npm run prettier:check
       - run: npm run eslint:check
