@@ -1338,7 +1338,6 @@ const updatePoster = async (
         tables: [],
         subtitle: "",
         description: posterDetails.description,
-        columns: 0,
         template: "posterroom",
         parentId: ownerSpace.id,
         worldId: ownerSpace.worldId,
