@@ -58,6 +58,9 @@ export const PosterConfiguration: React.FC<ChannelConfigurationProps> = ({
     if (!csvFiles.length) {
       throw new Error("Must provide a file to upload");
     }
+
+    // @debt this should be done in a separate module so that the component
+    // isn't processing CSV files directly
     const fileContents = await new Promise<string>((resolve, reject) => {
       const reader = new FileReader();
 
