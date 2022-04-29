@@ -1338,7 +1338,7 @@ const updatePoster = async (
         tables: [],
         subtitle: "",
         description: posterDetails.description,
-        template: "posterroom",
+        template: "posterpage",
         parentId: ownerSpace.id,
         worldId: ownerSpace.worldId,
       },
