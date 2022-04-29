@@ -227,6 +227,9 @@ interface CreateBaseUpdateVenueDataPayload {
 }
 
 interface Venue {
+  id: string;
+  worldId: string;
+  slug: string;
   name: string;
   start_utc_seconds?: number;
   end_utc_seconds?: number;
@@ -1284,4 +1287,155 @@ export const createBooth = functions.https.onCall(async (data, context) => {
   await batch.commit();
 
   return { id: venueRef.id, slug };
+});
+
+interface PosterDetails {
+  name: string;
+  thumbnailUrl: string;
+  description: string;
+  embedUrl: string;
+  // The poster ID is used to identify poster rooms from previous uploads and
+  // update them rather than continuously create new ones
+  posterId: string;
+}
+
+interface UpdatePosterOptions {
+  ownerSpaceId: string;
+  posterDetails: PosterDetails[];
+}
+
+const POSTER_CREATED = "created";
+const POSTER_UPDATED = "updated";
+const POSTER_DELETED = "deleted";
+
+const updatePoster = async (
+  batch: admin.firestore.WriteBatch,
+  context: functions.https.CallableContext,
+  ownerSpace: Venue,
+  posterDetails: PosterDetails
+) => {
+  console.log("Updating poster", JSON.stringify(posterDetails));
+  // Get the existing space for this poster if it exists
+  const existingRef = await admin
+    .firestore()
+    .collection("venues")
+    .where("managedBy", "==", ownerSpace.id)
+    .where("poster.posterId", "==", posterDetails.posterId)
+    .get();
+  const [existing] = existingRef.docs;
+
+  if (!existing) {
+    // Poster doesn't exist so create it
+    const venueRef = admin.firestore().collection("venues").doc();
+    const slug = `${ownerSpace.slug}-${venueRef.id}`;
+
+    // TODO This code around creating venues should be refactored. There's a lot
+    // of debt in this area
+    const standardVenueData = createVenueData_v2(
+      {
+        name: posterDetails.name,
+        slug,
+        tables: [],
+        subtitle: "",
+        description: posterDetails.description,
+        columns: 0,
+        template: "posterroom",
+        parentId: ownerSpace.id,
+        worldId: ownerSpace.worldId,
+      },
+      context
+    );
+
+    const venueData = {
+      ...standardVenueData,
+      managedBy: ownerSpace.id,
+      backgroundImageUrl: "",
+      iframeUrl: posterDetails.embedUrl,
+      poster: {
+        thumbnailUrl: posterDetails.thumbnailUrl,
+        posterId: posterDetails.posterId,
+      },
+    };
+    batch.create(venueRef, venueData);
+
+    initializeVenueChatMessagesCounter(venueRef, batch);
+
+    return POSTER_CREATED;
+  } else {
+    console.log("updating", existing.id);
+    batch.update(existing.ref, {
+      name: posterDetails.name,
+      description: posterDetails.description,
+      iframeUrl: posterDetails.embedUrl,
+      poster: {
+        thumbnailUrl: posterDetails.thumbnailUrl,
+        posterId: posterDetails.posterId,
+      },
+      // Unhide the poster, in case the poster was hidden on a previous run
+      isHidden: false,
+    });
+    return POSTER_UPDATED;
+  }
+};
+
+export const updatePosters = functions.https.onCall(async (data, context) => {
+  assertValidAuth(context);
+
+  const options = data as UpdatePosterOptions;
+
+  const collection = admin.firestore().collection("venues");
+
+  const { ownerSpaceId, posterDetails } = options;
+  const ownerSpace = (await collection.doc(ownerSpaceId).get()).data();
+
+  if (!ownerSpace) {
+    throw new HttpsError(
+      "not-found",
+      `The template ${options.ownerSpaceId} does not exist`
+    );
+  }
+
+  // Copy the ID into the space as it isn't automatically set
+  ownerSpace.id = ownerSpaceId;
+
+  const batch = admin.firestore().batch();
+
+  const results = await Promise.all(
+    posterDetails.map((poster) =>
+      updatePoster(batch, context, ownerSpace as Venue, poster)
+    )
+  );
+  const counts = results.reduce(
+    (acc, result) => {
+      acc[result] += 1;
+      return acc;
+    },
+    { [POSTER_CREATED]: 0, [POSTER_UPDATED]: 0, [POSTER_DELETED]: 0 }
+  );
+
+  // Find all the posters that need deleting
+  const existingPosters = await admin
+    .firestore()
+    .collection("venues")
+    .where("managedBy", "==", ownerSpace.id)
+    .where("isHidden", "==", false)
+    .get();
+  const uploadedPosterIds = posterDetails.map(({ posterId }) => posterId);
+
+  existingPosters.docs.forEach((doc) => {
+    const data = doc.data();
+    const posterId = data?.poster?.posterId;
+    const existing = uploadedPosterIds.findIndex(
+      (candidate) => candidate === posterId
+    );
+    if (existing === -1) {
+      console.log(`Hiding poster ${doc.id} (${posterId}) as not uploaded`);
+      batch.update(doc.ref, { isHidden: true });
+      counts[POSTER_DELETED] += 1;
+    }
+  });
+
+  await batch.commit();
+
+  return counts;
 });
