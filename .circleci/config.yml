@@ -86,7 +86,7 @@ jobs:
       - run:
          name: install packages
          command: npm ci && cd functions && npm ci && cd ..
-      - run: ./node_modules/.bin/firebase use demo-cypress-test
+      - run: ./node_modules/.bin/firebase use demo-cypress-test --token "$FIREBASE_TOKEN"
       - run: npm run firebase:emulate-cy:circle
   e2e-test:
     executor: node/default
