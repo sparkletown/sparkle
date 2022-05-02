@@ -152,8 +152,9 @@ export const Map: React.FC<MapProps> = ({
     selectPortal({ ...portal, bounds: safeZoneBounds });
 
   return (
-    <>
+    <div data-bem="Map">
       <div className={styles.MapBackground} style={mapStyles} />
+      <h1 className={styles.spaceName}>{venue.name}</h1>
       <Portals
         portals={venue.rooms ?? []}
         space={venue}
@@ -163,6 +164,6 @@ export const Map: React.FC<MapProps> = ({
         selectedPortal={selectedPortal}
         unselectPortal={unselectPortal}
       />
-    </>
+    </div>
   );
 };
