@@ -105,7 +105,7 @@ jobs:
           command: npm ci && cd functions && npm ci && cd ..
       - run:
           name: download the functions' configuration
-          command: npx firebase functions:config:get > ./functions/.runtimeconfig.json
+          command: ./node_modules/.bin/firebase functions:config:get > ./functions/.runtimeconfig.json
       - run: npm run firebase:emulate-cy:run
   deploy-functions:
     executor: node/default
