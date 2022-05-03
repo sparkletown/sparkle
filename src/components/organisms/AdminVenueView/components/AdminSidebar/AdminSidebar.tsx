@@ -3,7 +3,7 @@ import classNames from "classnames";
 
 import "./AdminSidebar.scss";
 
-export interface AdminSidebarProps {
+interface AdminSidebarProps {
   variant?: "light" | "dark" | "transparent";
 }
 

@@ -190,24 +190,24 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
 
   const isReactionsMutedDisabled = !values?.showReactions;
 
-  const { relatedVenues } = useRelatedVenues();
+  const { worldSpaces } = useRelatedVenues();
 
   const backButtonOptionList = useMemo(
     () =>
       Object.fromEntries(
-        relatedVenues
+        worldSpaces
           .filter(
             ({ id, worldId }) => !(space.worldId !== worldId || id === space.id)
           )
           .map((venue) => [venue.id, venue])
       ),
-    [relatedVenues, space.worldId, space.id]
+    [worldSpaces, space.worldId, space.id]
   );
 
   const boothTemplateOptionList = useMemo(
     () =>
       Object.fromEntries(
-        relatedVenues
+        worldSpaces
           .filter(
             ({ id, worldId, template, managedBy }) =>
               space.worldId === worldId &&
@@ -217,23 +217,23 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
           )
           .map((venue) => [venue.id, venue])
       ),
-    [relatedVenues, space.worldId, space.id]
+    [worldSpaces, space.worldId, space.id]
   );
 
   const parentSpace = useMemo(
     () =>
       space.parentId
-        ? relatedVenues.find(({ id }) => id === space.parentId)
+        ? worldSpaces.find(({ id }) => id === space.parentId)
         : { name: "" },
-    [relatedVenues, space.parentId]
+    [worldSpaces, space.parentId]
   );
 
   const boothTemplateSpace = useMemo(
     () =>
       space.boothTemplateSpaceId
-        ? relatedVenues.find(({ id }) => id === space.boothTemplateSpaceId)
+        ? worldSpaces.find(({ id }) => id === space.boothTemplateSpaceId)
         : { name: "" },
-    [relatedVenues, space.boothTemplateSpaceId]
+    [worldSpaces, space.boothTemplateSpaceId]
   );
 
   const { name: watchedName } = watch();

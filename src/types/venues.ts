@@ -62,7 +62,6 @@ export interface BaseVenue {
   radioStations?: string[];
   radioTitle?: string;
   banner?: Banner;
-  samlAuthProviderId?: string;
   roomVisibility?: RoomVisibility;
   rooms?: Room[];
   start_utc_seconds?: number;

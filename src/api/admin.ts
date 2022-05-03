@@ -67,7 +67,6 @@ interface VenueAdvancedConfig {
   roomVisibility?: RoomVisibility;
   showRadio?: boolean;
   parentId?: SpaceId;
-  enableJukebox?: boolean;
 }
 
 export interface VenueInput_v2 extends WithId<VenueAdvancedConfig> {
@@ -110,14 +109,6 @@ export const createSlug = (name: string | unknown) =>
   String(name ?? "")
     .replace(INVALID_SLUG_CHARS_REGEX, "")
     .toLowerCase();
-
-export const getVenueOwners = async (venueId: string): Promise<string[]> => {
-  const owners = (
-    await firebase.firestore().collection("venues").doc(venueId).get()
-  ).data()?.owners;
-
-  return owners;
-};
 
 /**
  * This method creates the payload for an API call for creating/updating venues.
@@ -239,7 +230,7 @@ export const createVenue_v2 = async (
     ...firestoreVenueInput,
     worldId,
   };
-  const venueResponse = httpsCallable(
+  const venueResponse = await httpsCallable(
     FIREBASE.functions,
     "venue-createVenue_v2"
   )(venueOptions).catch(
@@ -656,6 +647,49 @@ export const deleteChannel = async (
       event.addMetadata("api/admin::deleteChannel", {
         spaceId,
         channelIndex,
+      });
+    });
+    throw e;
+  });
+};
+
+export interface PosterDetails {
+  name: string;
+  thumbnailUrl: string;
+  description: string;
+  embedUrl: string;
+  // The poster ID is used to identify poster rooms from previous uploads and
+  // update them rather than continuously create new ones
+  posterId: string;
+}
+
+interface UploadPostersOptions {
+  ownerSpaceId: SpaceId;
+  posters: PosterDetails[];
+}
+
+interface UploadPostersResult {
+  created: number;
+  updated: number;
+  deleted: number;
+}
+
+export const uploadPosters = async ({
+  ownerSpaceId,
+  posters,
+}: UploadPostersOptions) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return await httpsCallable<any, UploadPostersResult>(
+    FIREBASE.functions,
+    "venue-updatePosters"
+  )({
+    ownerSpaceId,
+    posterDetails: posters,
+  }).catch((e) => {
+    Bugsnag.notify(e, (event) => {
+      event.addMetadata("api/admin::uploadPosters", {
+        ownerSpaceId,
+        posters,
       });
     });
     throw e;

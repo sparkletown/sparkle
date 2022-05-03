@@ -15,6 +15,8 @@ import { getTwilioVideoToken } from "api/video";
 import { isDefined } from "utils/types";
 
 const TRACK_NAME_SCREENSHARE = "screenshare";
+const TWILIO_VIDEO_WIDTH = 208;
+const TWILIO_VIDEO_HEIGHT = 156;
 
 const determineTrackSource = (track: Tracklike) =>
   track.name === TRACK_NAME_SCREENSHARE
@@ -231,7 +233,10 @@ export const TwilioClient = (onStateUpdateCallback: StateUpdateCallback) => {
     }
 
     await Twilio.connect(token, {
-      video: enableVideo,
+      video: enableVideo && {
+        height: TWILIO_VIDEO_HEIGHT,
+        width: TWILIO_VIDEO_WIDTH,
+      },
       audio: enableAudio,
       enableDscp: true,
     })
@@ -388,6 +393,7 @@ export const TwilioClient = (onStateUpdateCallback: StateUpdateCallback) => {
       console.warn("startVideo called from invalid state");
       return;
     }
+
     const webcamTracks = Array.from(
       room.localParticipant.videoTracks.values()
     ).filter(({ trackName }) => trackName !== TRACK_NAME_SCREENSHARE);
@@ -398,7 +404,10 @@ export const TwilioClient = (onStateUpdateCallback: StateUpdateCallback) => {
       isTransmittingVideo = true;
       recalculateStatus();
 
-      const localVideoTrack = await Twilio.createLocalVideoTrack();
+      const localVideoTrack = await Twilio.createLocalVideoTrack({
+        width: TWILIO_VIDEO_WIDTH,
+        height: TWILIO_VIDEO_HEIGHT,
+      });
       await room.localParticipant.publishTrack(localVideoTrack);
       recalculateStatus();
     }
