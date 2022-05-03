@@ -48,5 +48,6 @@ export const spaceEditSchema = Yup.object().shape({
         : schema.notRequired()
   ),
   maxBooths: Yup.number().required(),
-  boothTemplateSpaceId: Yup.string().notRequired(),
+  // .nullable() is added for backwards compatibility after 'null' value was wrongly stored in some documents
+  boothTemplateSpaceId: Yup.string().notRequired().nullable(),
 });

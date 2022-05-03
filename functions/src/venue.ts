@@ -847,10 +847,7 @@ export const updateVenueNG = functions.https.onCall(async (data, context) => {
     updated.maxBooths = data.maxBooths;
   }
 
-  if (
-    typeof data.boothTemplateSpaceId === "string" ||
-    data.boothTemplateSpaceId === null
-  ) {
+  if (typeof data.boothTemplateSpaceId === "string") {
     updated.boothTemplateSpaceId = data.boothTemplateSpaceId;
   }
 
