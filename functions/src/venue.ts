@@ -1240,16 +1240,20 @@ export const createBooth = functions.https.onCall(async (data, context) => {
   const batch = admin.firestore().batch();
   const collection = admin.firestore().collection("venues");
 
-  const templateSpace = (
-    await collection.doc(options.templateSpaceId).get()
+  const parentSpace = (
+    await collection.doc(options.parentSpaceId).get()
   ).data();
 
-  if (!templateSpace) {
+  if (!parentSpace) {
     throw new HttpsError(
       "not-found",
-      `The template ${options.templateSpaceId} does not exist`
+      `The parent space ${options.parentSpaceId} does not exist`
     );
   }
+
+  const templateSpace = options.templateSpaceId
+    ? (await collection.doc(options.templateSpaceId).get()).data()
+    : undefined;
 
   const name = await generateNameForBooth(options.parentSpaceId);
   const venueRef = admin.firestore().collection("venues").doc();
@@ -1262,13 +1266,13 @@ export const createBooth = functions.https.onCall(async (data, context) => {
       name,
       slug,
       tables: [],
-      bannerImageUrl: templateSpace.config.landingPageConfig.coverImageUrl,
-      subtitle: templateSpace.config.landingPageConfig.subtitle,
-      description: templateSpace.config.landingPageConfig.description,
-      logoImageUrl: templateSpace.host.icon,
+      bannerImageUrl: templateSpace?.config.landingPageConfig.coverImageUrl,
+      subtitle: templateSpace?.config.landingPageConfig.subtitle || "",
+      description: templateSpace?.config.landingPageConfig.description || "",
+      logoImageUrl: templateSpace?.host.icon,
       template: "meetingroom",
       parentId: options.parentSpaceId,
-      worldId: templateSpace.worldId,
+      worldId: parentSpace.worldId,
     },
     context
   );
@@ -1276,8 +1280,8 @@ export const createBooth = functions.https.onCall(async (data, context) => {
   const venueData = {
     ...standardVenueData,
     managedBy: options.parentSpaceId,
-    backgroundImageUrl: templateSpace.backgroundImageUrl || "",
-    channels: templateSpace.channels || [],
+    backgroundImageUrl: templateSpace?.backgroundImageUrl || "",
+    channels: templateSpace?.channels || [],
   };
 
   batch.create(venueRef, venueData);
