@@ -434,7 +434,7 @@ workflows:
   build-test-deploy:
     jobs:
       - lint-and-test
-      - e2e-test-with-emulators:
+      - start-emulators:
           requires:
             - lint-and-test
       - deploy-functions:
