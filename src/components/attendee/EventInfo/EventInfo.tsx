@@ -1,7 +1,11 @@
 import ShowMoreText from "react-show-more-text";
 import cn from "classnames";
 
-import { STRING_DASH_SPACE, STRING_SPACE } from "settings";
+import {
+  DEFAULT_NUMBER_OF_LINES_OF_TEXT,
+  STRING_DASH_SPACE,
+  STRING_SPACE,
+} from "settings";
 
 import { WorldEvent } from "types/venues";
 
@@ -22,7 +26,12 @@ const moreLessSpan = (text: string) => (
 );
 
 export const EventInfo: React.FC<EventInfoProps> = ({ event, centered }) => (
-  <div data-bem="EventInfo" className={cn(CN.general, centered && CN.centered)}>
+  <div
+    data-bem="EventInfo"
+    className={cn(CN.general, {
+      [CN.centered]: centered,
+    })}
+  >
     <h3 className={CN.paragraph}>{event.name}</h3>
 
     {event.host && <div className={CN.paragraph}>By {event.host}</div>}
@@ -37,11 +46,10 @@ export const EventInfo: React.FC<EventInfoProps> = ({ event, centered }) => (
 
     <div className={CN.paragraph}>
       <ShowMoreText
-        lines={5}
+        lines={DEFAULT_NUMBER_OF_LINES_OF_TEXT}
         anchorClass={CN.showMoreLessAnchor}
         more={moreLessSpan("More")}
         less={moreLessSpan("Less")}
-        expanded={false}
       >
         <RenderMarkdown text={event.description} />
       </ShowMoreText>

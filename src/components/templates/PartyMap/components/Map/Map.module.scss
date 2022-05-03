@@ -1,5 +1,11 @@
 @use "scss/attendee/breakpoint";
 @use "scss/attendee/space";
+@use "scss/attendee/theme";
+
+$-h-map-title: 66vh;
+$-font-size-map-title: 34vw;
+$-letter-spacing-map-title: -0.07em;
+$-line-height-map-title: 0.8;
 
 .MapBackground {
   position: fixed;
@@ -18,54 +24,25 @@
   }
 }
 
-.spaceName {
-  position: relative;
-  width: 100%;
-  height: 66vh;
-  box-sizing: border-box;
-  padding-top: 54px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  font-size: 34vw;
-  letter-spacing: -0.07em;
-  line-height: 0.8;
-  color: white;
-  word-break: break-word;
-  text-align: center;
-
-  @media (min-width: breakpoint.$md) {
-    display: none;
-  }
-}
-
 .MapTitle {
   position: relative;
   width: 100%;
-  height: 66vh;
+  height: $-h-map-title;
   box-sizing: border-box;
   padding-top: space.button(1) + space.empty(1);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  font-size: 34vw;
-  letter-spacing: -0.07em;
-  line-height: 0.8;
-  color: white;
-  overflow: hidden;
+  font-size: $-font-size-map-title;
+  letter-spacing: $-letter-spacing-map-title;
+  line-height: $-line-height-map-title;
+  color: theme.$c-white-text;
+  word-break: break-word;
+  text-align: center;
 
   @media (min-width: 768px) {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 20;
-    font-size: 26vw;
-    letter-spacing: -0.08em;
-    line-height: 0.75;
+    display: none;
   }
 }
 

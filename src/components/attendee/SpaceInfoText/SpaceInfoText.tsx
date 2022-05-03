@@ -2,6 +2,8 @@ import React from "react";
 import ShowMoreText from "react-show-more-text";
 import cn from "classnames";
 
+import { DEFAULT_NUMBER_OF_LINES_OF_TEXT } from "settings";
+
 import { AnyVenue } from "types/venues";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
@@ -10,8 +12,8 @@ import CN from "./SpaceInfoText.module.scss";
 
 const descriptionLines: Record<SpaceInfoTextVariant, number> = {
   space: 1,
-  mobilePortal: 5,
-  desktopPortal: 5,
+  mobilePortal: DEFAULT_NUMBER_OF_LINES_OF_TEXT,
+  desktopPortal: DEFAULT_NUMBER_OF_LINES_OF_TEXT,
 };
 
 const moreLessSpan = (text: string) => (
@@ -44,7 +46,6 @@ export const SpaceInfoText: React.FC<SpaceInfoTextProps> = ({
           anchorClass={CN.showMoreLessAnchor}
           more={moreLessSpan("More")}
           less={moreLessSpan("Less")}
-          expanded={false}
         >
           <RenderMarkdown text={space.config.landingPageConfig.description} />
         </ShowMoreText>

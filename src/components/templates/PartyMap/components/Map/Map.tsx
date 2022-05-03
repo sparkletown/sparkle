@@ -154,7 +154,7 @@ export const Map: React.FC<MapProps> = ({
   return (
     <div data-bem="Map">
       <div className={styles.MapBackground} style={mapStyles} />
-      <h1 className={styles.spaceName}>{venue.name}</h1>
+      <h1 className={styles.MapTitle}>{venue.name}</h1>
       <Portals
         portals={venue.rooms ?? []}
         space={venue}

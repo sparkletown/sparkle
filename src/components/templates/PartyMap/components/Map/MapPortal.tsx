@@ -54,9 +54,9 @@ export const MapPortal: React.FC<MapPortalProps> = ({
     worldId: space.worldId,
     spaceIds: [portal.spaceId ?? ""],
   });
-  const [firstEvent] = selfAndChildVenueEvents.sort(
-    eventTimeAndOrderComparator
-  );
+  const [firstEvent] = selfAndChildVenueEvents
+    .filter(isEventLiveOrFuture)
+    .sort(eventTimeAndOrderComparator);
 
   const isUnclickable =
     portal.visibility === RoomVisibility.unclickable ||
