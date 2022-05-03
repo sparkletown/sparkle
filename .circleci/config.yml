@@ -94,6 +94,16 @@ jobs:
       - checkout
       - run: npm ci
       - run: npm run cy:run
+  e2e-test-with-emulators:
+    docker:
+      - image: cimg/openjdk:17.0-node
+    resource_class: large
+    steps:
+      - checkout
+      - run:
+          name: install packages
+          command: npm ci && cd functions && npm ci && cd ..
+      - run: npm run firebase:emulate-cy:run
   deploy-functions:
     executor: node/default
     working_directory: ~/project/functions # ensure our steps (except for checkout) run in this directory
@@ -421,13 +431,9 @@ workflows:
   build-test-deploy:
     jobs:
       - lint-and-test
-      - start-emulators:
+      - e2e-test-with-emulators:
           requires:
             - lint-and-test
-      - e2e-test:
-          requires:
-            - lint-and-test
-            - start-emulators
       - deploy-functions:
           requires:
             - lint-and-test
