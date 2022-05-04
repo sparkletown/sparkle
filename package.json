@@ -137,7 +137,7 @@
     "eslint-plugin-promise": "^6.0.0",
     "esm": "^3.2.25",
     "faker": "^5.5.3",
-    "firebase": "^9.6.6",
+    "firebase": "^9.7.0",
     "fuse.js": "^6.5.3",
     "ical-generator": "^2.2.0",
     "immutability-helper": "^3.1.1",

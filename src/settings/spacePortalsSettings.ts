@@ -32,10 +32,10 @@ export type PortalInfoItem = InfoItem & {
 export const SPACE_INFO_MAP: Record<VenueTemplate, SpaceInfoItem> = {
   [VenueTemplate.posterhall]: {
     text: "Poster hall",
-    description: "",
+    description: "A poster hall",
     icon: IconPosterHall,
     template: VenueTemplate.posterhall,
-    hidden: true,
+    hidden: false,
   },
   [VenueTemplate.posterpage]: {
     text: "Poster page",

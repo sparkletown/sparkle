@@ -40,8 +40,8 @@
   "dependencies": {
     "agora-access-token": "^2.0.4",
     "date-fns": "^2.28.0",
-    "firebase-admin": "^10.0.2",
-    "firebase-functions": "^3.16.0",
+    "firebase-admin": "^10.1.0",
+    "firebase-functions": "^3.20.1",
     "lodash": "^4.17.21",
     "simple-oauth2": "^4.3.0",
     "twilio": "^3.73.0",

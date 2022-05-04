@@ -379,6 +379,7 @@ export const removeStaleBooths = functions.pubsub
       .firestore()
       .collection("venues")
       .where("managedBy", "!=", "")
+      .where("template", "==", "meetingroom")
       .where("isHidden", "==", false)
       .get();
 
