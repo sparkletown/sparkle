@@ -54,7 +54,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = () => {
 
   const [showLoginModal, setShowLoginModal] = useState(false);
 
-  const { signInWithGoogle, signInWithFacebook } = useSocialSignIn();
+  const { signInWithGoogle } = useSocialSignIn();
 
   const signUp = ({ email, password }: RegisterFormInput) => {
     return firebase.auth().createUserWithEmailAndPassword(email, password);
@@ -78,17 +78,6 @@ export const RegisterForm: React.FC<RegisterFormProps> = () => {
   const clearBackendErrors = () => {
     clearErrors("backend");
   };
-
-  // const postRegisterCheck = (
-  //   authResult: firebase.auth.UserCredential,
-  //   data: RegisterFormInput
-  // ) => {
-  //   if (authResult.user && isDobRequired) {
-  //     updateUserPrivate(authResult.user.uid, {
-  //       date_of_birth: data.date_of_birth,
-  //     }).catch((e) => console.error(RegisterForm.name, e));
-  //   }
-  // };
 
   const onSubmit = async (data: RegisterFormInput) => {
     try {
@@ -119,36 +108,12 @@ export const RegisterForm: React.FC<RegisterFormProps> = () => {
   };
 
   const handleGoogleSignIn = async () => {
-    // const { email, password, code, date_of_birth } = getValues();
-    // const formValues = { email, password, code, date_of_birth };
-
     try {
       await signInWithGoogle();
-      // postRegisterCheck(auth, formValues);
     } catch (error) {
       setError("backend", { type: "firebase", message: "Error" });
     }
   };
-  const handleFacebookSignIn = async () => {
-    // const { email, password, code, date_of_birth } = getValues();
-    // const formValues = { email, password, code, date_of_birth };
-    try {
-      const auth = await signInWithFacebook();
-
-      if (auth.message) {
-        setError("backend", { type: "firebase", message: "Error" });
-        return;
-      }
-
-      // postRegisterCheck(auth, formValues);
-    } catch {
-      setError("backend", { type: "firebase", message: "Error" });
-    }
-  };
-
-  // const hasTermsAndConditions = false;
-  // const termsAndConditions = [];
-  // const termsAndConditions = space.termsAndConditions;
 
   const signIn = async () => {
     const { email, password } = getValues();
@@ -156,7 +121,6 @@ export const RegisterForm: React.FC<RegisterFormProps> = () => {
   };
 
   const isDobRequired = DEFAULT_REQUIRES_DOB;
-  // isWorldLoaded && (world?.requiresDateOfBirth ?? DEFAULT_REQUIRES_DOB);
 
   const passwordLabelClasses = classNames({
     error: errors.password?.type === "pattern",
@@ -280,36 +244,6 @@ export const RegisterForm: React.FC<RegisterFormProps> = () => {
               </div>
             )}
 
-            {/* {hasTermsAndConditions &&
-          termsAndConditions.map((term) => {
-            const required = errors?.[term.name]?.type === "required";
-            return (
-              <div className="input-group" key={term.name}>
-                <label
-                  htmlFor={term.name}
-                  className={`checkbox ${
-                    watch(term.name) && "checkbox-checked"
-                  }`}
-                >
-                  {term.link && (
-                    <a href={term.link} {...externalUrlAdditionalProps}>
-                      {term.text}
-                    </a>
-                  )}
-                  {!term.link && term.text}
-                </label>
-                <input
-                  type="checkbox"
-                  id={term.name}
-                  {...register(term.name, {
-                    required: true,
-                  })}
-                />
-                {required && <span className={CN.error}>Required</span>}
-              </div>
-            );
-          })} */}
-
             <Spacer />
 
             <Spacer>
@@ -323,10 +257,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = () => {
             </Spacer>
           </form>
 
-          <SocialLogin
-            onGoogle={handleGoogleSignIn}
-            onFacebook={handleFacebookSignIn}
-          />
+          <SocialLogin onGoogle={handleGoogleSignIn} />
 
           <Spacer />
 

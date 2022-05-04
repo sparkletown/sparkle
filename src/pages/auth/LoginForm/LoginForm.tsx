@@ -50,7 +50,7 @@ export const LoginForm: React.FC<LoginFormProps> = () => {
   const returnUrl = useSearchParam(RETURN_URL_PARAM_NAME);
   const shouldQuickJoin = useSearchParam(QUICK_JOIN_PARAM_NAME);
 
-  const { signInWithGoogle, signInWithFacebook } = useSocialSignIn();
+  const { signInWithGoogle } = useSocialSignIn();
 
   const {
     register,
@@ -110,22 +110,6 @@ export const LoginForm: React.FC<LoginFormProps> = () => {
   const handleGoogleSignIn = async () => {
     try {
       await signInWithGoogle();
-
-      navigateToSource();
-    } catch {
-      setError("backend", { type: "firebase", message: "Error" });
-    }
-  };
-
-  const handleFacebookSignIn = async () => {
-    try {
-      const auth = await signInWithFacebook();
-
-      if (auth.message) {
-        setError("backend", { type: "firebase", message: "Error" });
-
-        return;
-      }
 
       navigateToSource();
     } catch {
@@ -210,10 +194,7 @@ export const LoginForm: React.FC<LoginFormProps> = () => {
                 Log in
               </Button>
             </Spacer>
-            <SocialLogin
-              onGoogle={handleGoogleSignIn}
-              onFacebook={handleFacebookSignIn}
-            />
+            <SocialLogin onGoogle={handleGoogleSignIn} />
             <Spacer />
             <Spacer>
               <div className={CN.center}>
