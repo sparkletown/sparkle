@@ -440,8 +440,8 @@ workflows:
       - e2e-test-with-emulators:
           context:
             - e2e
-          requires:
-            - lint-and-test
+          #requires:
+            #- lint-and-test
       - deploy-functions:
           requires:
             - lint-and-test
