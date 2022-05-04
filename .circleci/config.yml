@@ -86,8 +86,8 @@ jobs:
       - run:
          name: install the necessary packages
          command: npm ci && cd functions && npm ci && cd ..
-      - run: ./node_modules/.bin/firebase use sparkle-local1 --token "$E2E_FIREBASE_TOKEN"
-      - run: ./node_modules/.bin/firebase functions:config:get  --token "$E2E_FIREBASE_TOKEN" > ./functions/.runtimeconfig.json
+      - run: ./node_modules/.bin/firebase use "$E2E_FIREBASE_PROJECT" --token "$E2E_FIREBASE_TOKEN"
+      - run: ./node_modules/.bin/firebase functions:config:get --token "$E2E_FIREBASE_TOKEN" > ./functions/.runtimeconfig.json
       - run: npm run firebase:emulate-cy:circle
   e2e-test:
     executor: node/default
@@ -104,9 +104,8 @@ jobs:
       - run:
           name: install root and functions' packages
           command: npm ci && cd functions && npm ci && cd ..
-      - run:
-          name: download the functions' configuration
-          command: ./node_modules/.bin/firebase functions:config:get > ./functions/.runtimeconfig.json
+      - run: ./node_modules/.bin/firebase use "$E2E_FIREBASE_PROJECT" --token "$E2E_FIREBASE_TOKEN"
+      - run: ./node_modules/.bin/firebase functions:config:get --token "$E2E_FIREBASE_TOKEN" > ./functions/.runtimeconfig.json
       - run: npm run firebase:emulate-cy:run
   deploy-functions:
     executor: node/default
@@ -435,8 +434,8 @@ workflows:
   build-test-deploy:
     jobs:
       - lint-and-test
-      - start-emulators:
-          context: 
+      - e2e-test-with-emulators:
+          context:
             - e2e
           requires:
             - lint-and-test
