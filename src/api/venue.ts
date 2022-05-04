@@ -146,3 +146,24 @@ export const updateVenueNG = async (venue: VenueInputForm, userId: UserId) => {
 
   return updateResponse;
 };
+
+interface CreateBoothOptions {
+  templateSpaceId: SpaceId;
+  parentSpaceId: SpaceId;
+}
+
+interface CreateBoothResult {
+  id: SpaceId;
+  slug: string;
+}
+
+export const createBooth = async (options: CreateBoothOptions) => {
+  const response = await httpsCallable(
+    FIREBASE.functions,
+    "venue-createBooth"
+  )(options);
+
+  const result = response.data as CreateBoothResult;
+
+  return result;
+};

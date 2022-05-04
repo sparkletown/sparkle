@@ -12,7 +12,6 @@ import {
   isToday,
   isTomorrow,
   isYesterday,
-  min,
   startOfDay,
   startOfToday,
   subHours,
@@ -182,11 +181,9 @@ export const getDayInterval = (date: Date | number) => ({
 
 export const isDateRangeStartWithinToday = ({
   dateValue,
-  targetDateValue,
 }: {
   dateValue: number;
-  targetDateValue: number;
-}) => min([dateValue, targetDateValue]) <= startOfToday();
+}) => dateValue <= startOfToday().getTime();
 
 export type ConvertDateFromUtcSecondsResults = {
   date: Date;

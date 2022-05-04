@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Button } from "components/attendee/Button";
+import { isEmpty, isEqual } from "lodash";
 
 import { Banner as TBanner } from "types/banner";
 import { SpaceId } from "types/id";
@@ -9,6 +10,7 @@ import { openUrl } from "utils/url";
 
 import { useLiveSpace } from "hooks/spaces/useLiveSpace";
 import { useShowHide } from "hooks/useShowHide";
+import { useDisableBodyScroll } from "hooks/viewport/useDisableBodyScroll";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
@@ -25,17 +27,18 @@ export const Banner: React.FC<BannerProps> = ({
   turnOnBlur,
   turnOffBlur,
 }) => {
+  const space = useLiveSpace(spaceId);
+
+  const banner = space?.banner;
+  const isBannerLive = !isEmpty(banner);
+
   const {
     isShown: isBannerShown,
     hide: closeBanner,
     show: showBanner,
-  } = useShowHide(true);
+  } = useShowHide(isBannerLive);
 
   const [bannerState, setBannerState] = useState<TBanner>();
-
-  const space = useLiveSpace(spaceId);
-
-  const banner = space?.banner;
 
   const isBannerFullScreen = banner?.isFullScreen;
   const isWithButton = banner?.buttonDisplayText && banner?.isActionButton;
@@ -46,10 +49,10 @@ export const Banner: React.FC<BannerProps> = ({
   }, [banner]);
 
   useEffect(() => {
-    if (bannerState !== banner) {
+    if (!isEqual(bannerState, banner) && isBannerLive) {
       showBanner();
     }
-  }, [banner, bannerState, showBanner]);
+  }, [banner, bannerState, showBanner, turnOnBlur, isBannerLive]);
 
   useEffect(() => {
     if (!isBannerFullScreen) return;
@@ -58,6 +61,9 @@ export const Banner: React.FC<BannerProps> = ({
       turnOnBlur();
     }
   }, [isBannerFullScreen, turnOnBlur, isBannerShown]);
+
+  // Hide body scroll.
+  useDisableBodyScroll({ isOpen: isBannerShown });
 
   const { push: openUrlUsingRouter } = useHistory();
 

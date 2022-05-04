@@ -3,7 +3,7 @@ import { Route, Switch, useParams, useRouteMatch } from "react-router-dom";
 
 import { AuditoriumSpaceWithId } from "types/id";
 
-import { captureError, SparkleAssertError } from "utils/error";
+import { captureAssertError } from "utils/error";
 
 import { useAllAuditoriumSections } from "hooks/auditorium";
 import { useLiveUser } from "hooks/user/useLiveUser";
@@ -33,12 +33,10 @@ export const SeatingBlock: React.FC<SeatingBlockProps> = ({ space }) => {
   const sectionId = urlSectionId || sortedSections[0]?.id;
 
   if (!sectionId) {
-    captureError(
-      new SparkleAssertError({
-        message: `Invalid sectionId:${String(sectionId)}`,
-        where: "SeatingBlock",
-      })
-    );
+    captureAssertError({
+      message: `Invalid sectionId:${String(sectionId)}`,
+      where: "SeatingBlock",
+    });
   }
 
   return (

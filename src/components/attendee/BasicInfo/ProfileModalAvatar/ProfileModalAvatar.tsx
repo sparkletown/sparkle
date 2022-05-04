@@ -73,7 +73,6 @@ export const ProfileModalAvatar: React.FC<ProfileModalAvatarProps> = ({
           imageClassName={styles.image}
           user={userWithOverriddenPictureUrl}
           size="full"
-          showStatus
         />
         {editMode && (
           <div className={styles.text}>

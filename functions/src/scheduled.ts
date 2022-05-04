@@ -15,6 +15,7 @@ const DEFAULT_RECENT_USERS_IN_VENUE_CHUNK_SIZE = 6;
 const SECTION_PREVIEW_USER_DISPLAY_COUNT = 14;
 const USER_INACTIVE_THRESHOLD = minutesToMilliseconds(1);
 const USER_PRESENCE_STALE_THRESHOLD = minutesToMilliseconds(2);
+const STALE_BOOTH_REMOVAL_THRESHOLD = minutesToMilliseconds(15);
 export const BATCH_MAX_OPS = 500;
 
 const removeDanglingSeatedUsers = async () => {
@@ -262,7 +263,7 @@ export const updateUsersLocations = functions.pubsub
       for (const venue of venuesChunk) {
         const recentVenueUsers = recentUsers.filter(
           (user) =>
-            user.lastVenueIdSeenIn && user.lastVenueIdSeenIn.includes(venue.id)
+            user.lastVenueIdSeenIn && user.lastVenueIdSeenIn === venue.id
         );
 
         const recentVenueUsersCount = recentVenueUsers.length;
@@ -366,4 +367,62 @@ export const updatePresenceRecords = functions.pubsub
         });
       })
     ).then(() => console.log(`Recached ${spaceRefs.length} presence counts`));
+  });
+
+/*
+ * Removes stale booths.
+ */
+export const removeStaleBooths = functions.pubsub
+  .schedule(`every 5 minutes`)
+  .onRun(async () => {
+    const spaces = await admin
+      .firestore()
+      .collection("venues")
+      .where("managedBy", "!=", "")
+      .where("template", "==", "meetingroom")
+      .where("isHidden", "==", false)
+      .get();
+
+    let reoccupiedCount = 0;
+    let deletedCount = 0;
+    let emptyCount = 0;
+
+    return Promise.all(
+      spaces.docs.map(async (spaceDoc) => {
+        let update = {};
+        const space = spaceDoc.data();
+        if (space.presentUserCachedCount > 0) {
+          if (space.emptySince) {
+            // Wipe the tracker as the booth has become occupied
+            update = { emptySince: null };
+            reoccupiedCount++;
+          }
+        } else {
+          const emptySinceThreshold =
+            Date.now() - STALE_BOOTH_REMOVAL_THRESHOLD;
+          if (
+            space.emptySince &&
+            space.emptySince < emptySinceThreshold &&
+            !space.isHidden
+          ) {
+            update = { isHidden: true };
+            deletedCount++;
+          } else if (!space.emptySince) {
+            update = { emptySince: Date.now() };
+            emptyCount++;
+          }
+        }
+
+        if (Object.keys(update).length !== 0) {
+          await spaceDoc.ref.update(update);
+        }
+      })
+    ).then(() =>
+      console.log(
+        `${spaces.docs.length} spaces checked for staleness. ` +
+          `${reoccupiedCount} reoccupied. ` +
+          `${deletedCount} marked as deleted. ` +
+          `${emptyCount} found empty and counted. `
+      )
+    );
   });

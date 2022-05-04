@@ -1,8 +1,8 @@
 @use "./space";
 
 $w-sidebar: 416px; // previously named $sidebar-width
-$h-video-chat: 160px; // previously named $video-chat-height
-$w-video-chat-participant: 186px;
+$h-video-chat: 156px; // previously named $video-chat-height
+$w-video-chat-participant: 208px;
 
 $w-overlay--med: 715px;
 $w-overlay--max: 800px;
@@ -12,7 +12,13 @@ $h-chat-controls: 42px;
 
 $h-mobile-chat-bar: 180px;
 
+$w-space-portal-event-modal: 180px;
+
 $sz-input-error-icon: 18px;
+
+$w-header-max: 330px;
+$w-header-xl: 200px;
+$w-header-lg: 50px;
 
 // Button height plus padding
 $h-top-nav: 42px + space.empty(2);

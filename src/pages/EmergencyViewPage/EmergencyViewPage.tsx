@@ -8,19 +8,14 @@ import advancedFormat from "dayjs/plugin/advancedFormat";
 
 import { SIGN_IN_URL } from "settings";
 
-import {
-  eventTimeAndOrderComparator,
-  isEventWithinDateAndNotFinished,
-} from "utils/event";
+import { isEventWithinDateAndNotFinished } from "utils/event";
 import { range } from "utils/range";
-import { formatDateRelativeToNow } from "utils/time";
 
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useLiveUser } from "hooks/user/useLiveUser";
 import useVenueScheduleEvents from "hooks/useVenueScheduleEvents";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
-import { ScheduleEventSubList } from "components/molecules/ScheduleEventList/ScheduleEventSubList";
 
 import { EmergencyViewPagePortals } from "./EmergencyViewPagePortals";
 import EmergencyViewTabs from "./EmergencyViewTabs";
@@ -46,10 +41,10 @@ export const EmergencyViewPage: React.FC = () => {
     userWithId?.myPersonalizedSchedule ?? emptyPersonalizedSchedule;
 
   const {
-    descendantVenues,
     dayDifference,
     liveAndFutureEvents,
     firstScheduleDate,
+    worldSpaces,
   } = useVenueScheduleEvents({
     userEventIds,
   });
@@ -72,21 +67,14 @@ export const EmergencyViewPage: React.FC = () => {
           isEventWithinDateAndNotFinished(day)
         );
 
-        const eventsFilledWithPriority = dailyEvents.sort(
-          eventTimeAndOrderComparator
-        );
-
         if (!dailyEvents.length) {
           return null;
         }
         return (
-          <div className="EmergencyView__weekdays-column" key={day.getTime()}>
-            <ScheduleEventSubList
-              events={eventsFilledWithPriority}
-              title={`Events on ${formatDateRelativeToNow(day)}`}
-              isShowFullInfo={false}
-            />
-          </div>
+          <div
+            className="EmergencyView__weekdays-column"
+            key={day.getTime()}
+          ></div>
         );
       })
       .filter((day) => !!day);
@@ -118,7 +106,7 @@ export const EmergencyViewPage: React.FC = () => {
       <EmergencyViewTabs updateTab={updateTab} selectedTab={selectedTab} />
       <div className="EmergencyView__main">
         {!selectedTab ? (
-          <EmergencyViewPagePortals descendantVenues={descendantVenues} />
+          <EmergencyViewPagePortals worldSpaces={worldSpaces} />
         ) : (
           <ul className="EmergencyView__weekdays">{weekdays}</ul>
         )}

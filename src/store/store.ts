@@ -1,19 +1,11 @@
-import { combineReducers, configureStore, Reducer } from "@reduxjs/toolkit";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import LogRocket from "logrocket";
-import {
-  constants as reduxFirestoreConstants,
-  firestoreReducer,
-} from "redux-firestore";
+import { constants as reduxFirestoreConstants } from "redux-firestore";
 import subscribeActionMiddleware from "redux-subscribe-action";
 
-import { Firestore } from "types/Firestore";
-
-import { AnimateMapActionTypes } from "./actions/AnimateMap";
-import { MiscReducers, VenueTemplateReducers } from "./reducers";
+import { MiscReducers } from "./reducers";
 
 export const rootReducer = combineReducers({
-  firestore: firestoreReducer as Reducer<Firestore>,
-  ...VenueTemplateReducers,
   ...MiscReducers,
 });
 
@@ -57,13 +49,10 @@ export const store = configureStore({
           ...Object.keys(reduxFirestoreConstants.actionTypes).map(
             (type) => `${reduxFirestoreConstants.actionsPrefix}/${type}`
           ),
-
-          // Ignore all redux-animatemap action types
-          ...Object.values(AnimateMapActionTypes),
         ],
 
         // Ignore all react-redux-firebase and redux-firestore data stored in Redux
-        ignoredPaths: ["firebase", "firestore", "animatemap"],
+        ignoredPaths: ["firebase", "firestore"],
       },
       thunk: {
         /**

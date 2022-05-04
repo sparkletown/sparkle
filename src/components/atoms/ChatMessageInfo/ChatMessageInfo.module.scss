@@ -1,3 +1,5 @@
+@use "scss/attendee/font";
+@use "scss/attendee/opacity";
 @use "scss/attendee/space";
 @use "scss/attendee/theme";
 
@@ -5,7 +7,7 @@
   display: flex;
 
   svg {
-    color: theme.$light--aux-text;
+    opacity: opacity.$md;
     // Slight alignment tweak
     margin-top: 3px;
     margin-left: space.empty(0.5);
@@ -13,9 +15,16 @@
 }
 
 .messageTime {
-  color: theme.$light--aux-text;
+  font-size: font.$size--xs;
+  opacity: opacity.$md;
 }
 
 .isMine {
   justify-content: right;
+}
+
+.authorName {
+  margin-top: 0;
+  margin-bottom: 0;
+  font-size: font.$size--xs;
 }

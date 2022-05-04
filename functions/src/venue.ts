@@ -27,29 +27,17 @@ const VenueTemplate = {
   friendship: "friendship",
   jazzbar: "jazzbar",
   partymap: "partymap",
-  animatemap: "animatemap",
   performancevenue: "performancevenue",
   posterhall: "posterhall",
   posterpage: "posterpage",
   screeningroom: "screeningroom",
   themecamp: "themecamp",
-  viewingwindow: "viewingwindow",
   zoomroom: "zoomroom",
 
   /**
    * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
    */
   avatargrid: "avatargrid",
-
-  /**
-   * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
-   */
-  preplaya: "preplaya",
-
-  /**
-   * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
-   */
-  playa: "playa",
 };
 
 // @debt unify this with HAS_REACTIONS_TEMPLATES in src/settings.ts + share the same code between frontend/backend
@@ -118,10 +106,6 @@ interface VenueData2Payload {
 
   logoImageUrl?: string;
 
-  showGrid?: boolean;
-
-  columns: number;
-
   template?: string;
 
   parentId?: string;
@@ -167,9 +151,9 @@ interface CreateVenueData2 {
   };
   owners: string[];
 
-  showGrid: boolean;
-
-  columns?: number;
+  isHidden: boolean;
+  boothsEnabled: boolean;
+  maxBooths: number;
 }
 
 // @debt this should be de-duplicated + aligned with createVenueData to ensure they both cover all needed cases
@@ -190,8 +174,6 @@ const createVenueData_v2 = (data: VenueData2Payload, context: Object) => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     owners: [context.auth.token.user_id],
-    showGrid: data.showGrid || false,
-    ...(data.showGrid && { columns: data.columns }),
     template: data.template || VenueTemplate.partymap,
     rooms: [],
     createdAt: Date.now(),
@@ -199,6 +181,9 @@ const createVenueData_v2 = (data: VenueData2Payload, context: Object) => {
     parentId: data.parentId || "",
     worldId: data.worldId,
     slug: data.slug,
+    isHidden: false,
+    boothsEnabled: false,
+    maxBooths: 1,
   };
 
   if (data.template === VenueTemplate.jazzbar) {
@@ -242,11 +227,12 @@ interface CreateBaseUpdateVenueDataPayload {
 }
 
 interface Venue {
+  id: string;
+  worldId: string;
+  slug: string;
   name: string;
   start_utc_seconds?: number;
   end_utc_seconds?: number;
-  showGrid?: boolean;
-  columns?: number;
   showRadio?: boolean;
   radioStations: string[];
   entrance?: string;
@@ -264,10 +250,11 @@ interface Venue {
   updatedAt: number;
   zoomUrl?: string;
   iframeUrl?: string;
-  auditoriumColumns?: number;
-  auditoriumRows?: number;
   showRangers?: boolean;
   isReactionsMuted?: boolean;
+  boothsEnabled?: boolean;
+  maxBooths?: number;
+  boothTemplateSpaceId?: string;
 
   config: {
     landingPageConfig: LandingPageConfig;
@@ -687,14 +674,6 @@ export const updateVenue_v2 = functions.https.onCall(async (data, context) => {
     updated.end_utc_seconds = data.end_utc_seconds;
   }
 
-  // @debt aside from the data.columns part, this is exactly the same as in updateVenue
-  if (typeof data.showGrid === "boolean") {
-    updated.showGrid = data.showGrid;
-
-    // @debt the logic here differs from updateVenue, as data.columns is always set when present there
-    updated.columns = data.columns;
-  }
-
   // @debt aside from the data.radioStations part, this is exactly the same as in updateVenue
   if (typeof data.showRadio === "boolean") {
     updated.showRadio = data.showRadio;
@@ -832,14 +811,6 @@ export const updateVenueNG = functions.https.onCall(async (data, context) => {
     updated.roomVisibility = data.roomVisibility;
   }
 
-  if (data.auditoriumColumns) {
-    updated.auditoriumColumns = data.auditoriumColumns;
-  }
-
-  if (data.auditoriumRows) {
-    updated.auditoriumRows = data.auditoriumRows;
-  }
-
   if (typeof data.showRangers === "boolean") {
     updated.showRangers = data.showRangers;
   }
@@ -868,6 +839,18 @@ export const updateVenueNG = functions.https.onCall(async (data, context) => {
     updated.showContent = data.showContent;
   }
 
+  if (typeof data.boothsEnabled === "boolean") {
+    updated.boothsEnabled = data.boothsEnabled;
+  }
+
+  if (typeof data.maxBooths === "number") {
+    updated.maxBooths = data.maxBooths;
+  }
+
+  if (typeof data.boothTemplateSpaceId === "string") {
+    updated.boothTemplateSpaceId = data.boothTemplateSpaceId;
+  }
+
   if (data.userStatuses) {
     updated.userStatuses = data.userStatuses;
   }
@@ -878,14 +861,6 @@ export const updateVenueNG = functions.https.onCall(async (data, context) => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     updated.config.landingPageConfig.coverImageUrl = data.bannerImageUrl;
-  }
-
-  if (typeof data.showGrid === "boolean") {
-    updated.showGrid = data.showGrid;
-  }
-
-  if (typeof data.columns === "number") {
-    updated.columns = data.columns;
   }
 
   if (typeof data.showRadio === "boolean") {
@@ -1221,4 +1196,246 @@ export const deleteChannel = functions.https.onCall(async (data, context) => {
   channels.splice(channelIndex, 1);
 
   admin.firestore().collection("venues").doc(spaceId).update({ channels });
+});
+
+const generateNameForBooth = async (parentSpaceId: string) => {
+  // Finds a name for the booth that isn't already taken inside the parent
+  // space. Starts at 1 and keeps going until a free number is found
+  const collection = admin.firestore().collection("venues");
+  const existingBooths = (
+    await collection
+      .where("parentId", "==", parentSpaceId)
+      .where("isHidden", "==", false)
+      .get()
+  ).docs;
+
+  for (let i = 1; i <= existingBooths.length; i++) {
+    const possibleName = `Meeting Room ${i}`;
+    const matchingBooth = existingBooths.find(
+      (doc) => doc.data().name === possibleName
+    );
+    if (matchingBooth) {
+      continue;
+    }
+
+    return possibleName;
+  }
+
+  return `Booth ${existingBooths.length + 1}`;
+};
+
+interface CreateBoothOptions {
+  templateSpaceId: string;
+  parentSpaceId: string;
+}
+
+export const createBooth = functions.https.onCall(async (data, context) => {
+  assertValidAuth(context);
+
+  const options = data as CreateBoothOptions;
+
+  const batch = admin.firestore().batch();
+  const collection = admin.firestore().collection("venues");
+
+  const parentSpace = (
+    await collection.doc(options.parentSpaceId).get()
+  ).data();
+
+  if (!parentSpace) {
+    throw new HttpsError(
+      "not-found",
+      `The parent space ${options.parentSpaceId} does not exist`
+    );
+  }
+
+  const templateSpace = options.templateSpaceId
+    ? (await collection.doc(options.templateSpaceId).get()).data()
+    : undefined;
+
+  const name = await generateNameForBooth(options.parentSpaceId);
+  const venueRef = admin.firestore().collection("venues").doc();
+  const slug = `booth-${venueRef.id}`;
+
+  // TODO This code around creating venues should be refactored. There's a lot
+  // of debt in this area
+  const standardVenueData = createVenueData_v2(
+    {
+      name,
+      slug,
+      tables: [],
+      bannerImageUrl: templateSpace?.config.landingPageConfig.coverImageUrl,
+      subtitle: templateSpace?.config.landingPageConfig.subtitle || "",
+      description: templateSpace?.config.landingPageConfig.description || "",
+      logoImageUrl: templateSpace?.host.icon,
+      template: "meetingroom",
+      parentId: options.parentSpaceId,
+      worldId: parentSpace.worldId,
+    },
+    context
+  );
+
+  const venueData = {
+    ...standardVenueData,
+    managedBy: options.parentSpaceId,
+    backgroundImageUrl: templateSpace?.backgroundImageUrl || "",
+    channels: templateSpace?.channels || [],
+  };
+
+  batch.create(venueRef, venueData);
+
+  initializeVenueChatMessagesCounter(venueRef, batch);
+
+  await batch.commit();
+
+  return { id: venueRef.id, slug };
+});
+
+interface PosterDetails {
+  name: string;
+  thumbnailUrl: string;
+  description: string;
+  embedUrl: string;
+  // The poster ID is used to identify poster rooms from previous uploads and
+  // update them rather than continuously create new ones
+  posterId: string;
+}
+
+interface UpdatePosterOptions {
+  ownerSpaceId: string;
+  posterDetails: PosterDetails[];
+}
+
+const POSTER_CREATED = "created";
+const POSTER_UPDATED = "updated";
+const POSTER_DELETED = "deleted";
+
+const updatePoster = async (
+  batch: admin.firestore.WriteBatch,
+  context: functions.https.CallableContext,
+  ownerSpace: Venue,
+  posterDetails: PosterDetails
+) => {
+  console.log("Updating poster", JSON.stringify(posterDetails));
+  // Get the existing space for this poster if it exists
+  const existingRef = await admin
+    .firestore()
+    .collection("venues")
+    .where("managedBy", "==", ownerSpace.id)
+    .where("poster.posterId", "==", posterDetails.posterId)
+    .get();
+  const [existing] = existingRef.docs;
+
+  if (!existing) {
+    // Poster doesn't exist so create it
+    const venueRef = admin.firestore().collection("venues").doc();
+    const slug = `${ownerSpace.slug}-${venueRef.id}`;
+
+    // TODO This code around creating venues should be refactored. There's a lot
+    // of debt in this area
+    const standardVenueData = createVenueData_v2(
+      {
+        name: posterDetails.name,
+        slug,
+        tables: [],
+        subtitle: "",
+        description: posterDetails.description,
+        template: "posterpage",
+        parentId: ownerSpace.id,
+        worldId: ownerSpace.worldId,
+      },
+      context
+    );
+
+    const venueData = {
+      ...standardVenueData,
+      managedBy: ownerSpace.id,
+      backgroundImageUrl: "",
+      iframeUrl: posterDetails.embedUrl,
+      poster: {
+        thumbnailUrl: posterDetails.thumbnailUrl,
+        posterId: posterDetails.posterId,
+      },
+    };
+    batch.create(venueRef, venueData);
+
+    initializeVenueChatMessagesCounter(venueRef, batch);
+
+    return POSTER_CREATED;
+  } else {
+    console.log("updating", existing.id);
+    batch.update(existing.ref, {
+      name: posterDetails.name,
+      description: posterDetails.description,
+      iframeUrl: posterDetails.embedUrl,
+      poster: {
+        thumbnailUrl: posterDetails.thumbnailUrl,
+        posterId: posterDetails.posterId,
+      },
+      // Unhide the poster, in case the poster was hidden on a previous run
+      isHidden: false,
+    });
+    return POSTER_UPDATED;
+  }
+};
+
+export const updatePosters = functions.https.onCall(async (data, context) => {
+  assertValidAuth(context);
+
+  const options = data as UpdatePosterOptions;
+
+  const collection = admin.firestore().collection("venues");
+
+  const { ownerSpaceId, posterDetails } = options;
+  const ownerSpace = (await collection.doc(ownerSpaceId).get()).data();
+
+  if (!ownerSpace) {
+    throw new HttpsError(
+      "not-found",
+      `The template ${options.ownerSpaceId} does not exist`
+    );
+  }
+
+  // Copy the ID into the space as it isn't automatically set
+  ownerSpace.id = ownerSpaceId;
+
+  const batch = admin.firestore().batch();
+
+  const results = await Promise.all(
+    posterDetails.map((poster) =>
+      updatePoster(batch, context, ownerSpace as Venue, poster)
+    )
+  );
+  const counts = results.reduce(
+    (acc, result) => {
+      acc[result] += 1;
+      return acc;
+    },
+    { [POSTER_CREATED]: 0, [POSTER_UPDATED]: 0, [POSTER_DELETED]: 0 }
+  );
+
+  // Find all the posters that need deleting
+  const existingPosters = await admin
+    .firestore()
+    .collection("venues")
+    .where("managedBy", "==", ownerSpace.id)
+    .where("isHidden", "==", false)
+    .get();
+  const uploadedPosterIds = posterDetails.map(({ posterId }) => posterId);
+
+  existingPosters.docs.forEach((doc) => {
+    const data = doc.data();
+    const posterId = data?.poster?.posterId;
+    const existing = uploadedPosterIds.findIndex(
+      (candidate) => candidate === posterId
+    );
+    if (existing === -1) {
+      console.log(`Hiding poster ${doc.id} (${posterId}) as not uploaded`);
+      batch.update(doc.ref, { isHidden: true });
+      counts[POSTER_DELETED] += 1;
+    }
+  });
+
+  await batch.commit();
+
+  return counts;
 });

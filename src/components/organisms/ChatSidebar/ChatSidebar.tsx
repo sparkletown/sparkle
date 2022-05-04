@@ -5,9 +5,10 @@ import { CHAT_TAB_PRIVATE_ID, CHAT_TAB_SPACE_ID } from "settings";
 
 import { ChatTypes } from "types/chat";
 
-import { captureError, SparkleAssertError } from "utils/error";
+import { captureAssertError } from "utils/error";
 
 import { useChatSidebarControls } from "hooks/chats/util/useChatSidebarControls";
+import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useUserId } from "hooks/user/useUserId";
 
 import { PrivateChats, VenueChat } from "./components";
@@ -17,6 +18,7 @@ import styles from "./ChatSidebar.module.scss";
 const _ChatSidebar: React.FC = () => {
   const { chatSettings } = useChatSidebarControls();
   const { userId, isLoading } = useUserId();
+  const { space } = useWorldAndSpaceByParams();
 
   const isVenueChat = chatSettings.openedChatType === ChatTypes.VENUE_CHAT;
   const isPrivateChat = chatSettings.openedChatType === ChatTypes.PRIVATE_CHAT;
@@ -31,14 +33,12 @@ const _ChatSidebar: React.FC = () => {
     return null;
   } else if (!userId) {
     // But in this case, chat has been used in a in a place with no user logged in
-    captureError(
-      new SparkleAssertError({
-        message:
-          "ChatSidebar, as a descendant of LoginRestricted, should have userId",
-        where: "ChatSidebar",
-        args: { isLoading, userId, chatSettings },
-      })
-    );
+    captureAssertError({
+      message:
+        "ChatSidebar, as a descendant of LoginRestricted, should have userId",
+      where: "ChatSidebar",
+      args: { isLoading, userId, chatSettings },
+    });
     return null;
   }
 
@@ -50,7 +50,7 @@ const _ChatSidebar: React.FC = () => {
     >
       {isVenueChat && <VenueChat />}
       {isPrivateChat && userId && (
-        <PrivateChats userId={userId} recipient={recipient} />
+        <PrivateChats userId={userId} recipient={recipient} space={space} />
       )}
     </div>
   );

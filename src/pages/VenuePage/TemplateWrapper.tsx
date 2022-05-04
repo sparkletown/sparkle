@@ -1,19 +1,14 @@
-import React, { lazy, Suspense } from "react";
-import { useCss } from "react-use";
+import React, { useMemo } from "react";
 import classNames from "classnames";
 
 import { SpaceWithId } from "types/id";
 import { AnyVenue } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
 
-import { tracePromise } from "utils/performance";
-import { isWebGl2Enabled } from "utils/webgl";
-
 import { useChatSidebarControls } from "hooks/chats/util/useChatSidebarControls";
 import { ReactionsProvider } from "hooks/reactions";
 import { useTrackPresence } from "hooks/user/usePresence";
 
-import { AnimateMapErrorPrompt } from "components/templates/AnimateMap/components/AnimateMapErrorPrompt";
 import { ArtPiece } from "components/templates/ArtPiece";
 import { Auditorium } from "components/templates/Auditorium";
 import { ConversationSpace } from "components/templates/ConversationSpace";
@@ -27,17 +22,7 @@ import { PosterHall } from "components/templates/PosterHall";
 import { PosterPage } from "components/templates/PosterPage";
 import { ScreeningRoom } from "components/templates/ScreeningRoom";
 
-import { LoadingPage } from "components/molecules/LoadingPage";
-
 import styles from "./TemplateWrapper.module.scss";
-
-const AnimateMap = lazy(() =>
-  tracePromise("TemplateWrapper::lazy-import::AnimateMap", () =>
-    import("components/templates/AnimateMap").then(({ AnimateMap }) => ({
-      default: AnimateMap,
-    }))
-  )
-);
 
 interface TemplateWrapperProps {
   venue: SpaceWithId;
@@ -58,17 +43,6 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       template = <PartyMap venue={venue} />;
       break;
 
-    case VenueTemplate.animatemap:
-      // NOTE: this is a must check for not spilling over global errors from animatemap onto other templates when it is unused
-      template = isWebGl2Enabled() ? (
-        <Suspense fallback={LoadingPage}>
-          <AnimateMap space={venue} />
-        </Suspense>
-      ) : (
-        <AnimateMapErrorPrompt variant="unsupported" />
-      );
-      break;
-
     case VenueTemplate.artpiece:
       template = <ArtPiece space={venue} />;
       break;
@@ -78,7 +52,7 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       break;
 
     case VenueTemplate.auditorium:
-      template = <Auditorium venue={venue} />;
+      template = <Auditorium space={venue} />;
       break;
 
     case VenueTemplate.conversationspace:
@@ -109,18 +83,6 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       template = <ExperimentalSpace venue={venue} />;
       break;
 
-    case VenueTemplate.playa:
-      template = (
-        <div
-          data-bem="TemplateWrapper__playa"
-          data-block="Playa"
-          data-side="att"
-        >
-          Legacy Template: ${venue.template} has been removed from the platform
-        </div>
-      );
-      break;
-
     default:
       // Technically TypeScript should prevent us missing a case here, but just in case, we work around it with an explicit cast to be able to render this
       template = (
@@ -137,17 +99,19 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   const isPartyMap = venue.template === VenueTemplate.partymap;
   const venueShrinksForChat = !isPartyMap;
 
-  const backgroundCss = useCss({
-    backgroundImage:
-      venue.backgroundImageUrl && `url(${venue.backgroundImageUrl})`,
-  });
+  const backgroundStyles = useMemo(
+    () => ({
+      backgroundImage: `url('${venue.backgroundImageUrl}')`,
+    }),
+    [venue.backgroundImageUrl]
+  );
 
-  const containerClassnames = classNames(
-    styles.templateContainer,
-    backgroundCss,
-    {
-      [styles.gradients]: !venue.backgroundImageUrl && !isPartyMap,
-    }
+  const containerClassnames = useMemo(
+    () =>
+      classNames(styles.templateContainer, {
+        [styles.gradients]: !venue.backgroundImageUrl && !isPartyMap,
+      }),
+    [isPartyMap, venue.backgroundImageUrl]
   );
 
   const wrapperClassnames = classNames({
@@ -157,7 +121,7 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   return (
     <ReactionsProvider venueId={venue.id}>
       {/* TODO <AnnouncementMessage isAnnouncementUserView /> */}
-      <div className={containerClassnames}>
+      <div className={containerClassnames} style={backgroundStyles}>
         <div className={wrapperClassnames}>{template}</div>
       </div>
 

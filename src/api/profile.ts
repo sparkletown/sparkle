@@ -1,7 +1,6 @@
 import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/compat/app";
 
-import { AnyGridData } from "types/grid";
 import { User } from "types/User";
 import { WorldEvent } from "types/venues";
 
@@ -13,73 +12,6 @@ export const getUserRef = (userId: string) =>
 export const getUser = async (userId: string): Promise<WithId<User>> => {
   const snapshot = await getUserRef(userId).get();
   return withId(snapshot.data() as User, snapshot.id);
-};
-
-export interface MakeUpdateUserGridLocationProps {
-  venueId: string;
-  userId: string;
-}
-
-export interface SetGridDataProps {
-  venueId: string;
-  userId: string;
-
-  gridData?: AnyGridData;
-}
-
-export const setGridData = async ({
-  venueId,
-  userId,
-  gridData,
-}: SetGridDataProps): Promise<void> => {
-  const userProfileRef = getUserRef(userId);
-
-  const newGridData = {
-    [`data.${venueId}`]: gridData ?? firebase.firestore.FieldValue.delete(),
-  };
-
-  return userProfileRef.update(newGridData).catch((err) => {
-    Bugsnag.notify(err, (event) => {
-      event.addMetadata("context", {
-        location: "api/profile::setGridData",
-        venueId,
-        userId,
-        gridData,
-      });
-
-      throw err;
-    });
-
-    throw err;
-  });
-};
-
-export interface UpdateUserOnlineStatusProps {
-  status?: string;
-  userId: string;
-}
-
-export const updateUserOnlineStatus = async ({
-  status,
-  userId,
-}: UpdateUserOnlineStatusProps): Promise<void> => {
-  const userProfileRef = getUserRef(userId);
-
-  const newUserStatusData = {
-    status: status ?? firebase.firestore.FieldValue.delete(),
-  };
-
-  const context = {
-    location: "api/profile::updateUserOnlineStatus",
-    status,
-    userId,
-  };
-
-  return userProfileRef.update(newUserStatusData).catch((err) => {
-    Bugsnag.notify(err, (event) => {
-      event.addMetadata("context", context);
-    });
-  });
 };
 
 // ================================================= Personalized Schedule

@@ -1,0 +1,155 @@
+@use "scss/attendee/theme";
+@use "scss/attendee/font";
+@use "scss/attendee/space";
+@use "scss/attendee/opacity";
+@use "scss/attendee/effects/sparkle";
+@use "scss/attendee/effects/atom";
+@use "scss/attendee/effects/rounded";
+@use "scss/attendee/effects/animations";
+@use "scss/attendee/layout";
+@use "scss/attendee/breakpoint";
+
+$-title-height: 42px;
+
+.MapPortal {
+  @media (max-width: calc(#{breakpoint.$md} - 1px)) {
+    // Override inline styles. The code for this component calculates the width
+    // and height for the element for when the element is displayed on a
+    // non-mobile size screen. This needs to be ignored on mobile screens.
+    height: auto !important;
+    width: auto !important;
+    max-width: 100%;
+    margin: space.empty(1);
+  }
+
+  @media (min-width: breakpoint.$md) {
+    flex-direction: column;
+    overflow: hidden;
+
+    display: flex;
+    align-self: center;
+    position: absolute;
+    overflow: visible;
+    z-index: 21;
+    width: min-content;
+  }
+}
+
+.PortalImage {
+  img {
+    display: block;
+    max-width: 90vw;
+    margin: 0 auto;
+    max-height: 50vh;
+  }
+
+  @media (min-width: breakpoint.$md) {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+
+    img {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      max-width: unset;
+      max-height: unset;
+    }
+  }
+
+  &:hover {
+    transform: scale(1);
+  }
+}
+
+.livePortalEvent {
+  animation: live-portal-bounce animations.$live-bouncerate alternate infinite;
+
+  &:hover {
+    animation: live-portal-bounce animations.$live-bouncerate alternate infinite,
+      live-portal-wiggle 0.15s alternate infinite;
+  }
+
+  &:after {
+    content: "Now";
+    color: theme.$c-button-fg;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: font.$size--l2;
+    text-shadow: 0 0 space.empty(1) theme.$sparkle--bg-shadow;
+  }
+}
+
+.portalInfo {
+  width: fit-content;
+  margin: 0 auto;
+
+  @media (min-width: breakpoint.$md) {
+    position: absolute;
+    top: calc(100% + space.empty(1));
+  }
+}
+
+.PortalTitle {
+  @include atom.button;
+  @include rounded.normal;
+  @include sparkle.color--glass;
+  cursor: default;
+  white-space: nowrap;
+
+  &:hover {
+    background-color: theme.$c-color-glass-panel-background-hover;
+  }
+}
+
+.PortalOnMap {
+  @media (min-width: breakpoint.$md) {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+.InfoButton {
+  @include atom.button;
+  height: space.button(1) - space.gap(8);
+  margin: space.gap(4) 0 space.gap(4) space.empty(0.5);
+  border-left: 1px solid theme.$sparkle--border;
+  border-radius: 0;
+  padding-right: 0;
+
+  span {
+    @include atom.icon;
+    background-image: url(/assets/icons/icon-info.svg);
+    position: relative;
+    filter: invert(1);
+    cursor: pointer;
+  }
+}
+
+.externalIconWrapper {
+  cursor: pointer;
+  @include atom.button;
+  height: space.button(1) - space.gap(8);
+  margin: space.gap(4) 0 space.gap(4) space.empty(0.3);
+  padding: 0;
+}
+
+.externalIcon {
+  @include atom.icon;
+  background-image: url(/assets/icons/icon-room-externallink.svg);
+  position: relative;
+}
+
+.linkHidden {
+  visibility: hidden;
+}
+
+.portalName {
+  margin-right: space.empty(0.75);
+}

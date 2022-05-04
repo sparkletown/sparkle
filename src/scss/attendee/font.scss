@@ -34,6 +34,11 @@ $weight--l4: 900; // Black (Heavy)
   line-height: 1.4;
 }
 
+@mixin xlarge {
+  font-size: $size--xl;
+  line-height: 1.4;
+}
+
 @mixin title {
   font-size: $size--l2;
   line-height: 1.4;

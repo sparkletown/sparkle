@@ -1,1 +1,0 @@
-For a full-fledged work, download the SDK from the official website and read the documentation. This folder contains only a minimal of project for own DLL.

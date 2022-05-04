@@ -1,1 +1,1 @@
-export { AttendeeLayoutHoc as AttendeeLayout } from "./AttendeeLayout.hoc";
+export { AttendeeLayout } from "./AttendeeLayout";

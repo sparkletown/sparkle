@@ -7,13 +7,10 @@ import { SpaceId, SpaceSlug, UserWithId } from "types/id";
 import { RoomVisibility } from "types/RoomVisibility";
 import { VenueTemplate } from "types/VenueTemplate";
 
-import { GameOptions } from "components/templates/AnimateMap/configs/GameConfig";
-
 import { Banner } from "./banner";
 import { Poster } from "./posters";
 import { Room } from "./rooms";
 import { Table } from "./Table";
-import { UserStatus } from "./User";
 import { VenueAccessMode } from "./VenueAcccess";
 
 export type PortalTemplate = VenueTemplate | "external";
@@ -23,11 +20,9 @@ export type GenericVenueTemplates = Exclude<
   VenueTemplate,
   | VenueTemplate.embeddable
   | VenueTemplate.jazzbar
-  | VenueTemplate.animatemap
   | VenueTemplate.partymap
   | VenueTemplate.posterpage
   | VenueTemplate.auditorium
-  | VenueTemplate.viewingwindow
   | VenueTemplate.experiment
   | VenueTemplate.artpiece
   | VenueTemplate.meetingroom
@@ -37,12 +32,10 @@ export type GenericVenueTemplates = Exclude<
 export type AnyVenue =
   | GenericVenue
   | AuditoriumVenue
-  | AnimateMapVenue
   | EmbeddableVenue
   | JazzbarVenue
   | PartyMapVenue
   | PosterPageVenue
-  | ViewingWindowVenue
   | ExperimentalVenue
   | ArtPieceVenue
   | MeetingRoomVenue;
@@ -69,13 +62,6 @@ export interface BaseVenue {
   radioStations?: string[];
   radioTitle?: string;
   banner?: Banner;
-  playaIcon?: PlayaIcon;
-  playaIcon2?: PlayaIcon;
-  samlAuthProviderId?: string;
-  columns?: number;
-  rows?: number;
-  hideVideo?: boolean;
-  showGrid?: boolean;
   roomVisibility?: RoomVisibility;
   rooms?: Room[];
   start_utc_seconds?: number;
@@ -86,9 +72,7 @@ export interface BaseVenue {
   showShoutouts?: boolean;
   sectionsCount?: number;
   termsAndConditions: TermOfService[];
-  userStatuses?: UserStatus[];
   showRadio?: boolean;
-  showUserStatus?: boolean;
   createdAt?: number;
   recentUserCount?: number;
   recentUsersSample?: UserWithId[];
@@ -97,17 +81,28 @@ export interface BaseVenue {
   worldId: string;
   backgroundImageUrl?: string;
   presentUserCachedCount: number;
+  // Optional: The space that manages this one. This is used for system managed
+  // spaces such as poster pages and meeting room booths.
+  managedBy?: SpaceId;
+
+  // The isHidden flag is used to indicate that a system managed space has
+  // been deleted by the system. We only hide it rather than delete it as
+  // it should still be accessible to people who have been there and references
+  // to spaces in things like analytics should still work.
+  isHidden?: boolean;
+
+  // Used by the empty booth tracker for understanding how long a booth has
+  // been empty for.
+  emptySince?: number;
+
+  // Fields for implementing "booths" inside a jazzbar
+  boothsEnabled?: boolean;
+  maxBooths?: number;
+  boothTemplateSpaceId?: SpaceId;
 }
 
 export interface GenericVenue extends BaseVenue {
   template: GenericVenueTemplates;
-}
-
-export interface AnimateMapVenue extends BaseVenue {
-  id: string;
-  gameOptions: GameOptions;
-  relatedPartymapId: SpaceId;
-  template: VenueTemplate.animatemap;
 }
 
 // @debt which of these params are exactly the same as on Venue? Can we simplify this?
@@ -148,15 +143,6 @@ export interface EmbeddableVenue extends BaseVenue {
   iframeOptions?: Record<string, string>;
 }
 
-export interface ViewingWindowVenue extends BaseVenue {
-  template: VenueTemplate.viewingwindow;
-  iframeUrl?: string;
-  containerStyles?: CSSProperties;
-  iframeStyles?: CSSProperties;
-  iframeOptions?: Record<string, string>;
-  isWithParticipants?: boolean;
-}
-
 export interface PosterPageVenue extends BaseVenue {
   template: VenueTemplate.posterpage;
   poster?: Poster;
@@ -166,15 +152,6 @@ export interface PosterPageVenue extends BaseVenue {
 export interface AuditoriumVenue extends BaseVenue {
   template: VenueTemplate.auditorium;
   title?: string;
-}
-
-export interface AnimateMapVenue extends BaseVenue {
-  template: VenueTemplate.animatemap;
-  playerioGameId: string;
-  playerioMaxPlayerPerRoom?: number;
-  playerioFrequencyUpdate?: number;
-  //@dept Right now advanced mode in develop, don't add this flag to venue!
-  playerioAdvancedMode?: boolean;
 }
 
 interface TermOfService {
@@ -216,30 +193,6 @@ export interface VenueLandingPageConfig {
   iframeUrl?: string;
   joinButtonText?: string;
 }
-
-export interface VenuePlacement {
-  x: number;
-  y: number;
-  addressText?: string;
-  state?: VenuePlacementState;
-}
-
-export enum VenuePlacementState {
-  SelfPlaced = "SELF_PLACED",
-  AdminPlaced = "ADMIN_PLACED",
-  Hidden = "HIDDEN",
-}
-
-export interface PlayaIcon {
-  x: number;
-  y: number;
-  fire: boolean;
-  visible: boolean;
-  className: string;
-  clickable: boolean;
-  venueId: string;
-}
-
 export interface WorldEvent {
   name: string;
   startUtcSeconds: number;
@@ -296,4 +249,11 @@ export const isNotPartyMapVenue = (venue: AnyVenue) =>
 export type Channel = {
   name: string;
   iframeUrl: string;
+};
+
+export type PortalOptionProps = {
+  template?: PortalTemplate;
+  name: string;
+  id?: string;
+  fieldName: string;
 };

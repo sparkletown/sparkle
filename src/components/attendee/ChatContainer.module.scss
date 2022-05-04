@@ -75,7 +75,8 @@
   display: block;
   flex-grow: 1;
   flex-shrink: 1;
-  margin-top: 0;
+  // Removes 1px space between chat components
+  margin-top: -1px;
   max-width: 100%;
   max-height: layout.$h-mobile-chat-bar;
   order: 1;
@@ -100,11 +101,16 @@
   margin-bottom: space.empty(3);
 
   @media (min-width: breakpoint.$md) {
-    min-height: 90vh;
+    // height: 100vh - height-of-chat-controls - margin-top - margin-bottom
+    min-height: calc(100vh - layout.$h-chat-controls - 2 * space.empty(1));
     margin: 0 space.empty(1) 0 auto;
   }
 }
 
 .sidebarHidden {
   display: none;
+}
+
+.selectedTab {
+  font-variation-settings: "wght" 700, "ital" 0, "SRFF" 20;
 }

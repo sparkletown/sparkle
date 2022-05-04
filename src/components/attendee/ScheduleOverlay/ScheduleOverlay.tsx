@@ -2,7 +2,7 @@ import React, { useMemo, useState } from "react";
 import { Toggler } from "components/attendee/Toggler";
 import { fromUnixTime, isToday, startOfDay, startOfToday } from "date-fns";
 
-import { ALWAYS_EMPTY_OBJECT, WORLD_TAXON } from "settings";
+import { ALWAYS_EMPTY_OBJECT } from "settings";
 
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useLiveUser } from "hooks/user/useLiveUser";
@@ -20,7 +20,7 @@ import CN from "./ScheduleOverlay.module.scss";
 const minWeekDaysScrollValue = 8;
 
 export const ScheduleOverlay: React.FC = () => {
-  const { world } = useWorldAndSpaceByParams();
+  const { space, world, isLoaded } = useWorldAndSpaceByParams();
   const { userWithId } = useLiveUser();
   const userEventIds =
     userWithId?.myPersonalizedSchedule ?? ALWAYS_EMPTY_OBJECT;
@@ -32,11 +32,11 @@ export const ScheduleOverlay: React.FC = () => {
     toggle: togglePersonalisedSchedule,
   } = useShowHide(false);
 
-  const { dayDifference, sovereignVenue } = useVenueScheduleEvents({
+  const { dayDifference } = useVenueScheduleEvents({
     userEventIds,
   });
 
-  const scheduledStartDate = sovereignVenue?.start_utc_seconds;
+  const scheduledStartDate = space?.start_utc_seconds;
 
   // @debt: probably will need to be re-calculated based on minDateUtcSeconds instead of startOfDay.Check later
   const firstDayOfSchedule = useMemo(() => {
@@ -47,12 +47,10 @@ export const ScheduleOverlay: React.FC = () => {
 
   const isScheduleTimeshifted = !isToday(firstDayOfSchedule);
 
-  const { isEventsLoading } = useVenueScheduleEvents({ userEventIds });
-
   return (
     <div className={CN.scheduleOverlayWrapper}>
       <div className={CN.scheduleOverlayHeader}>
-        {world?.name || WORLD_TAXON.title} schedule
+        {isLoaded && `${world?.name} schedule`}
       </div>
       <Toggler
         containerClassName={CN.scheduleOverlayButton}
@@ -75,16 +73,17 @@ export const ScheduleOverlay: React.FC = () => {
         />
       )}
 
-      {isEventsLoading && (
+      {!isLoaded ? (
         <Loading
           containerClassName="Schedule__loading"
           label="Events are loading"
         />
+      ) : (
+        <ScheduleEvents
+          showPersonalisedSchedule={showPersonalisedSchedule}
+          selectedDayIndex={selectedDayIndex}
+        />
       )}
-      <ScheduleEvents
-        showPersonalisedSchedule={showPersonalisedSchedule}
-        selectedDayIndex={selectedDayIndex}
-      />
     </div>
   );
 };

@@ -18,7 +18,7 @@ import { createSlug } from "api/admin";
 import { EntranceStepConfig } from "types/EntranceStep";
 import { UserId, WorldId, WorldSlug } from "types/id";
 import { Question } from "types/Question";
-import { DisplayUser, SeatedUser, UserStatus } from "types/User";
+import { DisplayUser, SeatedUser } from "types/User";
 import {
   WorldAdvancedFormInput,
   WorldEntranceFormInput,
@@ -59,11 +59,9 @@ export interface World {
   showBadges?: boolean;
   showRadio?: boolean;
   showSchedule?: boolean;
-  showUserStatus?: boolean;
   slug: WorldSlug;
   startTimeUnix?: number;
   updatedAt: Date;
-  userStatuses?: UserStatus[];
   hasSocialLoginEnabled?: boolean;
 }
 
@@ -148,8 +146,6 @@ export const createFirestoreWorldAdvancedInput: (
     "showBadges",
     "showRadio",
     "showSchedule",
-    "showUserStatus",
-    "userStatuses",
     "hasSocialLoginEnabled",
   ]);
 

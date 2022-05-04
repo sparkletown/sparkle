@@ -23,12 +23,6 @@
   @media (min-width: breakpoint.$md) {
     max-width: space.empty(33);
   }
-
-  h2 {
-    flex-grow: 1;
-    width: 100%;
-    padding: space.empty(1);
-  }
 }
 
 .tableHeader {
@@ -36,13 +30,19 @@
   flex-direction: row;
   align-items: center;
   width: 100%;
+  padding: space.empty(0.5) space.empty(1);
 }
 
 .tableTitle {
   flex: 1;
+  font-size: inherit;
+  font-weight: inherit;
+  margin: 0;
 }
 
 .deleteButton {
+  color: theme.$c-subdued-text;
+  cursor: pointer;
   align-self: flex-start;
 }
 

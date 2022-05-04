@@ -7,6 +7,8 @@
 :root {
   --default-text: rgb(0, 0, 0);
   --subdued-text: rgb(142, 142, 142);
+  --dark-text: rgb(0, 0, 0);
+  --white-text: rgb(255, 255, 255);
   --chat-input-background: rgb(230, 230, 230);
   --space-wrapper-background: rgb(230, 230, 230);
   --disabled-color: rgba(255, 255, 255, 0.4);
@@ -15,9 +17,13 @@
   --panel-background: rgb(255, 255, 255);
   --glass-panel-background: rgba(255, 255, 255, 0.4);
   --color-glass-panel-background: rgba(99, 42, 199, 0.7);
+  --color-glass-panel-background-hover: rgb(99, 42, 199);
 
   --sparkle--bg: rgb(99, 42, 199);
   --sparkle--border: rgba(130, 130, 130, 0.3);
+  --sparkle--bg-shadow: rgb(99, 42, 199 / 50%);
+
+  --webcam-video-disabled-bg: rgb(240, 240, 240);
 
   --button-fg: rgb(255, 255, 255);
   --button-bg: rgb(99, 42, 199);
@@ -60,9 +66,16 @@ $c-default-text: var(--default-text);
 $c-subdued-text: var(--subdued-text);
 // Used wherever we are putting text on to a light background
 $c-inverted-text: var(--inverted-text);
+// Always dark text
+$c-dark-text: var(--dark-text);
+// Always white text
+$c-white-text: var(--white-text);
 
 $sparkle--bg: var(--sparkle--bg); // previously named $sparkle-theme
+$sparkle--bg-shadow: var(--sparkle--bg-shadow);
 $sparkle--border: var(--sparkle--border); // previously named $sparkle-border
+
+$webcam-video-disabled-bg: var(--webcam-video-disabled-bg);
 
 $c-panel-background: var(--panel-background);
 $c-glass-panel-background: var(--glass-panel-background);
@@ -71,6 +84,9 @@ $c-glass-panel-background-transparent: var(
 );
 $c-glass-panel-text: var(--glass-panel-text);
 $c-color-glass-panel-background: var(--color-glass-panel-background);
+$c-color-glass-panel-background-hover: var(
+  --color-glass-panel-background-hover
+);
 $c-space-wrapper-background: var(--space-wrapper-background);
 
 $c-button-fg: var(--button-fg);

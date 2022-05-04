@@ -1,5 +1,6 @@
 import React from "react";
 import { ChannelConfiguration } from "components/admin/ChannelConfiguration";
+import { PosterConfiguration } from "components/admin/PosterConfiguration";
 import { ScreeningRoomVideosTable } from "components/admin/ScreeningRoomVideosTable";
 import { SpaceEditForm } from "components/admin/SpaceEditForm";
 import { ThreeColumnLayout } from "components/admin/ThreeColumnLayout";
@@ -46,7 +47,6 @@ export const Spaces: React.FC<SpacesProps> = ({ space, world }) => (
             <>
               <MapPreview
                 isEditing
-                worldId={space.worldId}
                 venueId={space.id}
                 venueName={space.name}
                 mapBackground={space.mapBackgroundImageUrl}
@@ -65,6 +65,9 @@ export const Spaces: React.FC<SpacesProps> = ({ space, world }) => (
         )}
         {space.template === VenueTemplate.meetingroom && (
           <ChannelConfiguration space={space} />
+        )}
+        {space.template === VenueTemplate.posterhall && (
+          <PosterConfiguration space={space} />
         )}
       </div>
     </AdminShowcase>
