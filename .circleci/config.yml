@@ -56,7 +56,6 @@ version: 2.1
 orbs:
   node: circleci/node@5.0.0
   slack: circleci/slack@4.1.1
-  #cypress: cypress-io/cypress@1.29.0
 jobs:
   install-node:
     executor: node/default
