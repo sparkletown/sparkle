@@ -11,6 +11,8 @@ import {
   startOfToday,
 } from "date-fns";
 
+import { ALWAYS_EMPTY_OBJECT } from "settings";
+
 import { WorldEvent } from "types/venues";
 
 import { isEventLiveOrFuture } from "utils/event";
@@ -28,10 +30,10 @@ const emptyRelatedEvents: WorldEvent[] = [];
 const todaysDate = startOfToday();
 
 const useVenueScheduleEvents = ({
-  userEventIds,
+  userEventIds = ALWAYS_EMPTY_OBJECT,
 }: {
-  userEventIds: Partial<Record<string, string[]>>;
-}) => {
+  userEventIds?: Partial<Record<string, string[]>> | {};
+} = {}) => {
   const { isLoading, worldSpaces, worldSpacesById } = useRelatedVenues();
 
   const { worldSlug } = useWorldParams();

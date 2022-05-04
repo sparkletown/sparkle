@@ -121,7 +121,7 @@ export const NavOverlay: React.FC<NavOverlayProps> = ({
               <ScheduleOverlay />
             )}
             {selectedNavMenu === NavOverlayTabType.search && (
-              <SearchOverlay onClose={onClose} />
+              <SearchOverlay onClose={onClose} setNavMenu={setNavMenu} />
             )}
             {selectedNavMenu === NavOverlayTabType.profile && (
               <ProfileOverlay onOverlayClose={onClose} />

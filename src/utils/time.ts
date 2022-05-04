@@ -21,6 +21,7 @@ import {
   DATEFNS_INPUT_DATE_FORMAT,
   DATEFNS_INPUT_TIME_FORMAT,
   DAYJS_EVENT_WEEK_DAY_FORMAT,
+  DAYJS_SHORT_TIME_FORMAT,
 } from "settings";
 
 /**
@@ -244,3 +245,6 @@ export const getDateHoursAndMinutes = (
 ): string => format(dateOrTimestamp, DATEFNS_INPUT_TIME_FORMAT);
 
 export const currentMilliseconds = () => new Date().getTime();
+
+export const getDayMonthNow = () =>
+  format(startOfToday(), DAYJS_SHORT_TIME_FORMAT);

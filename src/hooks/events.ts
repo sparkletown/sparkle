@@ -3,7 +3,7 @@ import { where } from "firebase/firestore";
 import { ALWAYS_EMPTY_ARRAY, COLLECTION_WORLD_EVENTS } from "settings";
 
 import { LoadStatus } from "types/fire";
-import { WorldId } from "types/id";
+import { SpaceId, WorldId } from "types/id";
 import { WorldEvent } from "types/venues";
 
 import { useRefiCollection } from "hooks/fire/useRefiCollection";
@@ -37,7 +37,7 @@ export const useWorldEvents: UseWorldEvents = ({ worldId }) => {
 
 type UseSpaceEvents = (options: {
   worldId?: WorldId | string;
-  spaceIds: string[];
+  spaceIds: string[] | SpaceId[];
 }) => LoadStatus & {
   events: WorldEvent[];
 };

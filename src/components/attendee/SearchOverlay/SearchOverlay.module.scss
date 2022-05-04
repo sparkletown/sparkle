@@ -1,4 +1,4 @@
-@use "scss/attendee/font.scss";
+@use "scss/attendee/font";
 @use "scss/attendee/space";
 @use "scss/attendee/theme";
 @use "scss/attendee/breakpoint";
@@ -47,4 +47,30 @@
 
 .searchOverlayCount {
   @include font.core;
+}
+
+.searchItemResultHeader {
+  cursor: pointer;
+  span {
+    @include font.core;
+    margin-left: space.$xs;
+  }
+}
+
+.searchItemResultSubtitle {
+  @include font.core;
+  margin-top: 0;
+  margin-bottom: space.empty(1);
+}
+
+.searchItemResultTitle {
+  margin-bottom: space.empty(1);
+}
+
+.actionContainer {
+  display: flex;
+
+  > button {
+    margin-right: space.empty(1);
+  }
 }
