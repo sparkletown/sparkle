@@ -22,6 +22,7 @@ export const COLLECTION_USER_PRESENCE = "userPresence";
 export const COLLECTION_USERS = "users";
 export const COLLECTION_WORLDS = "worlds";
 export const COLLECTION_WORLD_EVENTS = "worldEvents";
+export const COLLECTION_ONBOARDED_WORLDS = "onboardedWorlds";
 
 // common search fields, please keep the list short and simple
 export const FIELD_HIDDEN = "isHidden";

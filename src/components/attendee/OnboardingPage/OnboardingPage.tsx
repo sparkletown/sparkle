@@ -1,15 +1,21 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { Redirect } from "react-router-dom";
 import { SpaceEntrancePage } from "components/attendee/SpaceEntrancePage";
 
-import { ALWAYS_EMPTY_ARRAY } from "settings";
+import { ALWAYS_EMPTY_ARRAY, ATTENDEE_WORLD_URL } from "settings";
+
+import { onboardUser } from "api/auth";
 
 import { WorldWithId } from "types/id";
+
+import { generateUrl } from "utils/url";
 
 import { CodeOfConduct } from "pages/Account/CodeOfConduct";
 
 const codeOfConductStep = "CODE_OF_CONDUCT_STEP";
 const ageLimitStep = "AGE_LIMIT_STEP";
 const entryVideoStep = "ENTRY_VIDEO_STEP";
+const onboardingStep = "ONBOARDING";
 
 type OnboardingPageProps = {
   world: WorldWithId;
@@ -53,6 +59,18 @@ export const OnboardingPage: React.FC<OnboardingPageProps> = ({ world }) => {
     setCurrentStep(nextStep);
   }, [steps, setCurrentStep, currentStep]);
 
+  const finishOnboarding = useCallback(async () => {
+    await onboardUser({ worldSlug: world.slug });
+
+    setCurrentStep(onboardingStep);
+  }, [world.slug]);
+
+  useEffect(() => {
+    if (!currentStep) {
+      finishOnboarding();
+    }
+  }, [currentStep, finishOnboarding]);
+
   if (currentStep === codeOfConductStep) {
     return <CodeOfConduct proceed={navigateToNextStep} world={world} />;
   }
@@ -73,6 +91,15 @@ export const OnboardingPage: React.FC<OnboardingPageProps> = ({ world }) => {
     return (
       <SpaceEntrancePage entrance={entryVideo} proceed={navigateToNextStep} />
     );
+  }
+
+  if (currentStep === onboardingStep) {
+    const worldUrl = generateUrl({
+      route: ATTENDEE_WORLD_URL,
+      required: ["worldSlug"],
+      params: { worldSlug: world.slug },
+    });
+    return <Redirect to={worldUrl} />;
   }
 
   return <div>Onboarding a person</div>;

@@ -55,8 +55,5 @@ export interface UserLocation {
 export type UserWithLocation = Profile & UserLocation;
 
 export type UserOnboardedWorld = {
-  acceptedTermsConditions: boolean;
-  watchedEntranceVideo: boolean;
-  passedAgeLimit: boolean;
   isOnboarded: boolean;
 };

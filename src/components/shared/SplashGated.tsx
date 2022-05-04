@@ -1,10 +1,15 @@
 import React, { ReactNode } from "react";
-import { Redirect, useHistory } from "react-router-dom";
+import { Redirect, useHistory, useParams } from "react-router-dom";
+
+import { WorldSlugLocation } from "types/id";
 
 import { useLiveUser } from "hooks/user/useLiveUser";
+import { useWorldBySlug } from "hooks/worlds/useWorldBySlug";
 
 import { Loading } from "components/molecules/Loading";
 import { LoadingPage } from "components/molecules/LoadingPage";
+
+import { OnboardingGated } from "./OnboardingGated";
 
 interface SplashGatedProps {
   loading?: "spinner" | "page" | ReactNode;
@@ -17,9 +22,17 @@ export const SplashGated: React.FC<SplashGatedProps> = ({
   loading = null,
   children,
 }) => {
-  const { userId, isLoading } = useLiveUser();
+  const { userId, isLoading: isUserLoading } = useLiveUser();
 
-  const isOnboarded = true;
+  const { worldSlug: worldSlugFromParams } = useParams<
+    Partial<WorldSlugLocation>
+  >();
+
+  const { worldId, isLoading: isWorldLoading } = useWorldBySlug(
+    worldSlugFromParams
+  );
+
+  const isLoading = isWorldLoading || isUserLoading;
 
   const history = useHistory();
 
@@ -29,9 +42,21 @@ export const SplashGated: React.FC<SplashGatedProps> = ({
     return <>{loading}</>;
   }
 
-  if (!userId || !isOnboarded) {
+  if (!userId) {
     return <Redirect to={`${history.location.pathname}/splash`} />;
   }
 
-  return <>{children}</>;
+  if (!worldId || !worldSlugFromParams) {
+    return <div>Error</div>;
+  }
+
+  return (
+    <OnboardingGated
+      worldId={worldId}
+      worldSlug={worldSlugFromParams}
+      userId={userId}
+    >
+      {children}
+    </OnboardingGated>
+  );
 };

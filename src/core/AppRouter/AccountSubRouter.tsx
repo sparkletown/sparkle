@@ -8,7 +8,6 @@ import {
   ACCOUNT_PROFILE_SPACE_PARAM_URL,
 } from "settings";
 
-import { CodeOfConduct } from "pages/Account/CodeOfConduct";
 import { Profile } from "pages/Account/Profile";
 
 export const AccountSubRouter: React.FC = () => {

@@ -47,8 +47,6 @@ export const ATTENDEE_SPACE_URL = `${ATTENDEE_WORLD_URL}/s/:spaceSlug`;
 
 // Onboarding URLs
 export const JOIN_WORLD_URL = `${ATTENDEE_WORLD_URL}/join`;
-export const JOIN_WORLD_CODE_CONDUCT_URL = `${JOIN_WORLD_URL}/code-of-conduct`;
-export const JOIN_WORLD_ENTRANCE = `${JOIN_WORLD_URL}/entrance`;
 
 // Splash URLs
 export const ATTENDEE_WORLD_SPLASH_URL = `${ATTENDEE_WORLD_URL}/splash`;

@@ -20,7 +20,7 @@ import { errorCode, errorMessage, errorStatus } from "utils/error";
 
 import { useSocialSignIn } from "hooks/useSocialSignIn";
 
-import { updateUserPrivate } from "pages/Account/helpers";
+// import { updateUserPrivate } from "pages/Account/helpers";
 import CN from "pages/auth/auth.module.scss";
 import { SocialLogin } from "pages/auth/SocialLogin";
 
@@ -79,24 +79,24 @@ export const RegisterForm: React.FC<RegisterFormProps> = () => {
     clearErrors("backend");
   };
 
-  const postRegisterCheck = (
-    authResult: firebase.auth.UserCredential,
-    data: RegisterFormInput
-  ) => {
-    if (authResult.user && isDobRequired) {
-      updateUserPrivate(authResult.user.uid, {
-        date_of_birth: data.date_of_birth,
-      }).catch((e) => console.error(RegisterForm.name, e));
-    }
-  };
+  // const postRegisterCheck = (
+  //   authResult: firebase.auth.UserCredential,
+  //   data: RegisterFormInput
+  // ) => {
+  //   if (authResult.user && isDobRequired) {
+  //     updateUserPrivate(authResult.user.uid, {
+  //       date_of_birth: data.date_of_birth,
+  //     }).catch((e) => console.error(RegisterForm.name, e));
+  //   }
+  // };
 
   const onSubmit = async (data: RegisterFormInput) => {
     try {
       setShowLoginModal(false);
 
-      const auth = await signUp(data);
+      await signUp(data);
 
-      postRegisterCheck(auth, data);
+      // postRegisterCheck(auth, data);
 
       history.push(ACCOUNT_PROFILE_BASE_URL);
     } catch (e) {
@@ -119,19 +119,19 @@ export const RegisterForm: React.FC<RegisterFormProps> = () => {
   };
 
   const handleGoogleSignIn = async () => {
-    const { email, password, code, date_of_birth } = getValues();
-    const formValues = { email, password, code, date_of_birth };
+    // const { email, password, code, date_of_birth } = getValues();
+    // const formValues = { email, password, code, date_of_birth };
 
     try {
-      const auth = await signInWithGoogle();
-      postRegisterCheck(auth, formValues);
+      await signInWithGoogle();
+      // postRegisterCheck(auth, formValues);
     } catch (error) {
       setError("backend", { type: "firebase", message: "Error" });
     }
   };
   const handleFacebookSignIn = async () => {
-    const { email, password, code, date_of_birth } = getValues();
-    const formValues = { email, password, code, date_of_birth };
+    // const { email, password, code, date_of_birth } = getValues();
+    // const formValues = { email, password, code, date_of_birth };
     try {
       const auth = await signInWithFacebook();
 
@@ -140,7 +140,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = () => {
         return;
       }
 
-      postRegisterCheck(auth, formValues);
+      // postRegisterCheck(auth, formValues);
     } catch {
       setError("backend", { type: "firebase", message: "Error" });
     }
