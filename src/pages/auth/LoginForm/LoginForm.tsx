@@ -9,6 +9,7 @@ import firebase from "firebase/compat/app";
 
 import {
   PASSWORD_RESET_URL,
+  QUICK_JOIN_PARAM_NAME,
   RETURN_URL_PARAM_NAME,
   SIGN_UP_URL,
   STRING_SPACE,
@@ -47,6 +48,7 @@ export const LoginForm: React.FC<LoginFormProps> = () => {
   }, [history]);
 
   const returnUrl = useSearchParam(RETURN_URL_PARAM_NAME);
+  const shouldQuickJoin = useSearchParam(QUICK_JOIN_PARAM_NAME);
 
   const { signInWithGoogle, signInWithFacebook } = useSocialSignIn();
 
@@ -68,6 +70,15 @@ export const LoginForm: React.FC<LoginFormProps> = () => {
     clearErrors("backend");
   };
 
+  const navigateToSource = () => {
+    if (!returnUrl) return;
+
+    history.push({
+      pathname: returnUrl,
+      search: `?${QUICK_JOIN_PARAM_NAME}=${shouldQuickJoin}`,
+    });
+  };
+
   const signIn = ({ email, password }: LoginFormData) => {
     return firebase.auth().signInWithEmailAndPassword(email, password);
   };
@@ -76,9 +87,7 @@ export const LoginForm: React.FC<LoginFormProps> = () => {
     try {
       await signIn(data);
 
-      if (returnUrl) {
-        history.push(returnUrl);
-      }
+      navigateToSource();
     } catch (error) {
       const status = errorStatus(error);
       const message = errorMessage(error);
@@ -102,9 +111,7 @@ export const LoginForm: React.FC<LoginFormProps> = () => {
     try {
       await signInWithGoogle();
 
-      if (returnUrl) {
-        history.push(returnUrl);
-      }
+      navigateToSource();
     } catch {
       setError("backend", { type: "firebase", message: "Error" });
     }
@@ -120,9 +127,7 @@ export const LoginForm: React.FC<LoginFormProps> = () => {
         return;
       }
 
-      if (returnUrl) {
-        history.push(returnUrl);
-      }
+      navigateToSource();
     } catch {
       setError("backend", { type: "firebase", message: "Error" });
     }

@@ -1,23 +1,11 @@
-import React, { useCallback } from "react";
-import { Redirect, useHistory, useParams } from "react-router-dom";
+import React, { useCallback, useState } from "react";
 import { WelcomeVideo } from "components/attendee/WelcomeVideo";
 
 import {
-  ACCOUNT_PROFILE_SPACE_PARAM_URL,
-  ATTENDEE_STEPPING_PARAM_URL,
-} from "settings";
-
-import { World } from "api/world";
-
-import {
+  EntranceStepConfig,
   EntranceStepTemplate,
   EntranceStepTemplateProps,
 } from "types/EntranceStep";
-import { SpaceSlug, WorldSlug } from "types/id";
-import { Profile } from "types/User";
-
-import { isCompleteProfile } from "utils/profile";
-import { generateAttendeeInsideUrl, generateUrl } from "utils/url";
 
 const ENTRANCE_STEP_TEMPLATE: Record<
   EntranceStepTemplate,
@@ -27,53 +15,29 @@ const ENTRANCE_STEP_TEMPLATE: Record<
 };
 
 type SpaceEntrancePageProps = {
-  profile: Profile;
-  spaceSlug: SpaceSlug;
-  world: World;
-  worldSlug: WorldSlug;
+  entrance: EntranceStepConfig[];
+  proceed: () => void;
 };
 
 export const SpaceEntrancePage: React.FC<SpaceEntrancePageProps> = ({
-  profile,
-  spaceSlug,
-  world,
-  worldSlug,
+  entrance,
+  proceed,
 }) => {
-  const history = useHistory();
-  const { step: unparsedStep } = useParams<{ step?: string }>();
+  const [currentStepIndex, setCurrentStepIndex] = useState(0);
 
-  const step = Number.parseInt(unparsedStep ?? "", 10);
+  const navigateToNextStep = useCallback(() => {
+    const stepsCount = entrance.length;
+    const isLastStep = currentStepIndex === stepsCount;
 
-  const proceed = useCallback(
-    () =>
-      history.push(
-        generateUrl({
-          route: ATTENDEE_STEPPING_PARAM_URL,
-          required: ["worldSlug", "spaceSlug", "step"],
-          params: { worldSlug, spaceSlug, step: `${step + 1}` },
-        })
-      ),
-    [worldSlug, spaceSlug, step, history]
-  );
+    if (isLastStep) {
+      proceed();
+      return;
+    }
 
-  const stepConfig = world.entrance?.[step - 1];
-  if (Number.isNaN(step) || !stepConfig) {
-    return (
-      <Redirect to={generateAttendeeInsideUrl({ worldSlug, spaceSlug })} />
-    );
-  }
+    setCurrentStepIndex(currentStepIndex + 1);
+  }, [entrance, currentStepIndex, proceed, setCurrentStepIndex]);
 
-  if (profile && !isCompleteProfile(profile)) {
-    return (
-      <Redirect
-        to={generateUrl({
-          route: ACCOUNT_PROFILE_SPACE_PARAM_URL,
-          required: ["worldSlug"],
-          params: { worldSlug, spaceSlug },
-        })}
-      />
-    );
-  }
+  const stepConfig = entrance[currentStepIndex - 1];
 
   const EntranceStepTemplate: React.FC<EntranceStepTemplateProps> =
     ENTRANCE_STEP_TEMPLATE[stepConfig.template];
@@ -82,5 +46,7 @@ export const SpaceEntrancePage: React.FC<SpaceEntrancePageProps> = ({
     return null;
   }
 
-  return <EntranceStepTemplate config={stepConfig} proceed={proceed} />;
+  return (
+    <EntranceStepTemplate config={stepConfig} proceed={navigateToNextStep} />
+  );
 };
