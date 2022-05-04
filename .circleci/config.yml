@@ -81,8 +81,6 @@ jobs:
     docker:
       - image: cimg/openjdk:17.0-node
     resource_class: large
-    context: 
-      - e2e
     steps:
       - checkout
       - run:
@@ -438,6 +436,8 @@ workflows:
     jobs:
       - lint-and-test
       - start-emulators:
+          context: 
+            - e2e
           requires:
             - lint-and-test
       - deploy-functions:
