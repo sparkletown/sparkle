@@ -100,15 +100,15 @@ jobs:
       - image: cimg/openjdk:17.0-node
     resource_class: large
     steps:
+      - run:
+          name: install cypress dependencies
+          command: sudo apt-get install libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
       - checkout
       - run:
           name: install root and functions' packages
           command: npm ci && cd functions && npm ci && cd ..
       - run: ./node_modules/.bin/firebase use "$E2E_FIREBASE_PROJECT" --token "$E2E_FIREBASE_TOKEN"
       - run: ./node_modules/.bin/firebase functions:config:get --token "$E2E_FIREBASE_TOKEN" > ./functions/.runtimeconfig.json
-      - run:
-          name: install cypress dependencies
-          command: apt-get install libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
       - run: npm run firebase:emulate-cy:run
   deploy-functions:
     executor: node/default
