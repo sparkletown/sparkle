@@ -6,7 +6,6 @@ import {
   DistributedCounterValue,
   InterimDocumentData,
   InterimQueryDocumentSnapshot,
-  InterimSnapshotOptions,
 } from "types/Firestore";
 
 import { WithId, withId } from "utils/id";
@@ -35,8 +34,7 @@ Object.freeze(CONVERTER_WORLD_WITH_ID);
 const CONVERTER_WITH_ID = {
   toFirestore: <T = unknown>(value: T) => value as InterimDocumentData,
   fromFirestore: (
-    snapshot: InterimQueryDocumentSnapshot<InterimDocumentData>,
-    options?: InterimSnapshotOptions
+    snapshot: InterimQueryDocumentSnapshot<InterimDocumentData>
   ) => withId(snapshot.data(), snapshot.id),
 };
 Object.freeze(CONVERTER_WITH_ID);
@@ -44,8 +42,7 @@ Object.freeze(CONVERTER_WITH_ID);
 const CONVERTER_IDENTITY = {
   toFirestore: <T = unknown>(value: T) => value as InterimDocumentData,
   fromFirestore: (
-    snapshot: InterimQueryDocumentSnapshot<InterimDocumentData>,
-    options?: InterimSnapshotOptions
+    snapshot: InterimQueryDocumentSnapshot<InterimDocumentData>
   ) => withId(snapshot.data(), snapshot.id),
 };
 Object.freeze(CONVERTER_IDENTITY);
