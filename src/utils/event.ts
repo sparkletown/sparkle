@@ -33,7 +33,7 @@ export const isEventLive = (event: WorldEvent) => {
 };
 
 export const isEventFuture = (event: WorldEvent) =>
-  isFuture(fromUnixTime(event.startUtcSeconds));
+  isFuture(fromUnixTime(event?.startUtcSeconds));
 
 export const isEventLater = (event: WorldEvent) =>
   isEventFuture(event) &&

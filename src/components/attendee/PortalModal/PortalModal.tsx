@@ -2,20 +2,14 @@ import React, { MouseEventHandler, RefObject } from "react";
 import { useCss } from "react-use";
 import classNames from "classnames";
 import { Button } from "components/attendee/Button";
+import { EventInfo } from "components/attendee/EventInfo";
+import { SpaceInfoText } from "components/attendee/SpaceInfoText";
 
-import {
-  COVERT_ROOM_TYPES,
-  SCSS_SPACE_PORTAL_EVENT_WIDTH,
-  STRING_DASH_SPACE,
-  STRING_SPACE,
-} from "settings";
+import { COVERT_ROOM_TYPES, SCSS_SPACE_PORTAL_EVENT_WIDTH } from "settings";
 
 import { PortalWithBounds, RoomType } from "types/rooms";
 import { RoomVisibility } from "types/RoomVisibility";
 import { WorldEvent } from "types/venues";
-
-import { eventEndTime, eventStartTime } from "utils/event";
-import { formatTimeLocalised } from "utils/time";
 
 import { useSpaceById } from "hooks/spaces/useSpaceById";
 
@@ -68,27 +62,11 @@ export const PortalModal: React.FC<PortalModalProps> = ({
     <div className={wrapperClasses}>
       <div className={CN.PortalPopupInfo}>
         {event ? (
-          <>
-            <h3>{event?.name}</h3>
-            <div className={CN.portalEventContent}>{event?.host}</div>
-            <div className={CN.portalEventContent}>
-              <span>
-                {formatTimeLocalised(eventStartTime({ event })) +
-                  STRING_DASH_SPACE}
-              </span>
-              {STRING_SPACE}
-              <span>
-                {STRING_SPACE + formatTimeLocalised(eventEndTime({ event }))}
-              </span>
-            </div>
-            <div className={CN.portalEventContent}>{event?.description}</div>
-          </>
+          <EventInfo event={event} centered />
         ) : (
-          <>
-            <h3>{space?.name}</h3>
-            <p>{space?.config?.landingPageConfig.description}</p>
-          </>
+          space && <SpaceInfoText space={space} variant="desktopPortal" />
         )}
+
         {shouldBeClickable && (
           <Button variant="primary" onClick={onEnter} marginless>
             Enter
