@@ -29,11 +29,13 @@ export const useVideoHuddle = () => {
 
   const joinHuddle = useMemo(() => {
     return (userId: string, huddleId: string) => {
+      // Since users explicitly pressed a button to join a huddle
+      // we're enabling their video/audio by default
       joinChannel({
         userId,
         channelId: huddleId,
-        enableAudio: false,
-        enableVideo: false,
+        enableAudio: true,
+        enableVideo: true,
       });
       setInHuddle(() => huddleId);
     };
