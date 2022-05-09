@@ -1,5 +1,8 @@
 import React, { RefObject, useCallback, useMemo } from "react";
 import classNames from "classnames";
+import { Button } from "components/attendee/Button";
+import { EventInfo } from "components/attendee/EventInfo";
+import { SpaceInfoText } from "components/attendee/SpaceInfoText";
 import { isEqual, omit } from "lodash";
 
 import { COVERT_ROOM_TYPES } from "settings";
@@ -9,9 +12,14 @@ import { Room, RoomType } from "types/rooms";
 import { RoomVisibility } from "types/RoomVisibility";
 import { Dimensions, Position } from "types/utility";
 
-import { eventTimeAndOrderComparator, isEventLive } from "utils/event";
+import {
+  eventTimeAndOrderComparator,
+  isEventLive,
+  isEventLiveOrFuture,
+} from "utils/event";
 
 import { useSpaceEvents } from "hooks/events";
+import { useSpaceById } from "hooks/spaces/useSpaceById";
 import { useAnalytics } from "hooks/useAnalytics";
 import { usePortal } from "hooks/usePortal";
 
@@ -39,14 +47,16 @@ export const MapPortal: React.FC<MapPortalProps> = ({
   unselectPortal,
 }) => {
   const { enterPortal } = usePortal({ portal });
+  const { space: targetSpace } = useSpaceById({ spaceId: portal.spaceId });
+
   const analytics = useAnalytics({ venue: space });
   const { events: selfAndChildVenueEvents = [] } = useSpaceEvents({
     worldId: space.worldId,
     spaceIds: [portal.spaceId ?? ""],
   });
-  const [firstEvent] = selfAndChildVenueEvents.sort(
-    eventTimeAndOrderComparator
-  );
+  const [firstEvent] = selfAndChildVenueEvents
+    .filter(isEventLiveOrFuture)
+    .sort(eventTimeAndOrderComparator);
 
   const isUnclickable =
     portal.visibility === RoomVisibility.unclickable ||
@@ -107,13 +117,19 @@ export const MapPortal: React.FC<MapPortalProps> = ({
   });
 
   return (
-    <div className={styles.MapPortal} style={roomInlineStyles}>
+    <div
+      data-bem="MapPortal"
+      className={styles.MapPortal}
+      style={roomInlineStyles}
+    >
       <div className={styles.PortalOnMap}>
         <div className={portalImageClasses}>
           <img src={portal.image_url} alt={portal.title} />
         </div>
+
+        {/* desktop */}
         <div
-          className={styles.portalInfo}
+          className={styles.portalTitleDesktop}
           ref={isCurrentRoomSelected ? portalRef : null}
         >
           <div className={styles.PortalTitle}>
@@ -134,6 +150,29 @@ export const MapPortal: React.FC<MapPortalProps> = ({
               </span>
             )}
           </div>
+        </div>
+
+        {/* mobile */}
+        <div className={styles.portalInfoMobile}>
+          <span className={styles.portalNameMobile}>{portal.title}</span>
+
+          {isEventLiveOrFuture(firstEvent) ? (
+            <EventInfo event={firstEvent} />
+          ) : (
+            targetSpace && (
+              <SpaceInfoText space={targetSpace} variant="mobilePortal" />
+            )
+          )}
+
+          <Button
+            onClick={enterPortal}
+            variant="intensive"
+            width="full"
+            withCenteredContent
+            marginless
+          >
+            Enter
+          </Button>
         </div>
       </div>
     </div>

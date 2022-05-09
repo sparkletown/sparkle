@@ -1,3 +1,4 @@
+@use "scss/attendee/border";
 @use "scss/attendee/theme";
 @use "scss/attendee/font";
 @use "scss/attendee/space";
@@ -11,15 +12,21 @@
 
 $-title-height: 42px;
 
+$-w-max-tablet: calc(#{breakpoint.$md} - 1px);
+
 .MapPortal {
-  @media (max-width: calc(#{breakpoint.$md} - 1px)) {
+  @media (max-width: $-w-max-tablet) {
     // Override inline styles. The code for this component calculates the width
     // and height for the element for when the element is displayed on a
     // non-mobile size screen. This needs to be ignored on mobile screens.
     height: auto !important;
-    width: auto !important;
+    width: fit-content !important;
+    margin: space.empty(1) auto !important;
+
     max-width: 100%;
-    margin: space.empty(1);
+
+    @include sparkle.panel--glass;
+    border-radius: border.$radius--xs;
   }
 
   @media (min-width: breakpoint.$md) {
@@ -38,9 +45,16 @@ $-title-height: 42px;
 .PortalImage {
   img {
     display: block;
-    max-width: 90vw;
     margin: 0 auto;
     max-height: 50vh;
+  }
+
+  @media (max-width: $-w-max-tablet) {
+    padding: space.empty(2);
+
+    img {
+      max-width: 100%;
+    }
   }
 
   @media (min-width: breakpoint.$md) {
@@ -86,14 +100,33 @@ $-title-height: 42px;
   }
 }
 
-.portalInfo {
+.portalTitleDesktop {
   width: fit-content;
   margin: 0 auto;
+  position: absolute;
+  top: calc(100% + space.empty(1));
 
-  @media (min-width: breakpoint.$md) {
-    position: absolute;
-    top: calc(100% + space.empty(1));
+  @media (max-width: $-w-max-tablet) {
+    display: none;
   }
+}
+
+.portalInfoMobile {
+  @media (min-width: breakpoint.$md) {
+    display: none;
+  }
+}
+
+.portalNameMobile {
+  display: block;
+  margin: 0 space.empty(1);
+  padding: space.empty(1) 0;
+  font-size: font.$size--xl;
+  border-bottom: border.$width--slim solid theme.$sparkle--border;
+
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .PortalTitle {

@@ -130,6 +130,7 @@ export const SEARCH_DEBOUNCE_TIME = 200; // ms
 
 export const DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT = 48;
 export const DEFAULT_DISPLAYED_VIDEO_PREVIEW_COUNT = 12;
+export const DEFAULT_NUMBER_OF_LINES_OF_TEXT = 5;
 
 // Analytics
 export const DEFAULT_ANALYTICS_GROUP_KEY = "world";

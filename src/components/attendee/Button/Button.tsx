@@ -20,6 +20,7 @@ type ButtonVariant =
   // it full width
   | "panel-primary";
 type BorderVariant = ButtonVariant;
+type ButtonWidth = "standard" | "full";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   onClick?: MouseEventHandler<HTMLButtonElement>;
@@ -30,6 +31,8 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   marginless?: boolean;
   paddingless?: boolean;
   large?: boolean;
+  withCenteredContent?: boolean;
+  width?: ButtonWidth;
   className?: string;
   forwardRef?: RefObject<HTMLButtonElement> | null;
 }
@@ -46,6 +49,8 @@ export const Button: React.FC<ButtonProps> = ({
   marginless = false,
   paddingless = false,
   large = false,
+  withCenteredContent = false,
+  width = "standard",
   disabled,
   ...rest
 }) => {
@@ -54,6 +59,7 @@ export const Button: React.FC<ButtonProps> = ({
     className,
     CN["variant-" + variant],
     CN["border-" + border],
+    CN["width-" + width],
     {
       [CN.transparent]: transparent,
       [CN.borderRadiusNone]: unrounded,
@@ -61,6 +67,7 @@ export const Button: React.FC<ButtonProps> = ({
       [CN.buttonPaddingNone]: paddingless,
       [CN.disabled]: disabled,
       [CN.large]: large,
+      [CN.withCenteredContent]: withCenteredContent,
     }
   );
 

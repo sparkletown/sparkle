@@ -7,9 +7,9 @@ import { Dropdown } from "components/admin/Dropdown";
 import { Option } from "components/admin/Dropdown/Dropdown";
 import { Input } from "components/admin/Input";
 import { Textarea } from "components/admin/Textarea";
-import dayjs from "dayjs";
+import { format, fromUnixTime, getUnixTime } from "date-fns";
 
-import { DAYJS_INPUT_DATE_FORMAT, DAYJS_INPUT_TIME_FORMAT } from "settings";
+import { DATEFNS_INPUT_DATE_FORMAT, DATEFNS_INPUT_TIME_FORMAT } from "settings";
 
 import { createEvent, EventInput, updateEvent } from "api/admin";
 
@@ -19,6 +19,7 @@ import { WorldEvent } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
 
 import { MaybeWithId } from "utils/id";
+import { fromStringToDate } from "utils/time";
 
 import { eventEditSchema } from "forms/eventEditSchema";
 
@@ -69,12 +70,14 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
       reset({
         name: event.name,
         description: event.description,
-        start_date: dayjs
-          .unix(event.startUtcSeconds)
-          .format(DAYJS_INPUT_DATE_FORMAT),
-        start_time: dayjs
-          .unix(event.startUtcSeconds)
-          .format(DAYJS_INPUT_TIME_FORMAT),
+        start_date: format(
+          fromUnixTime(event.startUtcSeconds),
+          DATEFNS_INPUT_DATE_FORMAT
+        ),
+        start_time: format(
+          fromUnixTime(event.startUtcSeconds),
+          DATEFNS_INPUT_TIME_FORMAT
+        ),
         duration_hours: Math.floor(event.durationMinutes / 60),
         duration_minutes: event.durationMinutes % 60,
         host: event.host,
@@ -111,13 +114,12 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
 
   const [{ loading: isLoading }, onUpdateEvent] = useAsyncFn(
     async (data: EventInput) => {
-      const start = dayjs(`${data.start_date} ${data.start_time}`);
+      const start = fromStringToDate(`${data.start_date} ${data.start_time}`);
       const spaceId = eventSpaceId ?? selectedSpace.id ?? "";
       const formEvent: MaybeWithId<WorldEvent> = {
         name: data.name,
         description: data.description,
-        startUtcSeconds:
-          start.unix() || Math.floor(new Date().getTime() / 1000),
+        startUtcSeconds: getUnixTime(start) || getUnixTime(Date.now()),
         durationMinutes:
           data.duration_hours * 60 + (data.duration_minutes ?? 0),
         host: data.host,
@@ -225,7 +227,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
               <div>
                 <Input
                   type="date"
-                  min={dayjs().format(DAYJS_INPUT_DATE_FORMAT)}
+                  min={format(Date.now(), DATEFNS_INPUT_DATE_FORMAT)}
                   placeholder="Dottie Longstockings"
                   errors={errors}
                   register={register}
