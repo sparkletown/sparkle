@@ -40,11 +40,14 @@ export const Dropdown = <T extends Option>({
   const [isOpened, setOpened] = useState<boolean>(false);
   const [selectedOption, setSelectedOption] = useState<Option>();
 
-  const selectOption = useCallback((option) => {
-    setSelectedOption(option);
-    setOpened(false);
-    onSelect?.(option);
-  }, [onSelect])
+  const selectOption = useCallback(
+    (option) => {
+      setSelectedOption(option);
+      setOpened(false);
+      onSelect?.(option);
+    },
+    [onSelect]
+  );
 
   return (
     <>
