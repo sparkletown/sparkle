@@ -1,8 +1,7 @@
 import { useCallback, useMemo } from "react";
+import { MIXPANEL_PROJECT_TOKEN } from "env";
 // eslint-disable-next-line no-restricted-imports
 import mixpanel, { Mixpanel } from "mixpanel-browser";
-
-import { MIXPANEL_PROJECT_TOKEN } from "secrets";
 
 import {
   DEFAULT_ANALYTICS_GROUP_KEY,

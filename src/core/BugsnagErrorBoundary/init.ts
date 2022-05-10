@@ -1,14 +1,13 @@
 import Bugsnag from "@bugsnag/js";
 import BugsnagPluginReact from "@bugsnag/plugin-react";
-import firebase from "firebase/compat/app";
-
 import {
   BUGSNAG_API_KEY,
   BUILD_BRANCH,
   BUILD_PULL_REQUESTS,
   BUILD_SHA1,
   BUILD_TAG,
-} from "secrets";
+} from "env";
+import firebase from "firebase/compat/app";
 
 if (BUGSNAG_API_KEY) {
   const DEVELOPMENT = "development";

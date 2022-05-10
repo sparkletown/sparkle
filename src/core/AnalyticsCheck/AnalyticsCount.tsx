@@ -1,8 +1,7 @@
 import React, { useEffect } from "react";
 import { addToBugsnagEventOnError } from "core/BugsnagErrorBoundary";
+import { BUILD_SHA1, LOGROCKET_APP_ID } from "env";
 import LogRocket from "logrocket";
-
-import { BUILD_SHA1, LOGROCKET_APP_ID } from "secrets";
 
 import { FireAuthUser } from "types/fire";
 import { SpaceWithId, UserId } from "types/id";
