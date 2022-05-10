@@ -12,6 +12,7 @@ $-control-size: 32px;
   overflow: hidden;
   display: flex;
   flex-direction: row-reverse;
+  padding: space.gap(1);
   @include sparkle.panel--normal;
 
   @media (min-width: breakpoint.$md) {
@@ -35,6 +36,7 @@ $-control-size: 32px;
 
 .VideoHuddleControls {
   @include sparkle.panel--normal;
+  width: 5%;
   position: relative;
   margin-top: space.gap(-1);
   display: flex;
@@ -42,20 +44,22 @@ $-control-size: 32px;
   justify-self: start;
   border-left: 1px solid theme.$sparkle--border;
 
-  span {
-    border-bottom: 1px solid theme.$sparkle--border;
-    width: $-control-size;
+  @media (max-width: breakpoint.$lg) {
+    width: 10%;
+  }
+
+  > span {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    padding: space.gap(1);
+    align-items: center;
     height: $-control-size;
     opacity: 0.5;
-    display: flex;
-    align-items: center;
     cursor: pointer;
+
     &:hover {
       opacity: 1;
-    }
-
-    svg {
-      margin: auto;
     }
   }
 }
