@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { BoothGrid } from "components/attendee/BoothGrid";
 import { MediaElement } from "components/attendee/MediaElement";
+import { SpaceInfoText } from "components/attendee/SpaceInfoText";
 import { StaticInfoBlock } from "components/attendee/StaticInfoBlock";
 import { TableGrid } from "components/attendee/TableGrid";
 
@@ -12,7 +13,6 @@ import { useAnalytics } from "hooks/useAnalytics";
 import { useLiveUser } from "hooks/user/useLiveUser";
 
 import { Loading } from "components/molecules/Loading";
-import { SpaceInfoText } from "components/molecules/SpaceInfoText";
 
 interface JazzProps {
   space: JazzBarSpaceWithId;

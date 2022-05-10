@@ -56,13 +56,13 @@ service cloud.firestore {
         return get(/databases/$(database)/documents/worlds/$(venueData().worldId)).data;
       }
 
-      function checkIfSpaceOrWorldOwner() {
-        return request.auth.uid in role('admin').users || request.auth.uid in venueData().owners || request.auth.uid in world().owners
+      function checkIfWorldOwner() {
+        return request.auth.uid in role('admin').users || request.auth.uid in world().owners
       }
 
       match /events/{event} {
         allow read: if true;
-        allow write: if checkIfSpaceOrWorldOwner();
+        allow write: if checkIfWorldOwner();
       }
 
       match /chatMessagesCounter/{shardId} {
@@ -71,19 +71,19 @@ service cloud.firestore {
       }
       match /chats/{messageId} {
         allow read, create: if request.auth.uid != null && !world().isHidden;
-        allow delete: if checkIfSpaceOrWorldOwner();
+        allow delete: if checkIfWorldOwner();
         allow update: if request.auth.uid != null && isUpdateRestrictedToField(request, 'repliesCount');
 
         match /thread/{messageId} {
           allow read, create: if request.auth.uid != null;
-          allow delete: if checkIfSpaceOrWorldOwner();
+          allow delete: if checkIfWorldOwner();
           allow update: if false;
         }
       }
 
       match /jukeboxMessages/{restOfPath=**} {
         allow read, create: if request.auth.uid != null;
-        allow update: if checkIfSpaceOrWorldOwner() && isUpdateRestrictedToField(request, 'deleted');
+        allow update: if checkIfWorldOwner() && isUpdateRestrictedToField(request, 'deleted');
       }
       match /access/{method} {
         allow read, write: if false;

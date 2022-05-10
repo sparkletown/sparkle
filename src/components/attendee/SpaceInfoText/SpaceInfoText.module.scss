@@ -5,15 +5,13 @@
 @use "scss/attendee/theme";
 
 .spaceInfo {
-  text-align: center;
   padding: 0 space.empty(1);
-  margin: 0 auto;
   width: 100%;
-  max-width: layout.$w-space-info;
+
   h1 {
     font-size: font.$size--xl;
     font-weight: font.$weight--md;
-    margin-bottom: 0;
+    margin-bottom: space.empty(1);
   }
 }
 
@@ -27,5 +25,15 @@
 }
 
 .description {
-  margin: space.empty(1) 0;
+  margin: 0 0 space.empty(1);
+}
+
+.space {
+  text-align: center;
+  margin: 0 auto;
+  max-width: layout.$w-space-info;
+}
+
+.desktopPortal {
+  text-align: center;
 }

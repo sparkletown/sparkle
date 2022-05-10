@@ -18,6 +18,7 @@ export const DEFAULT_AVATAR_LIST: string[] = [
 ];
 Object.freeze(DEFAULT_AVATAR_LIST);
 
+export const DEFAULT_AVATAR = DEFAULT_AVATAR_LIST?.[0];
 export const DEFAULT_BADGE_IMAGE = sparkleNavLogo;
 export const DEFAULT_MAP_ICON_URL = defaultMapIcon;
 export const SPARKLEVERSE_LOGO_URL = sparkleverseLogo;
