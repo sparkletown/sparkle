@@ -6,7 +6,6 @@ import { Button } from "components/attendee/Button";
 import {
   ATTENDEE_SPACE_URL,
   ATTENDEE_WORLD_SPLASH_URL,
-  JOIN_WORLD_URL,
   QUICK_JOIN_PARAM_NAME,
   RETURN_URL_PARAM_NAME,
   SIGN_IN_URL,
@@ -18,7 +17,6 @@ import { SpaceWithId, WorldWithId } from "types/id";
 import { generateUrl } from "utils/url";
 
 import { useLiveUser } from "hooks/user/useLiveUser";
-import { useOnboardingDetails } from "hooks/user/useOnboardingDetails";
 
 import styles from "./SplashSpace.module.scss";
 
@@ -31,13 +29,6 @@ export const SplashSpace: React.FC<SplashSpaceProps> = ({ space, world }) => {
   const { userId } = useLiveUser();
 
   const history = useHistory();
-
-  const { onboardingDetails } = useOnboardingDetails({
-    worldId: world.id,
-    userId,
-  });
-
-  const isOnboarded = onboardingDetails?.isOnboarded;
 
   const quickJoinSpace = () => {
     history.push({
@@ -66,28 +57,6 @@ export const SplashSpace: React.FC<SplashSpaceProps> = ({ space, world }) => {
     history.push(spaceUrl);
   };
 
-  const navigateToOnboarding = () => {
-    const joinUrl = generateUrl({
-      route: JOIN_WORLD_URL,
-      required: ["worldSlug", "spaceSlug"],
-      params: { worldSlug: world.slug, spaceSlug: space.slug },
-    });
-
-    history.push(joinUrl);
-  };
-
-  const onActionButtonClick = () => {
-    if (!userId) {
-      return quickJoinSpace();
-    }
-
-    if (!isOnboarded) {
-      return navigateToOnboarding();
-    }
-
-    return navigateToSpace();
-  };
-
   const navigateToSignIn = () => {
     history.push({
       pathname: SIGN_IN_URL,
@@ -110,8 +79,6 @@ export const SplashSpace: React.FC<SplashSpaceProps> = ({ space, world }) => {
     navigateToSpace();
   });
 
-  const buttonText = isOnboarded ? "Enter" : "Join";
-
   return (
     <div className={styles.Container}>
       <h1>Space splash page!</h1>
@@ -119,7 +86,7 @@ export const SplashSpace: React.FC<SplashSpaceProps> = ({ space, world }) => {
       <p>{space.name}</p>
       <p>{space.config?.landingPageConfig.description}</p>
 
-      <Button onClick={onActionButtonClick}>{buttonText}</Button>
+      <Button onClick={userId ? navigateToSpace : quickJoinSpace}>Join</Button>
 
       {!userId && (
         <div>

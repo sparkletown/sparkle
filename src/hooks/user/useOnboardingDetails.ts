@@ -1,6 +1,10 @@
 import { useMemo } from "react";
 
-import { COLLECTION_ONBOARDED_WORLDS, COLLECTION_USERS } from "settings";
+import {
+  COLLECTION_ONBOARDED_WORLDS,
+  COLLECTION_USERS,
+  DEFERRED,
+} from "settings";
 
 import { LoadStatus } from "types/fire";
 import { UserId, WorldId } from "types/id";
@@ -8,7 +12,7 @@ import { UserOnboardedWorld } from "types/User";
 
 import { convertToFirestoreKey } from "utils/id";
 
-import { useRefiDocument } from "hooks/fire/useRefiDocument";
+import { useLiveDocument } from "hooks/fire/useLiveDocument";
 
 type UseProfileById = (options: {
   userId?: UserId;
@@ -18,17 +22,23 @@ type UseProfileById = (options: {
 };
 
 export const useOnboardingDetails: UseProfileById = ({ userId, worldId }) => {
+  const hasUserIdAndWorldId = userId && worldId;
+
   const {
     data: onboardingDetails,
     error,
     isLoading,
     isLoaded,
-  } = useRefiDocument<UserOnboardedWorld>([
-    COLLECTION_USERS,
-    convertToFirestoreKey(userId),
-    COLLECTION_ONBOARDED_WORLDS,
-    convertToFirestoreKey(worldId),
-  ]);
+  } = useLiveDocument<UserOnboardedWorld>(
+    hasUserIdAndWorldId
+      ? [
+          COLLECTION_USERS,
+          convertToFirestoreKey(userId),
+          COLLECTION_ONBOARDED_WORLDS,
+          convertToFirestoreKey(worldId),
+        ]
+      : DEFERRED
+  );
 
   return useMemo(
     () => ({

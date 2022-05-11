@@ -12,8 +12,6 @@ import {
   ATTENDEE_INSIDE_URL,
   ATTENDEE_SPACE_SPLASH_URL,
   ATTENDEE_SPACE_URL,
-  ATTENDEE_STEPPING_PARAM_URL,
-  ATTENDEE_WORLD_SPLASH_URL,
   ATTENDEE_WORLD_URL,
   EXTERNAL_SPARKLE_HOMEPAGE_URL,
   EXTERNAL_SPARKLEVERSE_HOMEPAGE_URL,
@@ -95,24 +93,6 @@ const SplashSpace = lazy(() =>
   )
 );
 
-const WorldPage = lazy(() =>
-  tracePromise("AppRouter::lazy-import::WorldPage", () =>
-    import("components/attendee/WorldPage").then(({ WorldPage }) => ({
-      default: WorldPage,
-    }))
-  )
-);
-
-const SpaceEntrancePage = lazy(() =>
-  tracePromise("AppRouter::lazy-import::SpaceEntrancePage", () =>
-    import("components/attendee/SpaceEntrancePage").then(
-      ({ SpaceEntrancePage }) => ({
-        default: SpaceEntrancePage,
-      })
-    )
-  )
-);
-
 const AttendeeLayout = lazy(() =>
   tracePromise("AppRouter::lazy-import::AttendeeLayout", () =>
     import("components/attendee/AttendeeLayout").then(({ AttendeeLayout }) => ({
@@ -161,7 +141,7 @@ export const AppRouter: React.FC = () => (
           <PasswordResetPage />
         </Route>
         {/* Is Signed in / profile filled / onboarded  */}
-        <Route path={ATTENDEE_WORLD_SPLASH_URL}>
+        <Route path={ATTENDEE_WORLD_URL} exact>
           <SplashWorld />
         </Route>
         <Route path={ATTENDEE_SPACE_SPLASH_URL}>
@@ -176,11 +156,6 @@ export const AppRouter: React.FC = () => (
                 <AttendeeLayout />
               </AnalyticsCheck>
             </RelatedVenuesProvider>
-          </SplashGated>
-        </Route>
-        <Route path={ATTENDEE_WORLD_URL}>
-          <SplashGated>
-            <WorldPage />
           </SplashGated>
         </Route>
 

@@ -4,7 +4,8 @@ import { useSearchParam } from "react-use";
 import { Button } from "components/attendee/Button";
 
 import {
-  ATTENDEE_WORLD_URL,
+  ATTENDEE_SPACE_URL,
+  JOIN_WORLD_URL,
   QUICK_JOIN_PARAM_NAME,
   RETURN_URL_PARAM_NAME,
   SIGN_IN_URL,
@@ -16,6 +17,7 @@ import { WorldWithId } from "types/id";
 import { generateUrl } from "utils/url";
 
 import { useLiveUser } from "hooks/user/useLiveUser";
+import { useOnboardingDetails } from "hooks/user/useOnboardingDetails";
 
 import styles from "./SplashWorld.module.scss";
 
@@ -27,6 +29,15 @@ export const SplashWorld: React.FC<SplashWorldProps> = ({ world }) => {
   const { userId } = useLiveUser();
 
   const history = useHistory();
+
+  const worldHomeSpace = world.defaultSpaceSlug;
+
+  const { onboardingDetails } = useOnboardingDetails({
+    worldId: world.id,
+    userId,
+  });
+
+  const isOnboarded = onboardingDetails?.isOnboarded;
 
   const navigateToSignIn = () => {
     history.push({
@@ -42,14 +53,40 @@ export const SplashWorld: React.FC<SplashWorldProps> = ({ world }) => {
     });
   };
 
-  const navigateToWorld = () => {
+  const navigateToOnboarding = () => {
+    if (!worldHomeSpace) return;
+
+    const joinUrl = generateUrl({
+      route: JOIN_WORLD_URL,
+      required: ["worldSlug", "spaceSlug"],
+      params: { worldSlug: world.slug, spaceSlug: worldHomeSpace },
+    });
+
+    history.push(joinUrl);
+  };
+
+  const navigateToSpace = () => {
+    if (!worldHomeSpace) return;
+
     const spaceUrl = generateUrl({
-      route: ATTENDEE_WORLD_URL,
-      required: ["worldSlug"],
-      params: { worldSlug: world.slug },
+      route: ATTENDEE_SPACE_URL,
+      required: ["worldSlug", "spaceSlug"],
+      params: { worldSlug: world.slug, spaceSlug: worldHomeSpace },
     });
 
     history.push(spaceUrl);
+  };
+
+  const onActionButtonClick = () => {
+    if (!userId) {
+      return quickJoinWorld();
+    }
+
+    if (!isOnboarded) {
+      return navigateToOnboarding();
+    }
+
+    return navigateToSpace();
   };
 
   const navigateToSignUp = () => {
@@ -64,8 +101,12 @@ export const SplashWorld: React.FC<SplashWorldProps> = ({ world }) => {
   useEffect(() => {
     if (!shouldJoinQuickly) return;
 
-    navigateToWorld();
+    navigateToSpace();
   });
+
+  const hasHomeSpace = !!worldHomeSpace;
+
+  const buttonText = isOnboarded ? "Enter" : "Join";
 
   return (
     <div className={styles.Container}>
@@ -73,7 +114,10 @@ export const SplashWorld: React.FC<SplashWorldProps> = ({ world }) => {
       <p>{world.name}</p>
       <p>{world.config.landingPageConfig.description}</p>
 
-      <Button onClick={userId ? navigateToWorld : quickJoinWorld}>Join</Button>
+      {!hasHomeSpace && <p>No home space was specified!</p>}
+      <Button disabled={!hasHomeSpace} onClick={onActionButtonClick}>
+        {buttonText}
+      </Button>
 
       {!userId && (
         <div>

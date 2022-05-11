@@ -3,19 +3,19 @@ import { NotFound } from "components/shared/NotFound";
 
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 
-import { WorldPage } from "./WorldPage";
+import { SplashSpace } from "./SplashSpace";
 
-export const WorldPageHoc: React.FC = () => {
-  const { isLoading, world } = useWorldAndSpaceByParams();
+export const SplashSpaceHoc: React.FC = () => {
+  const { space, world, isLoading } = useWorldAndSpaceByParams();
 
   if (isLoading) {
     // TODO: re-check if <LoadingPage /> might be more suitable than null
     return null;
   }
 
-  if (!world) {
+  if (!space || !world) {
     return <NotFound />;
   }
 
-  return <WorldPage world={world} />;
+  return <SplashSpace space={space} world={world} />;
 };

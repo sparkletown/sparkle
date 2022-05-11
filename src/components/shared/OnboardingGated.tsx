@@ -1,9 +1,9 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
 
-import { JOIN_WORLD_URL } from "settings";
+import { ATTENDEE_SPACE_SPLASH_URL } from "settings";
 
-import { UserId, WorldId, WorldSlug } from "types/id";
+import { SpaceSlug, UserId, WorldId, WorldSlug } from "types/id";
 
 import { generateUrl } from "utils/url";
 
@@ -15,6 +15,7 @@ interface OnboardingGatedProps {
   userId: UserId;
   worldId: WorldId;
   worldSlug: WorldSlug;
+  spaceSlug: SpaceSlug;
 }
 
 /**
@@ -24,6 +25,7 @@ export const OnboardingGated: React.FC<OnboardingGatedProps> = ({
   userId,
   worldId,
   worldSlug,
+  spaceSlug,
   children,
 }) => {
   const { onboardingDetails, isLoading } = useOnboardingDetails({
@@ -39,9 +41,9 @@ export const OnboardingGated: React.FC<OnboardingGatedProps> = ({
 
   if (!isOnboarded) {
     const joinUrl = generateUrl({
-      route: JOIN_WORLD_URL,
-      required: ["worldSlug"],
-      params: { worldSlug },
+      route: ATTENDEE_SPACE_SPLASH_URL,
+      required: ["spaceSlug", "worldSlug"],
+      params: { spaceSlug, worldSlug },
     });
 
     return <Redirect to={joinUrl} />;

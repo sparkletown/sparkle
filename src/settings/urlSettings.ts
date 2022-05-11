@@ -46,10 +46,10 @@ export const ATTENDEE_WORLD_URL = `/w/:worldSlug`;
 export const ATTENDEE_SPACE_URL = `${ATTENDEE_WORLD_URL}/s/:spaceSlug`;
 
 // Onboarding URLs
-export const JOIN_WORLD_URL = `${ATTENDEE_WORLD_URL}/join`;
+export const JOIN_WORLD_URL = `${ATTENDEE_SPACE_URL}/join`;
 
 // Splash URLs
-export const ATTENDEE_WORLD_SPLASH_URL = `${ATTENDEE_WORLD_URL}/splash`;
+export const ATTENDEE_WORLD_SPLASH_URL = `${ATTENDEE_WORLD_URL}`;
 export const ATTENDEE_SPACE_SPLASH_URL = `${ATTENDEE_SPACE_URL}/splash`;
 
 // Account URLs

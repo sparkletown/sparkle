@@ -2,11 +2,11 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Redirect } from "react-router-dom";
 import { SpaceEntrancePage } from "components/attendee/SpaceEntrancePage";
 
-import { ALWAYS_EMPTY_ARRAY, ATTENDEE_WORLD_URL } from "settings";
+import { ALWAYS_EMPTY_ARRAY, ATTENDEE_SPACE_URL } from "settings";
 
 import { onboardUser } from "api/auth";
 
-import { WorldWithId } from "types/id";
+import { SpaceWithId, WorldWithId } from "types/id";
 
 import { generateUrl } from "utils/url";
 
@@ -19,9 +19,13 @@ const onboardingStep = "ONBOARDING";
 
 type OnboardingPageProps = {
   world: WorldWithId;
+  space: SpaceWithId;
 };
 
-export const OnboardingPage: React.FC<OnboardingPageProps> = ({ world }) => {
+export const OnboardingPage: React.FC<OnboardingPageProps> = ({
+  world,
+  space,
+}) => {
   const codeOfConductQuestions = world.questions?.code ?? ALWAYS_EMPTY_ARRAY;
   const hasCodeOfConductQuestions = codeOfConductQuestions.length > 0;
 
@@ -95,9 +99,9 @@ export const OnboardingPage: React.FC<OnboardingPageProps> = ({ world }) => {
 
   if (currentStep === onboardingStep) {
     const worldUrl = generateUrl({
-      route: ATTENDEE_WORLD_URL,
-      required: ["worldSlug"],
-      params: { worldSlug: world.slug },
+      route: ATTENDEE_SPACE_URL,
+      required: ["worldSlug", "spaceSlug"],
+      params: { worldSlug: world.slug, spaceSlug: space.slug },
     });
     return <Redirect to={worldUrl} />;
   }

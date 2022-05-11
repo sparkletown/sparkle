@@ -10,11 +10,15 @@ import { OnboardingPage } from "./OnboardingPage";
 export const OnboardingPageHoc: React.FC = () => {
   const { profile, isLoading: isProfileLoading } = useLiveUser();
 
-  const { world, isLoading: isSpaceLoading } = useWorldAndSpaceByParams();
+  const {
+    world,
+    space,
+    isLoading: isSpaceLoading,
+  } = useWorldAndSpaceByParams();
 
   if (isSpaceLoading || isProfileLoading) return <LoadingPage />;
 
-  if (!world || !profile) return <NotFound />;
+  if (!world || !profile || !space) return <NotFound />;
 
-  return <OnboardingPage world={world} />;
+  return <OnboardingPage world={world} space={space} />;
 };

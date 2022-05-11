@@ -1,7 +1,7 @@
 import React, { ReactNode } from "react";
 import { Redirect, useHistory, useParams } from "react-router-dom";
 
-import { WorldSlugLocation } from "types/id";
+import { SpaceSlugLocation } from "types/id";
 
 import { useLiveUser } from "hooks/user/useLiveUser";
 import { useWorldBySlug } from "hooks/worlds/useWorldBySlug";
@@ -24,14 +24,14 @@ export const SplashGated: React.FC<SplashGatedProps> = ({
 }) => {
   const { userId, isLoading: isUserLoading } = useLiveUser();
 
-  const { worldSlug: worldSlugFromParams } = useParams<
-    Partial<WorldSlugLocation>
-  >();
+  const {
+    worldSlug: worldSlugFromParams,
+    spaceSlug: spaceSlugFromParams,
+  } = useParams<Partial<SpaceSlugLocation>>();
 
   const { worldId, isLoading: isWorldLoading } = useWorldBySlug(
     worldSlugFromParams
   );
-
   const isLoading = isWorldLoading || isUserLoading;
 
   const history = useHistory();
@@ -46,7 +46,7 @@ export const SplashGated: React.FC<SplashGatedProps> = ({
     return <Redirect to={`${history.location.pathname}/splash`} />;
   }
 
-  if (!worldId || !worldSlugFromParams) {
+  if (!worldId || !worldSlugFromParams || !spaceSlugFromParams) {
     return <div>Error</div>;
   }
 
@@ -54,6 +54,7 @@ export const SplashGated: React.FC<SplashGatedProps> = ({
     <OnboardingGated
       worldId={worldId}
       worldSlug={worldSlugFromParams}
+      spaceSlug={spaceSlugFromParams}
       userId={userId}
     >
       {children}
