@@ -1,5 +1,6 @@
 import React from "react";
 import { useAsyncFn } from "react-use";
+import { Button } from "components/attendee/Button";
 
 import { updateVenueTable } from "api/table";
 
@@ -7,8 +8,6 @@ import { SpaceWithId } from "types/id";
 import { Table } from "types/Table";
 
 import { Loading } from "components/molecules/Loading";
-
-import { ButtonNG } from "components/atoms/ButtonNG";
 
 import styles from "./StartTable.module.scss";
 
@@ -38,13 +37,13 @@ export const StartTable: React.FC<StartTablePropsType> = ({
   return isUpdatingTables ? (
     <Loading />
   ) : (
-    <ButtonNG
+    <Button
       disabled={isUpdatingTables}
       className={styles.startTableButton}
       onClick={updateTables}
       variant="primary"
     >
       Start a table
-    </ButtonNG>
+    </Button>
   );
 };

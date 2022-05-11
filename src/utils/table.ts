@@ -1,5 +1,7 @@
 import { v4 as uuid } from "uuid";
 
+import { DEFAULT_TABLE_CAPACITY } from "settings";
+
 import { Table } from "types/Table";
 
 const generateUniqueTableReference = (title: string) => `${title}-${uuid()}`;
@@ -10,8 +12,7 @@ export const generateTable: (props: {
   generateTableReference?: (title: string) => string;
 }) => Table = ({
   tableNumber,
-  capacity,
-
+  capacity = DEFAULT_TABLE_CAPACITY,
   generateTableReference = generateUniqueTableReference,
 }) => {
   const title = `Table ${tableNumber}`;
