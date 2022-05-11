@@ -1206,7 +1206,7 @@ const generateNameForBooth = async (parentSpaceId: string) => {
 };
 
 interface CreateBoothOptions {
-  templateSpaceId: string;
+  templateSpaceId?: string;
   parentSpaceId: string;
 }
 

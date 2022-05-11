@@ -22,10 +22,7 @@ export const BoothCreateCard: React.FC<BoothProps> = ({ parentSpace }) => {
 
   const [createBoothState, createBooth] = useAsyncFn(async () => {
     const templateSpaceId = parentSpace.boothTemplateSpaceId;
-    if (!templateSpaceId) {
-      console.error("Invalid state: no booth template specified.");
-      return;
-    }
+
     const { slug: newSpaceSlug } = await api.createBooth({
       parentSpaceId: parentSpace.id,
       templateSpaceId,
