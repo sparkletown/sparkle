@@ -169,6 +169,7 @@ export const MARKDOWN_PRE_CODE_TAGS = ["pre", "code"];
 export const ALLOWED_EMPTY_TABLES_NUMBER = 4;
 export const DEFAULT_JAZZBAR_TABLES_NUMBER = 12;
 export const DEFAULT_CONVERSATION_SPACE_TABLES_NUMBER = 10;
+export const DEFAULT_TABLE_CAPACITY = 6;
 
 export const JAZZBAR_TABLES: Table[] = generateTables({
   num: DEFAULT_JAZZBAR_TABLES_NUMBER,
