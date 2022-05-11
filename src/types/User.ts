@@ -1,3 +1,4 @@
+import { Hit } from "@algolia/client-search";
 // @debt rename this file to be user rather than User
 
 // the structure is { [key: venueId] : eventId[] }
@@ -47,3 +48,7 @@ export interface UserLocation {
 }
 
 export type UserWithLocation = Profile & UserLocation;
+
+export type AlgoliaUser = Hit<
+  Pick<UserWithLocation, "partyName" | "pictureUrl" | "enteredVenueIds">
+>;

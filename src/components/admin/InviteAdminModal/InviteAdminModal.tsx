@@ -1,14 +1,14 @@
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
-import { Hit } from "@algolia/client-search";
-import classNames from "classnames";
+
+import { ALWAYS_NOOP_FUNCTION } from "settings";
 
 import { addWorldAdmins } from "api/world";
 
 import { AlgoliaSearchIndex } from "types/algolia";
 import { UserId } from "types/id";
-import { UserWithLocation } from "types/User";
+import { AlgoliaUser } from "types/User";
 
 import { useAlgoliaSearch } from "hooks/algolia/useAlgoliaSearch";
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
@@ -18,20 +18,19 @@ import { Modal } from "components/molecules/Modal";
 import { Button } from "../Button";
 import { Input } from "../Input";
 
+import { FoundUserCard } from "./FoundUserCard";
+import { SelectedUserCard } from "./SelectedUserCard";
+
 export interface InviteAdminModalProps {
   show: boolean;
   onHide: () => void;
 }
 
-type User = Hit<
-  Pick<UserWithLocation, "partyName" | "pictureUrl" | "enteredVenueIds">
->;
-
 export const InviteAdminModal: React.FC<InviteAdminModalProps> = ({
   show,
   onHide,
 }) => {
-  const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
+  const [selectedUsers, setSelectedUsers] = useState<AlgoliaUser[]>([]);
   const { worldId } = useWorldAndSpaceByParams();
 
   const defaultValues = useMemo(
@@ -41,14 +40,16 @@ export const InviteAdminModal: React.FC<InviteAdminModalProps> = ({
     []
   );
 
-  const { register, watch } = useForm({
+  const { register, watch, setValue } = useForm({
     reValidateMode: "onChange",
     defaultValues,
   });
 
   const searchQuery = watch("userName");
 
-  const { value: algoliaValue } = useAlgoliaSearch(searchQuery);
+  const { value: algoliaValue, loading: isSearching } = useAlgoliaSearch(
+    searchQuery
+  );
 
   const foundUsers = algoliaValue?.[AlgoliaSearchIndex.USERS].hits;
 
@@ -63,7 +64,7 @@ export const InviteAdminModal: React.FC<InviteAdminModalProps> = ({
     onHide();
   }, [onHide, selectedUsers, worldId]);
 
-  const selectUser = (user: User) => {
+  const selectUser = (user: AlgoliaUser) => {
     setSelectedUsers((selectedUsers) => {
       const newUsers = selectedUsers.filter(
         (selectedUser) => selectedUser !== user
@@ -71,52 +72,57 @@ export const InviteAdminModal: React.FC<InviteAdminModalProps> = ({
 
       return selectedUsers.includes(user) ? newUsers : [...selectedUsers, user];
     });
+    setValue("userName", "");
   };
 
-  const checkAdminAccess = (user: User) => selectedUsers.includes(user);
+  const isUserSelected = (user: AlgoliaUser) =>
+    selectedUsers.find(
+      (selectedUser) => selectedUser.objectID === user.objectID
+    );
 
   const hasFoundUsers = !!foundUsers?.length;
-  const hasSelectedUsers = selectedUsers?.length;
-
-  const pluralizedUser =
-    hasFoundUsers && foundUsers.length % 10 === 1 ? "user" : "users";
+  const hasSelectedUsers = !!selectedUsers?.length;
 
   return (
     <Modal show={show} onHide={onHide} autoHide>
-      {hasFoundUsers && (
-        <div className="flex justify-center">{`${foundUsers.length} ${pluralizedUser} found`}</div>
-      )}
+      <div className="text-xl font-medium text-gray-900">Add owner</div>
 
-      {!hasFoundUsers && searchQuery && (
-        <div className="flex justify-center">No users found</div>
-      )}
-
+      <div className="mt-4">Enter user name</div>
       <Input placeholder="Type user name" name="userName" register={register} />
 
       <div className="max-h-40 overflow-auto">
         {foundUsers?.map((user) => {
-          const foundUserClasses = classNames(
-            "flex flex-row py-4 px-2 border-y hover:bg-gray-200 cursor-pointer",
-            {
-              "bg-blue-100 hover:bg-blue-200": checkAdminAccess(user),
-            }
-          );
+          const isSelected = !!isUserSelected(user);
 
           return (
-            <div
+            <FoundUserCard
               key={user.objectID}
-              className={foundUserClasses}
-              onClick={() => selectUser(user)}
-            >
-              <img
-                className="h-10 w-10 rounded-full"
-                src={user.pictureUrl}
-                alt="profileUrl"
-              />
-              <div className="px-2 flex self-center">{user.partyName}</div>
-            </div>
+              user={user}
+              isSelected={isSelected}
+              onCardClick={() =>
+                !isSelected ? selectUser(user) : ALWAYS_NOOP_FUNCTION
+              }
+            />
           );
         })}
+      </div>
+
+      {!hasFoundUsers && !isSearching && searchQuery && (
+        <div className="flex justify-center">No users found</div>
+      )}
+
+      {!hasFoundUsers && isSearching && searchQuery && (
+        <div className="flex justify-center">Searching...</div>
+      )}
+
+      <div className="mt-4 max-h-40 overflow-auto">
+        {selectedUsers.map((user) => (
+          <SelectedUserCard
+            key={user.objectID}
+            user={user}
+            onCardClick={() => selectUser(user)}
+          />
+        ))}
       </div>
       <div className="flex flex-row">
         <Button variant="secondary" onClick={onHide}>

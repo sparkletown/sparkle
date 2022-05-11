@@ -6,11 +6,7 @@ export type UseKeyPressOptions = {
 };
 
 export const useKeyPress = ({ keys, onPress }: UseKeyPressOptions) =>
-  useCallback(
-    (event) => {
-      console.log(useKeyPress.name, event);
-      if (!keys.includes(event.code)) return;
-      onPress(event);
-    },
-    [onPress, keys]
-  );
+  useCallback((event) => void (keys.includes(event.code) && onPress(event)), [
+    onPress,
+    keys,
+  ]);

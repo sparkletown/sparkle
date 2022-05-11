@@ -12,6 +12,7 @@ import {
   isToday,
   isTomorrow,
   isYesterday,
+  parse,
   startOfDay,
   startOfToday,
   subHours,
@@ -248,3 +249,15 @@ export const currentMilliseconds = () => new Date().getTime();
 
 export const getDateDayMonth = (date: Date) =>
   format(date, DATEFNS_DAY_AND_MONTH_FORMAT);
+
+/**
+ * Converts from string in format YYYY-MM-DD HH:mm into date
+ *
+ * @param dateString in format YYYY-MM-DD HH:mm
+ */
+export const fromStringToDate = (dateString: string) =>
+  parse(
+    dateString,
+    `${DATEFNS_INPUT_DATE_FORMAT} ${DATEFNS_INPUT_TIME_FORMAT}`,
+    Date.now()
+  );

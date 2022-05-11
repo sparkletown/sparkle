@@ -1,11 +1,10 @@
 import React from "react";
 import { MediaElement } from "components/attendee/MediaElement";
+import { SpaceInfoText } from "components/attendee/SpaceInfoText";
 
 import { DEFAULT_SHOW_CONTENT } from "settings";
 
 import { SpaceWithId } from "types/id";
-
-import { SpaceInfoText } from "components/molecules/SpaceInfoText";
 
 interface EmbeddableProps {
   space: SpaceWithId;

@@ -119,7 +119,7 @@ export const AdminVenueView: React.FC<AdminVenueViewProps> = ({
   if (!space) {
     return (
       <WithPermission
-        check="space"
+        check="world"
         loading={<AdminRestrictedLoading />}
         fallback={<AdminRestrictedMessage />}
       >
@@ -138,7 +138,7 @@ export const AdminVenueView: React.FC<AdminVenueViewProps> = ({
   return (
     <AdminLayout>
       <WithPermission
-        check="space"
+        check="world"
         loading={<AdminRestrictedLoading />}
         fallback={<AdminRestrictedMessage />}
       >

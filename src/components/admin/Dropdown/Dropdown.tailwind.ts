@@ -10,4 +10,4 @@ export const checkmarkSelected =
 export const checkmarkTailwind =
   "text-indigo-600 inset-y-0 right-0 flex items-center pr-4 h-5 w-5 mr-2 bg-white";
 export const listItem =
-  "text-gray-900 cursor-pointer hover:bg-indigo-600 hover:text-white flex justify-between items-center";
+  "optionContainer text-gray-900 cursor-pointer hover:bg-indigo-600 hover:text-white flex items-center";

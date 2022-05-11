@@ -75,7 +75,7 @@ export const AttendeeLayout = () => {
           backButtonSpace={backButtonSpace}
           isBannerOn={isBlurTurnedOn}
         />
-        <main>
+        <main data-bem="AttendeeLayout__main">
           <MainSection isBlurred={isTruthy(isBlurTurnedOn && banner)}>
             <VenuePage setBackButtonSpace={setBackButtonSpace} />
           </MainSection>
@@ -87,7 +87,11 @@ export const AttendeeLayout = () => {
 
         <AttendeeFooter forwardRef={footerRef} />
         {/* Used by popovers to ensure z-index is handled properly */}
-        <div id={POPOVER_CONTAINER_ID} className={styles.popoverContainer} />
+        <div
+          data-bem="AttendeeLayout__popover"
+          id={POPOVER_CONTAINER_ID}
+          className={styles.popoverContainer}
+        />
         {isLoaded && space?.id && (
           <Banner
             spaceId={space.id}

@@ -1,0 +1,1 @@
+export { FoundUserCard } from "./FoundUserCard";

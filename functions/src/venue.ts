@@ -5,10 +5,7 @@ import { HttpsError } from "firebase-functions/v1/https";
 import { addAdmin, removeAdmin } from "./api/roles";
 import { LandingPageConfig } from "./types/venue";
 import { assertValidAuth } from "./utils/assert";
-import {
-  throwErrorIfNeitherWorldNorSpaceOwner,
-  throwErrorIfNotWorldOwner,
-} from "./utils/permissions";
+import { throwErrorIfNotWorldOwner } from "./utils/permissions";
 import { checkIfValidVenueId, getSpaceById } from "./utils/venue";
 import { ROOM_TAXON } from "./taxonomy";
 
@@ -371,8 +368,7 @@ export const setAuditoriumSections = functions.https.onCall(
 
     const space = await getSpaceById(venueId);
 
-    await throwErrorIfNeitherWorldNorSpaceOwner({
-      spaceId: venueId,
+    await throwErrorIfNotWorldOwner({
       worldId: space.worldId,
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
@@ -457,8 +453,7 @@ export const addVenueOwner = functions.https.onCall(async (data, context) => {
 
   const space = await getSpaceById(venueId);
 
-  await throwErrorIfNeitherWorldNorSpaceOwner({
-    spaceId: venueId,
+  await throwErrorIfNotWorldOwner({
     worldId: space.worldId,
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
@@ -486,8 +481,7 @@ export const removeVenueOwner = functions.https.onCall(
 
     const space = await getSpaceById(venueId);
 
-    await throwErrorIfNeitherWorldNorSpaceOwner({
-      spaceId: venueId,
+    await throwErrorIfNotWorldOwner({
       worldId: space.worldId,
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
@@ -556,8 +550,7 @@ export const upsertRoom = functions.https.onCall(async (data, context) => {
 
   const space = await getSpaceById(venueId);
 
-  await throwErrorIfNeitherWorldNorSpaceOwner({
-    spaceId: venueId,
+  await throwErrorIfNotWorldOwner({
     worldId: space.worldId,
     userId: context.auth?.token.user_id,
   });
@@ -590,8 +583,7 @@ export const deletePortal = functions.https.onCall(async (data, context) => {
 
   const space = await getSpaceById(spaceId);
 
-  await throwErrorIfNeitherWorldNorSpaceOwner({
-    spaceId,
+  await throwErrorIfNotWorldOwner({
     worldId: space.worldId,
     userId: context.auth?.token.user_id,
   });
@@ -630,8 +622,7 @@ export const updateVenue_v2 = functions.https.onCall(async (data, context) => {
 
   const space = await getSpaceById(venueId);
 
-  await throwErrorIfNeitherWorldNorSpaceOwner({
-    spaceId: venueId,
+  await throwErrorIfNotWorldOwner({
     worldId: space.worldId,
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
@@ -705,8 +696,7 @@ export const updateMapBackground = functions.https.onCall(
 
     const space = await getSpaceById(venueId);
 
-    await throwErrorIfNeitherWorldNorSpaceOwner({
-      spaceId: venueId,
+    await throwErrorIfNotWorldOwner({
       worldId: space.worldId,
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
@@ -744,8 +734,7 @@ export const updateVenueNG = functions.https.onCall(async (data, context) => {
 
   const space = await getSpaceById(spaceId);
 
-  await throwErrorIfNeitherWorldNorSpaceOwner({
-    spaceId: spaceId,
+  await throwErrorIfNotWorldOwner({
     worldId: space.worldId,
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
@@ -936,8 +925,7 @@ export const deleteTable = functions.https.onCall(async (data, context) => {
 
   const space = await getSpaceById(spaceId);
 
-  await throwErrorIfNeitherWorldNorSpaceOwner({
-    spaceId,
+  await throwErrorIfNotWorldOwner({
     worldId: space.worldId,
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
@@ -984,8 +972,7 @@ export const deleteVenue = functions.https.onCall(async (data, context) => {
 
   const space = await getSpaceById(venueId);
 
-  await throwErrorIfNeitherWorldNorSpaceOwner({
-    spaceId: venueId,
+  await throwErrorIfNotWorldOwner({
     worldId: space.worldId,
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
@@ -1038,8 +1025,7 @@ export const adminUpdateBannerMessage = functions.https.onCall(
 
     const space = await getSpaceById(venueId);
 
-    await throwErrorIfNeitherWorldNorSpaceOwner({
-      spaceId: venueId,
+    await throwErrorIfNotWorldOwner({
       worldId: space.worldId,
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
@@ -1060,8 +1046,7 @@ export const adminUpdateIframeUrl = functions.https.onCall(
 
     const space = await getSpaceById(venueId);
 
-    await throwErrorIfNeitherWorldNorSpaceOwner({
-      spaceId: venueId,
+    await throwErrorIfNotWorldOwner({
       worldId: space.worldId,
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
@@ -1110,8 +1095,7 @@ export const upsertScreeningRoomVideo = functions.https.onCall(
 
     const space = await getSpaceById(spaceId);
 
-    await throwErrorIfNeitherWorldNorSpaceOwner({
-      spaceId: spaceId,
+    await throwErrorIfNotWorldOwner({
       worldId: space.worldId,
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
@@ -1138,8 +1122,7 @@ export const deleteScreeningRoomVideo = functions.https.onCall(
 
     const space = await getSpaceById(spaceId);
 
-    await throwErrorIfNeitherWorldNorSpaceOwner({
-      spaceId,
+    await throwErrorIfNotWorldOwner({
       worldId: space.worldId,
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
@@ -1163,8 +1146,7 @@ export const upsertChannel = functions.https.onCall(async (data, context) => {
 
   const space = await getSpaceById(spaceId);
 
-  await throwErrorIfNeitherWorldNorSpaceOwner({
-    spaceId,
+  await throwErrorIfNotWorldOwner({
     worldId: space.worldId,
     userId: context.auth?.token.user_id,
   });
@@ -1185,8 +1167,7 @@ export const deleteChannel = functions.https.onCall(async (data, context) => {
 
   const space = await getSpaceById(spaceId);
 
-  await throwErrorIfNeitherWorldNorSpaceOwner({
-    spaceId,
+  await throwErrorIfNotWorldOwner({
     worldId: space.worldId,
     userId: context.auth?.token.user_id,
   });

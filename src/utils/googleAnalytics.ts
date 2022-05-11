@@ -1,6 +1,5 @@
+import { MEASUREMENT_ID } from "env";
 import firebase from "firebase/compat/app";
-
-import { MEASUREMENT_ID } from "secrets";
 
 // @debt properly type the props, not just string
 type GAEvent = {

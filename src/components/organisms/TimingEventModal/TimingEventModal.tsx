@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, useFormState } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -7,7 +7,7 @@ import { Dropdown } from "components/admin/Dropdown";
 import { Option } from "components/admin/Dropdown/Dropdown";
 import { Input } from "components/admin/Input";
 import { Textarea } from "components/admin/Textarea";
-import dayjs from "dayjs";
+import { format, fromUnixTime, getUnixTime } from "date-fns";
 
 import { DATEFNS_INPUT_DATE_FORMAT, DATEFNS_INPUT_TIME_FORMAT } from "settings";
 
@@ -19,6 +19,7 @@ import { WorldEvent } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
 
 import { MaybeWithId } from "utils/id";
+import { fromStringToDate } from "utils/time";
 
 import { eventEditSchema } from "forms/eventEditSchema";
 
@@ -47,7 +48,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
 }) => {
   const [selectedSpace, setSelectedSpace] = useState<SpaceType>({
     id: "",
-    name: "",
+    label: "",
   });
 
   const eventSpaceId = event?.spaceId || (venue?.id as SpaceId | undefined);
@@ -69,12 +70,14 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
       reset({
         name: event.name,
         description: event.description,
-        start_date: dayjs
-          .unix(event.startUtcSeconds)
-          .format(DATEFNS_INPUT_DATE_FORMAT),
-        start_time: dayjs
-          .unix(event.startUtcSeconds)
-          .format(DATEFNS_INPUT_TIME_FORMAT),
+        start_date: format(
+          fromUnixTime(event.startUtcSeconds),
+          DATEFNS_INPUT_DATE_FORMAT
+        ),
+        start_time: format(
+          fromUnixTime(event.startUtcSeconds),
+          DATEFNS_INPUT_TIME_FORMAT
+        ),
         duration_hours: Math.floor(event.durationMinutes / 60),
         duration_minutes: event.durationMinutes % 60,
         host: event.host,
@@ -88,36 +91,29 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
     userId: userId ?? "",
   });
 
-  const spacesMap: SpaceType[] = ownedVenues.map((venue) => ({
+  const spacesOptions: SpaceType[] = ownedVenues.map((venue) => ({
     id: venue.id,
-    name: venue.name,
+    label: venue.name,
   }));
 
-  const renderedSpaceIds = useMemo(
-    () =>
-      spacesMap.map((space) => {
-        return (
-          <div key={space.id} data-dropdown-value={space}>
-            {space.name}
-          </div>
-        );
-      }) ?? [],
-    [spacesMap]
+  const renderOption = (space: SpaceType) => (
+    <div key={space.id} data-dropdown-value={space}>
+      {space.label}
+    </div>
   );
 
   const selectSpace = (option: Option) => {
-    setSelectedSpace(option.value as SpaceType);
+    setSelectedSpace(option as SpaceType);
   };
 
   const [{ loading: isLoading }, onUpdateEvent] = useAsyncFn(
     async (data: EventInput) => {
-      const start = dayjs(`${data.start_date} ${data.start_time}`);
+      const start = fromStringToDate(`${data.start_date} ${data.start_time}`);
       const spaceId = eventSpaceId ?? selectedSpace.id ?? "";
       const formEvent: MaybeWithId<WorldEvent> = {
         name: data.name,
         description: data.description,
-        startUtcSeconds:
-          start.unix() || Math.floor(new Date().getTime() / 1000),
+        startUtcSeconds: getUnixTime(start) || getUnixTime(Date.now()),
         durationMinutes:
           data.duration_hours * 60 + (data.duration_minutes ?? 0),
         host: data.host,
@@ -166,13 +162,16 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
           {!eventSpace?.name && (
             <>
               <div className="mb-6">
-                <Dropdown onSelect={selectSpace} title="None">
-                  {renderedSpaceIds}
-                </Dropdown>
+                <Dropdown
+                  onSelect={selectSpace}
+                  options={spacesOptions}
+                  renderOption={renderOption}
+                  title="None"
+                />
               </div>
               {errors.space && (
                 <span className="text-red-500">
-                  {errors.space.name?.message}
+                  {errors.space.label?.message}
                 </span>
               )}
             </>
@@ -225,7 +224,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
               <div>
                 <Input
                   type="date"
-                  min={dayjs().format(DATEFNS_INPUT_DATE_FORMAT)}
+                  min={format(Date.now(), DATEFNS_INPUT_DATE_FORMAT)}
                   placeholder="Dottie Longstockings"
                   errors={errors}
                   register={register}

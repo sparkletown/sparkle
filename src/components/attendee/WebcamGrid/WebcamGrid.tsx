@@ -1,6 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { faTimesCircle } from "@fortawesome/free-regular-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useVideoComms } from "components/attendee/VideoComms/hooks";
 import { VideoCommsParticipant } from "components/attendee/VideoComms/VideoCommsParticipant";
 
@@ -23,14 +21,6 @@ export const WebcamGrid: React.FC<TableGridProps> = ({ space }) => {
     remoteParticipants,
     disconnect,
   } = useVideoComms();
-
-  useEffect(() => {
-    return () => {
-      if (hasJoined) {
-        disconnect();
-      }
-    };
-  }, [disconnect, hasJoined]);
 
   const meComponent = useMemo(
     () =>
@@ -67,16 +57,21 @@ export const WebcamGrid: React.FC<TableGridProps> = ({ space }) => {
     joinChannel({
       userId,
       channelId: `webcamgrid-${space.id}`,
-      enableAudio: true,
-      enableVideo: true,
+      enableAudio: false,
+      enableVideo: false,
     });
     setHasJoined(true);
   }, [joinChannel, space.id, userId]);
 
-  const leaveVideo = useCallback(() => {
-    disconnect();
-    setHasJoined(false);
-  }, [disconnect]);
+  useEffect(() => {
+    joinVideo();
+
+    return () => {
+      if (hasJoined) {
+        disconnect();
+      }
+    };
+  }, [userId, space.id, joinVideo, hasJoined, disconnect]);
 
   return (
     <div
@@ -88,15 +83,6 @@ export const WebcamGrid: React.FC<TableGridProps> = ({ space }) => {
       <div className={styles.WebcamGrid}>
         {meComponent}
         {othersComponents}
-        {hasJoined ? (
-          <div className={styles.leaveButton} onClick={leaveVideo}>
-            Leave <FontAwesomeIcon icon={faTimesCircle} />
-          </div>
-        ) : (
-          <div className={styles.joinButton} onClick={joinVideo}>
-            Join
-          </div>
-        )}
       </div>
     </div>
   );
