@@ -9,7 +9,7 @@ import { Input } from "components/admin/Input";
 import { Textarea } from "components/admin/Textarea";
 import dayjs from "dayjs";
 
-import { DAYJS_INPUT_DATE_FORMAT, DAYJS_INPUT_TIME_FORMAT } from "settings";
+import { DATEFNS_INPUT_DATE_FORMAT, DATEFNS_INPUT_TIME_FORMAT } from "settings";
 
 import { createEvent, EventInput, updateEvent } from "api/admin";
 
@@ -71,10 +71,10 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
         description: event.description,
         start_date: dayjs
           .unix(event.startUtcSeconds)
-          .format(DAYJS_INPUT_DATE_FORMAT),
+          .format(DATEFNS_INPUT_DATE_FORMAT),
         start_time: dayjs
           .unix(event.startUtcSeconds)
-          .format(DAYJS_INPUT_TIME_FORMAT),
+          .format(DATEFNS_INPUT_TIME_FORMAT),
         duration_hours: Math.floor(event.durationMinutes / 60),
         duration_minutes: event.durationMinutes % 60,
         host: event.host,
@@ -225,7 +225,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
               <div>
                 <Input
                   type="date"
-                  min={dayjs().format(DAYJS_INPUT_DATE_FORMAT)}
+                  min={dayjs().format(DATEFNS_INPUT_DATE_FORMAT)}
                   placeholder="Dottie Longstockings"
                   errors={errors}
                   register={register}

@@ -29,19 +29,19 @@ export const SpaceItem: React.FC<SpaceItemProps> = ({ space, onClick }) => {
     onClick();
   }, [world?.slug, openUrlUsingRouter, onClick, space?.slug]);
 
+  const { subtitle, description } = space?.config?.landingPageConfig ?? {};
+
   return (
-    <div>
+    <div data-bem="SpaceItem">
       <div className={CN.searchItemResultHeader}>
         <h3 className={CN.searchItemResultTitle}>
           {space.name}
           <span>{SPACE_TAXON.title}</span>
         </h3>
       </div>
-      {space.subtitle && (
-        <p className={CN.searchItemResultSubtitle}>{space.subtitle}</p>
-      )}
-      {space.description && (
-        <p className={CN.searchItemResultSubtitle}>{space.description}</p>
+      {subtitle && <p className={CN.searchItemResultSubtitle}>{subtitle}</p>}
+      {description && (
+        <p className={CN.searchItemResultSubtitle}>{description}</p>
       )}
       <Button
         onClick={handleEnterSpace}

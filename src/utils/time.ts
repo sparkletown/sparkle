@@ -18,10 +18,10 @@ import {
 } from "date-fns";
 
 import {
+  DATEFNS_DAY_AND_MONTH_FORMAT,
+  DATEFNS_EVENT_WEEK_DAY_FORMAT,
   DATEFNS_INPUT_DATE_FORMAT,
   DATEFNS_INPUT_TIME_FORMAT,
-  DAYJS_EVENT_WEEK_DAY_FORMAT,
-  DAYJS_SHORT_TIME_FORMAT,
 } from "settings";
 
 /**
@@ -229,14 +229,14 @@ export const formatDayLabel = (
   isScheduleTimeshifted: boolean
 ) => {
   if (isScheduleTimeshifted) {
-    return format(day, DAYJS_EVENT_WEEK_DAY_FORMAT);
+    return format(day, DATEFNS_EVENT_WEEK_DAY_FORMAT);
   }
 
   return formatDateRelativeToNow(day, {
     formatOtherDate: (dateOrTimestamp) =>
-      format(dateOrTimestamp, DAYJS_EVENT_WEEK_DAY_FORMAT),
+      format(dateOrTimestamp, DATEFNS_EVENT_WEEK_DAY_FORMAT),
     formatTomorrow: (dateOrTimestamp) =>
-      format(dateOrTimestamp, DAYJS_EVENT_WEEK_DAY_FORMAT),
+      format(dateOrTimestamp, DATEFNS_EVENT_WEEK_DAY_FORMAT),
   });
 };
 
@@ -246,5 +246,5 @@ export const getDateHoursAndMinutes = (
 
 export const currentMilliseconds = () => new Date().getTime();
 
-export const getDayMonthNow = () =>
-  format(startOfToday(), DAYJS_SHORT_TIME_FORMAT);
+export const getDateDayMonth = (date: Date) =>
+  format(date, DATEFNS_DAY_AND_MONTH_FORMAT);

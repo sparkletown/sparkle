@@ -50,8 +50,6 @@ export interface BaseVenue {
   name: string;
   slug: SpaceSlug;
   access?: VenueAccessMode;
-  subtitle?: string;
-  description?: string;
   config?: VenueConfig;
   host?: {
     icon: string;

@@ -12,7 +12,7 @@ import { eventEndTime, eventStartTime } from "utils/event";
 import {
   formatDateRelativeToNow,
   formatTimeLocalised,
-  getDayMonthNow,
+  getDateDayMonth,
 } from "utils/time";
 import { enterSpace } from "utils/url";
 
@@ -86,7 +86,7 @@ export const EventItem: React.FC<EventItemProps> = ({
           border="alternative"
           onClick={handleEnterSchedule}
         >
-          See all experiences on {getDayMonthNow()}
+          See all experiences on {getDateDayMonth(eventStartTime({ event }))}
         </Button>
       </div>
     </div>

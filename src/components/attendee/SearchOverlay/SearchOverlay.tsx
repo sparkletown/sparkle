@@ -78,7 +78,6 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({
   const foundEvents = useMemo<ScheduledEvent[]>(() => {
     if (!searchQuery) return ALWAYS_EMPTY_ARRAY;
 
-    /* @debt we really shouldn't be using the index as part of the key here, it's unstable.. but portals don't have a unique identifier */
     return (
       liveAndFutureEvents.filter((event) =>
         event.name.toLowerCase().includes(searchQuery)
@@ -89,7 +88,6 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({
   const foundPortals = useMemo<Room[]>(() => {
     if (!searchQuery) return ALWAYS_EMPTY_ARRAY;
 
-    /* @debt we really shouldn't be using the index as part of the key here, it's unstable.. but portals don't have a unique identifier */
     return (
       enabledRelatedPortals.filter((portal) =>
         portal.title.toLowerCase().includes(searchQuery)
@@ -100,7 +98,6 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({
   const foundSpaces = useMemo<SpaceWithId[]>(() => {
     if (!searchQuery) return ALWAYS_EMPTY_ARRAY;
 
-    /* @debt we really shouldn't be using the index as part of the key here, it's unstable.. but portals don't have a unique identifier */
     return (
       worldSpaces.filter((portal) =>
         portal.name.toLowerCase().includes(searchQuery)
