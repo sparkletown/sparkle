@@ -56,10 +56,9 @@ const useVenueScheduleEvents = ({
     [relatedVenueEvents, worldSlug, worldSpaces, userEventIds]
   );
 
-  const liveEventsMinimalStartValue = Math.min(
-    ...liveAndFutureEvents.map((event) => event.startUtcSeconds)
-  );
-
+  const liveEventsMinimalStartValue = liveAndFutureEvents.length
+    ? Math.min(...liveAndFutureEvents.map((event) => event.startUtcSeconds))
+    : todaysDate.getTime();
   const minDateUtcSeconds = secondsToMilliseconds(liveEventsMinimalStartValue);
 
   const firstRangeDateInSeconds = secondsToMilliseconds(
@@ -97,7 +96,7 @@ const useVenueScheduleEvents = ({
   // +1 to include the latest day in the schedule (for example, there are events tomorrow and today -> tomorrow - today + 1 = 2 days)
   // might be NaN, which we need to convert to 0
   const dayDifference = daysInBetween ? daysInBetween + 1 : 0;
-
+  console.log(todaysDate, new Date(minDateUtcSeconds));
   const firstScheduleDate = useMemo(
     () => (isMinDateWithinToday ? todaysDate : new Date(minDateUtcSeconds)),
     [isMinDateWithinToday, minDateUtcSeconds]
