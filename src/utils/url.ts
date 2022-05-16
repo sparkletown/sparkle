@@ -119,7 +119,11 @@ export const enterSpace = (
   worldSlug?: WorldSlug,
   spaceSlug?: SpaceSlug,
   options?: OpenUrlOptions
-) => openUrl(generateAttendeeInsideUrl({ worldSlug, spaceSlug }), options);
+) =>
+  openUrl(
+    generateAttendeeInsideUrl({ worldSlug, spaceSlug, absoluteUrl: true }),
+    options
+  );
 
 export interface OpenUrlOptions {
   customOpenRelativeUrl?: (url: string) => void;
@@ -149,6 +153,7 @@ export const openUrl = (url: string, options?: OpenUrlOptions) => {
       ? customOpenExternalUrl(url)
       : window.open(url, "_blank", "noopener,noreferrer");
   } else {
+    console.log(url);
     const targetUrl = customOpenRelativeUrl
       ? extractLocalUrlPathname(url)
       : url;

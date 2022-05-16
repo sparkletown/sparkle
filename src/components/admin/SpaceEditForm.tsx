@@ -29,11 +29,8 @@ import {
   HAS_REACTIONS_TEMPLATES,
   IFRAME_TEMPLATES,
   MAX_MAX_BOOTHS,
-  MAX_SECTIONS_AMOUNT,
   MIN_MAX_BOOTHS,
-  MIN_SECTIONS_AMOUNT,
   PORTAL_INFO_ICON_MAPPING,
-  SECTION_CAPACITY,
   SUBVENUE_TEMPLATES,
   ZOOM_URL_TEMPLATES,
 } from "settings";
@@ -253,15 +250,6 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
     [setValue]
   );
 
-  // TODO-redesign
-  // Probably want to use ${SPACE_INFO_MAP[space.template].icon} for the logo
-
-  const numberOfSectionsSubtext = `${
-    values.numberOfSections || 0
-  } Sections * ${SECTION_CAPACITY} Seats = ${
-    SECTION_CAPACITY * values.numberOfSections
-  } (Capacity)`;
-
   return (
     <div className="SpaceEditForm">
       <form onSubmit={handleSubmit(updateVenue)}>
@@ -473,24 +461,6 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
           </TesterRestricted>
 
           <div className="mb-10"></div>
-
-          {space.template === VenueTemplate.auditorium && (
-            <>
-              <SidebarHeader>Extras</SidebarHeader>
-
-              <InputGroup title="Number of sections" isOptional>
-                <Input
-                  register={register}
-                  name="numberOfSections"
-                  type="number"
-                  min={MIN_SECTIONS_AMOUNT}
-                  max={MAX_SECTIONS_AMOUNT}
-                  error={errors.numberOfSections}
-                  subtext={numberOfSectionsSubtext}
-                />
-              </InputGroup>
-            </>
-          )}
 
           {space.template === VenueTemplate.jazzbar && (
             <>
