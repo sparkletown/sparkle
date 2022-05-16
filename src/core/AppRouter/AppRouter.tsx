@@ -77,14 +77,6 @@ const PasswordResetPage = lazy(() =>
   )
 );
 
-const AccountPage = lazy(() =>
-  tracePromise("AppRouter::lazy-import::AccountPage", () =>
-    import("pages/Account/AccountPage").then(({ AccountPage }) => ({
-      default: AccountPage,
-    }))
-  )
-);
-
 const SplashWorld = lazy(() =>
   tracePromise("AppRouter::lazy-import::SplashWorld", () =>
     import("components/attendee/SplashWorld").then(({ SplashWorld }) => ({
@@ -126,9 +118,7 @@ export const AppRouter: React.FC = () => (
           // Sub-routes get their analytics treatment inside them
         }
         <Route path={ACCOUNT_ROOT_URL}>
-          <RelatedVenuesProvider>
-            <SubAccount />
-          </RelatedVenuesProvider>
+          <SubAccount />
         </Route>
         <Route path={ADMIN_ROOT_URL}>
           <SubAdmin />

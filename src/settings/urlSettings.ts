@@ -53,7 +53,6 @@ export const ATTENDEE_WORLD_SPLASH_URL = `${ATTENDEE_WORLD_URL}`;
 export const ATTENDEE_SPACE_SPLASH_URL = `${ATTENDEE_SPACE_URL}/splash`;
 
 // Account URLs
-export const ACCOUNT_CODE_QUESTIONS_URL = `${ACCOUNT_ROOT_URL}/code-of-conduct/:worldSlug/:spaceSlug?`;
 export const ACCOUNT_PROFILE_BASE_URL = `${ACCOUNT_ROOT_URL}/profile`;
 
 // Admin IA URLs

@@ -32,6 +32,7 @@ export const FIELD_SPACE_ID = "spaceId";
 export const FIELD_WORLD_ID = "worldId";
 export const FIELD_MANAGED_BY_ID = "managedBy";
 export const FIELD_IS_HIDDEN = "isHidden";
+export const FIELD_IS_ONBOARDED = "isOnboarded";
 
 // some common constant paths for queries to avoid `useMemo`
 // it's a single constant rather a bunch of exports because of the code that follows
