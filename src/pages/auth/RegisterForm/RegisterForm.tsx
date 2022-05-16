@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from "react";
 import { useForm, useFormState } from "react-hook-form";
 import { useHistory } from "react-router-dom";
+import { useSearchParam } from "react-use";
 import classNames from "classnames";
 import { ConfirmationModal } from "components/admin/ConfirmationModal/ConfirmationModal";
 import { Button } from "components/attendee/Button";
@@ -12,6 +13,7 @@ import firebase from "firebase/compat/app";
 import {
   ACCOUNT_PROFILE_BASE_URL,
   DEFAULT_REQUIRES_DOB,
+  RETURN_URL_PARAM_NAME,
   SIGN_IN_URL,
   STRING_SPACE,
 } from "settings";
@@ -54,6 +56,8 @@ export const RegisterForm: React.FC<RegisterFormProps> = () => {
 
   const [showLoginModal, setShowLoginModal] = useState(false);
 
+  const returnUrl = useSearchParam(RETURN_URL_PARAM_NAME);
+
   const { signInWithGoogle } = useSocialSignIn();
 
   const signUp = ({ email, password }: RegisterFormInput) => {
@@ -87,7 +91,10 @@ export const RegisterForm: React.FC<RegisterFormProps> = () => {
 
       // postRegisterCheck(auth, data);
 
-      history.push(ACCOUNT_PROFILE_BASE_URL);
+      history.push({
+        pathname: ACCOUNT_PROFILE_BASE_URL,
+        search: `?${RETURN_URL_PARAM_NAME}=${returnUrl}`,
+      });
     } catch (e) {
       const code = errorCode(e);
       const status = errorStatus(e);

@@ -2,7 +2,7 @@ import firebase from "firebase/compat/app";
 
 import { ProfileLink, UserLocation } from "types/User";
 
-import { ProfileFormData } from "./Profile";
+import { ProfileSchemaShape } from "forms/profileSchema";
 
 type MirrorVideoUpdateData = {
   mirrorVideo: boolean;
@@ -12,9 +12,9 @@ export const updateUserProfile = (
   userId: string,
   profileData:
     | { profileLinks: ProfileLink[] }
-    | ProfileFormData
+    | ProfileSchemaShape
     | MirrorVideoUpdateData
-    | (ProfileFormData | UserLocation)
+    | (ProfileSchemaShape | UserLocation)
 ) => {
   const firestore = firebase.firestore();
   const doc = `users/${userId}`;
