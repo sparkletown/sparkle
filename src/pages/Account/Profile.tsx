@@ -7,7 +7,11 @@ import { Button } from "components/attendee/Button";
 import { Input } from "components/attendee/Input";
 import { Spacer } from "components/attendee/Spacer";
 
-import { DISPLAY_NAME_MAX_CHAR_COUNT, RETURN_URL_PARAM_NAME } from "settings";
+import {
+  ACCOUNT_ROOT_URL,
+  DISPLAY_NAME_MAX_CHAR_COUNT,
+  RETURN_URL_PARAM_NAME,
+} from "settings";
 
 import { profileSchema, ProfileSchemaShape } from "forms/profileSchema";
 
@@ -52,7 +56,7 @@ export const Profile: React.FC = () => {
 
       await updateUserProfile(userId, data);
 
-      history.push(returnUrl || "");
+      history.push(returnUrl || ACCOUNT_ROOT_URL);
     },
     [userId, history, returnUrl]
   );

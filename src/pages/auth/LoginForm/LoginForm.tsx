@@ -49,6 +49,7 @@ export const LoginForm: React.FC<LoginFormProps> = () => {
 
   const returnUrl = useSearchParam(RETURN_URL_PARAM_NAME);
   const shouldQuickJoin = useSearchParam(QUICK_JOIN_PARAM_NAME);
+  const hasShouldQuickJoin = Boolean(shouldQuickJoin);
 
   const { signInWithGoogle } = useSocialSignIn();
 
@@ -75,7 +76,9 @@ export const LoginForm: React.FC<LoginFormProps> = () => {
 
     history.push({
       pathname: returnUrl,
-      search: `?${QUICK_JOIN_PARAM_NAME}=${shouldQuickJoin}`,
+      search: hasShouldQuickJoin
+        ? `?${QUICK_JOIN_PARAM_NAME}=${shouldQuickJoin}`
+        : "",
     });
   };
 

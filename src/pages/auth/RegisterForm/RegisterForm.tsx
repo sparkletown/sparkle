@@ -93,7 +93,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = () => {
 
       history.push({
         pathname: ACCOUNT_PROFILE_BASE_URL,
-        search: `?${RETURN_URL_PARAM_NAME}=${returnUrl}`,
+        search: returnUrl ? `?${RETURN_URL_PARAM_NAME}=${returnUrl}` : "",
       });
     } catch (e) {
       const code = errorCode(e);

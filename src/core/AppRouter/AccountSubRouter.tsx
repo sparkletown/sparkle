@@ -11,15 +11,15 @@ import { Profile } from "pages/Account/Profile";
 export const AccountSubRouter: React.FC = () => {
   return (
     <Switch>
-      <Route exact>
-        <AccountPage />
-      </Route>
       <Route path={ACCOUNT_PROFILE_BASE_URL}>
         <LoginRestricted>
           <AnalyticsCheck>
             <Profile />
           </AnalyticsCheck>
         </LoginRestricted>
+      </Route>
+      <Route exact>
+        <AccountPage />
       </Route>
     </Switch>
   );
