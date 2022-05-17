@@ -40,7 +40,11 @@ export const Banner: React.FC<BannerProps> = ({
 
   const [bannerState, setBannerState] = useState<TBanner>();
 
-  const isBannerFullScreen = banner?.isFullScreen;
+  // @debt use banner?.isFullScreen property once we have designs for non-fullscreen banners;
+  // otherwise scrolling logic on mobile breaks
+  // const isBannerFullScreen = banner?.isFullScreen;
+  const isBannerFullScreen = true;
+
   const isWithButton = banner?.buttonDisplayText && banner?.isActionButton;
   const isBannerCloaseable = !banner?.isForceFunnel;
 
@@ -78,12 +82,12 @@ export const Banner: React.FC<BannerProps> = ({
     openUrl(banner?.buttonUrl, { customOpenRelativeUrl: openUrlUsingRouter });
   }, [openUrlUsingRouter, banner?.buttonUrl]);
 
-  if (!isBannerFullScreen || !isBannerShown) return null;
+  if (!isBannerShown) return null;
 
   return (
     <div className={CN.banner}>
       <div className={CN.bannerContent}>
-        <RenderMarkdown text={banner.content} />
+        <RenderMarkdown text={banner?.content} />
         <div className={CN.actionButtons}>
           {isWithButton && banner.buttonUrl && (
             <Button onClick={navigateToBannerDestination}>

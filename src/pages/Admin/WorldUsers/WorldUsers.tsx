@@ -98,7 +98,7 @@ export const WorldUsers: React.FC = () => {
         <div className={TW.content}>
           <div className={TW.panelHeader}>
             <div className={TW.panelHeaderTitle}>Admins</div>
-            <Button onClick={showInviteAdminModal}>Invite admin</Button>
+            <Button onClick={showInviteAdminModal}>Add owner</Button>
           </div>
           <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
             <div className="min-w-full divide-y divide-gray-200">
@@ -113,14 +113,6 @@ export const WorldUsers: React.FC = () => {
                     />
                   </div>
                   <div className="w-full">Role</div>
-                  <div className="flex flex-row gap-x-4 items-center w-full">
-                    <div>Spaces</div>
-                    <Input
-                      placeholder="Filter by space"
-                      name="spaceSearchQuery"
-                      register={register}
-                    />
-                  </div>
                   <div className="w-full" />
                 </div>
               </div>
@@ -131,8 +123,6 @@ export const WorldUsers: React.FC = () => {
                     key={userSpace.user.id}
                     userId={userId}
                     user={userSpace.user}
-                    ownedSpaces={userSpace.spaces}
-                    worldSpaces={worldSpaces}
                   />
                 ))}
               </div>

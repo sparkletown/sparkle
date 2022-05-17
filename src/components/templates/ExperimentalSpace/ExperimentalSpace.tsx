@@ -183,11 +183,6 @@ const _ExperimentalSpace: React.FC<ExperimentalSpaceProps> = ({
     );
   }, [allTracks, huddleId]);
 
-  const projectTitle = useMemo(
-    () => <span>Choose a track to project</span>,
-    []
-  );
-
   return (
     <div
       data-bem="ExperimentalSpace"
@@ -200,7 +195,9 @@ const _ExperimentalSpace: React.FC<ExperimentalSpaceProps> = ({
         {!inHuddle && <p onClick={connectCallback}>Connect</p>}
         {inHuddle && <p onClick={shareScreenCallback}>Share screen</p>}
       </div>
-      <Dropdown title={projectTitle}>{trackOptions}</Dropdown>
+      <Dropdown options={[]} title="Choose a track to project">
+        {trackOptions}
+      </Dropdown>
       <div className={styles.contentBox}>
         {projectedVideoTrack ? (
           <ProjectedVideoTrack track={projectedVideoTrack} />

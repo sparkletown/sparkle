@@ -1,3 +1,4 @@
+import { Hit } from "@algolia/client-search";
 // @debt rename this file to be user rather than User
 
 // the structure is { [key: venueId] : eventId[] }
@@ -51,3 +52,6 @@ export type UserWithLocation = Profile & UserLocation;
 export type UserOnboardedWorld = {
   isOnboarded: boolean;
 };
+export type AlgoliaUser = Hit<
+  Pick<UserWithLocation, "partyName" | "pictureUrl" | "enteredVenueIds">
+>;

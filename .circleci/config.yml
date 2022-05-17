@@ -75,20 +75,27 @@ jobs:
       - run: npm run eslint:check
       - run: npm run test
       - *notify-on-fail
-  #  smoke-test:
-  #    executor:
-  #      name: node/default
-  #    steps:
-  #      - checkout
-  #      - node/with-cache:
-  #          cache-version: v2
-  #          steps:
-  #            - run: sudo apt-get update
-  #            - run: sudo apt-get install libgtk2.0-0 libgtk-3-0 libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
-  #            - run: npm install
-  #            - run: npm run cy:install # cache this instead
-  #            - run: npm run cy:run
-  #            - *notify-on-fail
+  e2e-test-with-emulators:
+    docker:
+      - image: cimg/openjdk:17.0-node
+    resource_class: large
+    steps:
+      - run:
+          name: Install Cypress dependencies
+          command: sudo apt-get update && sudo apt-get install -y libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
+      - checkout
+      - run:
+          name: Install NPM packages for project root and ./functions directory
+          command: npm ci && cd functions && npm ci && cd ..
+      - run:
+          name: Use ${E2E_FIREBASE_PROJECT} for testing
+          command: ./node_modules/.bin/firebase use "$E2E_FIREBASE_PROJECT" --token "$E2E_FIREBASE_TOKEN"
+      - run:
+          name: Download ./functions/.runtimeconfig.json
+          command: ./node_modules/.bin/firebase functions:config:get --token "$E2E_FIREBASE_TOKEN" > ./functions/.runtimeconfig.json
+      - run:
+          name: Start the emulators and run Cypress after
+          command: npm run firebase:emulate-cy:run
   deploy-functions:
     executor: node/default
     working_directory: ~/project/functions # ensure our steps (except for checkout) run in this directory
@@ -416,6 +423,11 @@ workflows:
   build-test-deploy:
     jobs:
       - lint-and-test
+      - e2e-test-with-emulators:
+          context:
+            - e2e
+          requires:
+            - lint-and-test
       - deploy-functions:
           requires:
             - lint-and-test
@@ -484,11 +496,3 @@ workflows:
                 - env/github
                 - env/summit-hack
                 - env/northwell
-#      - smoke-test:
-#          requires:
-#            - deploy-functions
-#            - deploy-hosting
-#          filters:
-#            branches:
-#              only:
-#                - staging

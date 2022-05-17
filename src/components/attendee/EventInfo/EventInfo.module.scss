@@ -1,0 +1,25 @@
+@use "scss/attendee/opacity";
+@use "scss/attendee/space";
+@use "scss/attendee/theme";
+
+.general {
+  padding: space.empty(1);
+}
+
+.paragraph {
+  margin: 0;
+  margin-bottom: space.empty(1);
+}
+
+.centered {
+  text-align: center;
+}
+
+.moreLessSpan {
+  color: theme.$c-default-text;
+  opacity: opacity.$md;
+}
+
+.showMoreLessAnchor {
+  text-decoration: none;
+}

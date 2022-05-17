@@ -130,6 +130,7 @@ export const SEARCH_DEBOUNCE_TIME = 200; // ms
 
 export const DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT = 48;
 export const DEFAULT_DISPLAYED_VIDEO_PREVIEW_COUNT = 12;
+export const DEFAULT_NUMBER_OF_LINES_OF_TEXT = 5;
 
 // Analytics
 export const DEFAULT_ANALYTICS_GROUP_KEY = "world";
@@ -168,6 +169,7 @@ export const MARKDOWN_PRE_CODE_TAGS = ["pre", "code"];
 export const ALLOWED_EMPTY_TABLES_NUMBER = 4;
 export const DEFAULT_JAZZBAR_TABLES_NUMBER = 12;
 export const DEFAULT_CONVERSATION_SPACE_TABLES_NUMBER = 10;
+export const DEFAULT_TABLE_CAPACITY = 6;
 
 export const JAZZBAR_TABLES: Table[] = generateTables({
   num: DEFAULT_JAZZBAR_TABLES_NUMBER,

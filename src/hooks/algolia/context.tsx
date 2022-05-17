@@ -5,9 +5,8 @@ import React, {
   useMemo,
 } from "react";
 import algoliasearch, { SearchClient, SearchIndex } from "algoliasearch/lite";
+import { ALGOLIA_API_SEARCH_KEY, ALGOLIA_APP_ID } from "env";
 import { keyBy } from "lodash";
-
-import { ALGOLIA_API_SEARCH_KEY, ALGOLIA_APP_ID } from "secrets";
 
 import { AlgoliaSearchIndex } from "types/algolia";
 

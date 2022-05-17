@@ -1,4 +1,5 @@
 import React from "react";
+import { SpaceInfoText } from "components/attendee/SpaceInfoText";
 import { TableGrid } from "components/attendee/TableGrid";
 
 import { CONVERSATION_TABLES } from "settings";
@@ -8,7 +9,6 @@ import { GenericSpaceWithId } from "types/id";
 import { useLiveUser } from "hooks/user/useLiveUser";
 
 import { Loading } from "components/molecules/Loading";
-import { SpaceInfoText } from "components/molecules/SpaceInfoText";
 
 export interface ConversationSpaceProps {
   space: GenericSpaceWithId;

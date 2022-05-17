@@ -16,6 +16,7 @@ $booth-height: 255px;
   width: $booth-width;
   height: $booth-height;
   overflow: hidden;
+  position: relative;
 }
 
 .contents {
