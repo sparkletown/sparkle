@@ -96,6 +96,8 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
       isReactionsMuted: space.isReactionsMuted ?? DEFAULT_REACTIONS_MUTED,
       // @debt should use SpaceId type here, resolve error with form typing
       parentId: (space.parentId as string) ?? "",
+      // @debt: Number of sections is deprecated and is no longer available on the UI.
+      // To be removed by anyone looking at it when you're confident that this change will be tested.
       numberOfSections: space.sectionsCount ?? DEFAULT_SECTIONS_AMOUNT,
       roomVisibility: space.roomVisibility,
       zoomUrl: space?.zoomUrl ?? "",
