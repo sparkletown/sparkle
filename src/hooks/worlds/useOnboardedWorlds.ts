@@ -37,8 +37,6 @@ export const useOnboardedWorlds: UseOnboardedWorlds = ({ userId }) => {
     [userId]
   );
 
-  console.log({ memoizedQuery });
-
   const {
     error: onboardedWorldsError,
     isLoading: onboardedWorldsLoading,
