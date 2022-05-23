@@ -61,4 +61,28 @@ export const makeUserWorldOwner: HttpsFunctionHandler<{
   };
 };
 
+export const onboardUser: HttpsFunctionHandler<{
+  worldSlug: string | undefined;
+}> = async (data, context) => {
+  const { worldSlug } = data;
+
+  if (!context.auth) {
+    throw new HttpsError("internal", `Context was not passed`);
+  }
+
+  if (!worldSlug) {
+    throw new HttpsError("internal", `World slug was not passed`);
+  }
+
+  const world = await getWorldBySlug({ worldSlug });
+
+  const userRef = admin.firestore().collection("users").doc(context.auth.uid);
+
+  const onboardedWorldRef = userRef.collection("onboardedWorlds").doc(world.id);
+
+  await onboardedWorldRef.set({ isOnboarded: true });
+  return (await onboardedWorldRef.get()).data();
+};
+
 exports.makeUserWorldOwner = functions.https.onCall(makeUserWorldOwner);
+exports.onboardUser = functions.https.onCall(onboardUser);

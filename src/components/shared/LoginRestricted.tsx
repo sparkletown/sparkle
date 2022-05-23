@@ -1,27 +1,16 @@
-import React, { lazy, ReactNode } from "react";
-import { Unauthorized } from "components/shared/Unauthorized";
+import React, { ReactNode } from "react";
+import { Redirect, useHistory } from "react-router-dom";
 
-import { tracePromise } from "utils/performance";
+import { RETURN_URL_PARAM_NAME, SIGN_IN_URL } from "settings";
 
-import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useUserId } from "hooks/user/useUserId";
 
 import { Loading } from "components/molecules/Loading";
 import { LoadingPage } from "components/molecules/LoadingPage";
 
-// NOTE: lazy() is used for code splitting since admin and attendee sides load different style libraries
-
-const LoginWithWorldAndSpace = lazy(() =>
-  tracePromise("AppRouter::lazy-import::Login", () =>
-    import("pages/auth/Login").then(({ Login }) => ({
-      default: Login,
-    }))
-  )
-);
-
-type LoginRestrictedProps = {
+interface LoginRestrictedProps {
   loading?: "spinner" | "page" | ReactNode;
-};
+}
 
 /**
  * This is a simple check and "redirect" component, no styles, just logic
@@ -30,12 +19,13 @@ export const LoginRestricted: React.FC<LoginRestrictedProps> = ({
   loading = null,
   children,
 }) => {
-  const { spaceSlug, worldSlug } = useSpaceParams();
   const { userId, isLoading } = useUserId();
 
+  const history = useHistory();
+
   if (isLoading) {
-    if ("spinner" === loading) return <Loading />;
-    if ("page" === loading) return <LoadingPage />;
+    if (loading === "spinner") return <Loading />;
+    if (loading === "page") return <LoadingPage />;
     return <>{loading}</>;
   }
 
@@ -43,10 +33,12 @@ export const LoginRestricted: React.FC<LoginRestrictedProps> = ({
     return <>{children}</>;
   }
 
-  if (spaceSlug && worldSlug) {
-    return <LoginWithWorldAndSpace />;
-  }
-
-  // @debt this component should only redirect to login components, replace the following
-  return <Unauthorized />;
+  return (
+    <Redirect
+      to={{
+        pathname: SIGN_IN_URL,
+        search: `?${RETURN_URL_PARAM_NAME}=${history.location.pathname}`,
+      }}
+    />
+  );
 };
