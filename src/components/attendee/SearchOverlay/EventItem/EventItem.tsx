@@ -2,7 +2,7 @@ import { useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import { Button } from "components/attendee/Button";
 import { NavOverlayTabType } from "components/attendee/NavOverlay/NavOverlay";
-import { differenceInCalendarDays } from "date-fns";
+import { differenceInCalendarDays, isToday } from "date-fns";
 
 import { SPACE_TAXON, STRING_DASH_SPACE, STRING_SPACE } from "settings";
 
@@ -44,9 +44,13 @@ export const EventItem: React.FC<EventItemProps> = ({
     onClick();
   }, [world?.slug, openUrlUsingRouter, onClick, space?.slug]);
 
-  const showDate = Boolean(
-    differenceInCalendarDays(eventEndTime({ event }), eventStartTime({ event }))
-  );
+  const showDate =
+    Boolean(
+      differenceInCalendarDays(
+        eventEndTime({ event }),
+        eventStartTime({ event })
+      )
+    ) || !isToday(eventStartTime({ event }));
 
   const handleEnterSchedule = () => {
     setNavMenu(NavOverlayTabType.schedule);

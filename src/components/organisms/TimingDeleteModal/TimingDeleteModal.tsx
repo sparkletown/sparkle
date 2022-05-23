@@ -4,7 +4,7 @@ import { useAsyncFn } from "react-use";
 import { Button } from "components/admin/Button";
 import dayjs from "dayjs";
 
-import { DATEFNS_INPUT_DATE_FORMAT, DATEFNS_INPUT_TIME_FORMAT } from "settings";
+import { DAYJS_INPUT_DATE_FORMAT, DAYJS_INPUT_TIME_FORMAT } from "settings";
 
 import { deleteEvent, EventInput } from "api/admin";
 
@@ -43,10 +43,10 @@ export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
         description: event.description,
         start_date: dayjs
           .unix(event.startUtcSeconds)
-          .format(DATEFNS_INPUT_DATE_FORMAT),
+          .format(DAYJS_INPUT_DATE_FORMAT),
         start_time: dayjs
           .unix(event.startUtcSeconds)
-          .format(DATEFNS_INPUT_TIME_FORMAT),
+          .format(DAYJS_INPUT_TIME_FORMAT),
         duration_hours: event.durationMinutes / 60,
       });
     }
