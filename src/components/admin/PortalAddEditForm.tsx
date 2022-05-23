@@ -326,16 +326,17 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
           <Toggle
             checked={isOverrideAppearanceEnabled}
             onChange={toggleOverrideAppearance}
-            label="Override appearance"
-            title="Change label appearance (overrides general)"
+            label="Change label appearance"
           />
         </AdminSection>
-        <PortalVisibility
-          getValues={getValues}
-          name="visibility"
-          register={register}
-          setValue={setValue}
-        />
+        {isOverrideAppearanceEnabled && (
+          <PortalVisibility
+            getValues={getValues}
+            name="visibility"
+            register={register}
+            setValue={setValue}
+          />
+        )}
         <Toggle
           register={register}
           checked={values.isEnabled}

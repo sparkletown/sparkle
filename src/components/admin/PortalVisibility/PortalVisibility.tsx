@@ -11,6 +11,7 @@ import {
   UseFormRegister,
   UseFormSetValue,
 } from "react-hook-form";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { get } from "lodash";
 
@@ -53,29 +54,39 @@ export const PortalVisibility: React.FC<PortalVisibilityProps> = ({
     },
     [setValue]
   );
-
   const renderedItems = useMemo(
     () =>
-      Object.values(LABEL_VISIBILITY_OPTIONS).map(({ label, value }, i) => {
-        const isSelected = isDefined(selected) && selected === value;
-        const imageClasses = classNames({
-          [imageSelectedTailwind]: isSelected,
-          [imageTailwind]: !isSelected,
-        });
+      Object.values(LABEL_VISIBILITY_OPTIONS).map(
+        ({ label, value, subtitle }, i) => {
+          const isSelected = isDefined(selected) && selected === value;
+          const imageClasses = classNames({
+            [imageSelectedTailwind]: isSelected,
+            [imageTailwind]: !isSelected,
+          });
 
-        return (
-          <div
-            key={`${label}-${i}`}
-            onClick={() => handleClick({ value, name })}
-          >
-            <div className={imageClasses}>
-              {/* @debt: add portal visibility images */}
-              <img src="#" alt="" />
+          return (
+            <div
+              key={`${label}-${i}`}
+              onClick={() => handleClick({ value, name })}
+            >
+              <div className={imageClasses}>
+                <div className="flex flex-col text-xs font-medium text-gray-700 bg-white rounded-md py-2 px-2">
+                  {subtitle?.map(({ text, icon }) => (
+                    <div
+                      className="flex items-center justify-center"
+                      key={text}
+                    >
+                      <FontAwesomeIcon icon={icon} />
+                      <span className="ml-1 w-min">{text}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <span className="text-gray-700 text-sm my-2">{label}</span>
             </div>
-            <span className="text-gray-300 text-sm my-2">{label}</span>
-          </div>
-        );
-      }),
+          );
+        }
+      ),
     [selected, name, handleClick]
   );
 
@@ -94,11 +105,11 @@ export const PortalVisibility: React.FC<PortalVisibilityProps> = ({
   useEffect(() => {
     const values = getValues?.();
     const value = get(values, name) as RoomVisibility | undefined;
-    setSelected(value);
+    setSelected(value ?? RoomVisibility.nameCount);
   }, [name, getValues, setSelected]);
 
   return (
-    <div className="mt-1">
+    <div className="my-2">
       {label ? (
         <label className="PortalVisibility__label">
           {label}
