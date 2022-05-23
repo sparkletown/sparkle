@@ -41,6 +41,7 @@ type InputProps = React.HTMLProps<HTMLInputElement> & {
   onLabelClick?: () => void;
   onEnter?: () => void;
   label?: string;
+  subtext?: string;
   name?: string;
   register?: UseFormRegister<AnyForm> | (() => void);
   rules?: RegisterOptions;
@@ -69,6 +70,7 @@ export const Input: React.ForwardRefRenderFunction<
   iconClassName,
   onIconClick,
   forwardRef,
+  subtext,
   ...extraInputProps
 }) => {
   const inputId = useMemo(() => generateId("Input"), []);
@@ -117,6 +119,7 @@ export const Input: React.ForwardRefRenderFunction<
         {error && <span className={CN.errorIcon} />}
       </div>
 
+      {!error && subtext && <span>{subtext}</span>}
       {error && <span className={CN.inputError}>{error.message}</span>}
     </div>
   );

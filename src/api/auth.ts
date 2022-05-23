@@ -52,3 +52,10 @@ export const fetchCustomAuthConfig = async (
 
       throw err;
     });
+
+export type OnboardUserProps = {
+  worldSlug: string;
+};
+
+export const onboardUser = async (data: OnboardUserProps) =>
+  httpsCallable(FIREBASE.functions, "user-onboardUser")(data);

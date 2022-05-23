@@ -1,5 +1,6 @@
 import React, { useCallback, useRef, useState } from "react";
 import { FieldErrors, UseFormRegister, UseFormSetValue } from "react-hook-form";
+import { CenterContent } from "components/shared/CenterContent";
 
 import { ACCEPTED_IMAGE_TYPES } from "settings";
 
@@ -7,21 +8,21 @@ import { UserId } from "types/id";
 
 import { determineAvatar } from "utils/image";
 
+import { ProfileSchemaShape } from "forms/profileSchema";
+
 import { useLoginCheck } from "hooks/user/useLoginCheck";
 import { useUploadProfilePictureHandler } from "hooks/useUploadProfilePictureHandler";
-
-import { ProfileFormData } from "pages/Account/Profile";
 
 import { DefaultAvatars } from "components/molecules/DefaultAvatars/DefaultAvatars";
 
 import styles from "./ProfilePictureInput.module.scss";
 
 export interface ProfilePictureInputProps {
-  setValue: UseFormSetValue<ProfileFormData>;
+  setValue: UseFormSetValue<ProfileSchemaShape>;
   userId: UserId;
-  errors: FieldErrors<ProfileFormData>;
+  errors: FieldErrors<ProfileSchemaShape>;
   pictureUrl: string;
-  register: UseFormRegister<ProfileFormData>;
+  register: UseFormRegister<ProfileSchemaShape>;
 }
 
 export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputProps> = ({
@@ -56,11 +57,6 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
     [setValue, uploadProfilePictureHandler]
   );
 
-  const uploadProfilePic = useCallback((event) => {
-    event.preventDefault();
-    uploadRef.current?.click();
-  }, []);
-
   const setPictureUrl = useCallback(
     (url: string) => {
       setValue("pictureUrl", url, { shouldValidate: true });
@@ -76,7 +72,7 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
   });
 
   return (
-    <div className={styles.profilePictureUploadForm}>
+    <div data-bem="ProfilePictureInput">
       <div
         className={styles.profilePicturePreviewContainer}
         onClick={() => uploadRef.current?.click()}
@@ -84,31 +80,34 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
         <img
           src={pictureSrc}
           onError={onPictureSrcError}
-          className="profile-icon ProfilePicturePreviewContainer__image"
+          className={styles.userAvatar}
           alt="your profile"
         />
+
+        <div className={styles.text}>
+          <CenterContent disabled={isPictureUploading}>
+            {isPictureUploading ? "Uploading..." : "Upload"}
+          </CenterContent>
+        </div>
       </div>
+
       <input
         type="file"
         id="profile-picture-input"
         name="profilePicture"
         onChange={handleFileChange}
         accept={ACCEPTED_IMAGE_TYPES}
-        className="ProfilePictureUploadForm__input"
+        className={styles.hiddenInput}
         ref={uploadRef}
       />
-      <button
-        className="ProfilePictureUploadForm__uploadButton"
-        onClick={(event) => uploadProfilePic(event)}
-      >
-        Upload your profile pic
-      </button>
+
       {errors.pictureUrl && errors.pictureUrl.type === "required" && (
         <span className="input-error">Profile picture is required</span>
       )}
       {isPictureUploading && <small>Picture uploading...</small>}
       {error && <small>Error uploading: {error}</small>}
       <small>Or pick one from our Sparkle profile pics</small>
+
       <DefaultAvatars
         onAvatarClick={setPictureUrl}
         isLoadingExternal={hasError}

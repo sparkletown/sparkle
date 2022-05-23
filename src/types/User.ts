@@ -49,6 +49,9 @@ export interface UserLocation {
 
 export type UserWithLocation = Profile & UserLocation;
 
+export type UserOnboardedWorld = {
+  isOnboarded: boolean;
+};
 export type AlgoliaUser = Hit<
   Pick<UserWithLocation, "partyName" | "pictureUrl" | "enteredVenueIds">
 >;

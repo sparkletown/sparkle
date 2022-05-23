@@ -26,6 +26,9 @@ export const ROOT_URL = "/";
 export const ACCOUNT_ROOT_URL = "/account";
 export const ADMIN_ROOT_URL = "/admin";
 export const SPARKLEVERSE_REDIRECT_URL = "/sparkleverse";
+export const SIGN_IN_URL = "/signin";
+export const SIGN_UP_URL = "/signup";
+export const PASSWORD_RESET_URL = "/password-reset";
 
 // Attendee URLs
 const EMERGENCY_BASE_URL = "/m";
@@ -38,10 +41,19 @@ export const ATTENDEE_INSIDE_URL = `${INSIDE_BASE_URL}/w/:worldSlug/s/:spaceSlug
 export const ATTENDEE_LANDING_URL = `${LANDING_BASE_URL}/w/:worldSlug/s/:spaceSlug`;
 export const ATTENDEE_STEPPING_PARAM_URL = `${ENTRANCE_BASE_URL}/w/:worldSlug/s/:spaceSlug/:step`;
 
+// New Attendee URLs
+export const ATTENDEE_WORLD_URL = `/w/:worldSlug`;
+export const ATTENDEE_SPACE_URL = `${ATTENDEE_WORLD_URL}/s/:spaceSlug`;
+
+// Onboarding URLs
+export const JOIN_WORLD_URL = `${ATTENDEE_SPACE_URL}/join`;
+
+// Splash URLs
+export const ATTENDEE_WORLD_SPLASH_URL = `${ATTENDEE_WORLD_URL}`;
+export const ATTENDEE_SPACE_SPLASH_URL = `${ATTENDEE_SPACE_URL}/splash`;
+
 // Account URLs
-export const ACCOUNT_CODE_QUESTIONS_URL = `${ACCOUNT_ROOT_URL}/code-of-conduct/:worldSlug/:spaceSlug?`;
 export const ACCOUNT_PROFILE_BASE_URL = `${ACCOUNT_ROOT_URL}/profile`;
-export const ACCOUNT_PROFILE_SPACE_PARAM_URL = `${ACCOUNT_PROFILE_BASE_URL}/:worldSlug/:spaceSlug?`;
 
 // Admin IA URLs
 export const ADMIN_IA_WORLD_BASE_URL = `${ADMIN_ROOT_URL}/w`; // e.g. /admin/w
@@ -64,3 +76,7 @@ export const JOBS_URL = "#jobs";
 export const PRESS_URL = "#press";
 export const ACCESSIBILITY_URL = "#accessibility";
 export const PARTNERS_URL = "#partners";
+
+// Search params names
+export const RETURN_URL_PARAM_NAME = "return_url";
+export const QUICK_JOIN_PARAM_NAME = "quick_join";

@@ -24,12 +24,9 @@ src/components/templates/AnimateMap/bridges/DataProvider/Contructor/PlayerIO/Ser
 # misc
 .DS_Store
 .env
-.env.local
-.env.development.local
-.env.test.local
-.env.staging.local
-.env.production.local
-.env.sparkleverse.local
+.env.*
+cypress.env.json
+
 
 npm-debug.log*
 yarn-debug.log*
@@ -57,3 +54,8 @@ reporting/cookies.json
 
 # Tool results
 *.result.txt
+
+# Cypress
+/cypress/videos/
+/cypress/screenshots/
+/cypress/downloads/

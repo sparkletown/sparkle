@@ -1,8 +1,8 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dropdown } from "components/admin/Dropdown";
 
-import { ChatMessageOptions, ChatOptionType } from "types/chat";
+import { ChatMessageOptions, ChatOption, ChatOptionType } from "types/chat";
 
 import { TextButton } from "components/atoms/TextButton";
 
@@ -21,21 +21,22 @@ export const ChatboxOptionsControls: React.FC<ChatboxOptionsControlsProps> = ({
 }) => {
   const shouldShowPoll = activeOption === ChatOptionType.poll;
 
-  const dropdownOptions = useMemo(
-    () =>
-      ChatMessageOptions.map((option) => (
-        <div
-          key={option.name}
-          onClick={() => setActiveOption(option.type)}
-          className="ChatboxOptionsControls__option"
-          data-dropdown-value={option.name}
-        >
-          <span>{option.name}</span>
-          <FontAwesomeIcon icon={option.icon} />
-        </div>
-      )),
-    [setActiveOption]
+  const renderChatOption = (option: ChatOption) => (
+    <div
+      key={option.name}
+      onClick={() => setActiveOption(option.type)}
+      className="ChatboxOptionsControls__option"
+      data-dropdown-value={option.name}
+    >
+      <span>{option.name}</span>
+      <FontAwesomeIcon icon={option.icon} />
+    </div>
   );
+
+  const chatMessageOptions = ChatMessageOptions.map((option) => ({
+    ...option,
+    label: option.name,
+  }));
 
   const unselectOption = useCallback(() => setActiveOption(undefined), [
     setActiveOption,
@@ -48,12 +49,12 @@ export const ChatboxOptionsControls: React.FC<ChatboxOptionsControlsProps> = ({
       ) : (
         <Dropdown
           title="Options"
+          options={chatMessageOptions}
           className="ChatboxOptionsControls__dropdown"
           placement="bottom"
           noArrow
-        >
-          {dropdownOptions}
-        </Dropdown>
+          renderOption={renderChatOption}
+        />
       )}
     </div>
   );
