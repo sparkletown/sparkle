@@ -249,6 +249,8 @@ export const createVenue_v2 = async (
   if (input.template === VenueTemplate.auditorium) {
     const auditoriumOptions = {
       venueId: space?.id,
+      // TODO: Number of sections is deprecated and is no longer available on the UI.
+      // To be removed by anyone looking at it when you're confident that this change will be tested.
       numberOfSections: DEFAULT_SECTIONS_AMOUNT,
     };
     await httpsCallable(

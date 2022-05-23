@@ -4,6 +4,11 @@
 .tuneBanner {
   width: fit-content;
   margin: 0 auto;
+
+  button {
+    margin: auto;
+    margin-top: space.empty(1);
+  }
 }
 
 .multimediaBanner {

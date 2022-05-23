@@ -100,6 +100,8 @@ type VenueInputForm = Partial<SpaceWithId> & {
   backgroundImageFile?: FileList;
   logoImageUrl?: string;
   logoImageFile?: FileList;
+  // @debt: Number of sections is deprecated and is no longer available on the UI.
+  // To be removed by anyone looking at it when you're confident that this change will be tested.
   numberOfSections?: number;
 };
 
@@ -140,6 +142,8 @@ export const updateVenueNG = async (venue: VenueInputForm, userId: UserId) => {
       "venue-setAuditoriumSections"
     )({
       venueId: venue.id,
+      // @debt: Number of sections is deprecated and is no longer available on the UI.
+      // To be removed by anyone looking at it when you're confident that this change will be tested.
       numberOfSections: venue.numberOfSections,
     });
   }

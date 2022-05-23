@@ -10,8 +10,14 @@ $radio-button-size: 9px;
   padding: space.empty(2);
   margin: 0 auto space.empty(1) auto;
   width: fit-content;
-  position: relative;
+  position: absolute;
+  margin-left: auto;
+  margin-right: auto;
+  top: space.empty(8);
+  left: 0;
+  right: 0;
   z-index: layer.$z-index--tuner;
+  color: black;
 
   label {
     display: grid;

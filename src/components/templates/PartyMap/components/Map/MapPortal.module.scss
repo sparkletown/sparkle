@@ -168,19 +168,20 @@ $-w-max-tablet: calc(#{breakpoint.$md} - 1px);
 .externalIconWrapper {
   cursor: pointer;
   @include atom.button;
+  display: none;
   height: space.button(1) - space.gap(8);
   margin: space.gap(4) 0 space.gap(4) space.empty(0.3);
   padding: 0;
+}
+
+.externalIconShown {
+  display: flex;
 }
 
 .externalIcon {
   @include atom.icon;
   background-image: url(/assets/icons/icon-room-externallink.svg);
   position: relative;
-}
-
-.linkHidden {
-  visibility: hidden;
 }
 
 .portalName {

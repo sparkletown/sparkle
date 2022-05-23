@@ -119,7 +119,11 @@ export const enterSpace = (
   worldSlug?: WorldSlug,
   spaceSlug?: SpaceSlug,
   options?: OpenUrlOptions
-) => openUrl(generateAttendeeInsideUrl({ worldSlug, spaceSlug }), options);
+) =>
+  openUrl(
+    generateAttendeeInsideUrl({ worldSlug, spaceSlug, absoluteUrl: true }),
+    options
+  );
 
 export interface OpenUrlOptions {
   customOpenRelativeUrl?: (url: string) => void;

@@ -24,6 +24,10 @@ $h-icon: 16px;
   display: flex;
   position: relative;
   width: 100%;
+
+  video {
+    width: 100%;
+  }
 }
 
 .videoCommsControlsContainer {
