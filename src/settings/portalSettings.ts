@@ -37,8 +37,8 @@ export const LABEL_VISIBILITY_OPTIONS: Record<
     label: "Show title and people count",
     value: RoomVisibility.nameCount,
     subtitle: [
-      { text: `${SPACE_TAXON.title} title`, icon: solidUsers },
-      { text: "123", icon: solidSun },
+      { text: `${SPACE_TAXON.title} title`, icon: solidSun },
+      { text: "123", icon: solidUsers },
     ],
   },
 };

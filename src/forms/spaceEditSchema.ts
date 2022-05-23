@@ -22,6 +22,8 @@ export const spaceEditSchema = Yup.object().shape({
   logoImageUrl: Yup.string().notRequired(),
   backgroundImageUrl: Yup.string().notRequired(),
   autoplay: Yup.boolean().notRequired(),
+  // @debt: Number of sections is deprecated and is no longer available on the UI.
+  // To be removed by anyone looking at it when you're confident that this change will be tested.
   numberOfSections: Yup.number().when(
     "$template",
     (template: VenueTemplate, schema: Yup.StringSchema) =>

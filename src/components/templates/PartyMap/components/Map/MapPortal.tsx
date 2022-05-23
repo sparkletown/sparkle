@@ -17,6 +17,7 @@ import {
   isEventLive,
   isEventLiveOrFuture,
 } from "utils/event";
+import { isExternalPortal } from "utils/url";
 
 import { useSpaceEvents } from "hooks/events";
 import { useSpaceById } from "hooks/spaces/useSpaceById";
@@ -113,7 +114,7 @@ export const MapPortal: React.FC<MapPortalProps> = ({
   );
 
   const externalIconWrapperClasses = classNames(styles.externalIconWrapper, {
-    [styles.linkHidden]: !shouldBeClickable,
+    [styles.externalIconShown]: isExternalPortal(portal) && shouldBeClickable,
   });
 
   return (

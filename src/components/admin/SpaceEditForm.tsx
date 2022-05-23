@@ -29,11 +29,8 @@ import {
   HAS_REACTIONS_TEMPLATES,
   IFRAME_TEMPLATES,
   MAX_MAX_BOOTHS,
-  MAX_SECTIONS_AMOUNT,
   MIN_MAX_BOOTHS,
-  MIN_SECTIONS_AMOUNT,
   PORTAL_INFO_ICON_MAPPING,
-  SECTION_CAPACITY,
   SUBVENUE_TEMPLATES,
   ZOOM_URL_TEMPLATES,
 } from "settings";
@@ -99,6 +96,8 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
       isReactionsMuted: space.isReactionsMuted ?? DEFAULT_REACTIONS_MUTED,
       // @debt should use SpaceId type here, resolve error with form typing
       parentId: (space.parentId as string) ?? "",
+      // @debt: Number of sections is deprecated and is no longer available on the UI.
+      // To be removed by anyone looking at it when you're confident that this change will be tested.
       numberOfSections: space.sectionsCount ?? DEFAULT_SECTIONS_AMOUNT,
       roomVisibility: space.roomVisibility,
       zoomUrl: space?.zoomUrl ?? "",
@@ -252,15 +251,6 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
     },
     [setValue]
   );
-
-  // TODO-redesign
-  // Probably want to use ${SPACE_INFO_MAP[space.template].icon} for the logo
-
-  const numberOfSectionsSubtext = `${
-    values.numberOfSections || 0
-  } Sections * ${SECTION_CAPACITY} Seats = ${
-    SECTION_CAPACITY * values.numberOfSections
-  } (Capacity)`;
 
   return (
     <div className="SpaceEditForm">
@@ -473,24 +463,6 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
           </TesterRestricted>
 
           <div className="mb-10"></div>
-
-          {space.template === VenueTemplate.auditorium && (
-            <>
-              <SidebarHeader>Extras</SidebarHeader>
-
-              <InputGroup title="Number of sections" isOptional>
-                <Input
-                  register={register}
-                  name="numberOfSections"
-                  type="number"
-                  min={MIN_SECTIONS_AMOUNT}
-                  max={MAX_SECTIONS_AMOUNT}
-                  error={errors.numberOfSections}
-                  subtext={numberOfSectionsSubtext}
-                />
-              </InputGroup>
-            </>
-          )}
 
           {space.template === VenueTemplate.jazzbar && (
             <>
