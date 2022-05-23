@@ -30,6 +30,11 @@ service cloud.firestore {
         allow read: if true;
         allow write: if request.auth.uid == userId;
       }
+
+      match /onboardedWorlds/{worldId} {
+        allow read: if request.auth.uid == userId;
+        allow write: if false;
+      }
     }
     match /userprivate/{userId} {
       allow read, write: if request.auth.uid == userId;

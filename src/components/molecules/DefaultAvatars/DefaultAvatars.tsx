@@ -54,14 +54,18 @@ export const DefaultAvatars: React.FC<DefaultAvatarsProps> = ({
       <button
         data-bem="DefaultAvatars__preview-container"
         key={`${avatar}-${index}`}
-        className="w-12 h-12 mr-1"
+        className={classNames("w-12 h-12 mr-1", CN.button)}
         onClick={(event) => uploadDefaultAvatar(event, avatar)}
         type="button"
       >
         <img
           data-bem="DefaultAvatars__picture-preview"
           src={avatar}
-          className={classNames("profile-icon", avatarPictureClassName)}
+          className={classNames(
+            "profile-icon",
+            avatarPictureClassName,
+            CN.image
+          )}
           alt={`default avatar ${index}`}
         />
       </button>

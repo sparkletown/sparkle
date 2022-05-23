@@ -22,6 +22,7 @@ export const COLLECTION_USER_PRESENCE = "userPresence";
 export const COLLECTION_USERS = "users";
 export const COLLECTION_WORLDS = "worlds";
 export const COLLECTION_WORLD_EVENTS = "worldEvents";
+export const COLLECTION_ONBOARDED_WORLDS = "onboardedWorlds";
 
 // common search fields, please keep the list short and simple
 export const FIELD_HIDDEN = "isHidden";
@@ -31,6 +32,7 @@ export const FIELD_SPACE_ID = "spaceId";
 export const FIELD_WORLD_ID = "worldId";
 export const FIELD_MANAGED_BY_ID = "managedBy";
 export const FIELD_IS_HIDDEN = "isHidden";
+export const FIELD_IS_ONBOARDED = "isOnboarded";
 
 // some common constant paths for queries to avoid `useMemo`
 // it's a single constant rather a bunch of exports because of the code that follows

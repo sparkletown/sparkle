@@ -2,10 +2,7 @@ import firebase from "firebase/compat/app";
 
 import { ProfileLink, UserLocation } from "types/User";
 
-import { RegisterData } from "pages/auth/RegisterForm/RegisterForm";
-
-import { CodeOfConductFormData } from "./CodeOfConduct";
-import { ProfileFormData } from "./Profile";
+import { ProfileSchemaShape } from "forms/profileSchema";
 
 type MirrorVideoUpdateData = {
   mirrorVideo: boolean;
@@ -15,10 +12,9 @@ export const updateUserProfile = (
   userId: string,
   profileData:
     | { profileLinks: ProfileLink[] }
-    | CodeOfConductFormData
-    | ProfileFormData
+    | ProfileSchemaShape
     | MirrorVideoUpdateData
-    | (ProfileFormData | UserLocation)
+    | (ProfileSchemaShape | UserLocation)
 ) => {
   const firestore = firebase.firestore();
   const doc = `users/${userId}`;
@@ -28,19 +24,5 @@ export const updateUserProfile = (
     .update(profileData)
     .catch(() => {
       firestore.doc(doc).set(profileData);
-    });
-};
-
-export const updateUserPrivate = (
-  userId: string,
-  privateData: RegisterData
-) => {
-  const firestore = firebase.firestore();
-  const doc = `userprivate/${userId}`;
-  return firestore
-    .doc(doc)
-    .update(privateData)
-    .catch(() => {
-      firestore.doc(doc).set(privateData);
     });
 };

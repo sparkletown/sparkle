@@ -1,1 +1,1 @@
-export { RegisterFormHoc as RegisterForm } from "./RegisterForm.hoc";
+export { RegisterForm } from "./RegisterForm";

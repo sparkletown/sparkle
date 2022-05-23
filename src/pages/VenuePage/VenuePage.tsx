@@ -3,11 +3,12 @@ import { Redirect } from "react-router-dom";
 import { useTitle } from "react-use";
 
 import {
-  ACCOUNT_PROFILE_SPACE_PARAM_URL,
+  ACCOUNT_PROFILE_BASE_URL,
   ATTENDEE_STEPPING_PARAM_URL,
   DEFAULT_ENTER_STEP,
   LOC_UPDATE_FREQ_MS,
   PLATFORM_BRAND_NAME,
+  RETURN_URL_PARAM_NAME,
 } from "settings";
 
 import { RefiAuthUser } from "types/fire";
@@ -211,16 +212,10 @@ export const VenuePage: React.FC<VenuePageProps> = ({
     );
   }
 
+  const completeProfileUrl = `${ACCOUNT_PROFILE_BASE_URL}?${RETURN_URL_PARAM_NAME}=${window.location.pathname}`;
+
   if (profile && !isCompleteProfile(profile)) {
-    return (
-      <Redirect
-        to={generateUrl({
-          route: ACCOUNT_PROFILE_SPACE_PARAM_URL,
-          required: ["worldSlug"],
-          params: { worldSlug, spaceSlug },
-        })}
-      />
-    );
+    return <Redirect to={completeProfileUrl} />;
   }
 
   return (
