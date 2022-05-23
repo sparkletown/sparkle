@@ -33,7 +33,7 @@ $h-icon: 16px;
 .videoCommsControlsContainer {
   position: absolute;
   right: 0;
-  bottom: 0;
+  bottom: space.gap(2);
   display: flex;
   flex-direction: row-reverse;
   font-size: font.$size--lg;

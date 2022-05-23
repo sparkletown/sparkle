@@ -31,6 +31,7 @@ export const VideoHuddle: React.FC<VideoHuddleProps> = ({ isFixed }) => {
     <div className={videoHuddleClasses}>
       <div className={styles.VideoHuddleControls}>
         <span onClick={leaveHuddle}>
+          <span>Leave</span>
           <FontAwesomeIcon icon={faTimesCircle} />
         </span>
       </div>

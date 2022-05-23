@@ -156,19 +156,18 @@ export const ProfileOverlay: React.FC<ProfileOverlayProps> = ({
           ),
         };
         await updateUserProfile(firebaseUser.uid, requestDto);
-        reset({ ...values, profileLinks: validLinks });
+
+        reset({
+          ...data,
+          oldPassword: "",
+          newPassword: "",
+          confirmNewPassword: "",
+          profileLinks: validLinks,
+        });
         setSuccess(true);
       }
     },
-    [
-      firebaseUser,
-      dirtyFields,
-      checkOldPassword,
-      setError,
-      clearErrors,
-      reset,
-      values,
-    ]
+    [firebaseUser, dirtyFields, checkOldPassword, setError, clearErrors, reset]
   );
 
   const history = useHistory();

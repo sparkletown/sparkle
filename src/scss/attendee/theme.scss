@@ -6,6 +6,7 @@
 // variables to substitue them into the right place.
 :root {
   --default-text: rgb(0, 0, 0);
+  --secondary-text: rgba(0, 0, 0, 0.5);
   --subdued-text: rgb(142, 142, 142);
   --dark-text: rgb(0, 0, 0);
   --white-text: rgb(255, 255, 255);
@@ -62,6 +63,8 @@
 
 // This is the colour that should be used for 90% of text
 $c-default-text: var(--default-text);
+// This is the text colour for secondary texts/actions
+$c-secondary-text: var(--secondary-text);
 // This is the colour for anything that is lower priority text
 $c-subdued-text: var(--subdued-text);
 // Used wherever we are putting text on to a light background
