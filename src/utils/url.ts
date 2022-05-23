@@ -153,7 +153,6 @@ export const openUrl = (url: string, options?: OpenUrlOptions) => {
       ? customOpenExternalUrl(url)
       : window.open(url, "_blank", "noopener,noreferrer");
   } else {
-    console.log(url);
     const targetUrl = customOpenRelativeUrl
       ? extractLocalUrlPathname(url)
       : url;
