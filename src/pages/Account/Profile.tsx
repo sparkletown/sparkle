@@ -1,41 +1,35 @@
 import React from "react";
 import { useForm, useFormState } from "react-hook-form";
 import { useHistory } from "react-router-dom";
-import { useAsyncFn } from "react-use";
+import { useAsyncFn, useSearchParam } from "react-use";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { Button } from "components/attendee/Button";
+import { Input } from "components/attendee/Input";
+import { Spacer } from "components/attendee/Spacer";
 
 import {
-  ACCOUNT_CODE_QUESTIONS_URL,
-  DEFAULT_SPACE_SLUG,
+  ACCOUNT_ROOT_URL,
   DISPLAY_NAME_MAX_CHAR_COUNT,
+  RETURN_URL_PARAM_NAME,
 } from "settings";
 
-import { generateUrl } from "utils/url";
+import { profileSchema, ProfileSchemaShape } from "forms/profileSchema";
 
-import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useLiveUser } from "hooks/user/useLiveUser";
+
+import CN from "pages/auth/auth.module.scss";
 
 import { Loading } from "components/molecules/Loading";
 import { ProfilePictureInput } from "components/molecules/ProfilePictureInput";
-
-import { ButtonNG } from "components/atoms/ButtonNG";
 
 import "firebase/storage";
 
 import { updateUserProfile } from "./helpers";
 
-// @debt refactor the Profile related styles from Account.scss into Profile.scss
-import CN from "./Profile.module.scss";
-
-export interface ProfileFormData {
-  partyName: string;
-  pictureUrl: string;
-}
-
 export const Profile: React.FC = () => {
   const history = useHistory();
   const { userId, userWithId } = useLiveUser();
-
-  const { worldSlug, spaceSlug = DEFAULT_SPACE_SLUG } = useSpaceParams();
+  const returnUrl = useSearchParam(RETURN_URL_PARAM_NAME);
 
   const {
     register,
@@ -44,8 +38,10 @@ export const Profile: React.FC = () => {
     formState,
     setValue,
     watch,
-  } = useForm<ProfileFormData>({
+  } = useForm<ProfileSchemaShape>({
     mode: "onChange",
+    reValidateMode: "onChange",
+    resolver: yupResolver(profileSchema),
     defaultValues: {
       partyName: userWithId?.partyName,
       pictureUrl: userWithId?.pictureUrl,
@@ -55,87 +51,69 @@ export const Profile: React.FC = () => {
   const { errors } = useFormState({ control });
 
   const [{ loading: isUpdating, error: httpError }, onSubmit] = useAsyncFn(
-    async (data: ProfileFormData) => {
+    async (data: ProfileSchemaShape) => {
       if (!userId) return;
 
       await updateUserProfile(userId, data);
 
-      // @debt Should we throw an error here rather than defaulting to empty string?
-      const nextUrl = generateUrl({
-        route: ACCOUNT_CODE_QUESTIONS_URL,
-        required: ["worldSlug"],
-        params: { worldSlug, spaceSlug },
-      });
-
-      history.push(nextUrl);
+      history.push(returnUrl || ACCOUNT_ROOT_URL);
     },
-    [history, userId, worldSlug, spaceSlug]
+    [userId, history, returnUrl]
   );
 
   const pictureUrl = watch("pictureUrl");
 
   return (
-    <div className="Profile page-container-onboarding">
-      <div className="Profile__container login-container">
-        <h2 className="login-welcome-title">
-          Well done! Now create your profile
-        </h2>
-
-        <div className="login-welcome-subtitle">
-          {`Don't fret, you'll be able to edit it at any time later`}
-        </div>
+    <div data-bem="Profile" className={CN.login}>
+      <div className={CN.contents}>
+        <h2 className={CN.center}>Create your profile</h2>
 
         <form onSubmit={handleSubmit(onSubmit)} className="form">
           <div className="input-group profile-form">
-            {/* @debt refactor this to use InputField */}
-            <input
-              className={CN.input}
-              placeholder="Your display name"
-              {...register("partyName", {
-                required: true,
-                maxLength: DISPLAY_NAME_MAX_CHAR_COUNT,
-              })}
-              autoComplete="off"
-            />
-            <span className="input-info">
-              This is your display name (max {DISPLAY_NAME_MAX_CHAR_COUNT}{" "}
-              characters)
-            </span>
-            {errors.partyName && errors.partyName.type === "required" && (
-              <span className="input-error">Display name is required</span>
-            )}
-            {errors.partyName && errors.partyName.type === "maxLength" && (
-              <span className="input-error">
-                Display name must be {DISPLAY_NAME_MAX_CHAR_COUNT} characters or
-                less
-              </span>
-            )}
-
-            {userId && (
-              <ProfilePictureInput
-                setValue={setValue}
-                userId={userId}
-                errors={errors}
-                pictureUrl={pictureUrl}
+            <Spacer>
+              {
+                // @debt Input label is skewed by applying it to ::after pseudo element, this is a workaround
+              }
+              <span>Display name</span>
+              <Input
+                name="partyName"
+                variant="login"
+                border="border"
+                placeholder="Your display name"
+                autoComplete="off"
                 register={register}
+                error={errors.partyName}
+                subtext={`This is your display name (max ${DISPLAY_NAME_MAX_CHAR_COUNT} characters)`}
               />
-            )}
+            </Spacer>
+
+            <Spacer>
+              {userId && (
+                <ProfilePictureInput
+                  setValue={setValue}
+                  userId={userId}
+                  errors={errors}
+                  pictureUrl={pictureUrl}
+                  register={register}
+                />
+              )}
+            </Spacer>
           </div>
 
-          <div className="input-group">
-            <ButtonNG
+          <Spacer>
+            <Button
               type="submit"
               className="create-account__button"
               variant="primary"
               disabled={!formState.isValid || isUpdating}
             >
               Create my profile
-            </ButtonNG>
+            </Button>
             {isUpdating && <Loading />}
             {httpError && (
               <span className="input-error">{httpError.message}</span>
             )}
-          </div>
+          </Spacer>
         </form>
       </div>
     </div>

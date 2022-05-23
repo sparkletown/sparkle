@@ -1,11 +1,30 @@
-.profilePictureUploadForm {
-  max-width: 400px;
-}
-
-.profilePicturePreviewContainer {
-  max-width: 200px;
-}
+@use "scss/attendee/border";
+@use "scss/attendee/font";
+@use "scss/attendee/space";
+@use "scss/attendee/theme";
 
 .hiddenInput {
   display: none;
+}
+
+.profilePicturePreviewContainer {
+  width: fit-content;
+  margin: 0 auto;
+}
+
+.userAvatar {
+  width: 3rem;
+  height: 3rem;
+  border-radius: border.$radius--mx;
+  object-fit: cover;
+}
+
+.text {
+  position: relative;
+  margin: space.empty(-3.5) space.empty(1) space.empty(2) 0;
+  cursor: pointer;
+  text-align: center;
+  border-radius: border.$radius--xs;
+  background-color: theme.$c-glass-panel-background;
+  width: fit-content;
 }
