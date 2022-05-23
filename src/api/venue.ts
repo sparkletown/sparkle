@@ -148,7 +148,7 @@ export const updateVenueNG = async (venue: VenueInputForm, userId: UserId) => {
 };
 
 interface CreateBoothOptions {
-  templateSpaceId: SpaceId;
+  templateSpaceId?: SpaceId;
   parentSpaceId: SpaceId;
 }
 
