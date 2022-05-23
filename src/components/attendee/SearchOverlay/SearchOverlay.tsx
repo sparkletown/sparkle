@@ -1,18 +1,18 @@
 import { ChangeEvent, useCallback, useMemo, useState } from "react";
 import { Hit } from "@algolia/client-search";
 import { Input } from "components/attendee/Input";
+import { EventItem } from "components/attendee/SearchOverlay/EventItem/EventItem";
+import { PortalItem } from "components/attendee/SearchOverlay/PortalItem/PortalItem";
+import { SpaceItem } from "components/attendee/SearchOverlay/SpaceItem/SpaceItem";
+import { UserItem } from "components/attendee/SearchOverlay/UserItem/UserItem";
 
-import {
-  ALWAYS_EMPTY_ARRAY,
-  COVERT_ROOM_TYPES,
-  DEFAULT_PARTY_NAME,
-  PERSON_TAXON,
-  SPACE_TAXON,
-} from "settings";
+import { ALWAYS_EMPTY_ARRAY, COVERT_ROOM_TYPES } from "settings";
 
 import { AlgoliaSearchIndex } from "types/algolia";
+import { SpaceWithId } from "types/id";
 import { Room } from "types/rooms";
 import { UserWithLocation } from "types/User";
+import { ScheduledEvent } from "types/venues";
 
 import { isDefined } from "utils/types";
 
@@ -20,18 +20,25 @@ import { useAlgoliaSearch } from "hooks/algolia/useAlgoliaSearch";
 import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams";
 import { useDebounceSearch } from "hooks/useDebounceSearch";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
+import useVenueScheduleEvents from "hooks/useVenueScheduleEvents";
 
 import { Loading } from "components/molecules/Loading";
-
-import { PortalItem } from "./PortalItem/PortalItem";
 
 import CN from "./SearchOverlay.module.scss";
 
 type SearchOverlayProps = {
   onClose: () => void;
+  setNavMenu: React.Dispatch<React.SetStateAction<string | undefined>>;
 };
-export const SearchOverlay: React.FC<SearchOverlayProps> = ({ onClose }) => {
-  const { space, worldId } = useWorldAndSpaceByParams();
+export const SearchOverlay: React.FC<SearchOverlayProps> = ({
+  onClose,
+  setNavMenu,
+}) => {
+  const {
+    world,
+    worldId,
+    isLoaded: hasWorldLoaded,
+  } = useWorldAndSpaceByParams();
   const [searchValue, setSearchValue] = useState("");
 
   const { searchQuery, setSearchInputValue } = useDebounceSearch();
@@ -66,16 +73,37 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ onClose }) => {
     [worldSpaces]
   );
 
+  const { liveAndFutureEvents } = useVenueScheduleEvents();
+
+  const foundEvents = useMemo<ScheduledEvent[]>(() => {
+    if (!searchQuery) return ALWAYS_EMPTY_ARRAY;
+
+    return (
+      liveAndFutureEvents.filter((event) =>
+        event.name.toLowerCase().includes(searchQuery)
+      ) ?? []
+    );
+  }, [searchQuery, liveAndFutureEvents]);
+
   const foundPortals = useMemo<Room[]>(() => {
     if (!searchQuery) return ALWAYS_EMPTY_ARRAY;
 
-    /* @debt we really shouldn't be using the index as part of the key here, it's unstable.. but portals don't have a unique identifier */
     return (
       enabledRelatedPortals.filter((portal) =>
         portal.title.toLowerCase().includes(searchQuery)
       ) ?? []
     );
   }, [searchQuery, enabledRelatedPortals]);
+
+  const foundSpaces = useMemo<SpaceWithId[]>(() => {
+    if (!searchQuery) return ALWAYS_EMPTY_ARRAY;
+
+    return (
+      worldSpaces.filter((portal) =>
+        portal.name.toLowerCase().includes(searchQuery)
+      ) ?? []
+    );
+  }, [searchQuery, worldSpaces]);
 
   const algoliaSearchState = useAlgoliaSearch(
     searchQuery,
@@ -95,12 +123,16 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ onClose }) => {
     return usersResults.hits;
   }, [algoliaSearchState.value]);
 
-  const totalResultNumber = foundPortals.length + foundUsers.length;
+  const totalResultNumber =
+    foundPortals.length +
+    foundUsers.length +
+    foundEvents.length +
+    foundSpaces.length;
 
   return (
     <div className={CN.searchOverlayWrapper}>
       <div className={CN.searchOverlayHeader}>
-        {`Search ${space?.name ?? SPACE_TAXON.title}`}
+        {hasWorldLoaded && `Search ${world?.name}`}
       </div>
       <div className={CN.searchOverlaySearch}>
         <Input
@@ -129,14 +161,23 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ onClose }) => {
                 <PortalItem portal={portal} onClick={onClose} />
               </div>
             ))}
+            {foundSpaces.map((space, index) => (
+              <div key={`portal-${space.name}-${index}`}>
+                <SpaceItem space={space} onClick={onClose} />
+              </div>
+            ))}
             {foundUsers.map((user) => (
               <div key={`user-${user.objectID}`}>
-                <div className={CN.searchOverlayResultHeader}>
-                  <h3>
-                    {user?.partyName ?? DEFAULT_PARTY_NAME}
-                    <span>{PERSON_TAXON.title}</span>
-                  </h3>
-                </div>
+                <UserItem user={user} onClick={onClose} />
+              </div>
+            ))}
+            {foundEvents.map((event, index) => (
+              <div key={`portal-${event.name}-${index}`}>
+                <EventItem
+                  event={event}
+                  onClick={onClose}
+                  setNavMenu={setNavMenu}
+                />
               </div>
             ))}
           </div>

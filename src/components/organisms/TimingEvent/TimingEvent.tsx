@@ -3,7 +3,7 @@ import { faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { format } from "date-fns";
 
-import { DAYJS_EVENT_TIME_FORMAT, STRING_SPACE } from "settings";
+import { DATEFNS_EVENT_TIME_FORMAT, STRING_SPACE } from "settings";
 
 import { SpaceWithId } from "types/id";
 import { WorldEvent } from "types/venues";
@@ -41,7 +41,7 @@ export const TimingEvent: React.FC<TimingEventProps> = ({ event, space }) => {
           <div className="flex">
             <div className="px-6 py-4 w-96">
               <div className="text-sm font-medium text-gray-900">
-                {format(eventStartTime({ event }), DAYJS_EVENT_TIME_FORMAT)}
+                {format(eventStartTime({ event }), DATEFNS_EVENT_TIME_FORMAT)}
               </div>
               <div className="text-sm text-gray-500">
                 {formatTimeLocalised(eventStartTime({ event }))} -{STRING_SPACE}

@@ -1,4 +1,5 @@
 import { useCallback } from "react";
+import { Button } from "components/attendee/Button";
 
 import { SPACE_TAXON } from "settings";
 
@@ -8,7 +9,7 @@ import { useWorldAndSpaceByParams } from "hooks/spaces/useWorldAndSpaceByParams"
 import { useAnalytics } from "hooks/useAnalytics";
 import { usePortal } from "hooks/usePortal";
 
-import CN from "./PortalItem.module.scss";
+import CN from "../SearchOverlay.module.scss";
 
 export type PortalItemProps = {
   portal: Room;
@@ -32,13 +33,21 @@ export const PortalItem: React.FC<PortalItemProps> = ({ portal, onClick }) => {
 
   return (
     <div>
-      <div className={CN.portalItemResultHeader} onClick={enter}>
-        <h3 className={CN.portalItemResultTitle}>
+      <div className={CN.searchItemResultHeader}>
+        <h3 className={CN.searchItemResultTitle}>
           {portal.title}
           <span>{SPACE_TAXON.title}</span>
         </h3>
       </div>
-      <p className={CN.portalItemResultSubtitle}>{portal.subtitle}</p>
+      <p className={CN.searchItemResultSubtitle}>{portal.subtitle}</p>
+      <Button
+        onClick={enter}
+        variant="alternative"
+        border="alternative"
+        marginless
+      >
+        Go to {SPACE_TAXON.lower}
+      </Button>
     </div>
   );
 };
