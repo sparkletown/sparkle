@@ -6,6 +6,7 @@
 @use "scss/attendee/breakpoint";
 
 $-control-size: 32px;
+$control-button-width: 80px;
 
 .VideoHuddle {
   position: relative;
@@ -36,7 +37,7 @@ $-control-size: 32px;
 
 .VideoHuddleControls {
   @include sparkle.panel--normal;
-  width: 5%;
+  width: $control-button-width;
   position: relative;
   margin-top: space.gap(-1);
   display: flex;
@@ -44,14 +45,10 @@ $-control-size: 32px;
   justify-self: start;
   border-left: 1px solid theme.$sparkle--border;
 
-  @media (max-width: breakpoint.$lg) {
-    width: 10%;
-  }
-
   > span {
     width: 100%;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-evenly;
     padding: space.gap(1);
     align-items: center;
     height: $-control-size;
