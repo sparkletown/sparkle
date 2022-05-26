@@ -63,7 +63,7 @@ type VenuePageProps = SpaceSlugLocation & {
   userId?: UserId;
   profile?: Profile;
   userLocation?: UserLocation;
-  setBackButtonSpace: React.Dispatch<
+  setBackButtonSpace?: React.Dispatch<
     React.SetStateAction<SpaceWithId | undefined>
   >;
 };
@@ -79,7 +79,7 @@ export const VenuePage: React.FC<VenuePageProps> = ({
   userId,
   profile,
   userLocation,
-  setBackButtonSpace,
+  setBackButtonSpace = () => {},
 }) => {
   const analytics = useAnalytics({ venue: space });
 

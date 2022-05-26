@@ -1,6 +1,12 @@
 // THIS FILE IS FOR RARE CASES OF GLOBALLY SHARED RESOURCES
 // PLEASE EXPLORE OTHER OPTIONS BEFORE ADDING TO IT
 
+html,
+body,
+#root {
+  height: 100%;
+}
+
 @font-face {
   font-family: "Sparkle";
   font-style: normal;

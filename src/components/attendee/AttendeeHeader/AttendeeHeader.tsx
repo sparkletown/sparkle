@@ -20,6 +20,8 @@ import { useLiveUser } from "hooks/user/useLiveUser";
 import { useShowHide } from "hooks/useShowHide";
 import { useMediaQuery } from "hooks/viewport/useMediaQuery";
 
+import sparkleLogoImage from "assets/images/sparkle-header.png";
+
 import CN from "./AttendeeHeader.module.scss";
 
 type HeaderTab = "schedule" | "search" | "profile";
@@ -33,11 +35,13 @@ const tabCaptions: Readonly<Record<HeaderTab, String>> = {
 interface AttendeeHeaderProps {
   backButtonSpace?: BaseVenue;
   isBannerOn?: boolean;
+  hasLogo?: boolean;
 }
 
 export const AttendeeHeader: React.FC<AttendeeHeaderProps> = ({
   backButtonSpace,
   isBannerOn,
+  hasLogo,
 }) => {
   const { isShown, hide, show } = useShowHide(false);
   const [overlayLabel, setOverlayLabel] = useState("");
@@ -104,33 +108,48 @@ export const AttendeeHeader: React.FC<AttendeeHeaderProps> = ({
     [CN.narrow]: isNarrow,
     [CN.blur]: isBannerOn,
   });
-
+  console.log(backButtonSpace);
   return (
     <>
       <header className={headerClassnames}>
         <div className={containerClasses}>
-          {backButtonSpace ? (
-            <Button onClick={goBack} variant="primary" transparent={isNarrow}>
-              <FontAwesomeIcon icon={faArrowLeft} /> Leave
-              <span className={CN.headerTimeTransparent}>
-                {getDateHoursAndMinutes(currentMilliseconds())}
-              </span>
-            </Button>
+          {hasLogo ? (
+            <img
+              src={sparkleLogoImage}
+              alt="sparkle-logo"
+              className={CN.logoImage}
+            />
           ) : (
-            <Button
-              variant="primary"
-              transparent={isNarrow}
-              onClick={() => handleOverlayOpen(space?.name || "")}
-            >
-              <div className={CN.headerTitle}>
-                {space?.name ?? `This ${SPACE_TAXON.title}`}
-              </div>
-              <span className={CN.headerTimeTransparent}>
-                {getDateHoursAndMinutes(currentMilliseconds())}
-              </span>
-            </Button>
+            <>
+              {backButtonSpace ? (
+                <Button
+                  onClick={goBack}
+                  variant="primary"
+                  transparent={isNarrow}
+                >
+                  <FontAwesomeIcon icon={faArrowLeft} /> Leave
+                  <span className={CN.headerTimeTransparent}>
+                    {getDateHoursAndMinutes(currentMilliseconds())}
+                  </span>
+                </Button>
+              ) : (
+                <Button
+                  variant="primary"
+                  transparent={isNarrow}
+                  onClick={() => handleOverlayOpen(space?.name || "")}
+                >
+                  <div className={CN.headerTitle}>
+                    {space?.name ?? `This ${SPACE_TAXON.title}`}
+                  </div>
+                  <span className={CN.headerTimeTransparent}>
+                    {getDateHoursAndMinutes(currentMilliseconds())}
+                  </span>
+                </Button>
+              )}
+              {!isLaptopSmall && space && <Attendance space={space} />}
+            </>
           )}
-          {!isLaptopSmall && space && <Attendance space={space} />}
+
           <div className={CN.captionWrapper}>{renderedCaptions}</div>
         </div>
       </header>

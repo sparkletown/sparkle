@@ -143,7 +143,9 @@ export const AppRouter: React.FC = () => (
           <SplashWorld />
         </Route>
         <Route path={ATTENDEE_SPACE_SPLASH_URL}>
-          <SplashSpace />
+          <RelatedVenuesProvider>
+            <SplashSpace />
+          </RelatedVenuesProvider>
         </Route>
 
         {/* If not Signed in / profile filled / onboarded redirect to splash page */}

@@ -6,6 +6,7 @@
 
 // These is module private.
 $-z-index--header: layer.level(layer.$z-index--header);
+$h-logo-image: 42px;
 
 .attendeeHeader {
   display: flex;
@@ -83,4 +84,8 @@ $-z-index--header: layer.level(layer.$z-index--header);
 
 .blur {
   filter: blur(100px) contrast(60%) opacity(0);
+}
+
+.logoImage {
+  height: $h-logo-image;
 }

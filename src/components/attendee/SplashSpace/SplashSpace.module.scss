@@ -1,6 +1,110 @@
+@use "scss/attendee/theme";
+@use "scss/attendee/space";
+@use "scss/attendee/border";
+@use "scss/attendee/effects/sparkle";
+
+$h-logo-image: 42px;
+$w-enter-button: 150px;
+
+.splashWrapper {
+  height: 100%;
+
+  header {
+    width: 99%;
+  }
+}
+
 .Container {
   display: flex;
-  flex-flow: column;
-  justify-content: center;
+  flex-direction: column;
+  position: absolute;
+  top: 50%; /* position the top  edge of the element at the middle of the parent */
+  left: 50%; /* position the left edge of the element at the middle of the parent */
+
+  transform: translate(-50%, -50%);
+  height: 340px;
+
+  svg {
+    margin-right: space.gap(2);
+  }
+}
+
+.wrapper {
+  display: flex;
   align-items: center;
+  box-sizing: border-box;
+  height: 270px;
+  width: 800px;
+  background: theme.$c-splash-background-color;
+  border: border.$width--slim solid theme.$sparkle--border;
+  backdrop-filter: blur(sparkle.$blur--lg);
+  /* Note: backdrop-filter has minimal browser support */
+
+  border-radius: border.$radius--xs;
+}
+
+.AttendeeHeader {
+  padding: space.empty(1) 0;
+}
+
+.spaceInfo {
+  height: 100%;
+  min-width: 200px;
+  width: 200px;
+  padding: space.empty(1) 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  margin-left: space.empty(1);
+}
+
+.divider {
+  border: 1px solid rgba(130, 130, 130, 0.3);
+  height: 90%;
+  margin: 0 space.empty(1);
+}
+
+.contentWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+
+  div {
+    margin: space.empty(1) 0;
+  }
+}
+
+.actionWrapper {
+  width: 100%;
+
+  button {
+    margin: auto;
+    width: $w-enter-button;
+    display: flex;
+    justify-content: center;
+  }
+}
+
+a {
+  &:visited {
+    text-decoration: none;
+    color: theme.$c-dark-text;
+  }
+}
+
+.backButton {
+  margin: space.empty(1) 0;
+  align-self: flex-start;
+}
+
+.logoImage {
+  height: $h-logo-image;
+  margin: space.empty(1);
+}
+
+.authDivider {
+  margin: 0 space.empty(0.5);
 }

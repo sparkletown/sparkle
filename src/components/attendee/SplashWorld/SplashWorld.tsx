@@ -1,23 +1,31 @@
-import React, { useEffect } from "react";
-import { useHistory } from "react-router-dom";
-import { useSearchParam } from "react-use";
+import React, { useEffect, useMemo } from "react";
+import { Link, useHistory } from "react-router-dom";
+import { useCss, useSearchParam } from "react-use";
 import { Button } from "components/attendee/Button";
 
 import {
   ATTENDEE_SPACE_URL,
+  DEFAULT_BACKGROUNDS,
   JOIN_WORLD_URL,
   QUICK_JOIN_PARAM_NAME,
   RETURN_URL_PARAM_NAME,
   SIGN_IN_URL,
   SIGN_UP_URL,
+  STRING_SPACE,
 } from "settings";
 
 import { WorldWithId } from "types/id";
 
+import { isDefined } from "utils/types";
 import { generateUrl } from "utils/url";
 
+import { usePreloadAssets } from "hooks/usePreloadAssets";
 import { useLiveUser } from "hooks/user/useLiveUser";
 import { useOnboardingDetails } from "hooks/user/useOnboardingDetails";
+
+import { AttendeeHeader } from "../AttendeeHeader";
+
+import sparkleLogoImage from "assets/images/sparkle-header.png";
 
 import styles from "./SplashWorld.module.scss";
 
@@ -27,10 +35,9 @@ type SplashWorldProps = {
 
 export const SplashWorld: React.FC<SplashWorldProps> = ({ world }) => {
   const { userId } = useLiveUser();
-
-  const history = useHistory();
-
   const worldHomeSpace = world.defaultSpaceSlug;
+  console.log(world);
+  const history = useHistory();
 
   const { onboardingDetails } = useOnboardingDetails({
     worldId: world.id,
@@ -38,13 +45,6 @@ export const SplashWorld: React.FC<SplashWorldProps> = ({ world }) => {
   });
 
   const isOnboarded = onboardingDetails?.isOnboarded;
-
-  const navigateToSignIn = () => {
-    history.push({
-      pathname: SIGN_IN_URL,
-      search: `?${RETURN_URL_PARAM_NAME}=${history.location.pathname}`,
-    });
-  };
 
   const quickJoinWorld = () => {
     history.push({
@@ -89,6 +89,13 @@ export const SplashWorld: React.FC<SplashWorldProps> = ({ world }) => {
     return navigateToSpace();
   };
 
+  const navigateToSignIn = () => {
+    history.push({
+      pathname: SIGN_IN_URL,
+      search: `?${RETURN_URL_PARAM_NAME}=${history.location.pathname}`,
+    });
+  };
+
   const navigateToSignUp = () => {
     history.push({
       pathname: SIGN_UP_URL,
@@ -104,27 +111,60 @@ export const SplashWorld: React.FC<SplashWorldProps> = ({ world }) => {
     navigateToSpace();
   });
 
-  const hasHomeSpace = !!worldHomeSpace;
-
   const buttonText = isOnboarded ? "Enter" : "Join";
 
+  const [assetsToPreload] = useMemo(
+    () =>
+      [world?.config?.landingPageConfig?.coverImageUrl]
+        .filter(isDefined)
+        .map((url) => ({ url })),
+    [world?.config?.landingPageConfig?.coverImageUrl]
+  );
+
+  usePreloadAssets([assetsToPreload]);
+
+  const { url } = assetsToPreload ?? {};
+  const [defaultBackground] = DEFAULT_BACKGROUNDS;
+
+  const mapStyles = useCss({
+    backgroundImage: `url(${url || defaultBackground})`,
+  });
+
   return (
-    <div className={styles.Container}>
-      <h1>World splash page!</h1>
-      <p>{world.name}</p>
-      <p>{world.config.landingPageConfig.description}</p>
-
-      {!hasHomeSpace && <p>No home space was specified!</p>}
-      <Button disabled={!hasHomeSpace} onClick={onActionButtonClick}>
-        {buttonText}
-      </Button>
-
-      {!userId && (
-        <div>
-          <Button onClick={navigateToSignIn}>Sign In</Button>
-          <Button onClick={navigateToSignUp}>Sign Up</Button>
-        </div>
+    <div className={`${styles.splashWrapper} ${mapStyles}`}>
+      {userId ? (
+        <AttendeeHeader hasLogo />
+      ) : (
+        <img
+          src={sparkleLogoImage}
+          alt="sparkle-logo"
+          className={styles.logoImage}
+        />
       )}
+      <div className={styles.Container}>
+        <div className={styles.contentWrapper}>
+          <h2>{world.name}</h2>
+          <h3>{world.config?.landingPageConfig.description}</h3>
+          <div className={styles.actionWrapper}>
+            <Button onClick={onActionButtonClick} variant="intensive">
+              {buttonText}
+            </Button>
+          </div>
+          {!userId && (
+            <div>
+              You also need a Sparkle id to join.
+              {STRING_SPACE}
+              <Link className={styles.link} to="#" onClick={navigateToSignUp}>
+                Sign Up
+              </Link>
+              <span className={styles.authDivider}>or</span>
+              <Link className={styles.link} to="#" onClick={navigateToSignIn}>
+                Login
+              </Link>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 };

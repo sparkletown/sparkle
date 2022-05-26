@@ -12,7 +12,7 @@ export const SplashWorldHoc: React.FC = () => {
     // TODO: re-check if <LoadingPage /> might be more suitable than null
     return null;
   }
-
+  console.log(world);
   if (!world) {
     return <NotFound />;
   }
