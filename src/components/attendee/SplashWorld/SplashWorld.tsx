@@ -36,7 +36,7 @@ type SplashWorldProps = {
 export const SplashWorld: React.FC<SplashWorldProps> = ({ world }) => {
   const { userId } = useLiveUser();
   const worldHomeSpace = world.defaultSpaceSlug;
-  console.log(world);
+
   const history = useHistory();
 
   const { onboardingDetails } = useOnboardingDetails({

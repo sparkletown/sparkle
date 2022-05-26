@@ -108,7 +108,7 @@ export const AttendeeHeader: React.FC<AttendeeHeaderProps> = ({
     [CN.narrow]: isNarrow,
     [CN.blur]: isBannerOn,
   });
-  console.log(backButtonSpace);
+
   return (
     <>
       <header className={headerClassnames}>
