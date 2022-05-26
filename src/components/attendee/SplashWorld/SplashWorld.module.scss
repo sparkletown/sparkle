@@ -1,6 +1,85 @@
+@use "scss/attendee/theme";
+@use "scss/attendee/space";
+@use "scss/attendee/border";
+@use "scss/attendee/effects/sparkle";
+
+$h-logo-image: 42px;
+$w-enter-button: 150px;
+
+.splashWrapper {
+  height: 100%;
+
+  header {
+    width: 99%;
+  }
+}
+
 .Container {
   display: flex;
-  flex-flow: column;
-  justify-content: center;
+  flex-direction: column;
+  position: absolute;
+  top: 50%; /* position the top  edge of the element at the middle of the parent */
+  left: 50%; /* position the left edge of the element at the middle of the parent */
+  background: theme.$c-splash-background-color;
+  border: border.$width--slim solid theme.$sparkle--border;
+  backdrop-filter: blur(sparkle.$blur--lg);
+  transform: translate(-50%, -50%);
+  border-radius: border.$radius--xs;
+
+  svg {
+    margin-right: space.gap(2);
+  }
+}
+
+.AttendeeHeader {
+  padding: space.empty(1) 0;
+}
+
+.contentWrapper {
+  display: flex;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
+  padding: space.empty(2);
+  text-align: center;
+
+  div {
+    margin: space.empty(1) 0;
+  }
+
+  h3 {
+    padding: 0 space.empty(2);
+  }
+}
+
+.actionWrapper {
+  width: 100%;
+
+  button {
+    display: flex;
+    justify-content: center;
+    margin: auto;
+    width: $w-enter-button;
+  }
+}
+
+a {
+  &:visited {
+    text-decoration: none;
+    color: theme.$c-dark-text;
+  }
+}
+
+.backButton {
+  margin: space.empty(1) 0;
+  align-self: flex-start;
+}
+
+.logoImage {
+  height: $h-logo-image;
+  margin: space.empty(1);
+}
+
+.authDivider {
+  margin: 0 space.empty(0.5);
 }
