@@ -261,7 +261,7 @@ export const ensureBotUsers: (
     (_, i) => ({
       id: generateUserId({ scriptTag, index: i }),
       partyName: faker.name.findName(),
-      pictureUrl: faker.internet.avatar(),
+      pictureUrl: "https://i.pravatar.cc/300",
       bot: true,
       botUserScriptTag: scriptTag,
     })
@@ -363,7 +363,12 @@ export const addBotReaction: (
     botUserScriptTag: conf.user?.scriptTag ?? "",
 
     created_at: new Date().getTime(),
-    created_by: userId,
+    created_by: {
+      anonMode: false,
+      id: userId,
+      partyName: user.partyName,
+      pictureUrl: user.pictureUrl,
+    },
 
     reaction,
   };
@@ -461,9 +466,14 @@ export const sendBotVenueMessage: (
     bot: true,
     botUserScriptTag: conf.user?.scriptTag ?? "",
 
-    from: userId,
+    fromUser: {
+      id: userId,
+      partyName: user.partyName,
+      pictureUrl: user.pictureUrl,
+    },
+    isQuestion: false,
     text,
-    ts_utc: admin.firestore.Timestamp.now(),
+    timestamp: admin.firestore.Timestamp.now(),
   });
 
   stats.writes = increment(stats.writes);
