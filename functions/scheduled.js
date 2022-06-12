@@ -41,6 +41,14 @@ const removeDanglingSeatedUsers = async () => {
           const userId = userDoc.id;
           const venueId = seatedUserData.venueId;
 
+          if (!venueId) {
+            console.error(
+              "No venueId prop in seatedUserData.venueId in" +
+                `/venues/MISSING/recentSeatedUsers/${userId}`
+            );
+            return;
+          }
+
           batch.delete(
             firestore
               .collection("venues")
