@@ -3,7 +3,7 @@ import { strict as assert } from "assert";
 import chalk from "chalk";
 import * as faker from "faker";
 import admin from "firebase-admin";
-import { chunk, keyBy } from "lodash";
+import { chunk, keyBy, random } from "lodash";
 
 import { getUsersRef } from "./collections";
 import {
@@ -261,7 +261,7 @@ export const ensureBotUsers: (
     (_, i) => ({
       id: generateUserId({ scriptTag, index: i }),
       partyName: faker.name.findName(),
-      pictureUrl: faker.internet.avatar(),
+      pictureUrl: `https://i.pravatar.cc/300?u=${faker.name.findName()}`,
       bot: true,
       botUserScriptTag: scriptTag,
     })
@@ -363,7 +363,12 @@ export const addBotReaction: (
     botUserScriptTag: conf.user?.scriptTag ?? "",
 
     created_at: new Date().getTime(),
-    created_by: userId,
+    created_by: {
+      anonMode: false,
+      id: userId,
+      partyName: user.partyName,
+      pictureUrl: user.pictureUrl,
+    },
 
     reaction,
   };
@@ -457,14 +462,29 @@ export const sendBotVenueMessage: (
   const chatId = `${userId}-chat-${new Date().getTime()}`;
   const text = generateRandomText();
 
-  await chatsRef.doc(chatId).set({
+  const batch = admin.firestore().batch();
+
+  batch.set(chatsRef.doc(chatId), {
     bot: true,
     botUserScriptTag: conf.user?.scriptTag ?? "",
 
-    from: userId,
+    fromUser: {
+      id: userId,
+      partyName: user.partyName,
+      pictureUrl: user.pictureUrl,
+    },
+    isQuestion: false,
     text,
-    ts_utc: admin.firestore.Timestamp.now(),
+    timestamp: admin.firestore.Timestamp.now(),
   });
+
+  const randomShard = venueRef
+    .collection("chatMessagesCounter")
+    .doc(random(10 - 1).toString());
+
+  batch.update(randomShard, "count", admin.firestore.FieldValue.increment(1));
+
+  await batch.commit();
 
   stats.writes = increment(stats.writes);
   (stats.chatlines ??= {}).created = increment(stats.chatlines.created);

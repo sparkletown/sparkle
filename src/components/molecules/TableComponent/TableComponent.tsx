@@ -40,8 +40,9 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
 }) => {
   const { openUserProfileModal } = useProfileModalControls();
   const locked = tableLocked(table.reference);
-  const numberOfSeatsLeft = table.capacity && table.capacity - users.length;
-  const full = numberOfSeatsLeft === 0;
+  const numberOfSeatsLeft =
+    (table.capacity && table.capacity - users.length) ?? 0;
+  const full = numberOfSeatsLeft <= 0;
   const { userId } = useUser();
 
   const { isAdminUser, isLoading: isCheckingRole } = useIsAdminUser(userId);

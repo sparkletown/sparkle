@@ -1,13 +1,11 @@
 .attendance-avatars {
   display: flex;
   flex-direction: row;
+  justify-content: center;
+  align-items: center;
 
   .attendance-avatar {
-    background-size: cover;
-    background-position: center;
-    border-radius: 100%;
-    width: 20px;
-    height: 20px;
+    margin-right: 2px;
   }
 
   .avatars-inside {
@@ -16,7 +14,8 @@
     justify-content: center;
     align-items: center;
     border-radius: 100%;
-    width: 20px;
     height: 20px;
+    padding: 10px;
+    margin-left: 1px;
   }
 }

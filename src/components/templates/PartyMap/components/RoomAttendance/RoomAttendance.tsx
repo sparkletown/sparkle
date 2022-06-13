@@ -6,6 +6,8 @@ import { Room } from "types/rooms";
 
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 
+import { UserAvatar } from "components/atoms/UserAvatar";
+
 import "./RoomAttendance.scss";
 
 type RoomAttendanceProps = {
@@ -37,12 +39,18 @@ export const RoomAttendance: React.FC<RoomAttendanceProps> = ({
   const userAvatars = useMemo(
     () =>
       userList.slice(0, maxVisible).map((user) => (
-        <div key={`user-avatar-${user.id}`}>
-          <div
-            className="attendance-avatar"
-            style={{ backgroundImage: `url(${user.pictureUrl})` }}
-          />
-        </div>
+        <UserAvatar
+          key={user.id}
+          size="small"
+          user={user}
+          containerClassName="attendance-avatar"
+        />
+        // <div key={`user-avatar-${user.id}`}>
+        //   <div
+        //     className="attendance-avatar"
+        //     style={{ backgroundImage: `url(${user.pictureUrl})` }}
+        //   />
+        // </div>
       )),
     [maxVisible, userList]
   );
