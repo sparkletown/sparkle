@@ -261,7 +261,7 @@ export const ensureBotUsers: (
     (_, i) => ({
       id: generateUserId({ scriptTag, index: i }),
       partyName: faker.name.findName(),
-      pictureUrl: "https://i.pravatar.cc/300",
+      pictureUrl: `https://i.pravatar.cc/300?u=${faker.name.findName()}`,
       bot: true,
       botUserScriptTag: scriptTag,
     })
