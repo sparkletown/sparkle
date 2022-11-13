@@ -84,7 +84,7 @@
     "eslint-plugin-prefer-arrow": "^1.2.3",
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "firebase-admin": "^9.1.1",
-    "firebase-tools": "^8.6.0",
+    "firebase-tools": "^11.16.0",
     "fireway": "^1.0.2",
     "gifwrap": "^0.9.2",
     "phin": "^3.5.0",
